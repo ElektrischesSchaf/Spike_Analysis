@@ -4,6 +4,6 @@
 ![](/Spike_Train_Plots/Spike_Train_Channel_14.png)
 Spike trains from channel 14 for instance, has data from unit 1 to unit 3, ploted in different color
 ---
-![](X-Y_plane_trajectory_1000pts.png)
+![](X-Y_plane_trajectory_1000pts.png)  
 The trajectory of fingertips from 1000 data point
 ---
