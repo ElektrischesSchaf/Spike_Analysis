@@ -16,44 +16,46 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     spikes = mat_file['spikes']
 
     print('chan_names shape:  ',end='')
-    print(chan_names.shape)
+    print(chan_names.shape) # (1, 192)
 
     print('spikes shape:  ',end='')
-    print(spikes.shape)
+    print(spikes.shape) # (3, 192)
 
     print('chan_names dtype:  ',end='')
-    print(chan_names.dtype)
+    print(chan_names.dtype)  # object
 
     print('spikes dtype: ',end='')
-    print(spikes.dtype)
+    print(spikes.dtype)   # object
 
     print('len of chan_names:  ',end='')
-    print( len(chan_names) ) # print 1
+    print( len(chan_names) ) # len(chan_names) =1
 
     print('type of chan_names[0]:  ',end='' )
-    print( type( chan_names[0] ) )
+    print( type( chan_names[0] ) )  #  <class 'numpy.ndarray'>
 
     print('type of spikes[0]:  ',end='' )
-    print( type( spikes[0] ) )
+    print( type( spikes[0] ) )  #  <class 'numpy.ndarray'>
 
     print('type of mat_file[ (chan_names[0][0]) ]:  ',end='')
-    print( type(mat_file[ (chan_names[0][0]) ]))
+    print( type(mat_file[ (chan_names[0][0]) ]))  #  <class 'h5py._hl.dataset.Dataset'>
 
     data_chan_names_1=mat_file[ (chan_names[0][0]) ][()]
-    print('shape of data_chan_names_1: ',end='')
+
+    print('shape of data_chan_names_1: ',end='')  # (6, 1)
     print(data_chan_names_1.shape)
+
     for i in range(data_chan_names_1.shape[0]):
         print( chr(data_chan_names_1[i][0] ))
 
     print('shape of mat_file[ ( spikes[0][0] ) ]: ',end='')
-    print(mat_file[ ( spikes[0][0] ) ].shape )
+    print(mat_file[ ( spikes[0][0] ) ].shape ) # (1, 5595)
 
     spikes_data_1=mat_file[ ( spikes[0][0] ) ][()]
     print('shape of spikes_data_1: ',end='')
-    print( spikes_data_1.shape )
+    print( spikes_data_1.shape )  # (1, 5595)
     
     print( 'value of spikes_data_1[0][1000]: ',end='')
-    print( spikes_data_1[0][1000] )
+    print( spikes_data_1[0][1000] )  #  224.40043620355942
 
     '''
     # invalid
