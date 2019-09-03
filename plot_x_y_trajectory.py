@@ -7,8 +7,15 @@ import matplotlib.pyplot as plot
 
 with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
+    '''
     finger_pos = mat_file['finger_pos']
     time_stamp=mat_file['t']
+
+    print('finger_pos shape: ',end='')
+    print(finger_pos.shape) # (3, 204446)
+    print('time_stamp shape: ',end='')
+    print(time_stamp.shape) # (1, 204446)
+    '''
 
     numpy_finger_pos=mat_file.get('finger_pos')
     numpy_finger_pos=np.array(numpy_finger_pos)
@@ -20,62 +27,33 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     print('numpy_time_stamp: ',end='')
     print(numpy_time_stamp.shape)  #  (1, 204446)
 
-    print('finger_pos shape: ',end='')
-    print(finger_pos.shape) # (3, 204446)
-    print('time_stamp shape: ',end='')
-    print(time_stamp.shape) # (1, 204446)
+    finger_x_coor=numpy_finger_pos[0][:]
+    finger_y_coor=numpy_finger_pos[1][:]
+    finger_z_coor=numpy_finger_pos[2][:]
 
-    finger_x_coor=[]
-    finger_y_coor=[]
-    finger_z_coor=[]
-
-    finger_x_velocity=[]
-    finger_y_velocity=[]
-    finger_z_velocity=[]
-
-    time_coor=[]
-
-    #duration=1000
-    duration=finger_pos.shape[1]
-
-    for i in range(duration):
-        print('progress: ' + str( (i/duration)*100 )+'%' )
-
-        finger_x_coor.append(  finger_pos[0][i]  )
-        finger_y_coor.append(  finger_pos[1][i]  )
-        finger_z_coor.append(  finger_pos[2][i]  )
-        time_coor.append( time_stamp[0][i] )
-
-        '''
-        if i<= duration-1:
-            velocity=( finger_pos[0][i+1] - finger_pos[0][i] ) / ( time_stamp[0][i+1]-time_stamp[0][i] )
-            finger_x_velocity.append(velocity)
-
-            velocity=( finger_pos[1][i+1] - finger_pos[1][i] ) / ( time_stamp[0][i+1]-time_stamp[0][i] )
-            finger_y_velocity.append(velocity)
-
-            velocity=( finger_pos[2][i+1] - finger_pos[2][i] ) / ( time_stamp[0][i+1]-time_stamp[0][i] )
-            finger_z_velocity.append(velocity)
-        '''
-
-print('length of finger_x_coor: ',end='')
-print(len(finger_x_coor))
-
-plot.scatter(finger_x_coor, finger_y_coor)
+plot.scatter(finger_x_coor, finger_y_coor, s=1)
 plot.title('X-Y plane')
 plot.xlabel('X coordinate')
 plot.ylabel('Y coordinate')
 #plot.show()
-plot.savefig('X-Y_plane_trajectory.png' )
+plot.savefig('X-Y_plane_trajectory.png')
 
 plot.cla()
 plot.clf()
 
-'''
-plot.scatter(finger_x_velocity, finger_y_velocity)
-plot.title('X-Y velocity')
-plot.xlabel('X velocity')
-plot.ylabel('Y velocity')
+plot.scatter(finger_x_coor, finger_z_coor, s=1)
+plot.title('X-Z plane')
+plot.xlabel('X coordinate')
+plot.ylabel('Z coordinate')
 #plot.show()
-plot.savefig('X-Y_plane_velocity.png' )
-'''
+plot.savefig('X-Z_plane_trajectory.png')
+
+plot.cla()
+plot.clf()
+
+plot.scatter(finger_y_coor, finger_z_coor, s=1)
+plot.title('Y-Z plane')
+plot.xlabel('Y coordinate')
+plot.ylabel('Z coordinate')
+#plot.show()
+plot.savefig('Y-Z_plane_trajectory.png')
