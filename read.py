@@ -12,8 +12,20 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
     # ['#refs#', 'chan_names', 'cursor_pos', 'finger_pos', 'spikes', 't', 'target_pos', 'wf']
     #chan_names=list (mat_file['chan_names'] )
+    numpy_channel_names_array=mat_file.get('chan_names')
+    numpy_channel_names_array=np.array(numpy_channel_names_array)
+
+    numpy_spikes_array=mat_file.get('spikes')
+    numpy_spikes_array=np.array(numpy_spikes_array)
+
     chan_names = mat_file['chan_names'] 
     spikes = mat_file['spikes']
+
+    print('numpy_channel_names_array shape: ',end='')
+    print(numpy_channel_names_array.shape) # (1, 192)
+
+    print('numpy_spikes_array shape: ',end='')
+    print(numpy_spikes_array.shape)  #  (3, 192)
 
     print('chan_names shape:  ',end='')
     print(chan_names.shape) # (1, 192)
