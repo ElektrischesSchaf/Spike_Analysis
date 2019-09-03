@@ -7,3 +7,5 @@
 ![](X-Y_plane_trajectory.png)  ![](X-Z_plane_trajectory.png)  ![](Y-Z_plane_trajectory.png)  
 #### The trajectory of fingertips with all 204,446 data points.
 ---
+![](X_axis_velocity.png) ![](Y_axis_velocity.png) ![](Z_axis_velocity.png) 
+#### The velocity of fingertips in three axis with all 204,446 data points.
