@@ -6,6 +6,15 @@ import numpy
 import matplotlib.pyplot as plot 
 import copy
 
+from sklearn.linear_model import LogisticRegression
+# Import datasets, classifiers and performance metrics
+from sklearn import datasets, svm, metrics
+from sklearn.feature_selection import RFE
+from  sklearn.svm import SVC
+from sklearn.svm import SVR
+
+classifier = svm.SVC(gamma=0.001)
+
 with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
     time_stamp=mat_file['t']
@@ -13,12 +22,34 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     firing_rate_cell=[[]]
     firing_rate_final=[] # not[[]]
 
+    numpy_finger_pos=mat_file.get('finger_pos')
+    numpy_finger_pos=np.array(numpy_finger_pos)
+
+    finger_x_coor=numpy_finger_pos[0][:]
+    finger_y_coor=numpy_finger_pos[1][:]
+    finger_z_coor=numpy_finger_pos[2][:]
+
+    x_label=[]
+    y_label=[]
+    z_label=[]
+
+    sampling_rate=16 # because 64ms
+
     duration=1000
     #duration=time_stamp.shape[1]
 
+    # make y label matrix first
+    index_label=0
+    while index_label < duration:
+        x_label.append(finger_x_coor[index_label] )
+        y_label.append(finger_y_coor[index_label] )
+        z_label.append(finger_z_coor[index_label] )
+        index_label+=sampling_rate
+    print('Label appending finished')
+
     # plot each channel start
     for channel_index in range(3):
-        print('channel progress: ' + str( (channel_index/96)*100 )+'%' )
+        print('channel progress: ' + str( (channel_index/96)*100 )+'%' ) # 96 channels in this dataset
 
         #channel_index=0
 
@@ -79,7 +110,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
                     index=k
                     k=k-1
 
-                    i+=16
+                    i+=sampling_rate
                     
                 else:
                     
@@ -130,7 +161,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
                     index=k
                     k=k-1
 
-                    i+=16
+                    i+=sampling_rate
                     
                 else:
                     
@@ -179,7 +210,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
                     firing_rate_cell[-1].append(k-index)
                     index=k
                     k=k-1
-                    i+=16
+                    i+=sampling_rate
                     
                 else:
                     
@@ -238,7 +269,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         print('End of one channel '+ str(channel_index+1) +'\n') 
 
 
-
+# Extract firing_rate_cell with rows have length bigger than zero
 for row_index in range( len( firing_rate_cell) ):   
     if len(firing_rate_cell[row_index]):
         firing_rate_final.append( firing_rate_cell[row_index] )
@@ -249,8 +280,26 @@ for row_index in range( len( firing_rate_final) ):
 
 print('\n')
 
-#firing_rate_cell_yee=np.array(firing_rate_final)
 firing_rate_matrix=np.array(firing_rate_final)
 print('firing_rate_matrix shape: ',end='')
 print(firing_rate_matrix.shape)
+print('\n')
+
+
+y_label=np.array(y_label)
+X=y_label.astype(np.float64)
+print('Label list shape: ',end='')
+print( X.shape ) # X is the label matrix
+print('\n')
+
+
+firing_rate_matrix=np.transpose(firing_rate_matrix)
+print('transposed firing_rate_matrix shape: ',end='')
+print(firing_rate_matrix.shape)
+print('\n')
+
+y=firing_rate_matrix.astype(np.float64)
+print('fetures list shape: ',end='')
+print( y.shape ) # y is the feature matrix
+print('\n')
 
