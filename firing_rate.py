@@ -6,7 +6,7 @@ import numpy
 import matplotlib.pyplot as plot 
 import copy
 
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, svm, metrics
 from sklearn.feature_selection import RFE
@@ -287,9 +287,9 @@ print('\n')
 
 
 y_label=np.array(y_label)
-X=y_label.astype(np.float64)
+y=y_label.astype(np.float64)
 print('Label list shape: ',end='')
-print( X.shape ) # X is the label matrix
+print( y.shape ) # y is the label matrix
 print('\n')
 
 
@@ -298,8 +298,49 @@ print('transposed firing_rate_matrix shape: ',end='')
 print(firing_rate_matrix.shape)
 print('\n')
 
-y=firing_rate_matrix.astype(np.float64)
+X=firing_rate_matrix.astype(np.float64)
 print('fetures list shape: ',end='')
-print( y.shape ) # y is the feature matrix
+print( X.shape ) # X is the feature matrix
 print('\n')
 
+model = LinearRegression(fit_intercept=True)
+model.fit( X, y)
+
+print("Model slope:    ", model.coef_[0])
+print("Model intercept:", model.intercept_)
+
+'''
+estimator=SVR(kernel="linear")
+selector = RFE(estimator, 10, step=200)
+selector = selector.fit(X[:37],y[:37])
+
+print('\n---------------------------------\n')
+print('selector.support: ',end='')
+print(selector.support_)
+print('\n---------------------------------\n')
+print('length of selector.support: ',end='')
+print(len(selector.support_))
+print('\n---------------------------------\n')
+new_X=X[:,selector.support_]
+print('new_X.shape:  ',end='')
+print(new_X.shape)
+print('\n---------------------------------\n')
+classifier = svm.SVC(gamma=0.001,kernel='rbf')
+classifier.fit(new_X[:37],y[:37])
+print('new_X[:37] shape:  ',end='')
+print(new_X[:37].shape)
+print('\n---------------------------------\n')
+print('y[:37] shape:  ',end='')
+print(y[:37].shape)
+print('\n---------------------------------\n')
+
+expected_training_data=y[:37]
+predicted_training_data=classifier.predict(new_X[:37])
+
+expected=y[37:]
+predicted=classifier.predict(new_X[37:])
+print('='*50)
+print('type of metrics.classification_report(expected, predicted):',end='')
+print(type(metrics.classification_report(expected, predicted) )  )
+print('\n')
+'''
