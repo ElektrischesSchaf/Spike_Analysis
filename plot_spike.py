@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import h5py
-
+import os
 import numpy
 import matplotlib.pyplot as plot 
 
@@ -55,27 +55,29 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     print( 'value of spikes_data_1_1[0][1000]: ',end='')
     print( spikes_data_1_1[0][1000] )
 
-
-
     # plot each channel start
-    for channel_index in range(94,96):
+    for channel_index in range(96):
         #channel_index=0
 
         temp_spike_cell_1=[]
         temp_spike_cell_2=[]
         temp_spike_cell_3=[]
+        '''
         temp_spike_cell_4=[]
         temp_spike_cell_5=[]
         temp_spike_cell_6=[]
+        '''
 
         plot_row = [[]]  
 
         temp_spike_cell_1=mat_file[ ( spikes[0][channel_index] ) ][()]
         temp_spike_cell_2=mat_file[ ( spikes[1][channel_index] ) ][()]
         temp_spike_cell_3=mat_file[ ( spikes[2][channel_index] ) ][()]
+        '''
         temp_spike_cell_4=mat_file[ ( spikes[0][channel_index+96] ) ][()]
         temp_spike_cell_5=mat_file[ ( spikes[1][channel_index+96] ) ][()]
         temp_spike_cell_6=mat_file[ ( spikes[2][channel_index+96] ) ][()]
+        '''
 
         
         plot_row.append([])
@@ -100,7 +102,8 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
                 plot_row[-1].append( temp_spike_cell_3[0][i] )
         else:
             plot_row[-1].append(0)
-
+        
+        '''
         plot_row.append([])
 
         if temp_spike_cell_4.shape[0] != 2:
@@ -124,10 +127,12 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
                 plot_row[-1].append( temp_spike_cell_6[0][i] )
         else:
             plot_row[-1].append(0)
+        '''
+        
 
         # Set different colors for each neuron
-        colorCodes = np.array([ [1, 1, 0],[0, 0, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1], [1, 0, 1] ])
-
+        #colorCodes = np.array([ [1, 1, 0],[0, 0, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1], [1, 0, 1] ])
+        colorCodes = np.array([ [1, 1, 0],[0, 0, 0], [1, 0, 0], [0, 0, 1] ])
         # Set spike colors for each neuron
         lineSize = [0.9]
 
@@ -135,7 +140,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         plot.margins(0,0)
         axes = plot.gca()
         axes.set_xlim([50, 900])
-        axes.set_ylim([0.5, 6.5])        
+        axes.set_ylim([0.5, 3.5])        
 
         # Draw a spike raster plot
         plot.eventplot(plot_row, color=colorCodes, linelengths = lineSize)
@@ -153,7 +158,8 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         # Display the spike raster plot
         #plot.show()
 
-        plot.savefig('Spike_Train_Channel_'+ str(channel_index+1) +'.png' )
+        path=r'''Spike_Train_Plots/Spike_Train_Channel_'''
+        plot.savefig(path+ str(channel_index+1) +'.png')
 
     # plot spike train end
 
