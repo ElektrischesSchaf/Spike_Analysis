@@ -14,6 +14,13 @@ from sklearn.svm import SVR
 
 classifier = svm.SVC(gamma=0.001)
 
+def histc(X, bins):
+    map_to_bins = np.digitize(X,bins)
+    r = np.zeros(bins.shape)
+    for i in map_to_bins:
+        r[i-1] += 1
+    return r
+
 with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
     time_stamp=mat_file['t']
@@ -31,11 +38,17 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     x_label=[]
     y_label=[]
     z_label=[]
+    time_stamp_64ms=[]
 
     sampling_rate=16 # because 64ms
 
-    duration=1000
-    #duration=time_stamp.shape[1]
+    #duration=1000
+    duration=time_stamp.shape[1]
+    haha=0
+    while haha < duration:
+        print('haha= ', haha)
+        time_stamp_64ms.append(time_stamp[0][haha])
+        haha+=16
 
     # make y label matrix first
     index_label=0
@@ -47,7 +60,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     print('Label appending finished')
 
     # plot each channel start
-    for channel_index in range(5):
+    for channel_index in range(96):
         print('channel progress: ' + str( (channel_index/96)*100 )+'%' ) # 96 channels in this dataset
 
         #channel_index=0
@@ -65,6 +78,23 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         temp_spike_cell_2=mat_file[ ( spikes[1][channel_index] ) ][()]
         temp_spike_cell_3=mat_file[ ( spikes[2][channel_index] ) ][()]
 
+        temp_spike_cell_1=np.asarray(temp_spike_cell_1)
+        temp_spike_cell_2=np.asarray(temp_spike_cell_2)
+        temp_spike_cell_3=np.asarray(temp_spike_cell_3)
+
+        time_stamp_64ms=np.asarray(time_stamp_64ms)
+
+    
+        temp_spike_cell_1=temp_spike_cell_1.flatten()
+        temp_spike_cell_2=temp_spike_cell_2.flatten()
+        temp_spike_cell_3=temp_spike_cell_3.flatten()
+        time_stamp_64ms=time_stamp_64ms.flatten()
+        
+        print('shape of temp_spike_cell_1: ',temp_spike_cell_1.shape)
+        print('shape of temp_spike_cell_2: ',temp_spike_cell_2.shape)
+        print('shape of temp_spike_cell_3: ',temp_spike_cell_3.shape)
+        print('shape of time_stamp_64ms: ',time_stamp_64ms.shape)
+
         ''' # Disable cell 4, 5, 6
         temp_spike_cell_4=mat_file[ ( spikes[0][channel_index+96] ) ][()]
         temp_spike_cell_5=mat_file[ ( spikes[1][channel_index+96] ) ][()]
@@ -79,41 +109,10 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
             '''
 
             # firing rate
-            i=0    #i is the index for time_stemp
-            index=0
-            k=0    #k is the index for spikes
-            while i<duration :
-                '''
-                print('i= ',end='')      
-                print(i)
-                print('\n')
-
-                print('index_1=',end='')
-                print(index)
-                print('\n')
-
-                print('k=',end='')
-                print(k)
-                print('\n')
-
-                print('time target: ',end='')
-                print(time_stamp[0][i])
-                print('\n')
-
-                print('length of firing_rate_cell[-1]: ',end='')
-                print(len(firing_rate_cell[-1]))
-                print('\n')
-                '''
-                if time_stamp[0][i] < temp_spike_cell_1[0][k] and time_stamp[0][i] > temp_spike_cell_1[0][k-1] :
-                    firing_rate_cell[-1].append(k-index)
-                    index=k
-                    k=k-1
-
-                    i+=sampling_rate
-                    
-                else:
-                    
-                    k=k+1
+            yee=histc(temp_spike_cell_1, time_stamp_64ms)
+            print('shape of yee:  ',yee.shape)
+            firing_rate_cell.append(yee)
+            print('yee: ',yee)
             #end firing rate
 
         print('length of firing_rate in cell 1: ',end='')
@@ -129,42 +128,9 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
             '''
 
             # firing rate
-            i=0    #i is the index for time_stemp
-            index=0
-            k=0    #k is the index for spikes
-            while i<duration :
-                '''
-                print('i= ',end='')      
-                print(i)
-                print('\n')
-
-                print('index_1=',end='')
-                print(index)
-                print('\n')
-
-                print('k=',end='')
-                print(k)
-                print('\n')
-
-                print('time target: ',end='')
-                print(time_stamp[0][i])
-                print('\n')
-
-                print('length of firing_rate_cell[-1]: ',end='')
-                print(len(firing_rate_cell[-1]))
-                print('\n')
-                '''
-
-                if time_stamp[0][i] < temp_spike_cell_2[0][k] and time_stamp[0][i] > temp_spike_cell_2[0][k-1] :
-                    firing_rate_cell[-1].append(k-index)
-                    index=k
-                    k=k-1
-
-                    i+=sampling_rate
-                    
-                else:
-                    
-                    k=k+1
+            yee=histc(temp_spike_cell_2, time_stamp_64ms)
+            print('shape of yee:  ',yee.shape)
+            firing_rate_cell.append(yee)            
             #end firing rate
 
 
@@ -179,41 +145,9 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
             '''
 
             # firing rate
-            i=0    #i is the index for time_stemp
-            index=0
-            k=0    #k is the index for spikes
-            while i<duration :
-                '''
-                print('i= ',end='')      
-                print(i)
-                print('\n')
-
-                print('index_1=',end='')
-                print(index)
-                print('\n')
-
-                print('k=',end='')
-                print(k)
-                print('\n')
-
-                print('time target: ',end='')
-                print(time_stamp[0][i])
-                print('\n')
-
-                print('length of firing_rate_cell[-1]: ',end='')
-                print(len(firing_rate_cell[-1]))
-                print('\n')
-                '''
-
-                if time_stamp[0][i] < temp_spike_cell_3[0][k] and time_stamp[0][i] > temp_spike_cell_3[0][k-1] :
-                    firing_rate_cell[-1].append(k-index)
-                    index=k
-                    k=k-1
-                    i+=sampling_rate
-                    
-                else:
-                    
-                    k=k+1
+            yee=histc(temp_spike_cell_3, time_stamp_64ms)
+            print('shape of yee:  ',yee.shape)
+            firing_rate_cell.append(yee)
             #end firing rate
 
         print('length of firing_rate in cell 3: ',end='')
