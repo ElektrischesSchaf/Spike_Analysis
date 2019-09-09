@@ -2,7 +2,6 @@
 import numpy as np
 import h5py
 
-import numpy
 import matplotlib.pyplot as plot 
 import copy
 
@@ -48,7 +47,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     print('Label appending finished')
 
     # plot each channel start
-    for channel_index in range(3):
+    for channel_index in range(5):
         print('channel progress: ' + str( (channel_index/96)*100 )+'%' ) # 96 channels in this dataset
 
         #channel_index=0
