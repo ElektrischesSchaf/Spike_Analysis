@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import h5py
-
+import time
 import matplotlib.pyplot as plot 
 import copy
 
@@ -12,6 +12,8 @@ from sklearn.feature_selection import RFE
 from  sklearn.svm import SVC
 from sklearn.svm import SVR
 
+tStart=time.time()
+testing_data_index=5000
 classifier = svm.SVC(gamma=0.001)
 
 def histc(X, bins):
@@ -44,11 +46,12 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
     #duration=1000
     duration=time_stamp.shape[1]
-    haha=0
-    while haha < duration:
-        print('haha= ', haha)
-        time_stamp_64ms.append(time_stamp[0][haha])
-        haha+=16
+    sampling_index=0
+    while sampling_index < duration:
+        #print('sampling_index = ', sampling_index)
+        print( 'Progress of making sampling array: '+ str(   round( (sampling_index / duration)*100, 3)   )+' %' )
+        time_stamp_64ms.append(time_stamp[0][sampling_index])
+        sampling_index+=16
 
     # make y label matrix first
     index_label=0
@@ -61,7 +64,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
     # plot each channel start
     for channel_index in range(96):
-        print('channel progress: ' + str( (channel_index/96)*100 )+'%' ) # 96 channels in this dataset
+        print('Channel progress: ' + str( round( (channel_index/96)*100, 3) )+' %' ) # 96 channels in this dataset
 
         #channel_index=0
 
@@ -237,43 +240,37 @@ print( X.shape ) # X is the feature matrix
 print('\n')
 
 model = LinearRegression(fit_intercept=True)
-model.fit( X, y)
+model.fit( X[:testing_data_index, :], y[:testing_data_index ])
 
-print("Model slope:    ", model.coef_[0])
-print("Model intercept:", model.intercept_)
+print('how many weights: ', model.coef_.shape)
+for i in range(model.coef_.shape[0] ):
+    print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
+    print( str(model.coef_[i]) )
 
-'''
-estimator=SVR(kernel="linear")
-selector = RFE(estimator, 10, step=200)
-selector = selector.fit(X[:37],y[:37])
+print('Model intercept = ', model.intercept_)
 
-print('\n---------------------------------\n')
-print('selector.support: ',end='')
-print(selector.support_)
-print('\n---------------------------------\n')
-print('length of selector.support: ',end='')
-print(len(selector.support_))
-print('\n---------------------------------\n')
-new_X=X[:,selector.support_]
-print('new_X.shape:  ',end='')
-print(new_X.shape)
-print('\n---------------------------------\n')
-classifier = svm.SVC(gamma=0.001,kernel='rbf')
-classifier.fit(new_X[:37],y[:37])
-print('new_X[:37] shape:  ',end='')
-print(new_X[:37].shape)
-print('\n---------------------------------\n')
-print('y[:37] shape:  ',end='')
-print(y[:37].shape)
-print('\n---------------------------------\n')
+y_predict=model.predict( X[testing_data_index:-1] )
+print('shape of y_predict: ', y_predict.shape)
 
-expected_training_data=y[:37]
-predicted_training_data=classifier.predict(new_X[:37])
+print('score: ',end='')
+print( model.score(X[testing_data_index:-1],y[testing_data_index:-1]) )
 
-expected=y[37:]
-predicted=classifier.predict(new_X[37:])
-print('='*50)
-print('type of metrics.classification_report(expected, predicted):',end='')
-print(type(metrics.classification_report(expected, predicted) )  )
-print('\n')
-'''
+tEnd=time.time()
+print('Overall processing time: '+ str ( round(tEnd-tStart, 3) )+'seconds' )
+
+plot.figure(figsize=(15,5))
+#plot.scatter(time_stamp_64ms, y_predict, s=1)
+plot.plot(time_stamp_64ms[testing_data_index:-1], y_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-1], y[testing_data_index:-1], 'r--', label='True value')
+plot.legend(loc='upper right')
+plot.title('position y prediction and ground truth')
+plot.xlabel('time (second)')
+plot.ylabel('y coordinate')
+axes = plot.gca()
+#axes.set_xlim([60, 890])
+plot.show()
+#plot.savefig('X_axis_velocity.png' )
+
+
+
+
