@@ -4,7 +4,7 @@ import h5py
 
 import numpy
 import matplotlib.pyplot as plot 
-
+path=r'''Kinematic_Variables_Plots/'''
 with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
     '''
@@ -36,7 +36,7 @@ plot.title('X-Y plane')
 plot.xlabel('X coordinate')
 plot.ylabel('Y coordinate')
 #plot.show()
-plot.savefig('X-Y_plane_trajectory.png')
+plot.savefig(path+'X-Y_plane_trajectory.png')
 
 plot.cla()
 plot.clf()
@@ -46,7 +46,7 @@ plot.title('X-Z plane')
 plot.xlabel('X coordinate')
 plot.ylabel('Z coordinate')
 #plot.show()
-plot.savefig('X-Z_plane_trajectory.png')
+plot.savefig(path+'X-Z_plane_trajectory.png')
 
 plot.cla()
 plot.clf()
@@ -56,4 +56,4 @@ plot.title('Y-Z plane')
 plot.xlabel('Y coordinate')
 plot.ylabel('Z coordinate')
 #plot.show()
-plot.savefig('Y-Z_plane_trajectory.png')
+plot.savefig(path+'Y-Z_plane_trajectory.png')
