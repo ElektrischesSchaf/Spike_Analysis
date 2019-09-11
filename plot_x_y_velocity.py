@@ -30,12 +30,12 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     time_coor=[]
 
     #duration=204445
-    duration=numpy_time_stamp.shape[1] - 1 
+    duration=numpy_time_stamp.shape[1]
 
     for i in range(duration):
         print('progress: ' + str( (i/duration)*100 )+'%' )
         
-        if ( i<duration ):
+        if ( i<duration-1 ):
             velocity=( numpy_finger_pos[0][i+1] - numpy_finger_pos[0][i] ) / ( numpy_time_stamp[0][i+1]-numpy_time_stamp[0][i] )
             finger_x_velocity.append(velocity)
 
