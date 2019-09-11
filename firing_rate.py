@@ -14,7 +14,6 @@ from sklearn.svm import SVR
 
 tStart=time.time()
 testing_data_index=5000
-classifier = svm.SVC(gamma=0.001)
 
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
@@ -47,12 +46,14 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     #duration=1000
     duration=time_stamp.shape[1]
     sampling_index=0
+    ''' # Too slow app. 70 seconds
     while sampling_index < duration:
         #print('sampling_index = ', sampling_index)
         print( 'Progress of making sampling array: '+ str(   round( (sampling_index / duration)*100, 3)   )+' %' )
         time_stamp_64ms.append(time_stamp[0][sampling_index])
         sampling_index+=16
-
+    '''
+    time_stamp_64ms=time_stamp[0][::sampling_rate]  # way faster, app. 4 seconds
     # make y label matrix first
     index_label=0
     while index_label < duration:
