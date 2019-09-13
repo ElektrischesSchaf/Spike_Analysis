@@ -13,14 +13,15 @@ from  sklearn.svm import SVC
 from sklearn.svm import SVR
 
 tStart=time.time()
-testing_data_index=5000
-
+#testing_data_index=5000
+testing_data_index=10222
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
     r = np.zeros(bins.shape)
     for i in map_to_bins:
         r[i-1] += 1
     return r
+not_empty=0
 
 with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
@@ -158,6 +159,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 for row_index in range( len( firing_rate_cell) ):   
     if len(firing_rate_cell[row_index]):
         firing_rate_final.append( firing_rate_cell[row_index] )
+        not_empty+=1
 
 for row_index in range( len( firing_rate_final) ):            
     print('length of firing_rate_final['+ str(row_index) +']: ',end='')
@@ -375,7 +377,19 @@ z_acceleration_predict=model_z_acceleration.predict( X[testing_data_index:-1] )
 print('model_z_acceleration score: ',end='')
 print( model_z_acceleration.score( X[testing_data_index:-1], z_acceleration_label[testing_data_index:-1]) )
 
+print('There are '+str(not_empty)+' units used in this model')
+print('\n')
+
+print('how many weights in model_z_position: ', model_z_position.coef_.shape)
+#for i in range(model_z_position.coef_.shape[0] ):
+for i in range(10 ):
+    print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
+    print( str(model_z_position.coef_[i]) )
+
+
+
 tEnd=time.time()
+
 print('Overall processing time: '+ str ( round(tEnd-tStart, 3) )+'seconds' )
 
 plot.figure(figsize=(15,5))
