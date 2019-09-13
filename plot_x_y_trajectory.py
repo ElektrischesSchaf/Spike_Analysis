@@ -27,9 +27,9 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     print('numpy_time_stamp: ',end='')
     print(numpy_time_stamp.shape)  #  (1, 204446)
 
-    finger_x_coor=numpy_finger_pos[0][:]
-    finger_y_coor=numpy_finger_pos[1][:]
-    finger_z_coor=numpy_finger_pos[2][:]
+    finger_z_coor=numpy_finger_pos[0][:]
+    finger_x_coor=numpy_finger_pos[1][:]
+    finger_y_coor=numpy_finger_pos[2][:]
 
 plot.scatter(finger_x_coor, finger_y_coor, s=1)
 plot.title('X-Y plane')
