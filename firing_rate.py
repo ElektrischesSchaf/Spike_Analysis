@@ -13,8 +13,8 @@ from  sklearn.svm import SVC
 from sklearn.svm import SVR
 
 tStart=time.time()
-#testing_data_index=5000
-testing_data_index=10222
+testing_data_index=5000
+#testing_data_index=10222
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
     r = np.zeros(bins.shape)
@@ -33,9 +33,9 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     numpy_finger_pos=mat_file.get('finger_pos')
     numpy_finger_pos=np.array(numpy_finger_pos)
 
-    finger_x_coor=numpy_finger_pos[0][:]
-    finger_y_coor=numpy_finger_pos[1][:]
-    finger_z_coor=numpy_finger_pos[2][:]
+    finger_z_coor=numpy_finger_pos[0][:]
+    finger_x_coor=numpy_finger_pos[1][:]
+    finger_y_coor=numpy_finger_pos[2][:]
 
     x_position_label=[]
     y_position_label=[]
@@ -64,14 +64,20 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         sampling_index+=16
     '''
     time_stamp_64ms=time_stamp[0][::sampling_rate]  # way faster, app. 4 seconds
+    print('lenght of time_stamp_64ms: ', len(time_stamp_64ms))
 
     # make x, y, z position label matrix with the sampling_rate
+    '''
     index_label=0
     while index_label < duration:
         x_position_label.append(finger_x_coor[index_label] )
         y_position_label.append(finger_y_coor[index_label] )
         z_position_label.append(finger_z_coor[index_label] )
         index_label+=sampling_rate
+    '''
+    x_position_label=finger_x_coor[::sampling_rate]
+    y_position_label=finger_y_coor[::sampling_rate]
+    z_position_label=finger_z_coor[::sampling_rate]
     print('Position label arrays finished')
 
     # Making spike counts matrix
@@ -108,12 +114,12 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
             # firing rate
             yee=histc(temp_spike_cell_1, time_stamp_64ms)
             print('shape of yee:  ',yee.shape)
-            firing_rate_cell.append(yee)
+            firing_rate_cell.append(yee[:-1])
             print('yee: ',yee)
             #end firing rate
 
         print('length of firing_rate in cell 1: ',end='')
-        print(len(firing_rate_cell[-1]))
+        print(len(firing_rate_cell[:-1]))
 
         firing_rate_cell.append([])  
 
@@ -122,7 +128,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
             # firing rate
             yee=histc(temp_spike_cell_2, time_stamp_64ms)
             print('shape of yee:  ',yee.shape)
-            firing_rate_cell.append(yee)            
+            firing_rate_cell.append(yee[:-1])            
             #end firing rate
 
 
@@ -135,7 +141,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
             # firing rate
             yee=histc(temp_spike_cell_3, time_stamp_64ms)
             print('shape of yee:  ',yee.shape)
-            firing_rate_cell.append(yee)
+            firing_rate_cell.append(yee[:-1])
             #end firing rate
 
         print('length of firing_rate in cell 3: ',end='')
@@ -209,11 +215,15 @@ model_y_position.fit( X[:testing_data_index, :], y_position_label[:testing_data_
 
 model_z_position = LinearRegression(fit_intercept=True)
 model_z_position.fit( X[:testing_data_index, :], z_position_label[:testing_data_index ])
+print('passed model fit')
+
 
 print('how many weights in model_y_position: ', model_y_position.coef_.shape)
+'''
 for i in range(model_y_position.coef_.shape[0] ):
     print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
     print( str(model_y_position.coef_[i]) )
+'''
 
 print('model_y_position intercept = ', model_y_position.intercept_)
 
@@ -242,9 +252,9 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     print('numpy_time_stamp: ',end='')
     print(numpy_time_stamp.shape)  #  (1, 204446)
 
-    finger_x_coor=numpy_finger_pos[0][:]
-    finger_y_coor=numpy_finger_pos[1][:]
-    finger_z_coor=numpy_finger_pos[2][:]
+    finger_z_coor=numpy_finger_pos[0][:]
+    finger_x_coor=numpy_finger_pos[1][:]
+    finger_y_coor=numpy_finger_pos[2][:]
 
     finger_x_velocity=[]
     finger_y_velocity=[]
@@ -260,25 +270,28 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     duration=numpy_time_stamp.shape[1]
 
     for i in range(duration):
-        print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
+        #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
         
         if ( i<duration-1 ):
             velocity=( numpy_finger_pos[0][i+1] - numpy_finger_pos[0][i] ) / ( numpy_time_stamp[0][i+1]-numpy_time_stamp[0][i] )
-            finger_x_velocity.append(velocity)
+            finger_z_velocity.append(velocity)
 
             velocity=( numpy_finger_pos[1][i+1] - numpy_finger_pos[1][i] ) / ( numpy_time_stamp[0][i+1]-numpy_time_stamp[0][i] )
-            finger_y_velocity.append(velocity)
+            finger_x_velocity.append(velocity)
 
             velocity=( numpy_finger_pos[2][i+1] - numpy_finger_pos[2][i] ) / ( numpy_time_stamp[0][i+1]-numpy_time_stamp[0][i] )
-            finger_z_velocity.append(velocity)
+            finger_y_velocity.append(velocity)
 
             velocity_time_coor.append( numpy_time_stamp[0][i] )
 
-        else:        
+        else:
+            '''
             finger_x_velocity.append(0)
             finger_y_velocity.append(0)
             finger_z_velocity.append(0)
             velocity_time_coor.append(0)
+            '''
+            pass
     
     finger_x_velocity=np.array(finger_x_velocity)
     finger_x_velocity=finger_x_velocity.astype(np.float64)
@@ -291,8 +304,10 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
     velocity_time_coor=np.array(velocity_time_coor)
 
+    duration=velocity_time_coor.shape[0]
     for i in range(duration):
-        print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
+        #print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
+
         if(i<duration-1):
             acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
             finger_x_acceleration.append(acceleration)
@@ -305,11 +320,13 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
             acceleration_time_coor.append(velocity_time_coor[i])
         else:
+            '''
             finger_x_acceleration.append(0)
             finger_y_acceleration.append(0)
             finger_z_acceleration.append(0)
             acceleration_time_coor.append(0)
-    
+            '''
+            pass
     finger_x_acceleration=np.array(finger_x_acceleration)
     finger_x_acceleration=finger_x_acceleration.astype(np.float64)
     
@@ -331,51 +348,51 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 # Caluclating velocity and acceleration above
 
 print('model_x_position score: ',end='')
-print( model_x_position.score( X[testing_data_index:-1], x_position_label[testing_data_index:-1]) )
-
+print( model_x_position.score( X[testing_data_index:], x_position_label[testing_data_index:-1]) )
 print('model_y_position score: ',end='')
-print( model_y_position.score( X[testing_data_index:-1], y_position_label[testing_data_index:-1]) )
-
+print( model_y_position.score( X[testing_data_index:], y_position_label[testing_data_index:-1]) )
 print('model_z_position score: ',end='')
-print( model_z_position.score( X[testing_data_index:-1], z_position_label[testing_data_index:-1]) )
-
+print( model_z_position.score( X[testing_data_index:], z_position_label[testing_data_index:-1]) )
+print('\n')
 
 model_x_velocity = LinearRegression(fit_intercept=True)
 model_x_velocity.fit( X[:testing_data_index, :], x_velocity_label[:testing_data_index ] )
 x_velocity_predict=model_x_velocity.predict( X[testing_data_index:-1] )
 print('model_x_velocity score: ',end='')
-print( model_x_velocity.score( X[testing_data_index:-1], x_velocity_label[testing_data_index:-1]) )
+print( model_x_velocity.score( X[testing_data_index:-1], x_velocity_label[testing_data_index:-2]) )
 
 
 model_y_velocity = LinearRegression(fit_intercept=True)
 model_y_velocity.fit( X[:testing_data_index, :], y_velocity_label[:testing_data_index ] )
 y_velocity_predict=model_y_velocity.predict( X[testing_data_index:-1] )
 print('model_y_velocity score: ',end='')
-print( model_y_velocity.score( X[testing_data_index:-1], y_velocity_label[testing_data_index:-1]) )
+print( model_y_velocity.score( X[testing_data_index:-1], y_velocity_label[testing_data_index:-2]) )
 
 model_z_velocity = LinearRegression(fit_intercept=True)
 model_z_velocity.fit( X[:testing_data_index, :], z_velocity_label[:testing_data_index ] )
 z_velocity_predict=model_z_velocity.predict( X[testing_data_index:-1] )
 print('model_z_velocity score: ',end='')
-print( model_z_velocity.score( X[testing_data_index:-1], z_velocity_label[testing_data_index:-1]) )
+print( model_z_velocity.score( X[testing_data_index:-1], z_velocity_label[testing_data_index:-2]) )
+print('\n')
 
 model_x_acceleration = LinearRegression(fit_intercept=True)
 model_x_acceleration.fit( X[:testing_data_index, :], x_acceleration_label[:testing_data_index ] )
 x_acceleration_predict=model_x_acceleration.predict( X[testing_data_index:-1] )
 print('model_x_acceleration score: ',end='')
-print( model_x_acceleration.score( X[testing_data_index:-1], x_acceleration_label[testing_data_index:-1]) )
+print( model_x_acceleration.score( X[testing_data_index:-2], x_acceleration_label[testing_data_index:-3]) )
 
 model_y_acceleration = LinearRegression(fit_intercept=True)
 model_y_acceleration.fit( X[:testing_data_index, :], y_acceleration_label[:testing_data_index ] )
 y_acceleration_predict=model_y_acceleration.predict( X[testing_data_index:-1] )
 print('model_y_acceleration score: ',end='')
-print( model_y_acceleration.score( X[testing_data_index:-1], y_acceleration_label[testing_data_index:-1]) )
+print( model_y_acceleration.score( X[testing_data_index:-2], y_acceleration_label[testing_data_index:-3]) )
 
 model_z_acceleration = LinearRegression(fit_intercept=True)
 model_z_acceleration.fit( X[:testing_data_index, :], z_acceleration_label[:testing_data_index ] )
 z_acceleration_predict=model_z_acceleration.predict( X[testing_data_index:-1] )
 print('model_z_acceleration score: ',end='')
-print( model_z_acceleration.score( X[testing_data_index:-1], z_acceleration_label[testing_data_index:-1]) )
+print( model_z_acceleration.score( X[testing_data_index:-2], z_acceleration_label[testing_data_index:-3]) )
+print('\n')
 
 print('There are '+str(not_empty)+' units used in this model')
 print('\n')
@@ -394,7 +411,7 @@ print('Overall processing time: '+ str ( round(tEnd-tStart, 3) )+'seconds' )
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, x_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], x_position_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], x_position_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_position_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('position x prediction and ground truth')
@@ -410,7 +427,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], y_position_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], y_position_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], y_position_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('position y prediction and ground truth')
@@ -426,7 +443,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], z_position_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], z_position_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], z_position_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('position z prediction and ground truth')
@@ -442,7 +459,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('velocity x prediction and ground truth')
@@ -458,7 +475,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], y_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], y_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], y_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('velocity y prediction and ground truth')
@@ -474,7 +491,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], z_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], z_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], z_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('velocity z prediction and ground truth')
@@ -490,7 +507,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], x_acceleration_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], x_acceleration_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_acceleration_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('acceleration x prediction and ground truth')
@@ -506,7 +523,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], y_acceleration_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], y_acceleration_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], y_acceleration_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('acceleration y prediction and ground truth')
@@ -522,7 +539,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-1], z_acceleration_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], z_acceleration_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-1], z_acceleration_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('acceleration z prediction and ground truth')
