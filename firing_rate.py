@@ -61,7 +61,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         #print('sampling_index = ', sampling_index)
         print( 'Progress of making sampling array: '+ str(   round( (sampling_index / duration)*100, 3)   )+' %' )
         time_stamp_64ms.append(time_stamp[0][sampling_index])
-        sampling_index+=16
+        sampling_index+=sampling_rate
     '''
     time_stamp_64ms=time_stamp[0][::sampling_rate]  # way faster, app. 4 seconds
     print('lenght of time_stamp_64ms: ', len(time_stamp_64ms))
@@ -319,7 +319,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
 
     velocity_time_coor=np.array(velocity_time_coor)
 
-    duration=finger_x_velocity.shape[0]
+    duration=velocity_time_coor.shape[0]
     for i in range(duration):
         #print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
 
