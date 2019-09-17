@@ -301,10 +301,10 @@ y_predict = c + model_b[ :2555 ]
 print('shape of y_predict: ', y_predict.shape)
 print('\n')
 
-y_predict=y_predict.flatten()
-y_true_true=y_true[testing_data_index:].flatten()
+y_predict=y_predict[:,]
+y_true_true=y_true[testing_data_index:,]
 print('model_y_position score: ',end='')
-print( r2_score( y_true[testing_data_index:], y_predict) )
+print( r2_score( y_true_true, y_predict) )
 
 tEnd=time.time()
 
