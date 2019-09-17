@@ -4,7 +4,7 @@ import time
 import numpy
 import matplotlib.pyplot as plot 
 import copy
-
+from sklearn.metrics import mean_squared_error, r2_score
 import tensorflow as tf
 
 file_name='indy_20160407_02.mat'
@@ -255,10 +255,13 @@ print(x_data.shape[0])
 m=tf.Variable(tf.zeros([ x_data.shape[1] , 1], tf.float64) ) 
 
 #tf.Variable(tf.convert_to_tensor(np.eye(784), dtype=tf.float64)) 
-b=tf.Variable(tf.zeros([ y_true.shape[0] , 1], tf.float64) )
+#b=tf.Variable(tf.zeros([ y_true.shape[0] , 1], tf.float64) )
+b=tf.Variable(tf.zeros([ testing_data_index , 1], tf.float64) )
 
-xph = tf.placeholder(tf.float64,[ x_data.shape[0],x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
-yph = tf.placeholder(tf.float64,[ y_true.shape[0] ]) # not [ y_true.shape[0], 1 ]
+#xph = tf.placeholder(tf.float64,[ x_data.shape[0],x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
+#yph = tf.placeholder(tf.float64,[ y_true.shape[0] ]) # not [ y_true.shape[0], 1 ]
+xph = tf.placeholder(tf.float64,[ testing_data_index, x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
+yph = tf.placeholder(tf.float64,[ testing_data_index ]) # not [ y_true.shape[0], 1 ]
 c = tf.matmul(xph, m)
 y_model = c + b
 
@@ -277,10 +280,10 @@ with tf.Session() as sess:
 
     for i in range(epoch):       
         feed = {
-            xph: x_data,
-            yph: y_true
+            xph: x_data[:testing_data_index, :],
+            yph: y_true[:testing_data_index]
         }        
-        sess.run(train,feed_dict=feed)
+        sess.run(train, feed_dict=feed)
         
     model_m,model_b = sess.run([m,b])
 
@@ -290,6 +293,18 @@ with tf.Session() as sess:
     print('\n')
     print('size of model_b ',end='')
     print(model_b.shape)
+
+
+c=tf.matmul( x_data[testing_data_index:,:], model_m )
+
+y_predict = c + model_b[ :2555 ]
+print('shape of y_predict: ', y_predict.shape)
+print('\n')
+
+y_predict=y_predict.flatten()
+y_true_true=y_true[testing_data_index:].flatten()
+print('model_y_position score: ',end='')
+print( r2_score( y_true[testing_data_index:], y_predict) )
 
 tEnd=time.time()
 
