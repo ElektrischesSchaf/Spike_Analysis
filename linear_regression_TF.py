@@ -1,15 +1,32 @@
 import numpy as np
 import h5py
-
+import time
 import numpy
 import matplotlib.pyplot as plot 
 import copy
 
 import tensorflow as tf
 
-with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
+file_name='indy_20160407_02.mat'
+tStart=time.time()
+#testing_data_index=5000
+testing_data_index=10222
 
-    time_stamp=mat_file['t']
+def histc(X, bins):
+    map_to_bins = np.digitize(X,bins)
+    r = np.zeros(bins.shape)
+    for i in map_to_bins:
+        r[i-1] += 1
+    return r
+not_empty=0
+
+with h5py.File(file_name, 'r') as mat_file:
+
+    time_stamp=mat_file['t']  
+    # or
+    # time_stamp=mat_file.get('t')
+    # time_stamp=np.array(time_stamp)
+    # time_stamp.shape = (1, 204446)
     spikes = mat_file['spikes']
     firing_rate_cell=[[]]
     firing_rate_final=[] # not[[]]
@@ -17,258 +34,156 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
     numpy_finger_pos=mat_file.get('finger_pos')
     numpy_finger_pos=np.array(numpy_finger_pos)
 
-    finger_x_coor=numpy_finger_pos[0][:]
-    finger_y_coor=numpy_finger_pos[1][:]
-    finger_z_coor=numpy_finger_pos[2][:]
+    finger_z_coor=numpy_finger_pos[0][:]
+    finger_x_coor=numpy_finger_pos[1][:]
+    finger_y_coor=numpy_finger_pos[2][:]
 
-    x_label=[]
-    y_label=[]
-    z_label=[]
+    x_position_label=[]
+    y_position_label=[]
+    z_position_label=[]
+
+    x_velocity_label=[]
+    y_velocity_label=[]
+    z_velocity_label=[]
+
+    x_acceleration_label=[]
+    y_acceleration_label=[]
+    z_acceleration_label=[]
+
+    time_stamp_64ms=[]
 
     sampling_rate=16 # because 64ms
 
-    duration=1000
-    #duration=time_stamp.shape[1]
+    #duration=1000
+    duration=time_stamp.shape[1]
+    sampling_index=0
+    ''' # Too slow app. 70 seconds
+    while sampling_index < duration:
+        #print('sampling_index = ', sampling_index)
+        print( 'Progress of making sampling array: '+ str(   round( (sampling_index / duration)*100, 3)   )+' %' )
+        time_stamp_64ms.append(time_stamp[0][sampling_index])
+        sampling_index+=sampling_rate
+    '''
+    time_stamp_64ms=time_stamp[0][::sampling_rate]  # way faster, app. 4 seconds
+    print('lenght of time_stamp_64ms: ', len(time_stamp_64ms))
 
-    # make y label matrix first
+    # make x, y, z position label matrix with the sampling_rate
+    '''
     index_label=0
     while index_label < duration:
-        x_label.append(finger_x_coor[index_label] )
-        y_label.append(finger_y_coor[index_label] )
-        z_label.append(finger_z_coor[index_label] )
+        x_position_label.append(finger_x_coor[index_label] )
+        y_position_label.append(finger_y_coor[index_label] )
+        z_position_label.append(finger_z_coor[index_label] )
         index_label+=sampling_rate
-    print('Label appending finished')
+    '''
+    x_position_label=finger_x_coor[::sampling_rate]
+    x_position_label=x_position_label[:-1]
+    y_position_label=finger_y_coor[::sampling_rate]
+    y_position_label=y_position_label[:-1]
+    z_position_label=finger_z_coor[::sampling_rate]
+    z_position_label=z_position_label[:-1]
+    print('Position label arrays finished')
 
-    # plot each channel start
-    for channel_index in range(3):
-        print('channel progress: ' + str( (channel_index/96)*100 )+'%' ) # 96 channels in this dataset
-
-        #channel_index=0
-
+    # Making spike counts matrix
+    for channel_index in range(96):
+        print('Channel progress: ' + str( round( (channel_index/96)*100, 3) )+' %' ) # 96 channels in this dataset
+        
         temp_spike_cell_1=[]
         temp_spike_cell_2=[]
         temp_spike_cell_3=[]
-        temp_spike_cell_4=[]
-        temp_spike_cell_5=[]
-        temp_spike_cell_6=[]        
-
-        #plot_row = [[]]
 
         temp_spike_cell_1=mat_file[ ( spikes[0][channel_index] ) ][()]
         temp_spike_cell_2=mat_file[ ( spikes[1][channel_index] ) ][()]
         temp_spike_cell_3=mat_file[ ( spikes[2][channel_index] ) ][()]
 
-        ''' # Disable cell 4, 5, 6
-        temp_spike_cell_4=mat_file[ ( spikes[0][channel_index+96] ) ][()]
-        temp_spike_cell_5=mat_file[ ( spikes[1][channel_index+96] ) ][()]
-        temp_spike_cell_6=mat_file[ ( spikes[2][channel_index+96] ) ][()]
-        '''
+        temp_spike_cell_1=np.asarray(temp_spike_cell_1)
+        temp_spike_cell_2=np.asarray(temp_spike_cell_2)
+        temp_spike_cell_3=np.asarray(temp_spike_cell_3)
+
+        time_stamp_64ms=np.asarray(time_stamp_64ms)
+
+    
+        temp_spike_cell_1=temp_spike_cell_1.flatten()
+        temp_spike_cell_2=temp_spike_cell_2.flatten()
+        temp_spike_cell_3=temp_spike_cell_3.flatten()
+        time_stamp_64ms=time_stamp_64ms.flatten()
         
+        '''
+        print('shape of temp_spike_cell_1: ',temp_spike_cell_1.shape)
+        print('shape of temp_spike_cell_2: ',temp_spike_cell_2.shape)
+        print('shape of temp_spike_cell_3: ',temp_spike_cell_3.shape)
+        print('shape of time_stamp_64ms: ',time_stamp_64ms.shape)
+        '''
+       
         if temp_spike_cell_1.shape[0] != 2:
-            
-            '''
-            for a in range (temp_spike_cell_1.shape[1]):
-                plot_row[-1].append( temp_spike_cell_1[0][a] )
-            '''
 
             # firing rate
-            i=0    #i is the index for time_stemp
-            index=0
-            k=0    #k is the index for spikes
-            while i<duration :
-                '''
-                print('i= ',end='')      
-                print(i)
-                print('\n')
-
-                print('index_1=',end='')
-                print(index)
-                print('\n')
-
-                print('k=',end='')
-                print(k)
-                print('\n')
-
-                print('time target: ',end='')
-                print(time_stamp[0][i])
-                print('\n')
-
-                print('length of firing_rate_cell[-1]: ',end='')
-                print(len(firing_rate_cell[-1]))
-                print('\n')
-                '''
-                if time_stamp[0][i] < temp_spike_cell_1[0][k] and time_stamp[0][i] > temp_spike_cell_1[0][k-1] :
-                    firing_rate_cell[-1].append(k-index)
-                    index=k
-                    k=k-1
-
-                    i+=sampling_rate
-                    
-                else:
-                    
-                    k=k+1
+            yee=histc(temp_spike_cell_1, time_stamp_64ms)
+            #print('shape of yee:  ',yee.shape)
+            firing_rate_cell.append(yee[:-1])
+            #print('yee: ',yee)
             #end firing rate
 
+        '''
         print('length of firing_rate in cell 1: ',end='')
-        print(len(firing_rate_cell[-1]))
+        print(len(firing_rate_cell[:-1]))
+        '''
 
         firing_rate_cell.append([])  
 
         if temp_spike_cell_2.shape[0] != 2:
 
-            '''
-            for i in range (temp_spike_cell_2.shape[1]):
-                plot_row[-1].append( temp_spike_cell_2[0][i] )
-            '''
-
             # firing rate
-            i=0    #i is the index for time_stemp
-            index=0
-            k=0    #k is the index for spikes
-            while i<duration :
-                '''
-                print('i= ',end='')      
-                print(i)
-                print('\n')
-
-                print('index_1=',end='')
-                print(index)
-                print('\n')
-
-                print('k=',end='')
-                print(k)
-                print('\n')
-
-                print('time target: ',end='')
-                print(time_stamp[0][i])
-                print('\n')
-
-                print('length of firing_rate_cell[-1]: ',end='')
-                print(len(firing_rate_cell[-1]))
-                print('\n')
-                '''
-
-                if time_stamp[0][i] < temp_spike_cell_2[0][k] and time_stamp[0][i] > temp_spike_cell_2[0][k-1] :
-                    firing_rate_cell[-1].append(k-index)
-                    index=k
-                    k=k-1
-
-                    i+=sampling_rate
-                    
-                else:
-                    
-                    k=k+1
+            yee=histc(temp_spike_cell_2, time_stamp_64ms)
+            #print('shape of yee:  ',yee.shape)
+            firing_rate_cell.append(yee[:-1])            
             #end firing rate
 
-
+        '''
         print('length of firing_rate in cell 2: ',end='')
         print(len(firing_rate_cell[-1]))
+        '''
         firing_rate_cell.append([])
 
         if temp_spike_cell_3.shape[0] != 2:
-            '''
-            for i in range (temp_spike_cell_3.shape[1]):
-                plot_row[-1].append( temp_spike_cell_3[0][i] )
-            '''
-
+            
             # firing rate
-            i=0    #i is the index for time_stemp
-            index=0
-            k=0    #k is the index for spikes
-            while i<duration :
-                '''
-                print('i= ',end='')      
-                print(i)
-                print('\n')
-
-                print('index_1=',end='')
-                print(index)
-                print('\n')
-
-                print('k=',end='')
-                print(k)
-                print('\n')
-
-                print('time target: ',end='')
-                print(time_stamp[0][i])
-                print('\n')
-
-                print('length of firing_rate_cell[-1]: ',end='')
-                print(len(firing_rate_cell[-1]))
-                print('\n')
-                '''
-
-                if time_stamp[0][i] < temp_spike_cell_3[0][k] and time_stamp[0][i] > temp_spike_cell_3[0][k-1] :
-                    firing_rate_cell[-1].append(k-index)
-                    index=k
-                    k=k-1
-                    i+=sampling_rate
-                    
-                else:
-                    
-                    k=k+1
+            yee=histc(temp_spike_cell_3, time_stamp_64ms)
+            #print('shape of yee:  ',yee.shape)
+            firing_rate_cell.append(yee[:-1])
             #end firing rate
-
+        '''
         print('length of firing_rate in cell 3: ',end='')
         print(len(firing_rate_cell[-1]))
         print('\n\n')
-        firing_rate_cell.append([])
-
-
-        ''' # Disable cell 4, 5, 6
-        if temp_spike_cell_4.shape[0] != 2:
-            for i in range (temp_spike_cell_4.shape[1]):
-                plot_row[-1].append( temp_spike_cell_4[0][i] )
-        else:
-            plot_row[-1].append(0)
-
-        print('length of firing_rate_cell[-1]: ',end='')
-        print(len(firing_rate_cell[-1]))        
-        firing_rate_cell.append([])
-
-        plot_row.append([])
-
-        if temp_spike_cell_5.shape[0] != 2:
-            for i in range (temp_spike_cell_5.shape[1]):
-                plot_row[-1].append( temp_spike_cell_5[0][i] )
-        else:
-            plot_row[-1].append(0)
-
-        print('length of firing_rate_cell[-1]: ',end='')
-        print(len(firing_rate_cell[-1]))        
-        firing_rate_cell.append([])
-
-        plot_row.append([])
-
-
-        if temp_spike_cell_6.shape[0] != 2:
-            for i in range (temp_spike_cell_6.shape[1]):
-                plot_row[-1].append( temp_spike_cell_6[0][i] )
-        else:
-            plot_row[-1].append(0)
         '''
+        firing_rate_cell.append([])
 
-
+        '''
         print('row numbers of firing_rate_cell: ',end='')
         print( len( firing_rate_cell) )
         print('\n')
-
+        '''
+        '''
         for row_index in range( len( firing_rate_cell) ):            
             print('length of firing_rate_cell['+ str(row_index) +']: ',end='')
             print(len(firing_rate_cell[row_index]))
         print('\n')
-
         print('End of one channel '+ str(channel_index+1) +'\n') 
+        '''
 
 
 # Extract firing_rate_cell with rows have length bigger than zero
 for row_index in range( len( firing_rate_cell) ):   
     if len(firing_rate_cell[row_index]):
         firing_rate_final.append( firing_rate_cell[row_index] )
+        not_empty+=1
 
+'''
 for row_index in range( len( firing_rate_final) ):            
     print('length of firing_rate_final['+ str(row_index) +']: ',end='')
     print(len(firing_rate_final[row_index]))
+'''
 
 print('\n')
 
@@ -278,12 +193,23 @@ print(firing_rate_matrix.shape)
 print('\n')
 
 
-y_label=np.array(y_label)
-y=y_label.astype(np.float64)
-print('Label list shape: ',end='') 
-print( y.shape ) # y is the label matrix
+x_position_label=np.array(x_position_label)
+x_position_label=x_position_label.astype(np.float64)
+print('position x_position_label  list shape: ',end='')
+print( x_position_label.shape ) # x is the label array should be feed into the model
 print('\n')
 
+y_position_label=np.array(y_position_label)
+y_position_label=y_position_label.astype(np.float64)
+print('position y_position_label list shape: ',end='')
+print( y_position_label.shape ) # y is the label array should be feed into the model
+print('\n')
+
+z_position_label=np.array(z_position_label)
+z_position_label=z_position_label.astype(np.float64)
+print('position z_position_label list shape: ',end='')
+print( z_position_label.shape ) # y is the label array should be feed into the model
+print('\n')
 
 firing_rate_matrix=np.transpose(firing_rate_matrix)
 print('transposed firing_rate_matrix shape: ',end='')
@@ -312,7 +238,7 @@ b = 5
 y_true =  (0.5 * x_data ) + 5 + noise
 '''
 #y_true=tf.convert_to_tensor(y)
-y_true=y
+y_true=y_position_label
 
 '''
 # Random 10 points to grab
@@ -325,14 +251,16 @@ b = tf.Variable(1.0)
 '''
 print('x_data.shape[0]: ')
 print(x_data.shape[0])
-m=tf.Variable(tf.zeros([ x_data.shape[0] , 1], tf.float64) ) 
+
+m=tf.Variable(tf.zeros([ x_data.shape[1] , 1], tf.float64) ) 
+
 #tf.Variable(tf.convert_to_tensor(np.eye(784), dtype=tf.float64)) 
 b=tf.Variable(tf.zeros([ y_true.shape[0] , 1], tf.float64) )
 
-xph = tf.placeholder(tf.float64,[ x_data.shape[0] ]) # not [ x_data.shape[0], 1 ]
+xph = tf.placeholder(tf.float64,[ x_data.shape[0],x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
 yph = tf.placeholder(tf.float64,[ y_true.shape[0] ]) # not [ y_true.shape[0], 1 ]
-
-y_model = m*xph + b
+c = tf.matmul(xph, m)
+y_model = c + b
 
 error = tf.reduce_sum(tf.square(yph-y_model))
 
@@ -347,13 +275,12 @@ with tf.Session() as sess:
     
     epoch = 1000
 
-    for i in range(epoch):
-        for k in range( x_data.shape[1] ):
-            feed = {
-                xph: x_data[:, k],
-                yph: y_true
-            }        
-            sess.run(train,feed_dict=feed)
+    for i in range(epoch):       
+        feed = {
+            xph: x_data,
+            yph: y_true
+        }        
+        sess.run(train,feed_dict=feed)
         
     model_m,model_b = sess.run([m,b])
 
@@ -363,3 +290,7 @@ with tf.Session() as sess:
     print('\n')
     print('size of model_b ',end='')
     print(model_b.shape)
+
+tEnd=time.time()
+
+print('Overall processing time: '+ str ( round(tEnd-tStart, 3) )+'seconds' )
