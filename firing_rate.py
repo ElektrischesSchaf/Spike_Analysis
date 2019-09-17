@@ -8,10 +8,11 @@ import copy
 from sklearn.linear_model import LinearRegression
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, svm, metrics
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.feature_selection import RFE
 from  sklearn.svm import SVC
 from sklearn.svm import SVR
-
+file_name='indy_20160407_02.mat'
 tStart=time.time()
 #testing_data_index=5000
 testing_data_index=10222
@@ -23,9 +24,13 @@ def histc(X, bins):
     return r
 not_empty=0
 
-with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
+with h5py.File(file_name, 'r') as mat_file:
 
-    time_stamp=mat_file['t']
+    time_stamp=mat_file['t']  
+    # or
+    # time_stamp=mat_file.get('t')
+    # time_stamp=np.array(time_stamp)
+    # time_stamp.shape = (1, 204446)
     spikes = mat_file['spikes']
     firing_rate_cell=[[]]
     firing_rate_final=[] # not[[]]
@@ -249,7 +254,7 @@ z_position_predict=model_y_position.predict( X[testing_data_index:] )
 print('shape of z_position_predict: ', z_position_predict.shape)
 
 # Calculating velocity and acceleration below
-with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
+with h5py.File(file_name, 'r') as mat_file:
 
     finger_pos = mat_file['finger_pos']
     time_stamp=mat_file['t']
@@ -288,13 +293,16 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
         
         if ( i<duration-1 ):
-            velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            #velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( 1 )
             finger_z_velocity.append(velocity)
 
-            velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            #velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( 1 )
             finger_x_velocity.append(velocity)
 
-            velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            #velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( 1 )
             finger_y_velocity.append(velocity)
 
             velocity_time_coor.append( numpy_time_stamp[0][i] )
@@ -324,13 +332,16 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         #print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
 
         if(i<duration-1):
-            acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+            #acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ (velocity_time_coor[i+1]-velocity_time_coor[i] )
+            acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ ( 1 )
             finger_x_acceleration.append(acceleration)
 
-            acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+            #acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+            acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/( 1 )
             finger_y_acceleration.append(acceleration)
 
-            acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+            #acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+            acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/( 1 )
             finger_z_acceleration.append(acceleration)
 
             acceleration_time_coor.append(velocity_time_coor[i])
@@ -366,50 +377,50 @@ print('shape of finger_x_velocity', finger_x_velocity.shape)
 print('lenght of x_acceleration_label', len(x_acceleration_label))
 
 print('model_x_position score: ',end='')
-print( model_x_position.score( X[testing_data_index:], x_position_label[testing_data_index:]) )
+print( r2_score( x_position_label[testing_data_index:], x_position_predict) )
 print('model_y_position score: ',end='')
-print( model_y_position.score( X[testing_data_index:], y_position_label[testing_data_index:]) )
+print( r2_score( y_position_label[testing_data_index:], y_position_predict) )
 print('model_z_position score: ',end='')
-print( model_z_position.score( X[testing_data_index:], z_position_label[testing_data_index:]) )
+print( r2_score( z_position_label[testing_data_index:], z_position_predict) )
 print('\n')
 
 model_x_velocity = LinearRegression(fit_intercept=True)
 model_x_velocity.fit( X[:testing_data_index, :], x_velocity_label[:testing_data_index ] )
 x_velocity_predict=model_x_velocity.predict( X[testing_data_index:-1] )
 print('model_x_velocity score: ',end='')
-print( model_x_velocity.score( X[testing_data_index:-1], x_velocity_label[testing_data_index:-1]) )
+print( r2_score(  x_velocity_label[testing_data_index:-1], x_velocity_predict) )
 
 
 model_y_velocity = LinearRegression(fit_intercept=True)
 model_y_velocity.fit( X[:testing_data_index, :], y_velocity_label[:testing_data_index ] )
 y_velocity_predict=model_y_velocity.predict( X[testing_data_index:-1] )
 print('model_y_velocity score: ',end='')
-print( model_y_velocity.score( X[testing_data_index:-1], y_velocity_label[testing_data_index:-1]) )
+print( r2_score( y_velocity_label[testing_data_index:-1], y_velocity_predict) )
 
 model_z_velocity = LinearRegression(fit_intercept=True)
 model_z_velocity.fit( X[:testing_data_index, :], z_velocity_label[:testing_data_index ] )
 z_velocity_predict=model_z_velocity.predict( X[testing_data_index:-1] )
 print('model_z_velocity score: ',end='')
-print( model_z_velocity.score( X[testing_data_index:-1], z_velocity_label[testing_data_index:-1]) )
+print( r2_score( z_velocity_label[testing_data_index:-1],z_velocity_predict) )
 print('\n')
 
 model_x_acceleration = LinearRegression(fit_intercept=True)
 model_x_acceleration.fit( X[:testing_data_index, :], x_acceleration_label[:testing_data_index ] )
 x_acceleration_predict=model_x_acceleration.predict( X[testing_data_index:-1] )
 print('model_x_acceleration score: ',end='')
-print( model_x_acceleration.score( X[testing_data_index+1:-1], x_acceleration_label[testing_data_index:-1]) )
+print( r2_score(x_acceleration_label[testing_data_index:], x_acceleration_predict ) )
 
 model_y_acceleration = LinearRegression(fit_intercept=True)
 model_y_acceleration.fit( X[:testing_data_index, :], y_acceleration_label[:testing_data_index ] )
 y_acceleration_predict=model_y_acceleration.predict( X[testing_data_index:-1] )
 print('model_y_acceleration score: ',end='')
-print( model_y_acceleration.score( X[testing_data_index+1:-1], y_acceleration_label[testing_data_index:-1]) )
+print( r2_score( y_acceleration_label[testing_data_index:], y_acceleration_predict) )
 
 model_z_acceleration = LinearRegression(fit_intercept=True)
 model_z_acceleration.fit( X[:testing_data_index, :], z_acceleration_label[:testing_data_index ] )
 z_acceleration_predict=model_z_acceleration.predict( X[testing_data_index:-1] )
 print('model_z_acceleration score: ',end='')
-print( model_z_acceleration.score( X[testing_data_index+1:-1], z_acceleration_label[testing_data_index:-1]) )
+print( r2_score( z_acceleration_label[testing_data_index:], z_acceleration_predict) )
 print('\n')
 
 print('There are '+str(not_empty)+' units used in this model')
@@ -420,6 +431,11 @@ print('how many weights in model_z_position: ', model_z_position.coef_.shape)
 for i in range(10 ):
     print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
     print( str(model_z_position.coef_[i]) )
+
+print('some value from x_acceleration_label ')
+for i in range( 10 ):
+    print('ACC_'+str( f'{i+1:03}' )+ ' = ',end='')
+    print( str(x_acceleration_label[i]) )
 
 
 
