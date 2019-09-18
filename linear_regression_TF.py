@@ -194,19 +194,19 @@ print('\n')
 
 
 x_position_label=np.array(x_position_label)
-x_position_label=x_position_label.astype(np.float32)
+x_position_label=x_position_label.astype(np.float64)
 print('position x_position_label  list shape: ',end='')
 print( x_position_label.shape ) # x is the label array should be feed into the model
 print('\n')
 
 y_position_label=np.array(y_position_label)
-y_position_label=y_position_label.astype(np.float32)
+y_position_label=y_position_label.astype(np.float64)
 print('position y_position_label list shape: ',end='')
 print( y_position_label.shape ) # y is the label array should be feed into the model
 print('\n')
 
 z_position_label=np.array(z_position_label)
-z_position_label=z_position_label.astype(np.float32)
+z_position_label=z_position_label.astype(np.float64)
 print('position z_position_label list shape: ',end='')
 print( z_position_label.shape ) # y is the label array should be feed into the model
 print('\n')
@@ -216,7 +216,7 @@ print('transposed firing_rate_matrix shape: ',end='')
 print(firing_rate_matrix.shape)
 print('\n')
 
-X=firing_rate_matrix.astype(np.float32)
+X=firing_rate_matrix.astype(np.float64)
 print('fetures list shape: ',end='')
 print( X.shape ) # X is the feature matrix
 print('\n')
@@ -267,16 +267,16 @@ b = tf.Variable(1.0)
 print('x_data.shape[0]: ')
 print(x_data.shape[0])
 
-m=tf.Variable(tf.zeros([ x_data.shape[1] , 1], tf.float32) ) 
+m=tf.Variable(tf.zeros([ x_data.shape[1] , 1], tf.float64) ) 
 
-#tf.Variable(tf.convert_to_tensor(np.eye(784), dtype=tf.float32)) 
-#b=tf.Variable(tf.zeros([ y_true.shape[0] , 1], tf.float32) )
-b=tf.Variable(tf.zeros([ testing_data_index , 1], tf.float32) )
+#tf.Variable(tf.convert_to_tensor(np.eye(784), dtype=tf.float64)) 
+#b=tf.Variable(tf.zeros([ y_true.shape[0] , 1], tf.float64) )
+b=tf.Variable(tf.zeros([ testing_data_index , 1], tf.float64) )
 
-#xph = tf.placeholder(tf.float32,[ x_data.shape[0],x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
-#yph = tf.placeholder(tf.float32,[ y_true.shape[0] ]) # not [ y_true.shape[0], 1 ]
-xph = tf.placeholder(tf.float32,[ testing_data_index, x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
-yph = tf.placeholder(tf.float32,[ testing_data_index ]) # not [ y_true.shape[0], 1 ]
+#xph = tf.placeholder(tf.float64,[ x_data.shape[0],x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
+#yph = tf.placeholder(tf.float64,[ y_true.shape[0] ]) # not [ y_true.shape[0], 1 ]
+xph = tf.placeholder(tf.float64,[ testing_data_index, x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
+yph = tf.placeholder(tf.float64,[ testing_data_index ]) # not [ y_true.shape[0], 1 ]
 c = tf.matmul(xph, m)
 y_model = c + b
 
@@ -312,26 +312,46 @@ with tf.Session() as sess:
     print(model_b.shape)
 
     c=tf.matmul( x_data[testing_data_index:,:], model_m )
+    c_matrix=sess.run(c)
+    print('c_matrix[3]', c_matrix[3])
+
     yee=x_data[testing_data_index:,:].shape[0]
-    y_predict = c + model_b[ :yee ]
+    y_predict_tf = tf.add(c_matrix, model_b[ :yee ])
+    y_predict=sess.run(y_predict_tf)
+
     print('shape of y_predict: ', y_predict.shape)
     print('\n')
 
-    y_true_true=y_true[testing_data_index:]
-    sess.run(tf.reshape(y_true_true, [-1]))
-    sess.run(tf.reshape(y_predict, [-1]))
-    print('shape of y_true_true ', y_true_true.shape)
-    print('shape of y_predict ', y_predict.shape)
-    print('model_y_position score: ',end='')
-    r2_test = R_squared( y_true_true, y_predict)
-    print( sess.run(r2_test) )
+    #for i in range(y_predict.shape[0]):
+    #    print('y_predict'+'  '+str(y_predict[i][0]))
+    print('\n')
 
-    total_error = tf.reduce_sum(tf.square(tf.subtract(y_true_true, tf.reduce_mean(y_true_true))))
-    unexplained_error = tf.reduce_sum(tf.square(tf.subtract(y_true_true, y_predict)))
-    R_squared_2 = tf.subtract(1.0, tf.divide(unexplained_error, total_error))
-    print( sess.run(total_error) )
-    print( sess.run(unexplained_error) )
-    print( sess.run(R_squared_2) )
+    y_true_testing=y_true[testing_data_index:]
+    #y_predict_numpy=y_predict.eval()
+    y_predict_numpy=y_predict
+    print('type(y_true_testing) ', type(y_true_testing))
+    print('type(y_predict_numpy) ', type(y_predict_numpy))
+
+    y_predict_numpy=y_predict_numpy.flatten()
+    print('shape of y_true_testing ', y_true_testing.shape)
+    print('shape of y_predict ', y_predict.shape)
+    print('shape of y_predict_numpy ', y_predict_numpy.shape)
+    print('model_y_position score: ',end='')
+    #r2_test = R_squared( y_true_testing, y_predict)
+    #print( sess.run(r2_test) )
+
+    #total_error = tf.reduce_sum(tf.square(tf.subtract(y_true_testing, tf.reduce_mean(y_true_testing))))
+    #unexplained_error = tf.reduce_sum(tf.square(tf.subtract(y_true_testing, y_predict)))
+    #R_squared_2 = tf.subtract(1.0, tf.divide(unexplained_error, total_error))
+    #print( sess.run(total_error) )
+    #print( sess.run(unexplained_error) )
+    #print( sess.run(R_squared_2) )
+
+    #for i in range(y_predict_numpy.shape[0]):
+    #    print(str(y_true_testing[i])+'  '+str(y_predict_numpy[i]))
+
+    print('\n')
+    print(r2_score(y_true_testing, y_predict_numpy))
 
 tEnd=time.time()
 
