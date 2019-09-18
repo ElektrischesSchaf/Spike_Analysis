@@ -10,8 +10,7 @@ import tensorflow as tf
 file_name='indy_20160407_02.mat'
 tStart=time.time()
 #testing_data_index=5000
-testing_data_index=50
-testing_data_end_index=100
+testing_data_index=10222
 
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
@@ -277,14 +276,14 @@ b=tf.Variable(tf.ones([ 1 , 1], tf.float64) )
 
 #xph = tf.placeholder(tf.float64,[ x_data.shape[0],x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
 #yph = tf.placeholder(tf.float64,[ y_true.shape[0] ]) # not [ y_true.shape[0], 1 ]
-xph = tf.placeholder(tf.float64,[ testing_data_index, x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
-yph = tf.placeholder(tf.float64,[ testing_data_index ]) # not [ y_true.shape[0], 1 ]
+xph = tf.placeholder(tf.float64,[ 1, x_data.shape[1] ]) # not [ x_data.shape[0], 1 ]
+yph = tf.placeholder(tf.float64,[ 1 ]) # not [ y_true.shape[0], 1 ]
 
 y_model = tf.add(tf.matmul(xph, m), b[0][0])
 
 error = tf.reduce_sum(tf.square(yph-y_model))
 
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=1.e-6)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=1.e-5)
 train = optimizer.minimize(error)
 
 init = tf.global_variables_initializer()
@@ -295,14 +294,15 @@ with tf.Session() as sess:
     
     sess.run(init)
     
-    epoch = 3000
+    epoch = 400
 
-    for i in range(epoch):       
-        feed = {
-            xph: x_data[:testing_data_index, :],
-            yph: y_true[:testing_data_index]
-        }        
-        sess.run(train, feed_dict=feed)
+    for i in range(epoch):
+        for k in range(testing_data_index):
+            feed = {
+                xph: x_data[k:k+1, :], # not[k,:]
+                yph: y_true[k:k+1]     # not[k]
+            }        
+            sess.run(train, feed_dict=feed)
         
     model_m,model_b = sess.run([m,b])
 
@@ -317,7 +317,7 @@ with tf.Session() as sess:
     # end session
 
 
-c=np.matmul( x_data[testing_data_index:testing_data_end_index, :], model_m )
+c=np.matmul( x_data[testing_data_index:, :], model_m )
 print('shape of c: ', c.shape)
 print('c[3] ', c[3])
 
@@ -330,7 +330,7 @@ print('\n')
 #    print('y_predict'+'  '+str(y_predict[i][0]))
 print('\n')
 
-y_true_testing=y_true[testing_data_index:testing_data_end_index]
+y_true_testing=y_true[testing_data_index:]
 #y_predict_numpy=y_predict.eval()
 y_predict_numpy=y_predict
 print('type(y_true_testing) ', type(y_true_testing))
