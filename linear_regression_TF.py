@@ -11,7 +11,7 @@ file_name='indy_20160407_02.mat'
 tStart=time.time()
 #testing_data_index=5000
 testing_data_index=50
-testing_data_end_index=200
+testing_data_end_index=100
 
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
@@ -284,7 +284,7 @@ y_model = tf.add(tf.matmul(xph, m), b[0][0])
 
 error = tf.reduce_sum(tf.square(yph-y_model))
 
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=1.e-6)
 train = optimizer.minimize(error)
 
 init = tf.global_variables_initializer()
@@ -295,7 +295,7 @@ with tf.Session() as sess:
     
     sess.run(init)
     
-    epoch = 50
+    epoch = 3000
 
     for i in range(epoch):       
         feed = {
