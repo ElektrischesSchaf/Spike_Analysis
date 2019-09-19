@@ -250,7 +250,7 @@ print('\n')
 
 # X position model fit and predict
 model_x_position = LinearRegression(fit_intercept=True)
-model_x_position.fit( X[:testing_data_index, :], x_position_label[:testing_data_index ] )
+model_x_position.fit( X[:testing_data_index, :], x_position_label[1:testing_data_index+1 ] )
 x_position_predict=model_x_position.predict( X[testing_data_index:] )
 print('shape of x_position_predict: ', x_position_predict.shape)
 #print('shape of X[:testing_data_index, :], x_position_label[:testing_data_index ]',  X[:testing_data_index, :].shape, x_position_label[:testing_data_index ].shape )
@@ -258,12 +258,12 @@ print('shape of x_position_predict: ', x_position_predict.shape)
 model_x_position_order_1 = LinearRegression(fit_intercept=True)
 #print('shape of X_order_1[:testing_data_index, :], x_position_label[:testing_data_index]', X_order_1[:testing_data_index, :].shape, x_position_label[:testing_data_index].shape )
 #print( 'shape of X_order_1[testing_data_index:, :], x_position_label[testing_data_index:]', X_order_1[testing_data_index:, :].shape, x_position_label[testing_data_index:].shape)
-model_x_position_order_1.fit( X_order_1[:testing_data_index, :], x_position_label[order_1_offset:testing_data_index+order_1_offset] )
+model_x_position_order_1.fit( X_order_1[:testing_data_index, :], x_position_label[order_1_offset+1:testing_data_index+order_1_offset+1] )
 x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:] )
 print('shape of x_position_predict_order_1: ', x_position_predict_order_1.shape)
 
 model_x_position_order_2 = LinearRegression(fit_intercept=True)
-model_x_position_order_2.fit( X_order_2[:testing_data_index,:], x_position_label[order_2_offset:testing_data_index+order_2_offset])
+model_x_position_order_2.fit( X_order_2[:testing_data_index,:], x_position_label[order_2_offset+1:testing_data_index+order_2_offset+1])
 x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:])
 print('shape of x_position_predict_order_2: ', x_position_predict_order_2.shape)
 
