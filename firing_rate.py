@@ -241,12 +241,12 @@ print('shape of X[:testing_data_index, :], x_position_label[:testing_data_index 
 model_x_position_order_1 = LinearRegression(fit_intercept=True)
 print('shape of X_order_1[:testing_data_index, :], x_position_label[:testing_data_index]', X_order_1[:testing_data_index, :].shape, x_position_label[:testing_data_index].shape )
 print( 'shape of X_order_1[testing_data_index:, :], x_position_label[testing_data_index:]', X_order_1[testing_data_index:, :].shape, x_position_label[testing_data_index:].shape)
-model_x_position_order_1.fit( X_order_1[:testing_data_index, :], x_position_label[1:testing_data_index+order_1_offset] )
+model_x_position_order_1.fit( X_order_1[:testing_data_index, :], x_position_label[order_1_offset:testing_data_index+order_1_offset] )
 # Y position model fit
 model_y_position = LinearRegression(fit_intercept=True)
 model_y_position.fit( X[:testing_data_index, :], y_position_label[:testing_data_index ])
 model_y_position_order_1=LinearRegression(fit_intercept=True)
-model_y_position_order_1.fit(X_order_1[:testing_data_index, :], y_position_label[1:testing_data_index+order_1_offset])
+model_y_position_order_1.fit(X_order_1[:testing_data_index, :], y_position_label[order_1_offset:testing_data_index+order_1_offset])
 # Z position model fit
 model_z_position = LinearRegression(fit_intercept=True)
 model_z_position.fit( X[:testing_data_index, :], z_position_label[:testing_data_index ])
@@ -396,35 +396,48 @@ with h5py.File(file_name, 'r') as mat_file:
 print('shape of finger_x_velocity', finger_x_velocity.shape)
 print('lenght of x_acceleration_label', len(x_acceleration_label))
 
+print('\n')
 # X position score
-print('model_x_position score: ',end='')
-print( r2_score( x_position_label[testing_data_index:], x_position_predict) )
-print('model_x_position_order_1 score: ',end='')
-print( r2_score( x_position_label[testing_data_index+order_1_offset:], x_position_predict_order_1 ))
-# Y position score
-print('model_y_position score: ',end='')
-print( r2_score( y_position_label[testing_data_index:], y_position_predict) )
-print('model_y_position_order_1 score: ',end='')
-print( r2_score( y_position_label[testing_data_index+order_1_offset:], y_position_predict_order_1 ))
-# Z position score
-print('model_z_position score: ',end='')
+print('model_x_position score: ', r2_score( x_position_label[testing_data_index:], x_position_predict))
+print('model_x_position_order_1 score: ', r2_score( x_position_label[testing_data_index+order_1_offset:], x_position_predict_order_1 ))
 
-print( r2_score( z_position_label[testing_data_index:], z_position_predict) )
+print('\n')
+# Y position score
+print('model_y_position score: ', r2_score( y_position_label[testing_data_index:], y_position_predict))
+print('model_y_position_order_1 score: ', r2_score( y_position_label[testing_data_index+order_1_offset:], y_position_predict_order_1 ))
+
+print('\n')
+# Z position score
+print('model_z_position score: ', r2_score( z_position_label[testing_data_index:], z_position_predict))
 print('\n')
 
+# X velocity model fit and score
 model_x_velocity = LinearRegression(fit_intercept=True)
 model_x_velocity.fit( X[:testing_data_index, :], x_velocity_label[:testing_data_index ] )
 x_velocity_predict=model_x_velocity.predict( X[testing_data_index:-1] )
 print('model_x_velocity score: ',end='')
 print( r2_score(  x_velocity_label[testing_data_index:-1], x_velocity_predict) )
 
+model_x_velocity_order_1=LinearRegression(fit_intercept=True)
+model_x_velocity_order_1.fit(X_order_1[:testing_data_index,:], x_velocity_label[order_1_offset:testing_data_index+order_1_offset])
+x_velocity_predict_order_1=model_x_velocity_order_1.predict(X_order_1[testing_data_index:-1])
+print('model_x_velocity_order_1 score: ',end='')
+print( r2_score(  x_velocity_label[testing_data_index+order_1_offset:-1], x_velocity_predict_order_1) )
 
+print('\n')
+# Y velocity model fit and score
 model_y_velocity = LinearRegression(fit_intercept=True)
 model_y_velocity.fit( X[:testing_data_index, :], y_velocity_label[:testing_data_index ] )
 y_velocity_predict=model_y_velocity.predict( X[testing_data_index:-1] )
-print('model_y_velocity score: ',end='')
-print( r2_score( y_velocity_label[testing_data_index:-1], y_velocity_predict) )
+print('model_y_velocity score: ', r2_score( y_velocity_label[testing_data_index:-1], y_velocity_predict))
 
+model_y_velocity_order_1=LinearRegression(fit_intercept=True)
+model_y_velocity_order_1.fit(X_order_1[:testing_data_index,:], y_velocity_label[order_1_offset:testing_data_index+order_1_offset])
+y_velocity_predict_order_1=model_y_velocity_order_1.predict(X_order_1[testing_data_index:-1])
+print('model_y_velocity_order_1 score: ', r2_score(  y_velocity_label[testing_data_index+order_1_offset:-1], y_velocity_predict_order_1))
+
+print('\n')
+# Z velocity model fit and score
 model_z_velocity = LinearRegression(fit_intercept=True)
 model_z_velocity.fit( X[:testing_data_index, :], z_velocity_label[:testing_data_index ] )
 z_velocity_predict=model_z_velocity.predict( X[testing_data_index:-1] )
@@ -454,6 +467,7 @@ print('\n')
 print('There are '+str(not_empty)+' units used in this model')
 print('\n')
 
+'''
 print('how many weights in model_z_position: ', model_z_position.coef_.shape)
 #for i in range(model_z_position.coef_.shape[0] ):
 for i in range(10 ):
@@ -464,8 +478,7 @@ print('some value from x_acceleration_label ')
 for i in range( 10 ):
     print('ACC_'+str( f'{i+1:03}' )+ ' = ',end='')
     print( str(x_acceleration_label[i]) )
-
-
+'''
 
 tEnd=time.time()
 print('Overall processing time: '+ str ( round(tEnd-tStart, 3) )+'seconds' )
