@@ -193,48 +193,63 @@ print('\n')
 
 firing_rate_matrix=np.array(firing_rate_final)
 print('firing_rate_matrix shape: ',end='')
-print(firing_rate_matrix.shape)
+print(firing_rate_matrix.shape) #  (226, 12777)
 print('\n')
 
 
 x_position_label=np.array(x_position_label)
 x_position_label=x_position_label.astype(np.float64)
-print('position x_position_label  list shape: ',end='')
-print( x_position_label.shape ) # x is the label array should be feed into the model
+print('position x_position_label  list shape: ',end='') 
+print( x_position_label.shape ) # x is the label array should be feed into the model, (12777,)
 print('\n')
 
 y_position_label=np.array(y_position_label)
 y_position_label=y_position_label.astype(np.float64)
 print('position y_position_label list shape: ',end='')
-print( y_position_label.shape ) # y is the label array should be feed into the model
+print( y_position_label.shape ) # y is the label array should be feed into the model, (12777,)
 print('\n')
 
 z_position_label=np.array(z_position_label)
 z_position_label=z_position_label.astype(np.float64)
 print('position z_position_label list shape: ',end='')
-print( z_position_label.shape ) # y is the label array should be feed into the model
+print( z_position_label.shape ) # z is the label array should be feed into the model, (12777,)
 print('\n')
 
 firing_rate_matrix=np.transpose(firing_rate_matrix)
 print('transposed firing_rate_matrix shape: ',end='')
-print(firing_rate_matrix.shape)
+print(firing_rate_matrix.shape) # (12777, 226)
 print('\n')
 
 X=firing_rate_matrix.astype(np.float64)
 print('fetures list shape: ',end='')
-print( X.shape ) # X is the feature matrix
+print( X.shape ) # X is the feature matrix,  (12777, 226)
 print('\n')
 
+# Order 1 feature matrix making
+order_1_offset=1
+temp1=X[1:,:]
+temp2=X[:-1,:]
+print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
+X_order_1=np.concatenate((temp1, temp2),axis=1)
+print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix,  (12776, 452) 
+print('\n')
+
+# X position model fit
 model_x_position = LinearRegression(fit_intercept=True)
 model_x_position.fit( X[:testing_data_index, :], x_position_label[:testing_data_index ] )
-
+print('shape of X[:testing_data_index, :], x_position_label[:testing_data_index ]',  X[:testing_data_index, :].shape, x_position_label[:testing_data_index ].shape )
+model_x_position_order_1 = LinearRegression(fit_intercept=True)
+print('shape of X_order_1[:testing_data_index, :], x_position_label[:testing_data_index]', X_order_1[:testing_data_index, :].shape, x_position_label[:testing_data_index].shape )
+print( 'shape of X_order_1[testing_data_index:, :], x_position_label[testing_data_index:]', X_order_1[testing_data_index:, :].shape, x_position_label[testing_data_index:].shape)
+model_x_position_order_1.fit( X_order_1[:testing_data_index, :], x_position_label[1:testing_data_index+order_1_offset] )
+# Y position model fit
 model_y_position = LinearRegression(fit_intercept=True)
 model_y_position.fit( X[:testing_data_index, :], y_position_label[:testing_data_index ])
-
+model_y_position_order_1=LinearRegression(fit_intercept=True)
+model_y_position_order_1.fit(X_order_1[:testing_data_index, :], y_position_label[1:testing_data_index+order_1_offset])
+# Z position model fit
 model_z_position = LinearRegression(fit_intercept=True)
 model_z_position.fit( X[:testing_data_index, :], z_position_label[:testing_data_index ])
-print('passed model fit')
-
 
 print('how many weights in model_y_position: ', model_y_position.coef_.shape)
 '''
@@ -247,11 +262,15 @@ print('model_y_position intercept = ', model_y_position.intercept_)
 
 x_position_predict=model_x_position.predict( X[testing_data_index:] )
 print('shape of x_position_predict: ', x_position_predict.shape)
+x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:] )
+print('shape of x_position_predict_order_1: ', x_position_predict_order_1.shape)
 
 y_position_predict=model_y_position.predict( X[testing_data_index:] )
 print('shape of y_position_predict: ', y_position_predict.shape)
+y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:] )
+print('shape of y_position_predict_order_1: ', y_position_predict_order_1.shape)
 
-z_position_predict=model_y_position.predict( X[testing_data_index:] )
+z_position_predict=model_z_position.predict( X[testing_data_index:] )
 print('shape of z_position_predict: ', z_position_predict.shape)
 
 # Calculating velocity and acceleration below
@@ -377,11 +396,19 @@ with h5py.File(file_name, 'r') as mat_file:
 print('shape of finger_x_velocity', finger_x_velocity.shape)
 print('lenght of x_acceleration_label', len(x_acceleration_label))
 
+# X position score
 print('model_x_position score: ',end='')
 print( r2_score( x_position_label[testing_data_index:], x_position_predict) )
+print('model_x_position_order_1 score: ',end='')
+print( r2_score( x_position_label[testing_data_index+order_1_offset:], x_position_predict_order_1 ))
+# Y position score
 print('model_y_position score: ',end='')
 print( r2_score( y_position_label[testing_data_index:], y_position_predict) )
+print('model_y_position_order_1 score: ',end='')
+print( r2_score( y_position_label[testing_data_index+order_1_offset:], y_position_predict_order_1 ))
+# Z position score
 print('model_z_position score: ',end='')
+
 print( r2_score( z_position_label[testing_data_index:], z_position_predict) )
 print('\n')
 
@@ -441,9 +468,9 @@ for i in range( 10 ):
 
 
 tEnd=time.time()
-
 print('Overall processing time: '+ str ( round(tEnd-tStart, 3) )+'seconds' )
 
+'''
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, x_position_predict, s=1)
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_position_predict, 'b--',label='Prediction' )
@@ -584,3 +611,4 @@ axes = plot.gca()
 #axes.set_xlim([60, 890])
 plot.show()
 #plot.savefig('Z_position_prediction.png' )
+'''
