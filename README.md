@@ -10,7 +10,7 @@
 ![](/Kinematic_Variables_Plots/X_axis_velocity.png) ![](/Kinematic_Variables_Plots/Y_axis_velocity.png) ![](/Kinematic_Variables_Plots/Z_axis_velocity.png) 
 #### The velocity of fingertips in three axis with all 204,446 data points.
 ---
-#### R\sqrt{2} of 1 session, no time lag, zero order 
+#### R square of 1 session, no time lag, zero order 
 * model_x_position score: 0.1035952123342534
 * model_y_position score: 0.18687209392892745
 * model_z_position score: -12847.714342367937
