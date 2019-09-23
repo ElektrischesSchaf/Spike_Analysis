@@ -91,12 +91,12 @@ with h5py.File(file_name, 'r') as mat_file:
         z_position_label.append(finger_z_coor[index_label] )
         index_label+=sampling_rate
     '''
-    x_position_label=finger_x_coor[::sampling_rate]
-    x_position_label=x_position_label[:-1]
+    x_position_label=finger_x_coor[::sampling_rate] 
+    x_position_label=x_position_label[1:] # [:-1] original, match Chieh's result
     y_position_label=finger_y_coor[::sampling_rate]
-    y_position_label=y_position_label[:-1]
+    y_position_label=y_position_label[1:]
     z_position_label=finger_z_coor[::sampling_rate]
-    z_position_label=z_position_label[:-1]
+    z_position_label=z_position_label[1:]
     print('Position label arrays finished')
 
     # Making spike counts matrix
