@@ -263,7 +263,7 @@ print('\n')
 
 X=firing_rate_matrix.astype(np.float64)
 print('fetures list shape: ',end='')
-print( X.shape ) # X is the feature matrix,  (12777, 226)
+print( X.shape ) # X is the feature matrix,  (12777, 226) in indy_20160407_02
 print('\n')
 
 # Order 1 feature matrix making
@@ -345,9 +345,9 @@ with h5py.File(file_name, 'r') as mat_file:
     numpy_time_stamp=np.array(numpy_time_stamp)
 
     print('numpy_finger_pos shape: ',end='')
-    print(numpy_finger_pos.shape) #  (3, 204446)
+    print(numpy_finger_pos.shape) #  (3, 204446) in indy_20160407_02
     print('numpy_time_stamp: ',end='')
-    print(numpy_time_stamp.shape)  #  (1, 204446)
+    print(numpy_time_stamp.shape)  #  (1, 204446)in indy_20160407_02
 
 
     time_stamp_64ms=time_stamp[0][::sampling_rate]
@@ -355,7 +355,7 @@ with h5py.File(file_name, 'r') as mat_file:
     finger_z_pos_64ms=numpy_finger_pos[0][::sampling_rate]
     finger_x_pos_64ms=numpy_finger_pos[1][::sampling_rate]
     finger_y_pos_64ms=numpy_finger_pos[2][::sampling_rate]
-    print('shape of finger_x_pos_64ms', finger_x_pos_64ms.shape) # (12778,)
+    print('shape of finger_x_pos_64ms', finger_x_pos_64ms.shape) # (12778,) in indy_20160407_02
 
     finger_x_velocity=[]
     finger_y_velocity=[]
@@ -367,7 +367,6 @@ with h5py.File(file_name, 'r') as mat_file:
     finger_z_acceleration=[]
     acceleration_time_coor=[]
 
-    #duration=204445
     duration=time_stamp_64ms.shape[0]
 
     for i in range(duration):
