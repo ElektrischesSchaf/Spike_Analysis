@@ -217,6 +217,7 @@ print('firing_rate_matrix shape: ',end='')
 print(firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) no null units, (288, 12777) with all 96X3 units
 print('\n')
 
+'''
 # Without spike sorting:
 no_sorting_firing_rate=firing_rate_matrix.copy()
 firing_rate_matrix=np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
@@ -235,7 +236,10 @@ for i in range(no_sorting_firing_rate.shape[1]):
 print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
 print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
 print('\n')
+'''
 
+# Eliminate hash unit
+no_hash_unit_firing_rate=firing_rate_matrix.copy()
 
 # Making label data
 x_position_label=np.array(x_position_label)
