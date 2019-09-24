@@ -19,7 +19,7 @@ tStart=time.time()
 #testing_data_index=10222
 testing_data_index=0 # initiate, should be 10222 in indy_20160407_02.mat
 channel_number=0
-not_empty=0 # unit number that is not empty
+units_used=0 # unit number that is not empty
 
 time_lag=2
 def histc(X, bins):
@@ -126,12 +126,13 @@ with h5py.File(file_name, 'r') as mat_file:
         temp_spike_cell_3=temp_spike_cell_3.flatten()
         time_stamp_64ms=time_stamp_64ms.flatten()
         
-        
+        '''
         print('shape of temp_spike_cell_1: ',temp_spike_cell_1.shape) # (5595,) in channel 1, indy_20160407_02
         print('shape of temp_spike_cell_2: ',temp_spike_cell_2.shape) # (2,) in channel 1, indy_20160407_02
         print('shape of temp_spike_cell_3: ',temp_spike_cell_3.shape) # (2,) in channel 1, indy_20160407_02
         print('shape of time_stamp_64ms: ',time_stamp_64ms.shape)
-       
+        '''
+
         if temp_spike_cell_1.shape[0] != 2:
 
             # firing rate
@@ -139,8 +140,7 @@ with h5py.File(file_name, 'r') as mat_file:
             #print('shape of yee:  ',yee.shape)
             firing_rate_cell.append(yee[:-1])
             #print('yee: ',yee)
-            #end firing rate
-        
+
         else:
             r = np.zeros( len(time_stamp_64ms)-1 )
             firing_rate_cell.append(r)
@@ -156,8 +156,7 @@ with h5py.File(file_name, 'r') as mat_file:
             # firing rate
             yee=histc(temp_spike_cell_2, time_stamp_64ms)
             #print('shape of yee:  ',yee.shape)
-            firing_rate_cell.append(yee[:-1])            
-            #end firing rate
+            firing_rate_cell.append(yee[:-1])
 
         else:
             r = np.zeros( len(time_stamp_64ms)-1 )
@@ -175,7 +174,6 @@ with h5py.File(file_name, 'r') as mat_file:
             yee=histc(temp_spike_cell_3, time_stamp_64ms)
             #print('shape of yee:  ',yee.shape)
             firing_rate_cell.append(yee[:-1])
-            #end firing rate
 
         else:
             r = np.zeros( len(time_stamp_64ms)-1 )
@@ -204,7 +202,7 @@ with h5py.File(file_name, 'r') as mat_file:
 for row_index in range( len( firing_rate_cell) ):   
     if len(firing_rate_cell[row_index]):
         firing_rate_final.append( firing_rate_cell[row_index] )
-        not_empty+=1
+        units_used+=1
 
 '''
 for row_index in range( len( firing_rate_final) ):            
@@ -216,10 +214,30 @@ print('\n')
 
 firing_rate_matrix=np.array(firing_rate_final)
 print('firing_rate_matrix shape: ',end='')
-print(firing_rate_matrix.shape) #  (226, 12777)
+print(firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) no null units, (288, 12777) with all 96X3 units
+print('\n')
+
+# Without spike sorting:
+no_sorting_firing_rate=firing_rate_matrix.copy()
+firing_rate_matrix=np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
+print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
+print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
+print('\n')
+
+for i in range(no_sorting_firing_rate.shape[1]):
+    index=0
+    for k in range(channel_number-2): # Maximum 3 units in this session, indy_20160407_02.
+        #print('index: ',index,end='')
+        firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
+        #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
+        index = index+1
+
+print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
+print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
 print('\n')
 
 
+# Making label data
 x_position_label=np.array(x_position_label)
 x_position_label=x_position_label.astype(np.float64)
 print('position x_position_label  list shape: ',end='') 
@@ -307,13 +325,13 @@ model_z_position.fit( X[:testing_data_index, :], z_position_label[time_lag:testi
 z_position_predict=model_z_position.predict( X[testing_data_index:-time_lag] )
 print('shape of z_position_predict: ', z_position_predict.shape)
 
-''''
+print('\n')
 print('How many weights in model_y_position: ', model_y_position.coef_.shape)
-for i in range(model_y_position.coef_.shape[0] ):
-    print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
-    print( str(model_y_position.coef_[i]) )
+#for i in range(model_y_position.coef_.shape[0] ):
+    #print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
+    #print( str(model_y_position.coef_[i]) )
 print('model_y_position intercept = ', model_y_position.intercept_)
-'''
+print('\n')
 
 # Calculating velocity and acceleration below
 with h5py.File(file_name, 'r') as mat_file:
@@ -535,7 +553,7 @@ z_acceleration_predict=model_z_acceleration.predict( X[testing_data_index:-1-tim
 print('model_z_acceleration score: ', r2_score( z_acceleration_label[testing_data_index+time_lag:], z_acceleration_predict))
 print('\n')
 
-print('There are '+str(not_empty)+' units used in this model')
+print('There are '+str(units_used)+' units used in this model')
 print('\n')
 
 '''
