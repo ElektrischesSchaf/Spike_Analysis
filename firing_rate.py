@@ -20,8 +20,8 @@ tStart=time.time()
 testing_data_index=0 # initiate, should be 10222 in indy_20160407_02.mat
 channel_number=0
 units_used=0 # unit number that is not empty
+time_lag=1
 
-time_lag=2
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
     r = np.zeros(bins.shape)
