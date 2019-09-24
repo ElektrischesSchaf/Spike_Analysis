@@ -19,6 +19,8 @@ tStart=time.time()
 #testing_data_index=10222
 testing_data_index=0 # initiate, should be 10222 in indy_20160407_02.mat
 channel_number=0
+not_empty=0 # unit number that is not empty
+
 time_lag=2
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
@@ -26,7 +28,8 @@ def histc(X, bins):
     for i in map_to_bins:
         r[i-1] += 1
     return r
-not_empty=0
+
+
 
 with h5py.File(file_name, 'r') as mat_file:
 
@@ -39,12 +42,12 @@ with h5py.File(file_name, 'r') as mat_file:
     firing_rate_cell=[[]]
     firing_rate_final=[] # not[[]]
 
-    print('spikes shape: ', spikes.shape) #  (3, 192)
-    channel_number=int(spikes.shape[1] / 2)
+    print('spikes shape: ', spikes.shape) #  (3, 192) in indy_20160407_02
+    channel_number=int(spikes.shape[1] / 2) # 96 in indy_20160407_02
 
     numpy_finger_pos=mat_file.get('finger_pos')
     numpy_finger_pos=np.array(numpy_finger_pos)
-    print('numpy_finger_pos.shape: ', numpy_finger_pos.shape) # (3, 204446)
+    print('numpy_finger_pos.shape: ', numpy_finger_pos.shape) # (3, 204446) in indy_20160407_02
 
     finger_z_coor=numpy_finger_pos[0][:]
     finger_x_coor=numpy_finger_pos[1][:]
@@ -77,7 +80,7 @@ with h5py.File(file_name, 'r') as mat_file:
         sampling_index+=sampling_rate
     '''
     time_stamp_64ms=time_stamp[0][::sampling_rate]  # way faster, app. 4 seconds
-    print('lenght of time_stamp_64ms: ', len(time_stamp_64ms))
+    print('lenght of time_stamp_64ms: ', len(time_stamp_64ms)) # 12778 in indy_20160407_02
     
     testing_data_index=int(int(len(time_stamp_64ms))*0.8) # split 80% into training
     print('testing_data_index= ',testing_data_index) # 10222 in indy_20160407_02.mat
@@ -123,12 +126,11 @@ with h5py.File(file_name, 'r') as mat_file:
         temp_spike_cell_3=temp_spike_cell_3.flatten()
         time_stamp_64ms=time_stamp_64ms.flatten()
         
-        '''
-        print('shape of temp_spike_cell_1: ',temp_spike_cell_1.shape)
-        print('shape of temp_spike_cell_2: ',temp_spike_cell_2.shape)
-        print('shape of temp_spike_cell_3: ',temp_spike_cell_3.shape)
+        
+        print('shape of temp_spike_cell_1: ',temp_spike_cell_1.shape) # (5595,) in channel 1, indy_20160407_02
+        print('shape of temp_spike_cell_2: ',temp_spike_cell_2.shape) # (2,) in channel 1, indy_20160407_02
+        print('shape of temp_spike_cell_3: ',temp_spike_cell_3.shape) # (2,) in channel 1, indy_20160407_02
         print('shape of time_stamp_64ms: ',time_stamp_64ms.shape)
-        '''
        
         if temp_spike_cell_1.shape[0] != 2:
 
@@ -138,7 +140,10 @@ with h5py.File(file_name, 'r') as mat_file:
             firing_rate_cell.append(yee[:-1])
             #print('yee: ',yee)
             #end firing rate
-
+        
+        else:
+            r = np.zeros( len(time_stamp_64ms)-1 )
+            firing_rate_cell.append(r)
         '''
         print('length of firing_rate in cell 1: ',end='')
         print(len(firing_rate_cell[:-1]))
@@ -154,6 +159,10 @@ with h5py.File(file_name, 'r') as mat_file:
             firing_rate_cell.append(yee[:-1])            
             #end firing rate
 
+        else:
+            r = np.zeros( len(time_stamp_64ms)-1 )
+            firing_rate_cell.append(r)
+
         '''
         print('length of firing_rate in cell 2: ',end='')
         print(len(firing_rate_cell[-1]))
@@ -167,6 +176,10 @@ with h5py.File(file_name, 'r') as mat_file:
             #print('shape of yee:  ',yee.shape)
             firing_rate_cell.append(yee[:-1])
             #end firing rate
+
+        else:
+            r = np.zeros( len(time_stamp_64ms)-1 )
+            firing_rate_cell.append(r)
         '''
         print('length of firing_rate in cell 3: ',end='')
         print(len(firing_rate_cell[-1]))
