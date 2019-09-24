@@ -292,15 +292,21 @@ print('order 2 fetures list shape: ', X_order_2.shape) #  X_order_2 is the featu
 print('\n')
 
 # Universal order feature matrix making
-if order>=2:
+if order==2:
     order_offset=2
     temp1=X[order_offset:,:]
-    temp2=X[order_offset-1:-1,:]
+    temp2=X[order_offset-(order_offset-1):-(order_offset-1),:]
     temp3=X[:-order_offset,:]
     print('temp1, temp2, temp3 shape: ', temp1.shape, temp2.shape, temp3.shape)
     X_order_2=np.concatenate((temp1, temp2, temp3),axis=1)
     print('order 2 fetures list shape: ', X_order_2.shape) #  X_order_2 is the feature matrix, (12775, 864) in indy_20160407_02
     print('\n')
+
+    for i in range(order+1):
+        if i==0:
+            temp1=X[order-i:]
+        else:
+            temp1=X[order-i:-i]
 
 if order==1:
     order_1_offset=1
