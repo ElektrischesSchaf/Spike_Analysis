@@ -13,7 +13,7 @@ from sklearn.feature_selection import RFE
 from  sklearn.svm import SVC
 from sklearn.svm import SVR
 
-file_name='indy_20160407_02.mat'
+file_name_1='indy_20160407_02.mat'
 tStart=time.time()
 #testing_data_index=5000
 #testing_data_index=10222
@@ -31,7 +31,7 @@ def histc(X, bins):
 
 
 
-with h5py.File(file_name, 'r') as mat_file:
+with h5py.File(file_name_1, 'r') as mat_file:
 
     time_stamp=mat_file['t']  
     # or
@@ -338,7 +338,7 @@ print('model_y_position intercept = ', model_y_position.intercept_)
 print('\n')
 
 # Calculating velocity and acceleration below
-with h5py.File(file_name, 'r') as mat_file:
+with h5py.File(file_name_1, 'r') as mat_file:
 
     finger_pos = mat_file['finger_pos']
     time_stamp=mat_file['t']
