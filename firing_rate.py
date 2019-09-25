@@ -16,20 +16,19 @@ from sklearn.svm import SVR
 file_name_1='indy_20160407_02.mat'
 tStart=time.time()
 
+###################################### Auto-assigned parameters
 #testing_data_index=5000
 #testing_data_index=10222
-######################################
-# Auto-assigned parameters
-testing_data_index=0 # initiate, should be 10222 in indy_20160407_02
+testing_data_index=0 # Should be 10222 in indy_20160407_02
 channel_number=0
-units_used=0 # unit number that is not empty
+units_used=0 # unit numbers that is not empty
 feature_numbers=0
-######################################
-# Parameters can be assigned
+
+###################################### Parameters should be assigned
 time_lag=0
 order=2
-include_hash_unit=False
-with_sorted_spikes=True
+include_hash_unit=True
+with_sorted_spikes=False
 
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
@@ -223,9 +222,9 @@ for row_index in range( len( firing_rate_final) ):
 print('\n')
 
 firing_rate_matrix=np.array(firing_rate_final)
-print('firing_rate_matrix shape: ',end='')
-print(firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) no null units, (288, 12777) with all 96X3 units
+print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
 print('\n')
+
 
 
 # Without spike sorting:
@@ -241,6 +240,10 @@ if with_sorted_spikes==False:
         for k in range(channel_number-2): # Maximum 3 units in this session, indy_20160407_02.
             #print('index: ',index,end='')
             firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
+
+            # Test another way to exclude hash unit, but this only works in 96 features.
+            #firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
+
             #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
             index = index+1
 
@@ -526,7 +529,7 @@ print('shape of finger_x_velocity', finger_x_velocity.shape)
 print('lenght of x_acceleration_label', len(x_acceleration_label))
 
 print('\n')
-print('>>>',  'Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
+print('>>>', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
 print('\n')
 # X position score
 print('model_x_position score: ', r2_score( x_position_label[testing_data_index+time_lag:], x_position_predict))
@@ -658,7 +661,7 @@ for i in range( 10 ):
     print( str(x_acceleration_label[i]) )
 '''
 
-print('<<<',  'Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  <<<')
+print('<<<', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  <<<')
 print('\n')
 
 tEnd=time.time()

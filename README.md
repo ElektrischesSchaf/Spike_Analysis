@@ -1,3 +1,7 @@
+
+# Spike_Analysis
+* Spikes are signals generated from the single frequency and have magnitude significantly larger than noise, the voltage drop from neural soma and axon membrane. Spike train is time-series data which comes from a neuron. In this repository I use the mat file "indy_20160407_02.mat" downloaded from [Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology](https://zenodo.org/record/583331#.XWirEigzZPb). This dataset has 96 channels and each channel contains 1-6 units.  
+
 - [Spike_Analysis](#spike-analysis)
       - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy-20160407-02--0-time-lag--0-2-order--with-sorted-spikes)
       - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy-20160407-02--0-time-lag--0-2-order--with-sorted-spikes--without-hash-unit)
@@ -7,10 +11,6 @@
       - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy-20160407-02--1-time-lag--0-2-order--without-sorted-spikes)
       - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy-20160407-02--2-time-lag--0-2-order--without-sorted-spikes)
       - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy-20160407-02--2-time-lag--0-2-order--without-sorted-spikes--without-hash-unit)
-
-# Spike_Analysis
-* Spikes are signals generated from the single frequency and have magnitude significantly larger than noise, the voltage drop from neural soma and axon membrane. Spike train is time-series data which comes from a neuron. In this repository I use the mat file "indy_20160407_02.mat" downloaded from [Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology](https://zenodo.org/record/583331#.XWirEigzZPb). This dataset has 96 channels and each channel contains 1-6 units.  
-
 
 
 ![](/Spike_Train_Plots/Spike_Train_Channel_14.png)
