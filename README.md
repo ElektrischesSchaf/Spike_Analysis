@@ -1,4 +1,4 @@
-- [Spike_Analysis](#spike-analysis)  
+- [Spike_Analysis](#Spike_Analysis)  
     - [Test](#Test)  
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy-20160407-02--0-time-lag--0-2-order--with-sorted-spikes)  
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy-20160407-02--0-time-lag--0-2-order--with-sorted-spikes--without-hash-unit)  
