@@ -4,7 +4,7 @@
         - [Spike Train](#Spike-Train)<br>
         - [Trajectory of finger tip](#Trajectory-of-finger-tip)<br>
         - [Velocity in each axis](#Velocity-in-each-axis)<br>
-    - [Coefficient of Determination (R square)](#Coefficient-of-Determination-R-square)<br>
+    - [Coefficient of Determination (R square) session indy_20160407_02](#Coefficient-of-Determination-R-square-session-indy_20160407_02)<br>
         - [With sorted spikes](#With-sorted-spikes)<br>
             - [With hash unit](#With-hash-unit)<br>
                 - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  <br>
@@ -42,7 +42,7 @@
 #### Test 123, 456
 * This is a test for mark down.
 ---
-## Coefficient of Determination (R square)
+## Coefficient of Determination (R square) session indy_20160407_02
 ### With sorted spikes
 #### With hash unit
 ##### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes
@@ -197,6 +197,83 @@
 
 
 * model_z_acceleration score:  -0.019265986133156554
+
+##### R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes, without hash unit
+* model_x_position score:  0.05438623182345137
+* model_x_position_order_1 score:  0.12985534983474212
+* model_x_position_order_2 score:  0.17204655814405911
+
+
+* model_y_position score:  0.13107654884997633
+* model_y_position_order_1 score:  0.20272883674314368
+* model_y_position_order_2 score:  0.2619760587943226
+
+
+* model_z_position score:  -0.026081725145579382
+
+
+* model_x_velocity score:  0.2519679704724773
+* model_x_velocity_order_1 score:  0.34369440035395127
+* model_x_velocity_order_2 score:  0.38156907457227474
+
+
+* model_y_velocity score:  0.2988771718027967
+* model_y_velocity_order_1 score:  0.40171097025802494
+* model_y_velocity_order_2 score:  0.4397892239358572
+
+
+* model_z_velocity score: 0.0029403883106152717
+
+
+* model_x_acceleration score:  0.05668157759486325
+* model_x_acceleration_order_1 score:  0.07098998200614604
+* model_x_acceleration_order_2 score:  0.083770049532496
+
+
+* model_y_acceleration score:  0.03546749309814767
+* model_y_acceleration_order_1 score:  0.04081475561960113
+* model_y_acceleration_order_2 score:  0.04184758847315606
+
+
+* model_z_acceleration score:  -0.015901073706103608
+##### R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes, without hash unit
+* model_x_position score:  0.06299533478119135
+* model_x_position_order_1 score:  0.13981744928130235
+* model_x_position_order_2 score:  0.18123005682339222
+
+
+* model_y_position score:  0.12677812816366008
+* model_y_position_order_1 score:  0.20044907909474974
+* model_y_position_order_2 score:  0.25666654145411993
+
+
+* model_z_position score:  -0.0333945234401658
+
+
+* model_x_velocity score:  0.2921320029649911
+* model_x_velocity_order_1 score:  0.35615754515255194
+* model_x_velocity_order_2 score:  0.3774614300013849
+
+
+* model_y_velocity score:  0.3257581493620284
+* model_y_velocity_order_1 score:  0.38988093926157175
+* model_y_velocity_order_2 score:  0.40865118452716565
+
+
+* model_z_velocity score: 0.029110545771452556
+
+
+* model_x_acceleration score:  0.02646952792945345
+* model_x_acceleration_order_1 score:  0.026175647898692977
+* model_x_acceleration_order_2 score:  0.020147844937716264
+
+
+* model_y_acceleration score:  -0.0051596110675595774
+* model_y_acceleration_order_1 score:  0.004252648734662023
+* model_y_acceleration_order_2 score:  -0.006759090606800244
+
+
+* model_z_acceleration score:  -0.0049404367137924066
 ### Without sorted spikes
 #### With hash unit
 ##### R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes

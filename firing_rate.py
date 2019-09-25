@@ -25,10 +25,11 @@ units_used=0 # unit numbers that is not empty
 feature_numbers=0
 
 ###################################### Parameters should be assigned
-time_lag=0
+time_lag=2
 order=2
+with_sorted_spikes=True
 include_hash_unit=False
-with_sorted_spikes=False
+
 
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
