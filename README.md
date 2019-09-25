@@ -1,9 +1,9 @@
 - [Spike_Analysis](#Spike_Analysis)  
     - [Test](#Test-123-456)  
     - [Plots](#plots)
-        - [Spike Train](#Spike_Train)
-        - [Trajectory of finger tip](#Trajectory_of_finger_tip)
-        - [Velocity in each axis](#Velocity_in_each_axis)
+        - [Spike Train](#Spike-Train)
+        - [Trajectory of finger tip](#Trajectory-of-finger-tip)
+        - [Velocity in each axis](#Velocity-in-each-axis)
 
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  
