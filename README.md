@@ -6,15 +6,19 @@
         - [Velocity in each axis](#Velocity-in-each-axis)<br>
     - [Coefficient of Determination (R square)](#Coefficient-of-Determination-R-square)<br>
         - [With sorted spikes](#With-sorted-spikes)<br>
-            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  <br>
-            - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes)  <br>
-            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes)  <br>
-            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  <br>
+            - [With hash unit](#With-hash-unit)<br>
+                - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  <br>
+                - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes)  <br>
+                - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes)  <br>
+            - [Without hash unit](#Without-hash-unit)<br>
+                - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  <br>
         - [Without sorted spikes](#Without-sorted-spikes)  <br>
-            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes)  <br>
-            - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  <br>
-            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  <br>
-            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br> 
+            - [With hash unit](#With-hash-unit)<br>
+                - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes)  <br>
+                - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  <br>
+                - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  <br>
+            - [Without hash unit](#Without-hash-unit)<br>
+                - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br> 
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -40,7 +44,8 @@
 ---
 ## Coefficient of Determination (R square)
 ### With sorted spikes
-#### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes
+#### With hash unit
+##### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes
 * model_x_position score:  0.11435610816030484
 * model_x_position_order_1 score:  0.1793229330330831
 * model_x_position_order_2 score:  0.2297033077459666
@@ -77,7 +82,7 @@
 * model_y_acceleration_order_2 score:  0.15411981035507605
 
 ---
-#### R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes
+##### R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes
 * model_x_position score:  0.12569332638109
 * model_x_position_order_1 score:  0.19121025876136344
 * model_x_position_order_2 score:  0.24131448913270948
@@ -115,7 +120,7 @@
 
 
 * model_z_acceleration score:  -0.024885176898776118
-#### R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes
+##### R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes
 * model_x_position score:  0.13867158926967982
 * model_x_position_order_1 score:  0.20153751388691643
 * model_x_position_order_2 score:  0.2516598304296219
@@ -153,7 +158,8 @@
 
 
 * model_z_acceleration score:  -0.013372545863992835
-#### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit
+#### Without hash unit
+##### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit
 * model_x_position score:  0.05320797723806625
 * model_x_position_order_1 score:  0.12293630416573931
 * model_x_position_order_2 score:  0.16208585992536617
@@ -192,7 +198,8 @@
 
 * model_z_acceleration score:  -0.019265986133156554
 ### Without sorted spikes
-#### R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes
+#### With hash unit
+##### R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes
 * model_x_position score:  -0.04880713459301789
 * model_x_position_order_1 score:  -0.01203916371172431
 * model_x_position_order_2 score:  0.012921357328378513
@@ -230,7 +237,7 @@
 
 
 * model_z_acceleration score:  -0.004159454876851765
-#### R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes
+##### R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes
 * model_x_position score:  -0.038070299074316916
 * model_x_position_order_1 score:  -0.004515800528427816
 * model_x_position_order_2 score:  0.02813379265372984
@@ -268,7 +275,7 @@
 
 
 * model_z_acceleration score:  -0.0033650525808699427
-#### R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes
+##### R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes
 * model_x_position score:  -0.027060138587140292
 * model_x_position_order_1 score:  0.011881408298942353
 * model_x_position_order_2 score:  0.047270576300165956
@@ -306,7 +313,8 @@ model_y_acceleration_order_2 score:  -0.017487995298690606
 
 
 model_z_acceleration score:  -0.029691575320161423
-#### R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit
+#### Without hash unit
+##### R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit
 * model_x_position score:  -0.045323976779240605
 * model_x_position_order_1 score:  0.007364503546233414
 * model_x_position_order_2 score:  0.039809356196933265
