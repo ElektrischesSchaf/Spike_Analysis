@@ -1,5 +1,10 @@
 - [Spike_Analysis](#Spike_Analysis)  
     - [Test](#Test-123-456)  
+    - [Plots](#plots)
+        - [Spike Train](#Spike_Train)
+        - [Trajectory of finger tip](#Trajectory_of_finger_tip)
+        - [Velocity in each axis](#Velocity_in_each_axis)
+
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  
     - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes)  
@@ -14,12 +19,16 @@
 # Spike_Analysis
 * Spikes are signals generated from the single frequency and have magnitude significantly larger than noise, the voltage drop from neural soma and axon membrane. Spike train is time-series data which comes from a neuron. In this repository I use the mat file "indy_20160407_02.mat" downloaded from [Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology](https://zenodo.org/record/583331#.XWirEigzZPb). This dataset has 96 channels and each channel contains 1-6 units.  
 
+## Plots
+### Spike Train
 ![](/Spike_Train_Plots/Spike_Train_Channel_14.png)
 * Spike trains from channel 14 for instance, has data from unit 1 to unit 3, ploted in different color.
 ---
+### Trajectory of finger tip
 ![](/Kinematic_Variables_Plots/X-Y_plane_trajectory.png)  ![](/Kinematic_Variables_Plots/X-Z_plane_trajectory.png)  ![](/Kinematic_Variables_Plots/Y-Z_plane_trajectory.png)  
 * The trajectory of fingertips with all 204,446 data points.
 ---
+### Velocity in each axis
 ![](/Kinematic_Variables_Plots/X_axis_velocity.png) ![](/Kinematic_Variables_Plots/Y_axis_velocity.png) ![](/Kinematic_Variables_Plots/Z_axis_velocity.png) 
 * The velocity of fingertips in three axis with all 204,446 data points.
 ---
