@@ -12,6 +12,8 @@
       - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy-20160407-02--2-time-lag--0-2-order--without-sorted-spikes)
       - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy-20160407-02--2-time-lag--0-2-order--without-sorted-spikes--without-hash-unit)
 
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 ![](/Spike_Train_Plots/Spike_Train_Channel_14.png)
 * Spike trains from channel 14 for instance, has data from unit 1 to unit 3, ploted in different color.
