@@ -4,7 +4,7 @@
         - [Spike Train](#Spike-Train)
         - [Trajectory of finger tip](#Trajectory-of-finger-tip)
         - [Velocity in each axis](#Velocity-in-each-axis)
-    - [Coefficient of Determination (R square)](#Coefficient-of-Determination-R-square-)
+    - [Coefficient of Determination (R square)](#Coefficient-of-Determination-R-square)
     
 
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  
