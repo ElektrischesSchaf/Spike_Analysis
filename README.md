@@ -1,5 +1,5 @@
 - [Spike_Analysis](#Spike_Analysis)  
-    - [Test](#Test_123)  
+    - [Test](#Test123)  
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#R-square-of-session-indy-20160407-02--0-time-lag--0-2-order--with-sorted-spikes)  
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy-20160407-02--0-time-lag--0-2-order--with-sorted-spikes--without-hash-unit)  
     - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy-20160407-02--1-time-lag--0-2-order--with-sorted-spikes)  
@@ -24,7 +24,7 @@
 * The velocity of fingertips in three axis with all 204,446 data points.
 ---
 
-#### Test 123
+#### Test123
 * This is a test for mark down.
 #### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes
 * model_x_position score:  0.11435610816030484
