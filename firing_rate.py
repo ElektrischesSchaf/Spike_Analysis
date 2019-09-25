@@ -18,12 +18,18 @@ tStart=time.time()
 
 #testing_data_index=5000
 #testing_data_index=10222
-testing_data_index=0 # initiate, should be 10222 in indy_20160407_02.mat
+######################################
+# Auto-assigned parameters
+testing_data_index=0 # initiate, should be 10222 in indy_20160407_02
 channel_number=0
 units_used=0 # unit number that is not empty
+feature_numbers=0
 ######################################
+# Parameters can be assigned
 time_lag=0
 order=2
+include_hash_unit=False
+with_sorted_spikes=True
 
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
@@ -138,9 +144,8 @@ with h5py.File(file_name_1, 'r') as mat_file:
         print('shape of time_stamp_64ms: ',time_stamp_64ms.shape)
         '''
 
-        if temp_spike_cell_1.shape[0] != 2:
+        if temp_spike_cell_1.shape[0] != 2 and include_hash_unit==True:
 
-            # firing rate
             yee=histc(temp_spike_cell_1, time_stamp_64ms)
             #print('shape of yee:  ',yee.shape)
             firing_rate_cell.append(yee[:-1])
@@ -222,26 +227,29 @@ print('firing_rate_matrix shape: ',end='')
 print(firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) no null units, (288, 12777) with all 96X3 units
 print('\n')
 
-'''
+
 # Without spike sorting:
-no_sorting_firing_rate=firing_rate_matrix.copy()
-firing_rate_matrix=np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
-print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
-print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
-print('\n')
+if with_sorted_spikes==False:
+    no_sorting_firing_rate=firing_rate_matrix.copy()
+    firing_rate_matrix=np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
+    print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
+    print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
+    print('\n')
 
-for i in range(no_sorting_firing_rate.shape[1]):
-    index=0
-    for k in range(channel_number-2): # Maximum 3 units in this session, indy_20160407_02.
-        #print('index: ',index,end='')
-        firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
-        #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
-        index = index+1
+    for i in range(no_sorting_firing_rate.shape[1]):
+        index=0
+        for k in range(channel_number-2): # Maximum 3 units in this session, indy_20160407_02.
+            #print('index: ',index,end='')
+            firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
+            #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
+            index = index+1
 
-print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
-print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
-print('\n')
-'''
+    print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
+    print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
+    print('\n')
+else:
+    pass
+
 
 # Eliminate hash unit
 no_hash_unit_firing_rate=firing_rate_matrix.copy()
@@ -391,6 +399,7 @@ print('How many weights in model_y_position: ', model_y_position.coef_.shape)
     #print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
     #print( str(model_y_position.coef_[i]) )
 print('model_y_position intercept = ', model_y_position.intercept_)
+feature_numbers=int(model_y_position.coef_.shape[0])
 print('\n')
 
 # Calculating velocity and acceleration below
@@ -517,7 +526,7 @@ print('shape of finger_x_velocity', finger_x_velocity.shape)
 print('lenght of x_acceleration_label', len(x_acceleration_label))
 
 print('\n')
-print('>>> Time Lag: ', time_lag, ' >>>')
+print('>>>',  'Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
 print('\n')
 # X position score
 print('model_x_position score: ', r2_score( x_position_label[testing_data_index+time_lag:], x_position_predict))
@@ -633,8 +642,8 @@ z_acceleration_predict=model_z_acceleration.predict( X[testing_data_index:-1-tim
 print('model_z_acceleration score: ', r2_score( z_acceleration_label[testing_data_index+time_lag:], z_acceleration_predict))
 print('\n')
 
-print('There are '+str(units_used)+' units used in this model')
-print('\n')
+#print('There are '+str(units_used)+' units used in this model')
+#print('\n')
 
 '''
 print('how many weights in model_z_position: ', model_z_position.coef_.shape)
@@ -649,7 +658,7 @@ for i in range( 10 ):
     print( str(x_acceleration_label[i]) )
 '''
 
-print('<<< Time Lag: ', time_lag, ' <<<')
+print('<<<',  'Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  <<<')
 print('\n')
 
 tEnd=time.time()
