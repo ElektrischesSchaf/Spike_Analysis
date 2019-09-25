@@ -12,6 +12,8 @@
                 - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes)  <br>
             - [Without hash unit](#Without-hash-unit)<br>
                 - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  <br>
+                - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes, without hash unit](#R-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes-without-hash-unit) <br>
+                - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes, without hash unit](#R-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes-without-hash-unit) <br>
         - [Without sorted spikes](#Without-sorted-spikes)  <br>
             - [With hash unit](#With-hash-unit)<br>
                 - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes)  <br>
