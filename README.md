@@ -1,6 +1,6 @@
 - [Spike_Analysis](#spike-analysis)
-      - [Spike trains from channel 14 for instance, has data from unit 1 to unit 3, ploted in different color.](#spike-trains-from-channel-14-for-instance--has-data-from-unit-1-to-unit-3--ploted-in-different-color)
-      - [The trajectory of fingertips with all 204,446 data points.](#the-trajectory-of-fingertips-with-all-204-446-data-points)
+      - [Spike trains from channel 14 for instance, has data from unit 1 to unit 3, ploted in different color.](#spike-trains-from-channel-14-for-instance--has-data-from-unit-1-to-unit-3--ploted-in-different-color)  
+      - [The trajectory of fingertips with all 204,446 data points.](#the-trajectory-of-fingertips-with-all-204-446-data-points)  
       - [The velocity of fingertips in three axis with all 204,446 data points.](#the-velocity-of-fingertips-in-three-axis-with-all-204-446-data-points)
       - [R square of 1 session, no time lag, zero order](#r-square-of-1-session--no-time-lag--zero-order)
       - [R square of 1 session, no time lag, zero order](#r-square-of-1-session--no-time-lag--zero-order-1)
