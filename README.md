@@ -395,7 +395,7 @@ model_y_acceleration_order_2 score:  -0.017487995298690606
 
 model_z_acceleration score:  -0.029691575320161423
 #### Without hash unit
-##### [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes, without hash unit
+##### R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes, without hash unit
 * model_x_position score:  -0.05085609125259927
 * model_x_position_order_1 score:  -0.015444630930580905
 * model_x_position_order_2 score:  0.021141524998378625
