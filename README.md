@@ -20,9 +20,9 @@
                 - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  <br>
                 - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  <br>
             - [Without hash unit](#Without-hash-unit)<br>
-                -[R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
+                - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
                 - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br> 
-                -[R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](##r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
+                - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
