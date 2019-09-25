@@ -20,7 +20,9 @@
                 - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  <br>
                 - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  <br>
             - [Without hash unit](#Without-hash-unit)<br>
-                - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br> 
+                -[R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
+                - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br> 
+                -[R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](##r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -393,6 +395,83 @@ model_y_acceleration_order_2 score:  -0.017487995298690606
 
 model_z_acceleration score:  -0.029691575320161423
 #### Without hash unit
+##### [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes, without hash unit
+* model_x_position score:  -0.05085609125259927
+* model_x_position_order_1 score:  -0.015444630930580905
+* model_x_position_order_2 score:  0.021141524998378625
+
+
+* model_y_position score:  -0.01128414092087393
+* model_y_position_order_1 score:  0.005747899596798112
+* model_y_position_order_2 score:  0.023148010072180036
+
+
+* model_z_position score:  -0.06578755229508526
+
+
+* model_x_velocity score:  0.11077588788049808
+* model_x_velocity_order_1 score:  0.16358906573918186
+* model_x_velocity_order_2 score:  0.22823459526759016
+
+
+* model_y_velocity score:  0.12791014489919272
+* model_y_velocity_order_1 score:  0.18484510081172867
+* model_y_velocity_order_2 score:  0.2326525950882119
+
+
+* model_z_velocity score: -0.009478577143966938
+
+
+* model_x_acceleration score:  0.036429703627523846
+* model_x_acceleration_order_1 score:  0.05666104928863647
+* model_x_acceleration_order_2 score:  0.054977248275219104
+
+
+* model_y_acceleration score:  0.018712762597832056
+* model_y_acceleration_order_1 score:  0.012468714600246678
+* model_y_acceleration_order_2 score:  0.01080667399793378
+
+
+* model_z_acceleration score:  -0.0063874712314186954
+##### R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes, without hash unit
+* model_x_position score:  -0.04836601105549998
+* model_x_position_order_1 score:  -0.008990075967148847
+* model_x_position_order_2 score:  0.028388016112745884
+
+
+* model_y_position score:  -0.012975784525332212
+* model_y_position_order_1 score:  0.005381449025095186
+* model_y_position_order_2 score:  0.025552618663644777
+
+
+* model_z_position score:  -0.06948823628949241
+
+
+* model_x_velocity score:  0.1484916080233507
+* model_x_velocity_order_1 score:  0.20924094993900544
+* model_x_velocity_order_2 score:  0.26087654972391994
+
+
+* model_y_velocity score:  0.15714833194981515
+* model_y_velocity_order_1 score:  0.21481675783389742
+* model_y_velocity_order_2 score:  0.2478700108110652
+
+
+* model_z_velocity score: 0.005063370562879088
+
+
+* model_x_acceleration score:  0.02228843151214277
+* model_x_acceleration_order_1 score:  0.02492359553884238
+* model_x_acceleration_order_2 score:  0.032711735329897795
+
+
+* model_y_acceleration score:  0.0035702478875359045
+* model_y_acceleration_order_1 score:  -0.009882914788453379
+* model_y_acceleration_order_2 score:  0.005632202727441582
+
+
+* model_z_acceleration score:  0.006269897173626693
+
 ##### R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit
 * model_x_position score:  -0.045323976779240605
 * model_x_position_order_1 score:  0.007364503546233414
@@ -431,3 +510,5 @@ model_z_acceleration score:  -0.029691575320161423
 
 
 * model_z_acceleration score:  -0.010821068598025674
+
+

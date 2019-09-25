@@ -25,9 +25,9 @@ units_used=0 # unit numbers that is not empty
 feature_numbers=0
 
 ###################################### Parameters should be assigned
-time_lag=2
+time_lag=0
 order=2
-with_sorted_spikes=True
+with_sorted_spikes=False
 include_hash_unit=False
 
 
