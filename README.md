@@ -5,16 +5,16 @@
         - [Trajectory of finger tip](#Trajectory-of-finger-tip)
         - [Velocity in each axis](#Velocity-in-each-axis)
     - [Coefficient of Determination (R square)](#Coefficient-of-Determination-R-square)
-    
-
-    - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  
-    - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  
-    - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes)  
-    - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes)  
-    - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes)  
-    - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  
-    - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  
-    - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit)  
+        - [With sorted spikes](#With-sorted-spikes)
+            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  
+            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  
+            - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes)  
+            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes)  
+        - [Without sorted spikes](#Without-sorted-spikes)  
+            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes)  
+            - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  
+            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  
+            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit)  
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -39,7 +39,7 @@
 * This is a test for mark down.
 ---
 ## Coefficient of Determination (R square)
-
+### With sorted spikes
 #### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes
 * model_x_position score:  0.11435610816030484
 * model_x_position_order_1 score:  0.1793229330330831
@@ -190,6 +190,7 @@
 
 
 * model_z_acceleration score:  -0.013372545863992835
+### Without sorted spikes
 #### R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes
 * model_x_position score:  -0.04880713459301789
 * model_x_position_order_1 score:  -0.01203916371172431
