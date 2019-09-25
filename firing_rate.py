@@ -15,11 +15,13 @@ from sklearn.svm import SVR
 
 file_name_1='indy_20160407_02.mat'
 tStart=time.time()
+
 #testing_data_index=5000
 #testing_data_index=10222
 testing_data_index=0 # initiate, should be 10222 in indy_20160407_02.mat
 channel_number=0
 units_used=0 # unit number that is not empty
+######################################
 time_lag=0
 order=2
 
@@ -292,6 +294,7 @@ print('order 2 fetures list shape: ', X_order_2.shape) #  X_order_2 is the featu
 print('\n')
 
 # Universal order feature matrix making
+'''
 if order==2:
     order_offset=2
     temp1=X[order_offset:,:]
@@ -319,7 +322,7 @@ if order==1:
 
 if order==0:
     pass
-
+'''
 
 # X position model fit and predict
 model_x_position = LinearRegression(fit_intercept=True)
