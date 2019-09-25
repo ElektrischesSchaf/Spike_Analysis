@@ -1,20 +1,20 @@
-- [Spike_Analysis](#Spike-Analysis)  
-    - [Test](#Test-123-456)  
-    - [Plots](#plots)
-        - [Spike Train](#Spike-Train)
-        - [Trajectory of finger tip](#Trajectory-of-finger-tip)
-        - [Velocity in each axis](#Velocity-in-each-axis)
-    - [Coefficient of Determination (R square)](#Coefficient-of-Determination-R-square)
-        - [With sorted spikes](#With-sorted-spikes)
-            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  
-            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  
-            - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes)  
-            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes)  
-        - [Without sorted spikes](#Without-sorted-spikes)  
-            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes)  
-            - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  
-            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  
-            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit)  
+- [Spike_Analysis](#Spike-Analysis)  <br>
+    - [Test](#Test-123-456)  <br>
+    - [Plots](#plots)<br>
+        - [Spike Train](#Spike-Train)<br>
+        - [Trajectory of finger tip](#Trajectory-of-finger-tip)<br>
+        - [Velocity in each axis](#Velocity-in-each-axis)<br>
+    - [Coefficient of Determination (R square)](#Coefficient-of-Determination-R-square)<br>
+        - [With sorted spikes](#With-sorted-spikes)<br>
+            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  <br>
+            - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes)  <br>
+            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes)  <br>
+            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  <br>
+        - [Without sorted spikes](#Without-sorted-spikes)  <br>
+            - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes)  <br>
+            - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  <br>
+            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  <br>
+            - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br> 
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -75,44 +75,7 @@
 * model_y_acceleration score:  0.0975972421152016
 * model_y_acceleration_order_1 score:  0.127385234152242
 * model_y_acceleration_order_2 score:  0.15411981035507605
-#### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit
-* model_x_position score:  0.05320797723806625
-* model_x_position_order_1 score:  0.12293630416573931
-* model_x_position_order_2 score:  0.16208585992536617
 
-
-* model_y_position score:  0.13634050303606504
-* model_y_position_order_1 score:  0.20914007080278063
-* model_y_position_order_2 score:  0.2679578860986862
-
-
-* model_z_position score:  -0.006950241036360438
-
-
-* model_x_velocity score:  0.19633825208865352
-* model_x_velocity_order_1 score:  0.2952228212653797
-* model_x_velocity_order_2 score:  0.3546936420158616
-
-
-* model_y_velocity score:  0.23640015547884263
-* model_y_velocity_order_1 score:  0.35997823490496894
-* model_y_velocity_order_2 score:  0.4293201745391175
-
-
-* model_z_velocity score: -0.008900279782008358
-
-
-* model_x_acceleration score:  0.0800968163147644
-* model_x_acceleration_order_1 score:  0.10394188876250465
-* model_x_acceleration_order_2 score:  0.1302247176484881
-
-
-* model_y_acceleration score:  0.07166079612263421
-* model_y_acceleration_order_1 score:  0.07574792153346999
-* model_y_acceleration_order_2 score:  0.0838878683933727
-
-
-* model_z_acceleration score:  -0.019265986133156554
 ---
 #### R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes
 * model_x_position score:  0.12569332638109
@@ -190,6 +153,44 @@
 
 
 * model_z_acceleration score:  -0.013372545863992835
+#### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit
+* model_x_position score:  0.05320797723806625
+* model_x_position_order_1 score:  0.12293630416573931
+* model_x_position_order_2 score:  0.16208585992536617
+
+
+* model_y_position score:  0.13634050303606504
+* model_y_position_order_1 score:  0.20914007080278063
+* model_y_position_order_2 score:  0.2679578860986862
+
+
+* model_z_position score:  -0.006950241036360438
+
+
+* model_x_velocity score:  0.19633825208865352
+* model_x_velocity_order_1 score:  0.2952228212653797
+* model_x_velocity_order_2 score:  0.3546936420158616
+
+
+* model_y_velocity score:  0.23640015547884263
+* model_y_velocity_order_1 score:  0.35997823490496894
+* model_y_velocity_order_2 score:  0.4293201745391175
+
+
+* model_z_velocity score: -0.008900279782008358
+
+
+* model_x_acceleration score:  0.0800968163147644
+* model_x_acceleration_order_1 score:  0.10394188876250465
+* model_x_acceleration_order_2 score:  0.1302247176484881
+
+
+* model_y_acceleration score:  0.07166079612263421
+* model_y_acceleration_order_1 score:  0.07574792153346999
+* model_y_acceleration_order_2 score:  0.0838878683933727
+
+
+* model_z_acceleration score:  -0.019265986133156554
 ### Without sorted spikes
 #### R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes
 * model_x_position score:  -0.04880713459301789
