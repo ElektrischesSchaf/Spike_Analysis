@@ -1,9 +1,11 @@
-- [Spike_Analysis](#Spike_Analysis)  
+- [Spike_Analysis](#Spike-Analysis)  
     - [Test](#Test-123-456)  
     - [Plots](#plots)
         - [Spike Train](#Spike-Train)
         - [Trajectory of finger tip](#Trajectory-of-finger-tip)
         - [Velocity in each axis](#Velocity-in-each-axis)
+    - [Coefficient of Determination (R square)](#Coefficient-of-Determination-R-square-)
+    
 
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  
     - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  
@@ -16,7 +18,7 @@
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
-# Spike_Analysis
+# Spike Analysis
 * Spikes are signals generated from the single frequency and have magnitude significantly larger than noise, the voltage drop from neural soma and axon membrane. Spike train is time-series data which comes from a neuron. In this repository I use the mat file "indy_20160407_02.mat" downloaded from [Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology](https://zenodo.org/record/583331#.XWirEigzZPb). This dataset has 96 channels and each channel contains 1-6 units.  
 
 ## Plots
@@ -35,6 +37,9 @@
 
 #### Test 123, 456
 * This is a test for mark down.
+---
+## Coefficient of Determination (R square)
+
 #### R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes
 * model_x_position score:  0.11435610816030484
 * model_x_position_order_1 score:  0.1793229330330831
