@@ -27,8 +27,8 @@ feature_numbers=0
 ###################################### Parameters should be assigned
 time_lag=0
 order=2
-with_sorted_spikes=False
-include_hash_unit=False
+with_sorted_spikes=True
+include_hash_unit=True
 
 
 def histc(X, bins):
@@ -39,7 +39,7 @@ def histc(X, bins):
     return r
 
 
-
+# Cauculating spike bins
 with h5py.File(file_name_1, 'r') as mat_file:
 
     time_stamp=mat_file['t']  
@@ -226,8 +226,6 @@ firing_rate_matrix=np.array(firing_rate_final)
 print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
 print('\n')
 
-
-
 # Without spike sorting:
 if with_sorted_spikes==False:
     no_sorting_firing_rate=firing_rate_matrix.copy()
@@ -311,97 +309,31 @@ print('\n')
 # Universal order feature matrix making
 for order_index in range(order+1):
     if order_index ==2:
+        
         order_2_offset=order_index
-        order_original_matrix=X[:-order_2_offset]
+        order_original_matrix=X[:-order_2_offset, :]
         for order_loop_index in range(1,order_2_offset):
-            temp_order_matrix=X[order_loop_index: -(order_2_offset-order_loop_index)]
+            temp_order_matrix=X[order_loop_index: -(order_2_offset-order_loop_index), :]
             order_original_matrix=np.concatenate((order_original_matrix, temp_order_matrix), axis=1)
-        final_order_matrix=X[order_2_offset:]
+        final_order_matrix=X[order_2_offset:, :]
         order_original_matrix=np.concatenate((order_original_matrix, final_order_matrix), axis=1)
         X_order_2=order_original_matrix
+        print('order 2 fetures list shape: ', X_order_2.shape) #  X_order_2 is the feature matrix, (12775, 864) in indy_20160407_02
+        print('\n')
+        
+        
 
     if order_index==1:
         order_1_offset=order_index
         temp1=X[order_1_offset:,:]
         temp2=X[:-order_1_offset,:]
         print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
-        X_order_1=np.concatenate((temp1, temp2),axis=1)
+        X_order_1=np.concatenate((temp1, temp2), axis=1)
         print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
         print('\n')
 
     if order_index==0:
         pass
-
-
-# X position model fit and predict
-model_x_position = LinearRegression(fit_intercept=True)
-model_x_position.fit( X[:testing_data_index, :], x_position_label[time_lag:testing_data_index+time_lag ] )
-if time_lag==0:
-    x_position_predict=model_x_position.predict( X[testing_data_index:] )
-else:
-    x_position_predict=model_x_position.predict( X[testing_data_index:-time_lag] )
-print('shape of x_position_predict: ', x_position_predict.shape)
-#print('shape of X[:testing_data_index, :], x_position_label[:testing_data_index ]',  X[:testing_data_index, :].shape, x_position_label[:testing_data_index ].shape )
-
-model_x_position_order_1 = LinearRegression(fit_intercept=True)
-#print('shape of X_order_1[:testing_data_index, :], x_position_label[:testing_data_index]', X_order_1[:testing_data_index, :].shape, x_position_label[:testing_data_index].shape )
-#print( 'shape of X_order_1[testing_data_index:, :], x_position_label[testing_data_index:]', X_order_1[testing_data_index:, :].shape, x_position_label[testing_data_index:].shape)
-model_x_position_order_1.fit( X_order_1[:testing_data_index, :], x_position_label[order_1_offset+time_lag:testing_data_index+order_1_offset+time_lag] )
-if time_lag==0:
-    x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:] )
-else:
-    x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:-time_lag] )
-print('shape of x_position_predict_order_1: ', x_position_predict_order_1.shape)
-
-model_x_position_order_2 = LinearRegression(fit_intercept=True)
-model_x_position_order_2.fit( X_order_2[:testing_data_index,:], x_position_label[order_2_offset+time_lag:testing_data_index+order_2_offset+time_lag])
-if time_lag==0:
-    x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:])
-else:
-    x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:-time_lag])
-print('shape of x_position_predict_order_2: ', x_position_predict_order_2.shape)
-
-# Y position model fit and predict
-model_y_position = LinearRegression(fit_intercept=True)
-model_y_position.fit( X[:testing_data_index, :], y_position_label[time_lag:testing_data_index+time_lag ])
-if time_lag==0:
-    y_position_predict=model_y_position.predict( X[testing_data_index:] )
-else:
-    y_position_predict=model_y_position.predict( X[testing_data_index:-time_lag] )
-print('shape of y_position_predict: ', y_position_predict.shape)
-
-model_y_position_order_1=LinearRegression(fit_intercept=True)
-model_y_position_order_1.fit(X_order_1[:testing_data_index, :], y_position_label[order_1_offset+time_lag:testing_data_index+order_1_offset+time_lag])
-if time_lag==0:
-    y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:] )
-else:
-    y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:-time_lag] )
-print('shape of y_position_predict_order_1: ', y_position_predict_order_1.shape)
-
-model_y_position_order_2 = LinearRegression(fit_intercept=True)
-model_y_position_order_2.fit( X_order_2[:testing_data_index,:], y_position_label[order_2_offset+time_lag:testing_data_index+order_2_offset+time_lag])
-if time_lag==0:
-    y_position_predict_order_2=model_y_position_order_2.predict(X_order_2[testing_data_index:])
-else:
-    y_position_predict_order_2=model_y_position_order_2.predict(X_order_2[testing_data_index:-time_lag])
-
-# Z position model fit and predict
-model_z_position = LinearRegression(fit_intercept=True)
-model_z_position.fit( X[:testing_data_index, :], z_position_label[time_lag:testing_data_index+time_lag ])
-if time_lag==0:
-    z_position_predict=model_z_position.predict( X[testing_data_index:] )
-else:
-    z_position_predict=model_z_position.predict( X[testing_data_index:-time_lag] )
-print('shape of z_position_predict: ', z_position_predict.shape)
-
-print('\n')
-print('How many weights in model_y_position: ', model_y_position.coef_.shape)
-#for i in range(model_y_position.coef_.shape[0] ):
-    #print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
-    #print( str(model_y_position.coef_[i]) )
-print('model_y_position intercept = ', model_y_position.intercept_)
-feature_numbers=int(model_y_position.coef_.shape[0])
-print('\n')
 
 # Calculating velocity and acceleration below
 with h5py.File(file_name_1, 'r') as mat_file:
@@ -523,10 +455,70 @@ with h5py.File(file_name_1, 'r') as mat_file:
     z_acceleration_label=finger_z_acceleration
 # Caluclating velocity and acceleration above
 
-print('shape of finger_x_velocity', finger_x_velocity.shape)
-print('lenght of x_acceleration_label', len(x_acceleration_label))
+# X position model fit and predict
+model_x_position = LinearRegression(fit_intercept=True)
+model_x_position.fit( X[:testing_data_index, :], x_position_label[time_lag:testing_data_index+time_lag ] )
+if time_lag==0:
+    x_position_predict=model_x_position.predict( X[testing_data_index:] )
+else:
+    x_position_predict=model_x_position.predict( X[testing_data_index:-time_lag] )
+print('shape of x_position_predict: ', x_position_predict.shape)
+#print('shape of X[:testing_data_index, :], x_position_label[:testing_data_index ]',  X[:testing_data_index, :].shape, x_position_label[:testing_data_index ].shape )
 
+model_x_position_order_1 = LinearRegression(fit_intercept=True)
+#print('shape of X_order_1[:testing_data_index, :], x_position_label[:testing_data_index]', X_order_1[:testing_data_index, :].shape, x_position_label[:testing_data_index].shape )
+#print( 'shape of X_order_1[testing_data_index:, :], x_position_label[testing_data_index:]', X_order_1[testing_data_index:, :].shape, x_position_label[testing_data_index:].shape)
+model_x_position_order_1.fit( X_order_1[:testing_data_index, :], x_position_label[order_1_offset+time_lag:testing_data_index+order_1_offset+time_lag] )
+if time_lag==0:
+    x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:] )
+else:
+    x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:-time_lag] )
+print('shape of x_position_predict_order_1: ', x_position_predict_order_1.shape)
+
+model_x_position_order_2 = LinearRegression(fit_intercept=True)
+model_x_position_order_2.fit( X_order_2[:testing_data_index,:], x_position_label[order_2_offset+time_lag:testing_data_index+order_2_offset+time_lag])
+if time_lag==0:
+    x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:])
+else:
+    x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:-time_lag])
+print('shape of x_position_predict_order_2: ', x_position_predict_order_2.shape)
+
+# Y position model fit and predict
+model_y_position = LinearRegression(fit_intercept=True)
+model_y_position.fit( X[:testing_data_index, :], y_position_label[time_lag:testing_data_index+time_lag ])
+if time_lag==0:
+    y_position_predict=model_y_position.predict( X[testing_data_index:] )
+else:
+    y_position_predict=model_y_position.predict( X[testing_data_index:-time_lag] )
+print('shape of y_position_predict: ', y_position_predict.shape)
+
+model_y_position_order_1=LinearRegression(fit_intercept=True)
+model_y_position_order_1.fit(X_order_1[:testing_data_index, :], y_position_label[order_1_offset+time_lag:testing_data_index+order_1_offset+time_lag])
+if time_lag==0:
+    y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:] )
+else:
+    y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:-time_lag] )
+print('shape of y_position_predict_order_1: ', y_position_predict_order_1.shape)
+
+model_y_position_order_2 = LinearRegression(fit_intercept=True)
+model_y_position_order_2.fit( X_order_2[:testing_data_index,:], y_position_label[order_2_offset+time_lag:testing_data_index+order_2_offset+time_lag])
+if time_lag==0:
+    y_position_predict_order_2=model_y_position_order_2.predict(X_order_2[testing_data_index:])
+else:
+    y_position_predict_order_2=model_y_position_order_2.predict(X_order_2[testing_data_index:-time_lag])
+
+# Z position model fit and predict
+model_z_position = LinearRegression(fit_intercept=True)
+model_z_position.fit( X[:testing_data_index, :], z_position_label[time_lag:testing_data_index+time_lag ])
+if time_lag==0:
+    z_position_predict=model_z_position.predict( X[testing_data_index:] )
+else:
+    z_position_predict=model_z_position.predict( X[testing_data_index:-time_lag] )
+print('shape of z_position_predict: ', z_position_predict.shape)
 print('\n')
+
+
+
 print('>>>', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
 print('\n')
 # X position score
@@ -660,6 +652,18 @@ for i in range( 10 ):
 '''
 
 print('<<<', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  <<<')
+print('\n')
+
+print('How many weights in model_y_position: ', model_y_position.coef_.shape[0])
+#for i in range(model_y_position.coef_.shape[0] ):
+    #print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
+    #print( str(model_y_position.coef_[i]) )
+print('model_y_position intercept = ', model_y_position.intercept_)
+feature_numbers=int(model_y_position.coef_.shape[0])
+print('\n')
+
+print('shape of finger_x_velocity', finger_x_velocity.shape)
+print('lenght of x_acceleration_label', len(x_acceleration_label))
 print('\n')
 
 tEnd=time.time()
