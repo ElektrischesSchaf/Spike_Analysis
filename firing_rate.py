@@ -455,15 +455,23 @@ with h5py.File(file_name_1, 'r') as mat_file:
     z_acceleration_label=finger_z_acceleration
 # Caluclating velocity and acceleration above
 
-# X position model fit and predict
+# Y position model fit and predict
+
+# Z position model fit and predict
+
+print('>>>', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
+print('\n')
+
+# X position model fit and score
 model_x_position = LinearRegression(fit_intercept=True)
 model_x_position.fit( X[:testing_data_index, :], x_position_label[time_lag:testing_data_index+time_lag ] )
 if time_lag==0:
     x_position_predict=model_x_position.predict( X[testing_data_index:] )
 else:
     x_position_predict=model_x_position.predict( X[testing_data_index:-time_lag] )
-print('shape of x_position_predict: ', x_position_predict.shape)
+#print('shape of x_position_predict: ', x_position_predict.shape)
 #print('shape of X[:testing_data_index, :], x_position_label[:testing_data_index ]',  X[:testing_data_index, :].shape, x_position_label[:testing_data_index ].shape )
+print('* model_x_position score: ', r2_score( x_position_label[testing_data_index+time_lag:], x_position_predict))
 
 model_x_position_order_1 = LinearRegression(fit_intercept=True)
 #print('shape of X_order_1[:testing_data_index, :], x_position_label[:testing_data_index]', X_order_1[:testing_data_index, :].shape, x_position_label[:testing_data_index].shape )
@@ -473,7 +481,8 @@ if time_lag==0:
     x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:] )
 else:
     x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:-time_lag] )
-print('shape of x_position_predict_order_1: ', x_position_predict_order_1.shape)
+#print('shape of x_position_predict_order_1: ', x_position_predict_order_1.shape)
+print('* model_x_position_order_1 score: ', r2_score( x_position_label[testing_data_index+order_1_offset+time_lag:], x_position_predict_order_1 ))
 
 model_x_position_order_2 = LinearRegression(fit_intercept=True)
 model_x_position_order_2.fit( X_order_2[:testing_data_index,:], x_position_label[order_2_offset+time_lag:testing_data_index+order_2_offset+time_lag])
@@ -481,16 +490,20 @@ if time_lag==0:
     x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:])
 else:
     x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:-time_lag])
-print('shape of x_position_predict_order_2: ', x_position_predict_order_2.shape)
+#print('shape of x_position_predict_order_2: ', x_position_predict_order_2.shape)
+print('* model_x_position_order_2 score: ', r2_score( x_position_label[testing_data_index+order_2_offset+time_lag:], x_position_predict_order_2 ))
 
-# Y position model fit and predict
+print('\n')
+
+# Y position model fit and score
 model_y_position = LinearRegression(fit_intercept=True)
 model_y_position.fit( X[:testing_data_index, :], y_position_label[time_lag:testing_data_index+time_lag ])
 if time_lag==0:
     y_position_predict=model_y_position.predict( X[testing_data_index:] )
 else:
     y_position_predict=model_y_position.predict( X[testing_data_index:-time_lag] )
-print('shape of y_position_predict: ', y_position_predict.shape)
+#print('shape of y_position_predict: ', y_position_predict.shape)
+print('* model_y_position score: ', r2_score( y_position_label[testing_data_index+time_lag:], y_position_predict))
 
 model_y_position_order_1=LinearRegression(fit_intercept=True)
 model_y_position_order_1.fit(X_order_1[:testing_data_index, :], y_position_label[order_1_offset+time_lag:testing_data_index+order_1_offset+time_lag])
@@ -498,7 +511,8 @@ if time_lag==0:
     y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:] )
 else:
     y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:-time_lag] )
-print('shape of y_position_predict_order_1: ', y_position_predict_order_1.shape)
+#print('shape of y_position_predict_order_1: ', y_position_predict_order_1.shape)
+print('* model_y_position_order_1 score: ', r2_score( y_position_label[testing_data_index+order_1_offset+time_lag:], y_position_predict_order_1 ))
 
 model_y_position_order_2 = LinearRegression(fit_intercept=True)
 model_y_position_order_2.fit( X_order_2[:testing_data_index,:], y_position_label[order_2_offset+time_lag:testing_data_index+order_2_offset+time_lag])
@@ -506,32 +520,18 @@ if time_lag==0:
     y_position_predict_order_2=model_y_position_order_2.predict(X_order_2[testing_data_index:])
 else:
     y_position_predict_order_2=model_y_position_order_2.predict(X_order_2[testing_data_index:-time_lag])
+print('* model_y_position_order_2 score: ', r2_score( y_position_label[testing_data_index+order_2_offset+time_lag:], y_position_predict_order_2 ))
+print('\n')
 
-# Z position model fit and predict
+# Z position model fit and score
 model_z_position = LinearRegression(fit_intercept=True)
 model_z_position.fit( X[:testing_data_index, :], z_position_label[time_lag:testing_data_index+time_lag ])
 if time_lag==0:
     z_position_predict=model_z_position.predict( X[testing_data_index:] )
 else:
     z_position_predict=model_z_position.predict( X[testing_data_index:-time_lag] )
-print('shape of z_position_predict: ', z_position_predict.shape)
-print('\n')
-
-
-
-print('>>>', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
-print('\n')
-# X position score
-print('* model_x_position score: ', r2_score( x_position_label[testing_data_index+time_lag:], x_position_predict))
-print('* model_x_position_order_1 score: ', r2_score( x_position_label[testing_data_index+order_1_offset+time_lag:], x_position_predict_order_1 ))
-print('* model_x_position_order_2 score: ', r2_score( x_position_label[testing_data_index+order_2_offset+time_lag:], x_position_predict_order_2 ))
-print('\n')
-# Y position score
-print('* model_y_position score: ', r2_score( y_position_label[testing_data_index+time_lag:], y_position_predict))
-print('* model_y_position_order_1 score: ', r2_score( y_position_label[testing_data_index+order_1_offset+time_lag:], y_position_predict_order_1 ))
-print('* model_y_position_order_2 score: ', r2_score( y_position_label[testing_data_index+order_2_offset+time_lag:], y_position_predict_order_2 ))
-print('\n')
-# Z position score
+#print('shape of z_position_predict: ', z_position_predict.shape)
+#print('\n')
 print('* model_z_position score: ', r2_score( z_position_label[testing_data_index+time_lag:], z_position_predict))
 print('\n')
 
