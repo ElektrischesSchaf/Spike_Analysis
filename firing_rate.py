@@ -286,6 +286,7 @@ print('fetures list shape: ',end='')
 print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
 print('\n')
 
+'''
 # Order 1 feature matrix making
 order_1_offset=1
 temp1=X[order_1_offset:,:]
@@ -294,47 +295,43 @@ print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
 X_order_1=np.concatenate((temp1, temp2),axis=1)
 print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
 print('\n')
-
+'''
+'''
 # Order 2 feature matrix making
 order_2_offset=2
 temp1=X[order_2_offset:,:]
 temp2=X[order_2_offset-1:-1,:]
 temp3=X[:-order_2_offset,:]
 print('temp1, temp2, temp3 shape: ', temp1.shape, temp2.shape, temp3.shape)
-X_order_2=np.concatenate((temp1, temp2, temp3),axis=1)
+X_order_2=np.concatenate((temp1, temp2, temp3), axis=1)
 print('order 2 fetures list shape: ', X_order_2.shape) #  X_order_2 is the feature matrix, (12775, 864) in indy_20160407_02
 print('\n')
+'''
 
 # Universal order feature matrix making
-'''
-if order==2:
-    order_offset=2
-    temp1=X[order_offset:,:]
-    temp2=X[order_offset-(order_offset-1):-(order_offset-1),:]
-    temp3=X[:-order_offset,:]
-    print('temp1, temp2, temp3 shape: ', temp1.shape, temp2.shape, temp3.shape)
-    X_order_2=np.concatenate((temp1, temp2, temp3),axis=1)
-    print('order 2 fetures list shape: ', X_order_2.shape) #  X_order_2 is the feature matrix, (12775, 864) in indy_20160407_02
-    print('\n')
+for order_index in range(order+1):
+    if order_index ==2:
+        order_2_offset=order_index
+        order_original_matrix=X[:-order_2_offset]
+        for order_loop_index in range(1,order_2_offset):
+            temp_order_matrix=X[order_loop_index: -(order_2_offset-order_loop_index)]
+            order_original_matrix=np.concatenate((order_original_matrix, temp_order_matrix), axis=1)
+        final_order_matrix=X[order_2_offset:]
+        order_original_matrix=np.concatenate((order_original_matrix, final_order_matrix), axis=1)
+        X_order_2=order_original_matrix
 
-    for i in range(order+1):
-        if i==0:
-            temp1=X[order-i:]
-        else:
-            temp1=X[order-i:-i]
+    if order_index==1:
+        order_1_offset=order_index
+        temp1=X[order_1_offset:,:]
+        temp2=X[:-order_1_offset,:]
+        print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
+        X_order_1=np.concatenate((temp1, temp2),axis=1)
+        print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
+        print('\n')
 
-if order==1:
-    order_1_offset=1
-    temp1=X[order_1_offset:,:]
-    temp2=X[:-order_1_offset,:]
-    print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
-    X_order_1=np.concatenate((temp1, temp2),axis=1)
-    print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
-    print('\n')
+    if order_index==0:
+        pass
 
-if order==0:
-    pass
-'''
 
 # X position model fit and predict
 model_x_position = LinearRegression(fit_intercept=True)
