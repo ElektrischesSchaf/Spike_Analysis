@@ -514,6 +514,7 @@ if time_lag==0:
 else:
     y_position_predict_order_2=model_y_position_order_2.predict(X_order_2[testing_data_index:-time_lag])
 print('* model_y_position_order_2 score: ', r2_score( y_position_label[testing_data_index+order_2_offset+time_lag:], y_position_predict_order_2 ))
+
 print('\n')
 
 # Z position model fit and score
@@ -524,6 +525,7 @@ if time_lag==0:
 else:
     z_position_predict=model_z_position.predict( X[testing_data_index:-time_lag] )
 print('* model_z_position score: ', r2_score( z_position_label[testing_data_index+time_lag:], z_position_predict))
+
 print('\n')
 
 # X velocity model fit and score
@@ -552,6 +554,7 @@ else:
 print('* model_x_velocity_order_2 score: ', r2_score( x_velocity_label[testing_data_index+order_2_offset+time_lag:], x_velocity_predict_order_2 ) )
 
 print('\n')
+
 # Y velocity model fit and score
 model_y_velocity = LinearRegression(fit_intercept=True)
 model_y_velocity.fit( X[:testing_data_index, :], y_velocity_label[time_lag:testing_data_index+time_lag ] )
@@ -578,6 +581,7 @@ else:
 print('* model_y_velocity_order_2 score: ', r2_score( y_velocity_label[testing_data_index+order_2_offset+time_lag:], y_velocity_predict_order_2 ) )
 
 print('\n')
+
 # Z velocity model fit and score
 model_z_velocity = LinearRegression(fit_intercept=True)
 model_z_velocity.fit( X[:testing_data_index, :], z_velocity_label[time_lag:testing_data_index+time_lag ] )
@@ -589,6 +593,7 @@ print('* model_z_velocity score: ',end='')
 print( r2_score( z_velocity_label[testing_data_index+time_lag:],z_velocity_predict) )
 
 print('\n')
+
 # X acceleration model fit and score
 model_x_acceleration = LinearRegression(fit_intercept=True)
 model_x_acceleration.fit( X[:testing_data_index, :], x_acceleration_label[time_lag:testing_data_index+time_lag ] )
@@ -604,6 +609,7 @@ x_acceleration_predict_order_2=model_x_acceleration_order_2.predict( X_order_2[t
 print('* model_x_acceleration_order_2 score: ', r2_score(x_acceleration_label[testing_data_index+order_2_offset+time_lag:], x_acceleration_predict_order_2 ))
 
 print('\n')
+
 # Y acceleration model fit and score
 model_y_acceleration = LinearRegression(fit_intercept=True)
 model_y_acceleration.fit( X[:testing_data_index, :], y_acceleration_label[time_lag:testing_data_index+time_lag ] )
@@ -619,6 +625,7 @@ y_acceleration_predict_order_2=model_y_acceleration_order_2.predict( X_order_2[t
 print('* model_y_acceleration_order_2 score: ', r2_score(y_acceleration_label[testing_data_index+order_2_offset+time_lag:], y_acceleration_predict_order_2 ))
 
 print('\n')
+
 # Z acceleration model fit and score
 model_z_acceleration = LinearRegression(fit_intercept=True)
 model_z_acceleration.fit( X[:testing_data_index, :], z_acceleration_label[time_lag:testing_data_index+time_lag ] )
@@ -630,6 +637,7 @@ print('There are '+str(units_have_value)+' units have value in this session')
 print('\n')
 
 print('<<<', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  <<<')
+
 print('\n')
 
 print('How many weights in model_y_position: ', model_y_position.coef_.shape[0])
