@@ -21,7 +21,7 @@ tStart=time.time()
 #testing_data_index=10222
 testing_data_index=0 # Should be 10222 in indy_20160407_02
 channel_number=0
-units_used=0 # unit numbers that is not empty
+units_have_value=0 # unit numbers that is not empty
 feature_numbers=0
 
 ###################################### Parameters should be assigned
@@ -212,7 +212,7 @@ with h5py.File(file_name_1, 'r') as mat_file:
 for row_index in range( len( firing_rate_cell) ):   
     if len(firing_rate_cell[row_index]):
         firing_rate_final.append( firing_rate_cell[row_index] )
-        units_used+=1
+        units_have_value+=1
 
 '''
 for row_index in range( len( firing_rate_final) ):            
@@ -278,6 +278,7 @@ print('\n')
 firing_rate_matrix=np.transpose(firing_rate_matrix)
 print('transposed firing_rate_matrix shape: ', firing_rate_matrix.shape) # (12777, 288) in indy_20160407_02
 print('\n')
+feature_numbers= firing_rate_matrix.shape[1]
 
 X=firing_rate_matrix.astype(np.float64)
 print('fetures list shape: ',end='')
@@ -469,19 +470,14 @@ if time_lag==0:
     x_position_predict=model_x_position.predict( X[testing_data_index:] )
 else:
     x_position_predict=model_x_position.predict( X[testing_data_index:-time_lag] )
-#print('shape of x_position_predict: ', x_position_predict.shape)
-#print('shape of X[:testing_data_index, :], x_position_label[:testing_data_index ]',  X[:testing_data_index, :].shape, x_position_label[:testing_data_index ].shape )
 print('* model_x_position score: ', r2_score( x_position_label[testing_data_index+time_lag:], x_position_predict))
 
 model_x_position_order_1 = LinearRegression(fit_intercept=True)
-#print('shape of X_order_1[:testing_data_index, :], x_position_label[:testing_data_index]', X_order_1[:testing_data_index, :].shape, x_position_label[:testing_data_index].shape )
-#print( 'shape of X_order_1[testing_data_index:, :], x_position_label[testing_data_index:]', X_order_1[testing_data_index:, :].shape, x_position_label[testing_data_index:].shape)
 model_x_position_order_1.fit( X_order_1[:testing_data_index, :], x_position_label[order_1_offset+time_lag:testing_data_index+order_1_offset+time_lag] )
 if time_lag==0:
     x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:] )
 else:
     x_position_predict_order_1=model_x_position_order_1.predict( X_order_1[testing_data_index:-time_lag] )
-#print('shape of x_position_predict_order_1: ', x_position_predict_order_1.shape)
 print('* model_x_position_order_1 score: ', r2_score( x_position_label[testing_data_index+order_1_offset+time_lag:], x_position_predict_order_1 ))
 
 model_x_position_order_2 = LinearRegression(fit_intercept=True)
@@ -490,7 +486,6 @@ if time_lag==0:
     x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:])
 else:
     x_position_predict_order_2=model_x_position_order_2.predict( X_order_2[testing_data_index:-time_lag])
-#print('shape of x_position_predict_order_2: ', x_position_predict_order_2.shape)
 print('* model_x_position_order_2 score: ', r2_score( x_position_label[testing_data_index+order_2_offset+time_lag:], x_position_predict_order_2 ))
 
 print('\n')
@@ -502,7 +497,6 @@ if time_lag==0:
     y_position_predict=model_y_position.predict( X[testing_data_index:] )
 else:
     y_position_predict=model_y_position.predict( X[testing_data_index:-time_lag] )
-#print('shape of y_position_predict: ', y_position_predict.shape)
 print('* model_y_position score: ', r2_score( y_position_label[testing_data_index+time_lag:], y_position_predict))
 
 model_y_position_order_1=LinearRegression(fit_intercept=True)
@@ -511,7 +505,6 @@ if time_lag==0:
     y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:] )
 else:
     y_position_predict_order_1=model_y_position_order_1.predict( X_order_1[testing_data_index:-time_lag] )
-#print('shape of y_position_predict_order_1: ', y_position_predict_order_1.shape)
 print('* model_y_position_order_1 score: ', r2_score( y_position_label[testing_data_index+order_1_offset+time_lag:], y_position_predict_order_1 ))
 
 model_y_position_order_2 = LinearRegression(fit_intercept=True)
@@ -530,8 +523,6 @@ if time_lag==0:
     z_position_predict=model_z_position.predict( X[testing_data_index:] )
 else:
     z_position_predict=model_z_position.predict( X[testing_data_index:-time_lag] )
-#print('shape of z_position_predict: ', z_position_predict.shape)
-#print('\n')
 print('* model_z_position score: ', r2_score( z_position_label[testing_data_index+time_lag:], z_position_predict))
 print('\n')
 
@@ -635,31 +626,19 @@ z_acceleration_predict=model_z_acceleration.predict( X[testing_data_index:-1-tim
 print('* model_z_acceleration score: ', r2_score( z_acceleration_label[testing_data_index+time_lag:], z_acceleration_predict))
 print('\n')
 
-#print('There are '+str(units_used)+' units used in this model')
-#print('\n')
-
-'''
-print('how many weights in model_z_position: ', model_z_position.coef_.shape)
-#for i in range(model_z_position.coef_.shape[0] ):
-for i in range(10 ):
-    print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
-    print( str(model_z_position.coef_[i]) )
-
-print('some value from x_acceleration_label ')
-for i in range( 10 ):
-    print('ACC_'+str( f'{i+1:03}' )+ ' = ',end='')
-    print( str(x_acceleration_label[i]) )
-'''
+print('There are '+str(units_have_value)+' units have value in this session')
+print('\n')
 
 print('<<<', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  <<<')
 print('\n')
 
 print('How many weights in model_y_position: ', model_y_position.coef_.shape[0])
-#for i in range(model_y_position.coef_.shape[0] ):
-    #print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
-    #print( str(model_y_position.coef_[i]) )
+'''
+for i in range(model_y_position.coef_.shape[0] ):
+    print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
+    print( str(model_y_position.coef_[i]) )
+'''
 print('model_y_position intercept = ', model_y_position.intercept_)
-feature_numbers=int(model_y_position.coef_.shape[0])
 print('\n')
 
 print('shape of finger_x_velocity', finger_x_velocity.shape)
