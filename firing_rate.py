@@ -39,7 +39,7 @@ def histc(X, bins):
     return r
 
 
-# Cauculating spike bins
+# Cauculating spike bins below
 with h5py.File(file_name_1, 'r') as mat_file:
 
     time_stamp=mat_file['t']  
@@ -207,6 +207,127 @@ with h5py.File(file_name_1, 'r') as mat_file:
         print('\n')
         print('End of one channel '+ str(channel_index+1) +'\n') 
         '''
+# Cauculating spike bins above
+
+# Calculating velocity and acceleration below
+with h5py.File(file_name_1, 'r') as mat_file:
+
+    finger_pos = mat_file['finger_pos']
+    time_stamp=mat_file['t']
+
+    numpy_finger_pos=mat_file.get('finger_pos')
+    numpy_finger_pos=np.array(numpy_finger_pos)
+    numpy_time_stamp=mat_file.get('t')
+    numpy_time_stamp=np.array(numpy_time_stamp)
+
+    print('numpy_finger_pos shape: ',end='')
+    print(numpy_finger_pos.shape) #  (3, 204446) in indy_20160407_02
+    print('numpy_time_stamp: ',end='')
+    print(numpy_time_stamp.shape)  #  (1, 204446)in indy_20160407_02
+
+
+    time_stamp_64ms=time_stamp[0][::sampling_rate]
+
+    finger_z_pos_64ms=numpy_finger_pos[0][::sampling_rate]
+    finger_x_pos_64ms=numpy_finger_pos[1][::sampling_rate]
+    finger_y_pos_64ms=numpy_finger_pos[2][::sampling_rate]
+    print('shape of finger_x_pos_64ms', finger_x_pos_64ms.shape) # (12778,) in indy_20160407_02
+
+    finger_x_velocity=[]
+    finger_y_velocity=[]
+    finger_z_velocity=[]
+    velocity_time_coor=[]
+
+    finger_x_acceleration=[]
+    finger_y_acceleration=[]
+    finger_z_acceleration=[]
+    acceleration_time_coor=[]
+
+    duration=time_stamp_64ms.shape[0]
+
+    for i in range(duration):
+        #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
+        
+        if ( i<duration-1 ):
+            #velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( 1 )
+            finger_z_velocity.append(velocity)
+
+            #velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( 1 )
+            finger_x_velocity.append(velocity)
+
+            #velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
+            velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( 1 )
+            finger_y_velocity.append(velocity)
+
+            velocity_time_coor.append( numpy_time_stamp[0][i] )
+
+        else:
+            '''
+            finger_x_velocity.append(0)
+            finger_y_velocity.append(0)
+            finger_z_velocity.append(0)
+            velocity_time_coor.append(0)
+            '''
+            pass
+    
+    finger_x_velocity=np.array(finger_x_velocity)
+    finger_x_velocity=finger_x_velocity.astype(np.float64)
+    
+    finger_y_velocity=np.array(finger_y_velocity)
+    finger_y_velocity=finger_y_velocity.astype(np.float64)
+
+    finger_z_velocity=np.array(finger_z_velocity)
+    finger_z_velocity=finger_z_velocity.astype(np.float64)
+
+    velocity_time_coor=np.array(velocity_time_coor)
+
+    duration=velocity_time_coor.shape[0]
+    for i in range(duration):
+        #print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
+
+        if(i<duration-1):
+            #acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ (velocity_time_coor[i+1]-velocity_time_coor[i] )
+            acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ ( 1 )
+            finger_x_acceleration.append(acceleration)
+
+            #acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+            acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/( 1 )
+            finger_y_acceleration.append(acceleration)
+
+            #acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+            acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/( 1 )
+            finger_z_acceleration.append(acceleration)
+
+            acceleration_time_coor.append(velocity_time_coor[i])
+        else:
+            '''
+            finger_x_acceleration.append(0)
+            finger_y_acceleration.append(0)
+            finger_z_acceleration.append(0)
+            acceleration_time_coor.append(0)
+            '''
+            pass
+    finger_x_acceleration=np.array(finger_x_acceleration)
+    finger_x_acceleration=finger_x_acceleration.astype(np.float64)
+    
+    finger_y_acceleration=np.array(finger_y_acceleration)
+    finger_y_acceleration=finger_y_acceleration.astype(np.float64)
+
+    finger_z_acceleration=np.array(finger_z_acceleration)
+    finger_z_acceleration=finger_z_acceleration.astype(np.float64)
+
+    acceleration_time_coor=np.array(acceleration_time_coor)
+
+    x_velocity_label=finger_x_velocity
+    y_velocity_label=finger_y_velocity
+    z_velocity_label=finger_z_velocity
+
+    x_acceleration_label=finger_x_acceleration
+    y_acceleration_label=finger_y_acceleration
+    z_acceleration_label=finger_z_acceleration
+# Caluclating velocity and acceleration above
 
 # Extract firing_rate_cell with rows have length bigger than zero
 for row_index in range( len( firing_rate_cell) ):   
@@ -336,125 +457,7 @@ for order_index in range(order+1):
     if order_index==0:
         pass
 
-# Calculating velocity and acceleration below
-with h5py.File(file_name_1, 'r') as mat_file:
 
-    finger_pos = mat_file['finger_pos']
-    time_stamp=mat_file['t']
-
-    numpy_finger_pos=mat_file.get('finger_pos')
-    numpy_finger_pos=np.array(numpy_finger_pos)
-    numpy_time_stamp=mat_file.get('t')
-    numpy_time_stamp=np.array(numpy_time_stamp)
-
-    print('numpy_finger_pos shape: ',end='')
-    print(numpy_finger_pos.shape) #  (3, 204446) in indy_20160407_02
-    print('numpy_time_stamp: ',end='')
-    print(numpy_time_stamp.shape)  #  (1, 204446)in indy_20160407_02
-
-
-    time_stamp_64ms=time_stamp[0][::sampling_rate]
-
-    finger_z_pos_64ms=numpy_finger_pos[0][::sampling_rate]
-    finger_x_pos_64ms=numpy_finger_pos[1][::sampling_rate]
-    finger_y_pos_64ms=numpy_finger_pos[2][::sampling_rate]
-    print('shape of finger_x_pos_64ms', finger_x_pos_64ms.shape) # (12778,) in indy_20160407_02
-
-    finger_x_velocity=[]
-    finger_y_velocity=[]
-    finger_z_velocity=[]
-    velocity_time_coor=[]
-
-    finger_x_acceleration=[]
-    finger_y_acceleration=[]
-    finger_z_acceleration=[]
-    acceleration_time_coor=[]
-
-    duration=time_stamp_64ms.shape[0]
-
-    for i in range(duration):
-        #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
-        
-        if ( i<duration-1 ):
-            #velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
-            velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( 1 )
-            finger_z_velocity.append(velocity)
-
-            #velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
-            velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( 1 )
-            finger_x_velocity.append(velocity)
-
-            #velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
-            velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( 1 )
-            finger_y_velocity.append(velocity)
-
-            velocity_time_coor.append( numpy_time_stamp[0][i] )
-
-        else:
-            '''
-            finger_x_velocity.append(0)
-            finger_y_velocity.append(0)
-            finger_z_velocity.append(0)
-            velocity_time_coor.append(0)
-            '''
-            pass
-    
-    finger_x_velocity=np.array(finger_x_velocity)
-    finger_x_velocity=finger_x_velocity.astype(np.float64)
-    
-    finger_y_velocity=np.array(finger_y_velocity)
-    finger_y_velocity=finger_y_velocity.astype(np.float64)
-
-    finger_z_velocity=np.array(finger_z_velocity)
-    finger_z_velocity=finger_z_velocity.astype(np.float64)
-
-    velocity_time_coor=np.array(velocity_time_coor)
-
-    duration=velocity_time_coor.shape[0]
-    for i in range(duration):
-        #print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
-
-        if(i<duration-1):
-            #acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ (velocity_time_coor[i+1]-velocity_time_coor[i] )
-            acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ ( 1 )
-            finger_x_acceleration.append(acceleration)
-
-            #acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
-            acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/( 1 )
-            finger_y_acceleration.append(acceleration)
-
-            #acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
-            acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/( 1 )
-            finger_z_acceleration.append(acceleration)
-
-            acceleration_time_coor.append(velocity_time_coor[i])
-        else:
-            '''
-            finger_x_acceleration.append(0)
-            finger_y_acceleration.append(0)
-            finger_z_acceleration.append(0)
-            acceleration_time_coor.append(0)
-            '''
-            pass
-    finger_x_acceleration=np.array(finger_x_acceleration)
-    finger_x_acceleration=finger_x_acceleration.astype(np.float64)
-    
-    finger_y_acceleration=np.array(finger_y_acceleration)
-    finger_y_acceleration=finger_y_acceleration.astype(np.float64)
-
-    finger_z_acceleration=np.array(finger_z_acceleration)
-    finger_z_acceleration=finger_z_acceleration.astype(np.float64)
-
-    acceleration_time_coor=np.array(acceleration_time_coor)
-
-    x_velocity_label=finger_x_velocity
-    y_velocity_label=finger_y_velocity
-    z_velocity_label=finger_z_velocity
-
-    x_acceleration_label=finger_x_acceleration
-    y_acceleration_label=finger_y_acceleration
-    z_acceleration_label=finger_z_acceleration
-# Caluclating velocity and acceleration above
 
 # Y position model fit and predict
 
