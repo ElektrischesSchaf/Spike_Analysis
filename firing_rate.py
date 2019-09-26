@@ -457,12 +457,6 @@ for order_index in range(order+1):
     if order_index==0:
         pass
 
-
-
-# Y position model fit and predict
-
-# Z position model fit and predict
-
 print('>>>', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
 print('\n')
 
