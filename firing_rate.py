@@ -429,10 +429,11 @@ print('\n')
 '''
 
 # Universal order feature matrix making
+print('In time lag: ', time_lag, '\n')
 for order_index in range(order+1):
     if order_index ==2:
         
-        order_2_offset=order_index
+        order_2_offset=order_index # order_2_offset should be deprecated
         order_original_matrix=X[:-order_index, :]
         for order_loop_index in range(1, order_index):
             temp_order_matrix=X[order_loop_index: -(order_index-order_loop_index), :]
@@ -440,7 +441,7 @@ for order_index in range(order+1):
         final_order_matrix=X[order_index:, :]
         order_original_matrix=np.concatenate((order_original_matrix, final_order_matrix), axis=1)
         X_order_2=order_original_matrix.copy() # X_order_2 should be deprecated        
-        print('order 2 fetures list shape: ', X_order_2.shape) #  X_order_2 is the feature matrix, (12775, 864) in indy_20160407_02
+        #print('order 2 fetures list shape: ', X_order_2.shape) #  X_order_2 is the feature matrix, (12775, 864) in indy_20160407_02
         print('\n')
 
         # New
@@ -462,18 +463,27 @@ for order_index in range(order+1):
             y_position_predict=model_y_position.predict( XX[testing_data_index:-time_lag] )
         print('* model_y_position score in order ', order_index, ': ', r2_score(  y_position_label[testing_data_index+order_index+time_lag:], y_position_predict ))
 
+        model_z_position = LinearRegression(fit_intercept=True)
+        model_z_position.fit( XX[:testing_data_index, :], z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+        if time_lag==0:
+            z_position_predict=model_z_position.predict( XX[testing_data_index:] )
+        else:
+            z_position_predict=model_z_position.predict( XX[testing_data_index:-time_lag] )
+        print('* model_z_position score in order ', order_index, ': ', r2_score(  z_position_label[testing_data_index+order_index+time_lag:], z_position_predict ))
+
     if order_index==1:
 
-        order_1_offset=order_index
+        order_1_offset=order_index # order_1_offset should be deprecated
         temp1=X[order_index:,:]
         temp2=X[:-order_index,:]
-        print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
-        X_order_1=np.concatenate((temp1, temp2), axis=1)  # should be changed
-        print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
+        #print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
+        X_order_1=np.concatenate((temp1, temp2), axis=1)  # X_order_1 should be deprecated
+        #print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
         print('\n')
 
         # New
         XX=np.concatenate((temp1, temp2), axis=1)
+
         model_x_position = LinearRegression(fit_intercept=True)
         model_x_position.fit( XX[:testing_data_index, :], x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
         if time_lag==0:
@@ -482,8 +492,26 @@ for order_index in range(order+1):
             x_position_predict=model_x_position.predict( XX[testing_data_index:-time_lag] )
         print('* model_x_position score in order ', order_index, ': ', r2_score(  x_position_label[testing_data_index+order_index+time_lag:], x_position_predict ))
 
+        model_y_position = LinearRegression(fit_intercept=True)
+        model_y_position.fit( XX[:testing_data_index, :], y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+        if time_lag==0:
+            y_position_predict=model_y_position.predict( XX[testing_data_index:] )
+        else:
+            y_position_predict=model_y_position.predict( XX[testing_data_index:-time_lag] )
+        print('* model_y_position score in order ', order_index, ': ', r2_score(  y_position_label[testing_data_index+order_index+time_lag:], y_position_predict ))
+
+        model_z_position = LinearRegression(fit_intercept=True)
+        model_z_position.fit( XX[:testing_data_index, :], z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+        if time_lag==0:
+            z_position_predict=model_z_position.predict( XX[testing_data_index:] )
+        else:
+            z_position_predict=model_z_position.predict( XX[testing_data_index:-time_lag] )
+        print('* model_z_position score in order ', order_index, ': ', r2_score(  z_position_label[testing_data_index+order_index+time_lag:], z_position_predict ))
+
     if order_index==0:
         #pass
+
+        # New
         model_x_position = LinearRegression(fit_intercept=True)
         model_x_position.fit( X[:testing_data_index, :], x_position_label[time_lag:testing_data_index+time_lag ] )
         if time_lag==0:
@@ -492,7 +520,23 @@ for order_index in range(order+1):
             x_position_predict=model_x_position.predict( X[testing_data_index:-time_lag] )
         print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label[testing_data_index+time_lag:], x_position_predict))
 
-print('>>>', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
+        model_y_position = LinearRegression(fit_intercept=True)
+        model_y_position.fit( X[:testing_data_index, :], y_position_label[time_lag:testing_data_index+time_lag ] )
+        if time_lag==0:
+            y_position_predict=model_y_position.predict( X[testing_data_index:] )
+        else:
+            y_position_predict=model_y_position.predict( X[testing_data_index:-time_lag] )
+        print('* model_y_position score in order ', order_index, ': ', r2_score( y_position_label[testing_data_index+time_lag:], y_position_predict))
+
+        model_z_position = LinearRegression(fit_intercept=True)
+        model_z_position.fit( X[:testing_data_index, :], z_position_label[time_lag:testing_data_index+time_lag ] )
+        if time_lag==0:
+            z_position_predict=model_z_position.predict( X[testing_data_index:] )
+        else:
+            z_position_predict=model_z_position.predict( X[testing_data_index:-time_lag] )
+        print('* model_z_position score in order ', order_index, ': ', r2_score( z_position_label[testing_data_index+time_lag:], z_position_predict))
+
+print('\n>>>', 'Session(s): ', file_name_1,  '. Time Lag: ', time_lag, '. Feature numbers: ', feature_numbers, '. Include hash unit: ', include_hash_unit,'.  >>>')
 print('\n')
 
 # X position model fit and score
