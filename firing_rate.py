@@ -431,7 +431,7 @@ print('\n')
 # Universal order feature matrix making
 print('In time lag: ', time_lag, '\n')
 for order_index in range(order+1):
-    if order_index ==2:
+    if order_index >=2:
         
         order_2_offset=order_index # order_2_offset should be deprecated
         order_original_matrix=X[:-order_index, :]
