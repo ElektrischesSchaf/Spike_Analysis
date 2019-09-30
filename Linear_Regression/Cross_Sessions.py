@@ -35,8 +35,8 @@ the_sampling_rate=16
 file_numbers=1
 time_lag=0
 order=2
-with_sorted_spikes=True
-include_hash_unit=True
+with_sorted_spikes=False
+include_hash_unit=False
 
 
 def histc(X, bins):
@@ -213,7 +213,7 @@ def get_spike_bins_matrix(the_file_name, the_sampling_rate):
             print('\n')
             print('End of one channel '+ str(channel_index+1) +'\n') 
             '''
-    return [firing_rate_cell, testing_data_index, x_position_label, y_position_label, z_position_label]
+    return [firing_rate_cell, channel_number, testing_data_index, x_position_label, y_position_label, z_position_label]
 
 def get_labels(the_file_name, the_sampling_rate):
     with h5py.File(the_file_name, 'r') as mat_file:
@@ -334,7 +334,7 @@ def get_labels(the_file_name, the_sampling_rate):
         z_acceleration_label=finger_z_acceleration
     return [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]
 
-[firing_rate_cell, testing_data_index, x_position_label, y_position_label, z_position_label]=get_spike_bins_matrix(file_list[1], the_sampling_rate)
+[firing_rate_cell, channel_number, testing_data_index, x_position_label, y_position_label, z_position_label]=get_spike_bins_matrix(file_list[1], the_sampling_rate)
 [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=get_labels(file_list[1], the_sampling_rate)
 
 # Extract firing_rate_cell with rows have length bigger than zero
@@ -415,24 +415,11 @@ print('fetures list shape: ',end='')
 print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
 print('\n')
 
+
 # Organizing feature Matrix and labels
-'''
-for order_index in range(order+1):
-    if order_index >=2:
-
-    if order_index==1:
-
-    if order_index==0:.
-'''
-
-# Universal order feature matrix making
-print('In time lag: ', time_lag, '\n')
-
 order_index=order
 
 if order_index >=2:
-    
-    order_2_offset=order_index # order_2_offset should be deprecated
     order_original_matrix=X[:-order_index, :]
     for order_loop_index in range(1, order_index):
         temp_order_matrix=X[order_loop_index: -(order_index-order_loop_index), :]
@@ -441,45 +428,72 @@ if order_index >=2:
     order_original_matrix=np.concatenate((order_original_matrix, final_order_matrix), axis=1)
     print('\n')
 
-    # New
     XX=order_original_matrix.copy()
 
-    '''
     X_for_training=XX[:testing_data_index, :]
-    for file_number_index in range(0, file_numbers-2 ):
-    X_for_testing=XX[testing_data_index:-time_lag]
-    '''
+    X_for_prediction=XX[testing_data_index:]
+
+    x_position_label_training=x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
+    x_position_label_testing=x_position_label[testing_data_index+order_index+time_lag:]
+
+    y_position_label_training=y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
+    y_position_label_testing=y_position_label[testing_data_index+order_index+time_lag:]
+
+    z_position_label_training=z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
+    z_position_label_testing=z_position_label[testing_data_index+order_index+time_lag:]
+
+    # TODO x, y z velocity and acceleration labels...
+
+if order_index==1:
+    temp1=X[order_index:,:]
+    temp2=X[:-order_index,:]
+    #print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
+    X_order_1=np.concatenate((temp1, temp2), axis=1)  # X_order_1 should be deprecated
+    #print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
+    print('\n')
+    XX=np.concatenate((temp1, temp2), axis=1)
+    X_for_training=XX[:testing_data_index, :]
+    X_for_prediction=XX[testing_data_index:]
+if order_index==0:
+    pass
+    X_for_training=X[:testing_data_index, :]
+    X_for_prediction=X[testing_data_index:]
+
+# All models fit and predict, show R2 score
+print('In time lag: ', time_lag, '\n')
+
+if order_index >=2:
 
     model_x_position = LinearRegression(fit_intercept=True)
-    model_x_position.fit( XX[:testing_data_index, :], x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_x_position.fit( X_for_training, x_position_label_training )
     if time_lag==0:
-        x_position_predict=model_x_position.predict( XX[testing_data_index:] )
+        x_position_predict=model_x_position.predict( X_for_prediction )
     else:
         x_position_predict=model_x_position.predict( XX[testing_data_index:-time_lag] )
-    print('* model_x_position score in order ', order_index, ': ', r2_score(  x_position_label[testing_data_index+order_index+time_lag:], x_position_predict ))
+    print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
 
     model_y_position = LinearRegression(fit_intercept=True)
-    model_y_position.fit( XX[:testing_data_index, :], y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_y_position.fit( X_for_training, y_position_label_training )
     if time_lag==0:
-        y_position_predict=model_y_position.predict( XX[testing_data_index:] )
+        y_position_predict=model_y_position.predict( X_for_prediction )
     else:
         y_position_predict=model_y_position.predict( XX[testing_data_index:-time_lag] )
-    print('* model_y_position score in order ', order_index, ': ', r2_score(  y_position_label[testing_data_index+order_index+time_lag:], y_position_predict ))
+    print('* model_y_position score in order ', order_index, ': ', r2_score( y_position_label_testing, y_position_predict ))
 
     model_z_position = LinearRegression(fit_intercept=True)
-    model_z_position.fit( XX[:testing_data_index, :], z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_z_position.fit( X_for_training, z_position_label_training )
     if time_lag==0:
-        z_position_predict=model_z_position.predict( XX[testing_data_index:] )
+        z_position_predict=model_z_position.predict( X_for_prediction )
     else:
         z_position_predict=model_z_position.predict( XX[testing_data_index:-time_lag] )
-    print('* model_z_position score in order ', order_index, ': ', r2_score(  z_position_label[testing_data_index+order_index+time_lag:], z_position_predict ))
+    print('* model_z_position score in order ', order_index, ': ', r2_score( z_position_label_testing, z_position_predict ))
 
     print('\n')
 
     model_x_velocity=LinearRegression(fit_intercept=True)
     model_x_velocity.fit( XX[:testing_data_index,:], x_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     if time_lag==0:
-        x_velocity_predict=model_x_velocity.predict(XX[testing_data_index:])
+        x_velocity_predict=model_x_velocity.predict(X_for_prediction)
     else:
         x_velocity_predict=model_x_velocity.predict(XX[testing_data_index:-time_lag])
     print('* model_x_velocity score in order ', order_index, ': ', r2_score( x_velocity_label[testing_data_index+order_index+time_lag:], x_velocity_predict ) )
@@ -487,7 +501,7 @@ if order_index >=2:
     model_y_velocity=LinearRegression(fit_intercept=True)
     model_y_velocity.fit( XX[:testing_data_index,:], y_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     if time_lag==0:
-        y_velocity_predict=model_y_velocity.predict(XX[testing_data_index:])
+        y_velocity_predict=model_y_velocity.predict(X_for_prediction)
     else:
         y_velocity_predict=model_y_velocity.predict(XX[testing_data_index:-time_lag])
     print('* model_y_velocity score in order ', order_index, ': ', r2_score( y_velocity_label[testing_data_index+order_index+time_lag:], y_velocity_predict ) )
@@ -495,7 +509,7 @@ if order_index >=2:
     model_z_velocity=LinearRegression(fit_intercept=True)
     model_z_velocity.fit( XX[:testing_data_index,:], z_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     if time_lag==0:
-        z_velocity_predict=model_z_velocity.predict(XX[testing_data_index:])
+        z_velocity_predict=model_z_velocity.predict(X_for_prediction)
     else:
         z_velocity_predict=model_z_velocity.predict(XX[testing_data_index:-time_lag])
     print('* model_z_velocity score in order ', order_index, ': ', r2_score( z_velocity_label[testing_data_index+order_index+time_lag:], z_velocity_predict ) )
@@ -503,54 +517,43 @@ if order_index >=2:
     print('\n')
 
     model_x_acceleration = LinearRegression(fit_intercept=True)
-    model_x_acceleration.fit( XX[:testing_data_index, :], x_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_x_acceleration.fit( X_for_training, x_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     x_acceleration_predict=model_x_acceleration.predict(  XX[testing_data_index:-1-time_lag] )
     print('* model_x_acceleration score in order ', order_index, ': ', r2_score(x_acceleration_label[testing_data_index+order_index+time_lag:], x_acceleration_predict ))
 
     model_y_acceleration = LinearRegression(fit_intercept=True)
-    model_y_acceleration.fit( XX[:testing_data_index, :], y_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_y_acceleration.fit( X_for_training, y_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     y_acceleration_predict=model_y_acceleration.predict(  XX[testing_data_index:-1-time_lag] )
     print('* model_y_acceleration score in order ', order_index, ': ', r2_score(y_acceleration_label[testing_data_index+order_index+time_lag:], y_acceleration_predict ))
 
     model_z_acceleration = LinearRegression(fit_intercept=True)
-    model_z_acceleration.fit( XX[:testing_data_index, :], z_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_z_acceleration.fit( X_for_training, z_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     z_acceleration_predict=model_z_acceleration.predict(  XX[testing_data_index:-1-time_lag] )
     print('* model_z_acceleration score in order ', order_index, ': ', r2_score(z_acceleration_label[testing_data_index+order_index+time_lag:], z_acceleration_predict ))
 
 
 if order_index==1:
 
-    order_1_offset=order_index # order_1_offset should be deprecated
-    temp1=X[order_index:,:]
-    temp2=X[:-order_index,:]
-    #print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
-    X_order_1=np.concatenate((temp1, temp2), axis=1)  # X_order_1 should be deprecated
-    #print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
-    print('\n')
-
-    # New
-    XX=np.concatenate((temp1, temp2), axis=1)
-
     model_x_position = LinearRegression(fit_intercept=True)
-    model_x_position.fit( XX[:testing_data_index, :], x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_x_position.fit( X_for_training, x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     if time_lag==0:
-        x_position_predict=model_x_position.predict( XX[testing_data_index:] )
+        x_position_predict=model_x_position.predict( X_for_prediction )
     else:
         x_position_predict=model_x_position.predict( XX[testing_data_index:-time_lag] )
     print('* model_x_position score in order ', order_index, ': ', r2_score(  x_position_label[testing_data_index+order_index+time_lag:], x_position_predict ))
 
     model_y_position = LinearRegression(fit_intercept=True)
-    model_y_position.fit( XX[:testing_data_index, :], y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_y_position.fit( X_for_training, y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     if time_lag==0:
-        y_position_predict=model_y_position.predict( XX[testing_data_index:] )
+        y_position_predict=model_y_position.predict( X_for_prediction )
     else:
         y_position_predict=model_y_position.predict( XX[testing_data_index:-time_lag] )
     print('* model_y_position score in order ', order_index, ': ', r2_score(  y_position_label[testing_data_index+order_index+time_lag:], y_position_predict ))
 
     model_z_position = LinearRegression(fit_intercept=True)
-    model_z_position.fit( XX[:testing_data_index, :], z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_z_position.fit( X_for_training, z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     if time_lag==0:
-        z_position_predict=model_z_position.predict( XX[testing_data_index:] )
+        z_position_predict=model_z_position.predict( X_for_prediction )
     else:
         z_position_predict=model_z_position.predict( XX[testing_data_index:-time_lag] )
     print('* model_z_position score in order ', order_index, ': ', r2_score(  z_position_label[testing_data_index+order_index+time_lag:], z_position_predict ))
@@ -560,7 +563,7 @@ if order_index==1:
     model_x_velocity=LinearRegression(fit_intercept=True)
     model_x_velocity.fit( XX[:testing_data_index,:], x_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag])
     if time_lag==0:
-        x_velocity_predict=model_x_velocity.predict(XX[testing_data_index:])
+        x_velocity_predict=model_x_velocity.predict(X_for_prediction)
     else:
         x_velocity_predict=model_x_velocity.predict(XX[testing_data_index:-time_lag])
     print('* model_x_velocity score in order ', order_index, ': ', r2_score(  x_velocity_label[testing_data_index+order_index+time_lag:], x_velocity_predict))
@@ -568,7 +571,7 @@ if order_index==1:
     model_y_velocity=LinearRegression(fit_intercept=True)
     model_y_velocity.fit( XX[:testing_data_index,:], y_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag])
     if time_lag==0:
-        y_velocity_predict=model_y_velocity.predict(XX[testing_data_index:])
+        y_velocity_predict=model_y_velocity.predict(X_for_prediction)
     else:
         y_velocity_predict=model_y_velocity.predict(XX[testing_data_index:-time_lag])
     print('* model_y_velocity score in order ', order_index, ': ', r2_score(  y_velocity_label[testing_data_index+order_index+time_lag:], y_velocity_predict))
@@ -576,7 +579,7 @@ if order_index==1:
     model_z_velocity=LinearRegression(fit_intercept=True)
     model_z_velocity.fit( XX[:testing_data_index,:], z_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag])
     if time_lag==0:
-        z_velocity_predict=model_z_velocity.predict(XX[testing_data_index:])
+        z_velocity_predict=model_z_velocity.predict(X_for_prediction)
     else:
         z_velocity_predict=model_z_velocity.predict(XX[testing_data_index:-time_lag])
     print('* model_z_velocity score in order ', order_index, ': ', r2_score(  z_velocity_label[testing_data_index+order_index+time_lag:], z_velocity_predict))
@@ -584,45 +587,43 @@ if order_index==1:
     print('\n')
 
     model_x_acceleration = LinearRegression(fit_intercept=True)
-    model_x_acceleration.fit( XX[:testing_data_index, :], x_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_x_acceleration.fit( X_for_training, x_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     x_acceleration_predict=model_x_acceleration.predict( XX[testing_data_index:-1-time_lag] )
     print('* model_x_acceleration score in order ', order_index, ': ', r2_score(x_acceleration_label[testing_data_index+order_index+time_lag:], x_acceleration_predict ))
 
     model_y_acceleration = LinearRegression(fit_intercept=True)
-    model_y_acceleration.fit( XX[:testing_data_index, :], y_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_y_acceleration.fit( X_for_training, y_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     y_acceleration_predict=model_y_acceleration.predict( XX[testing_data_index:-1-time_lag] )
     print('* model_y_acceleration score in order ', order_index, ': ', r2_score(y_acceleration_label[testing_data_index+order_index+time_lag:], y_acceleration_predict ))
 
     model_z_acceleration = LinearRegression(fit_intercept=True)
-    model_z_acceleration.fit( XX[:testing_data_index, :], z_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
+    model_z_acceleration.fit( X_for_training, z_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag] )
     z_acceleration_predict=model_z_acceleration.predict( XX[testing_data_index:-1-time_lag] )
     print('* model_z_acceleration score in order ', order_index, ': ', r2_score(z_acceleration_label[testing_data_index+order_index+time_lag:], z_acceleration_predict ))
 
 
 if order_index==0:
-    #pass
 
-    # New
     model_x_position = LinearRegression(fit_intercept=True)
-    model_x_position.fit( X[:testing_data_index, :], x_position_label[time_lag:testing_data_index+time_lag ] )
+    model_x_position.fit( X_for_training, x_position_label[time_lag:testing_data_index+time_lag ] )
     if time_lag==0:
-        x_position_predict=model_x_position.predict( X[testing_data_index:] )
+        x_position_predict=model_x_position.predict( X_for_prediction )
     else:
         x_position_predict=model_x_position.predict( X[testing_data_index:-time_lag] )
     print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label[testing_data_index+time_lag:], x_position_predict))
 
     model_y_position = LinearRegression(fit_intercept=True)
-    model_y_position.fit( X[:testing_data_index, :], y_position_label[time_lag:testing_data_index+time_lag ] )
+    model_y_position.fit( X_for_training, y_position_label[time_lag:testing_data_index+time_lag ] )
     if time_lag==0:
-        y_position_predict=model_y_position.predict( X[testing_data_index:] )
+        y_position_predict=model_y_position.predict( X_for_prediction )
     else:
         y_position_predict=model_y_position.predict( X[testing_data_index:-time_lag] )
     print('* model_y_position score in order ', order_index, ': ', r2_score( y_position_label[testing_data_index+time_lag:], y_position_predict))
 
     model_z_position = LinearRegression(fit_intercept=True)
-    model_z_position.fit( X[:testing_data_index, :], z_position_label[time_lag:testing_data_index+time_lag ] )
+    model_z_position.fit( X_for_training, z_position_label[time_lag:testing_data_index+time_lag ] )
     if time_lag==0:
-        z_position_predict=model_z_position.predict( X[testing_data_index:] )
+        z_position_predict=model_z_position.predict( X_for_prediction )
     else:
         z_position_predict=model_z_position.predict( X[testing_data_index:-time_lag] )
     print('* model_z_position score in order ', order_index, ': ', r2_score( z_position_label[testing_data_index+time_lag:], z_position_predict))
@@ -630,25 +631,25 @@ if order_index==0:
     print('\n')
 
     model_x_velocity = LinearRegression(fit_intercept=True)
-    model_x_velocity.fit( X[:testing_data_index, :], x_velocity_label[time_lag:testing_data_index+time_lag ] )
+    model_x_velocity.fit( X_for_training, x_velocity_label[time_lag:testing_data_index+time_lag ] )
     if time_lag==0:
-        x_velocity_predict=model_x_velocity.predict( X[testing_data_index:] )
+        x_velocity_predict=model_x_velocity.predict( X_for_prediction )
     else:
         x_velocity_predict=model_x_velocity.predict( X[testing_data_index:-time_lag] )
     print('* model_x_velocity score in order ', order_index, ': ', r2_score(  x_velocity_label[testing_data_index+time_lag:], x_velocity_predict))
 
     model_y_velocity = LinearRegression(fit_intercept=True)
-    model_y_velocity.fit( X[:testing_data_index, :], y_velocity_label[time_lag:testing_data_index+time_lag ] )
+    model_y_velocity.fit( X_for_training, y_velocity_label[time_lag:testing_data_index+time_lag ] )
     if time_lag==0:
-        y_velocity_predict=model_y_velocity.predict( X[testing_data_index:] )
+        y_velocity_predict=model_y_velocity.predict( X_for_prediction )
     else:
         y_velocity_predict=model_y_velocity.predict( X[testing_data_index:-time_lag] )
     print('* model_y_velocity score in order ', order_index, ': ', r2_score(  y_velocity_label[testing_data_index+time_lag:], y_velocity_predict))
 
     model_z_velocity = LinearRegression(fit_intercept=True)
-    model_z_velocity.fit( X[:testing_data_index, :], z_velocity_label[time_lag:testing_data_index+time_lag ] )
+    model_z_velocity.fit( X_for_training, z_velocity_label[time_lag:testing_data_index+time_lag ] )
     if time_lag==0:
-        z_velocity_predict=model_z_velocity.predict( X[testing_data_index:] )
+        z_velocity_predict=model_z_velocity.predict( X_for_prediction )
     else:
         z_velocity_predict=model_z_velocity.predict( X[testing_data_index:-time_lag] )
     print('* model_z_velocity score in order ', order_index, ': ', r2_score(  z_velocity_label[testing_data_index+time_lag:], z_velocity_predict))
@@ -656,17 +657,17 @@ if order_index==0:
     print('\n')
 
     model_x_acceleration = LinearRegression(fit_intercept=True)
-    model_x_acceleration.fit( X[:testing_data_index, :], x_acceleration_label[time_lag:testing_data_index+time_lag ] )
+    model_x_acceleration.fit( X_for_training, x_acceleration_label[time_lag:testing_data_index+time_lag ] )
     x_acceleration_predict=model_x_acceleration.predict( X[testing_data_index:-1-time_lag] )
     print('* model_x_acceleration score in order ', order_index, ': ', r2_score(x_acceleration_label[testing_data_index+time_lag:], x_acceleration_predict ))
 
     model_y_acceleration = LinearRegression(fit_intercept=True)
-    model_y_acceleration.fit( X[:testing_data_index, :], y_acceleration_label[time_lag:testing_data_index+time_lag ] )
+    model_y_acceleration.fit( X_for_training, y_acceleration_label[time_lag:testing_data_index+time_lag ] )
     y_acceleration_predict=model_y_acceleration.predict( X[testing_data_index:-1-time_lag] )
     print('* model_y_acceleration score in order ', order_index, ': ', r2_score(y_acceleration_label[testing_data_index+time_lag:], y_acceleration_predict ))
 
     model_z_acceleration = LinearRegression(fit_intercept=True)
-    model_z_acceleration.fit( X[:testing_data_index, :], z_acceleration_label[time_lag:testing_data_index+time_lag ] )
+    model_z_acceleration.fit( X_for_training, z_acceleration_label[time_lag:testing_data_index+time_lag ] )
     z_acceleration_predict=model_z_acceleration.predict( X[testing_data_index:-1-time_lag] )
     print('* model_z_acceleration score in order ', order_index, ': ', r2_score(z_acceleration_label[testing_data_index+time_lag:], z_acceleration_predict ))
 
