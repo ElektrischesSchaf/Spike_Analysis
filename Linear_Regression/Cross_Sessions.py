@@ -474,6 +474,9 @@ if order_index==1:
     X_for_prediction=XX[testing_data_index:]
     X_for_prediction_with_time_lag=XX[testing_data_index:-time_lag]
     X_for_prediction_with_time_lag_2=XX[testing_data_index:-1-time_lag]
+
+    # TODO pos, vel, acc labels
+
 if order_index==0:
     pass
     X_for_training=X[:testing_data_index, :]
