@@ -28,11 +28,11 @@ tStart=time.time()
 testing_data_index=0 # Should be 10222 in indy_20160407_02
 channel_number=0
 units_have_value=0 # unit numbers that is not empty
-feature_numbers=0
+feature_numbers=288 # TODO must fix this
 
 ###################################### Parameters should be assigned
 the_sampling_rate=16
-file_numbers=1
+file_numbers=6
 time_lag=0
 order=0
 with_sorted_spikes=True
@@ -59,14 +59,14 @@ def get_spike_bins_matrix(the_file_name, the_sampling_rate):
 
         print('spikes shape: ', spikes.shape) #  (3, 192) in indy_20160407_02
         channel_number=int(spikes.shape[1] / 2) # 96 in indy_20160407_02
-
-        numpy_finger_pos=mat_file.get('finger_pos')
-        numpy_finger_pos=np.array(numpy_finger_pos)
-        print('numpy_finger_pos.shape: ', numpy_finger_pos.shape) # (3, 204446) in indy_20160407_02
-
-        finger_z_coor=numpy_finger_pos[0][:]
-        finger_x_coor=numpy_finger_pos[1][:]
-        finger_y_coor=numpy_finger_pos[2][:]
+        numpy_finger_pos_1=np.empty([])
+        numpy_finger_pos_GET_1=mat_file.get('finger_pos')
+        numpy_finger_pos_1=np.array(numpy_finger_pos_GET_1)
+        print('numpy_finger_pos_1.shape: ', numpy_finger_pos_1.shape) # (3, 204446) in indy_20160407_02
+        
+        finger_z_coor=numpy_finger_pos_1[0][:]
+        finger_x_coor=numpy_finger_pos_1[1][:]
+        finger_y_coor=numpy_finger_pos_1[2][:]
 
         x_position_label=[]
         y_position_label=[]
@@ -220,22 +220,24 @@ def get_labels(the_file_name, the_sampling_rate):
         finger_pos = mat_file['finger_pos']
         time_stamp=mat_file['t']
 
-        numpy_finger_pos=mat_file.get('finger_pos')
-        numpy_finger_pos=np.array(numpy_finger_pos)
+        numpy_finger_pos_GET_2=mat_file.get('finger_pos')
+        numpy_finger_pos_2=np.array(numpy_finger_pos_GET_2)
+
         numpy_time_stamp=mat_file.get('t')
         numpy_time_stamp=np.array(numpy_time_stamp)
 
-        print('numpy_finger_pos shape: ',end='')
-        print(numpy_finger_pos.shape) #  (3, 204446) in indy_20160407_02
+        print('numpy_finger_pos_2 shape: ', numpy_finger_pos_2.shape) #  (3, 204446) in indy_20160407_02
+        print('\n') 
+
         print('numpy_time_stamp: ',end='')
         print(numpy_time_stamp.shape)  #  (1, 204446)in indy_20160407_02
 
         sampling_rate=the_sampling_rate
         time_stamp_64ms=time_stamp[0][::sampling_rate]
 
-        finger_z_pos_64ms=numpy_finger_pos[0][::sampling_rate]
-        finger_x_pos_64ms=numpy_finger_pos[1][::sampling_rate]
-        finger_y_pos_64ms=numpy_finger_pos[2][::sampling_rate]
+        finger_z_pos_64ms=numpy_finger_pos_2[0][::sampling_rate]
+        finger_x_pos_64ms=numpy_finger_pos_2[1][::sampling_rate]
+        finger_y_pos_64ms=numpy_finger_pos_2[2][::sampling_rate]
         print('shape of finger_x_pos_64ms', finger_x_pos_64ms.shape) # (12778,) in indy_20160407_02
 
         finger_x_velocity=[]
@@ -334,209 +336,248 @@ def get_labels(the_file_name, the_sampling_rate):
         z_acceleration_label=finger_z_acceleration
     return [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]
 
-[firing_rate_cell, channel_number, testing_data_index, x_position_label, y_position_label, z_position_label]=get_spike_bins_matrix(file_list[0], the_sampling_rate)
-[x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=get_labels(file_list[0], the_sampling_rate)
+X_for_training = np.empty([0, feature_numbers*(order+1)])
+X_for_prediction = np.empty([0, feature_numbers*(order+1)])
+X_for_prediction_with_time_lag = np.empty([0, feature_numbers*(order+1)])
+X_for_prediction_with_time_lag_2 = np.empty([0, feature_numbers*(order+1)])
 
-# Extract firing_rate_cell with rows have length bigger than zero
-firing_rate_final=[] # not[[]]
-for row_index in range( len( firing_rate_cell) ):   
-    if len(firing_rate_cell[row_index]):
-        firing_rate_final.append( firing_rate_cell[row_index] )
-        units_have_value+=1
+x_position_label_training= np.empty([0])
+x_position_label_testing= np.empty([0])
 
-'''
-for row_index in range( len( firing_rate_final) ):            
-    print('length of firing_rate_final['+ str(row_index) +']: ',end='')
-    print(len(firing_rate_final[row_index]))
-'''
+y_position_label_training= np.empty([0])
+y_position_label_testing= np.empty([0])
 
-print('\n')
+z_position_label_training= np.empty([0])
+z_position_label_testing= np.empty([0])
 
-firing_rate_matrix=np.array(firing_rate_final)
-print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
-print('\n')
+x_velocity_label_training= np.empty([0])
+x_velocity_label_testing= np.empty([0])
 
-# Without spike sorting:
-if with_sorted_spikes==False:
-    no_sorting_firing_rate=firing_rate_matrix.copy()
-    firing_rate_matrix=np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
-    print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
-    print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
+y_velocity_label_training= np.empty([0])
+y_velocity_label_testing= np.empty([0])
+
+z_velocity_label_training= np.empty([0])
+z_velocity_label_testing= np.empty([0])
+
+x_acceleration_label_training= np.empty([0])
+x_acceleration_label_testing= np.empty([0])
+
+y_acceleration_label_training= np.empty([0])
+y_acceleration_label_testing= np.empty([0])
+
+z_acceleration_label_training= np.empty([0])
+z_acceleration_label_testing= np.empty([0])
+
+# cross sessions control start
+for session_index in range(file_numbers):
+    print('In session '+ str(session_index+1) + ': ' + '\n' )
+
+    [firing_rate_cell, channel_number, testing_data_index, x_position_label, y_position_label, z_position_label]=get_spike_bins_matrix(file_list[session_index], the_sampling_rate)
+    [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=get_labels(file_list[session_index], the_sampling_rate)
+
+    # Extract firing_rate_cell with rows have length bigger than zero
+    firing_rate_final=[] # not[[]]
+    for row_index in range( len( firing_rate_cell) ):   
+        if len(firing_rate_cell[row_index]):
+            firing_rate_final.append( firing_rate_cell[row_index] )
+            units_have_value+=1
+
+    '''
+    for row_index in range( len( firing_rate_final) ):            
+        print('length of firing_rate_final['+ str(row_index) +']: ',end='')
+        print(len(firing_rate_final[row_index]))
+    '''
+
     print('\n')
 
-    for i in range(no_sorting_firing_rate.shape[1]):
-        index=0
-        for k in range(channel_number-2): # Maximum 3 units in this session, indy_20160407_02.
-            #print('index: ',index,end='')
-            firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
-
-            # Test another way to exclude hash unit, but this only works in 96 features.
-            #firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
-
-            #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
-            index = index+1
-
-    print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
-    print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
-    print('\n')
-else:
-    pass
-
-
-# Eliminate hash unit
-no_hash_unit_firing_rate=firing_rate_matrix.copy()
-
-# Making label data
-x_position_label=np.array(x_position_label)
-x_position_label=x_position_label.astype(np.float64)
-print('position x_position_label  list shape: ',end='') 
-print( x_position_label.shape ) # x is the label array should be feed into the model, (12777,)
-print('\n')
-
-y_position_label=np.array(y_position_label)
-y_position_label=y_position_label.astype(np.float64)
-print('position y_position_label list shape: ',end='')
-print( y_position_label.shape ) # y is the label array should be feed into the model, (12777,)
-print('\n')
-
-z_position_label=np.array(z_position_label)
-z_position_label=z_position_label.astype(np.float64)
-print('position z_position_label list shape: ',end='')
-print( z_position_label.shape ) # z is the label array should be feed into the model, (12777,)
-print('\n')
-
-firing_rate_matrix=np.transpose(firing_rate_matrix)
-print('transposed firing_rate_matrix shape: ', firing_rate_matrix.shape) # (12777, 288) in indy_20160407_02
-print('\n')
-feature_numbers= firing_rate_matrix.shape[1]
-
-X=firing_rate_matrix.astype(np.float64)
-print('fetures list shape: ',end='')
-print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
-print('\n')
-
-
-# Organizing feature Matrix and labels
-order_index=order
-
-if order_index >=2:
-    order_original_matrix=X[:-order_index, :]
-    for order_loop_index in range(1, order_index):
-        temp_order_matrix=X[order_loop_index: -(order_index-order_loop_index), :]
-        order_original_matrix=np.concatenate((order_original_matrix, temp_order_matrix), axis=1)
-    final_order_matrix=X[order_index:, :]
-    order_original_matrix=np.concatenate((order_original_matrix, final_order_matrix), axis=1)
+    firing_rate_matrix=np.array(firing_rate_final)
+    print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
     print('\n')
 
-    XX=order_original_matrix.copy()
+    # Without spike sorting:
+    if with_sorted_spikes==False:
+        no_sorting_firing_rate=firing_rate_matrix.copy()
+        firing_rate_matrix=np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
+        print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
+        print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
+        print('\n')
 
-    X_for_training=XX[:testing_data_index, :]
-    X_for_prediction=XX[testing_data_index:]
-    X_for_prediction_with_time_lag=XX[testing_data_index:-time_lag]
-    X_for_prediction_with_time_lag_2=XX[testing_data_index:-1-time_lag]
+        for i in range(no_sorting_firing_rate.shape[1]):
+            index=0
+            for k in range(channel_number-2): # Maximum 3 units in this session, indy_20160407_02.
+                #print('index: ',index,end='')
+                firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
 
-    x_position_label_training=x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    x_position_label_testing=x_position_label[testing_data_index+order_index+time_lag:]
+                # Test another way to exclude hash unit, but this only works in 96 features.
+                #firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
 
-    y_position_label_training=y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    y_position_label_testing=y_position_label[testing_data_index+order_index+time_lag:]
+                #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
+                index = index+1
 
-    z_position_label_training=z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    z_position_label_testing=z_position_label[testing_data_index+order_index+time_lag:]
-   
-    x_velocity_label_training=x_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    x_velocity_label_testing=x_velocity_label[testing_data_index+order_index+time_lag:]
+        print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
+        print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
+        print('\n')
+    else:
+        pass
+
+
+    # Eliminate hash unit
+    no_hash_unit_firing_rate=firing_rate_matrix.copy()
+
+    # Making label data
+    x_position_label=np.array(x_position_label)
+    x_position_label=x_position_label.astype(np.float64)
+    print('position x_position_label  list shape: ',end='') 
+    print( x_position_label.shape ) # x is the label array should be feed into the model, (12777,)
+    print('\n')
+
+    y_position_label=np.array(y_position_label)
+    y_position_label=y_position_label.astype(np.float64)
+    print('position y_position_label list shape: ',end='')
+    print( y_position_label.shape ) # y is the label array should be feed into the model, (12777,)
+    print('\n')
+
+    z_position_label=np.array(z_position_label)
+    z_position_label=z_position_label.astype(np.float64)
+    print('position z_position_label list shape: ',end='')
+    print( z_position_label.shape ) # z is the label array should be feed into the model, (12777,)
+    print('\n')
+
+    firing_rate_matrix=np.transpose(firing_rate_matrix)
+    print('transposed firing_rate_matrix shape: ', firing_rate_matrix.shape) # (12777, 288) in indy_20160407_02
+    print('\n')
+    feature_numbers= firing_rate_matrix.shape[1]
+
+    X=firing_rate_matrix.astype(np.float64)
+    print('fetures list shape: ',end='')
+    print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
+    print('\n')
+
+
+    # Organizing feature Matrix and labels
+
+    order_index=order
+    if order_index >=2:
+        order_original_matrix=X[:-order_index, :]
+        for order_loop_index in range(1, order_index):
+            temp_order_matrix=X[order_loop_index: -(order_index-order_loop_index), :]
+            order_original_matrix=np.concatenate((order_original_matrix, temp_order_matrix), axis=1)
+        final_order_matrix=X[order_index:, :]
+        order_original_matrix=np.concatenate((order_original_matrix, final_order_matrix), axis=1)
+        print('\n')
+
+        XX=order_original_matrix.copy()
+
+        X_for_training = np.concatenate(( X_for_training, XX[:testing_data_index, :] ), axis=0 )
+        X_for_prediction = np.concatenate(( X_for_prediction , XX[testing_data_index:] ), axis=0)
+        X_for_prediction_with_time_lag = np.concatenate((X_for_prediction_with_time_lag , XX[testing_data_index:-time_lag]), axis=0)
+        X_for_prediction_with_time_lag_2 = np.concatenate((X_for_prediction_with_time_lag_2, XX[testing_data_index:-1-time_lag]), axis=0)
+
+        x_position_label_training = np.concatenate((x_position_label_training, x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        x_position_label_testing = np.concatenate((x_position_label_testing, x_position_label[testing_data_index+order_index+time_lag:]), axis=0)
+
+        y_position_label_training =  np.concatenate((y_position_label_training, y_position_label_training, y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        y_position_label_testing = np.concatenate((y_position_label_testing, y_position_label_testing, y_position_label[testing_data_index+order_index+time_lag:]), axis=0)
+
+        z_position_label_training = np.concatenate((z_position_label_training, z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        z_position_label_testing = np.concatenate((z_position_label_testing, z_position_label[testing_data_index+order_index+time_lag:]), axis=0)
     
-    y_velocity_label_training=y_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    y_velocity_label_testing=y_velocity_label[testing_data_index+order_index+time_lag:]
+        x_velocity_label_training = np.concatenate((x_velocity_label_training, x_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        x_velocity_label_testing = np.concatenate((x_velocity_label_testing, x_velocity_label[testing_data_index+order_index+time_lag:]), axis=0)
+        
+        y_velocity_label_training = np.concatenate((y_velocity_label_training, y_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        y_velocity_label_testing = np.concatenate((y_velocity_label_testing, y_velocity_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    z_velocity_label_training=z_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    z_velocity_label_testing=z_velocity_label[testing_data_index+order_index+time_lag:]
+        z_velocity_label_training = np.concatenate((z_velocity_label_training, z_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        z_velocity_label_testing = np.concatenate((z_velocity_label_testing, z_velocity_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    x_acceleration_label_training=x_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    x_acceleration_label_testing=x_acceleration_label[testing_data_index+order_index+time_lag:]
+        x_acceleration_label_training = np.concatenate((x_acceleration_label_training, x_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        x_acceleration_label_testing = np.concatenate((x_acceleration_label_testing, x_acceleration_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    y_acceleration_label_training=y_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    y_acceleration_label_testing=y_acceleration_label[testing_data_index+order_index+time_lag:]
+        y_acceleration_label_training = np.concatenate((y_acceleration_label_training, y_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        y_acceleration_label_testing = np.concatenate((y_acceleration_label_testing, y_acceleration_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    z_acceleration_label_training=z_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    z_acceleration_label_testing=z_acceleration_label[testing_data_index+order_index+time_lag:]
+        z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-if order_index==1:
-    temp1=X[order_index:,:]
-    temp2=X[:-order_index,:]
-    #print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
-    X_order_1=np.concatenate((temp1, temp2), axis=1)  # X_order_1 should be deprecated
-    #print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
-    print('\n')
-    XX=np.concatenate((temp1, temp2), axis=1)
-    X_for_training=XX[:testing_data_index, :]
-    X_for_prediction=XX[testing_data_index:]
-    X_for_prediction_with_time_lag=XX[testing_data_index:-time_lag]
-    X_for_prediction_with_time_lag_2=XX[testing_data_index:-1-time_lag]
+    if order_index==1:
+        temp1=X[order_index:,:]
+        temp2=X[:-order_index,:]
+        #print('temp1 and temp2 shape: ', temp1.shape, temp2.shape)
+        X_order_1=np.concatenate((temp1, temp2), axis=1)  # X_order_1 should be deprecated
+        #print('order 1 fetures list shape: ', X_order_1.shape) #  X_order_1 is the feature matrix, (12776, 576) in indy_20160407_02
+        print('\n')
+        XX=np.concatenate((temp1, temp2), axis=1)
 
-    # TODO pos, vel, acc labels
+        X_for_training = np.concatenate(( X_for_training, XX[:testing_data_index, :] ), axis=0 )
+        X_for_prediction = np.concatenate(( X_for_prediction , XX[testing_data_index:] ), axis=0)
+        X_for_prediction_with_time_lag = np.concatenate((X_for_prediction_with_time_lag , XX[testing_data_index:-time_lag]), axis=0)
+        X_for_prediction_with_time_lag_2 = np.concatenate((X_for_prediction_with_time_lag_2, XX[testing_data_index:-1-time_lag]), axis=0)
 
-    x_position_label_training=x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    x_position_label_testing=x_position_label[testing_data_index+order_index+time_lag:]
+        x_position_label_training = np.concatenate((x_position_label_training, x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        x_position_label_testing = np.concatenate((x_position_label_testing, x_position_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    y_position_label_training=y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    y_position_label_testing=y_position_label[testing_data_index+order_index+time_lag:]
+        y_position_label_training =  np.concatenate((y_position_label_training, y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        y_position_label_testing = np.concatenate(( y_position_label_testing, y_position_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    z_position_label_training=z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    z_position_label_testing=z_position_label[testing_data_index+order_index+time_lag:]
+        z_position_label_training = np.concatenate((z_position_label_training, z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        z_position_label_testing = np.concatenate((z_position_label_testing, z_position_label[testing_data_index+order_index+time_lag:]), axis=0)
+    
+        x_velocity_label_training = np.concatenate((x_velocity_label_training, x_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        x_velocity_label_testing = np.concatenate((x_velocity_label_testing, x_velocity_label[testing_data_index+order_index+time_lag:]), axis=0)
+        
+        y_velocity_label_training = np.concatenate((y_velocity_label_training, y_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        y_velocity_label_testing = np.concatenate((y_velocity_label_testing, y_velocity_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    x_velocity_label_training=x_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    x_velocity_label_testing=x_velocity_label[testing_data_index+order_index+time_lag:]
+        z_velocity_label_training = np.concatenate((z_velocity_label_training, z_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        z_velocity_label_testing = np.concatenate((z_velocity_label_testing, z_velocity_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    y_velocity_label_training=y_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    y_velocity_label_testing= y_velocity_label[testing_data_index+order_index+time_lag:]
+        x_acceleration_label_training = np.concatenate((x_acceleration_label_training, x_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        x_acceleration_label_testing = np.concatenate((x_acceleration_label_testing, x_acceleration_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    z_velocity_label_training=z_velocity_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    z_velocity_label_testing=z_velocity_label[testing_data_index+order_index+time_lag:]
+        y_acceleration_label_training = np.concatenate((y_acceleration_label_training, y_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        y_acceleration_label_testing = np.concatenate((y_acceleration_label_testing, y_acceleration_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    x_acceleration_label_training=x_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    x_acceleration_label_testing=x_acceleration_label[testing_data_index+order_index+time_lag:]
+        z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-    y_acceleration_label_training=y_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    y_acceleration_label_testing=y_acceleration_label[testing_data_index+order_index+time_lag:]
+    if order_index==0:
 
-    z_acceleration_label_training=z_acceleration_label[order_index+time_lag:testing_data_index+order_index+time_lag]
-    z_acceleration_label_testing=z_acceleration_label[testing_data_index+order_index+time_lag:]
+        X_for_training = np.concatenate(( X_for_training, X[:testing_data_index, :] ), axis=0 )
+        X_for_prediction = np.concatenate(( X_for_prediction , X[testing_data_index:] ), axis=0)
+        X_for_prediction_with_time_lag = np.concatenate((X_for_prediction_with_time_lag , X[testing_data_index:-time_lag]), axis=0)
+        X_for_prediction_with_time_lag_2 = np.concatenate((X_for_prediction_with_time_lag_2, X[testing_data_index:-1-time_lag]), axis=0)
 
-if order_index==0:
-    pass
-    X_for_training=X[:testing_data_index, :]
-    X_for_prediction=X[testing_data_index:]
-    X_for_prediction_with_time_lag=X[testing_data_index:-time_lag]
-    X_for_prediction_with_time_lag_2=X[testing_data_index:-1-time_lag]
+        x_position_label_training = np.concatenate((x_position_label_training, x_position_label[time_lag:testing_data_index+time_lag]), axis=0)
+        x_position_label_testing = np.concatenate((x_position_label_testing, x_position_label[testing_data_index+time_lag:]), axis=0)
 
-    x_position_label_training=x_position_label[time_lag:testing_data_index+time_lag ]
-    x_position_label_testing=x_position_label[testing_data_index+time_lag:]
+        y_position_label_training =  np.concatenate((y_position_label_training, y_position_label[time_lag:testing_data_index+time_lag ]), axis=0)
+        y_position_label_testing = np.concatenate((y_position_label_testing, y_position_label[testing_data_index+time_lag:]), axis=0)
 
-    y_position_label_training=y_position_label[time_lag:testing_data_index+time_lag ]
-    y_position_label_testing=y_position_label[testing_data_index+time_lag:]
+        z_position_label_training = np.concatenate((z_position_label_training, z_position_label[time_lag:testing_data_index+time_lag ]), axis=0)
+        z_position_label_testing = np.concatenate((z_position_label_testing, z_position_label[testing_data_index+time_lag:]), axis=0)
+    
+        x_velocity_label_training = np.concatenate((x_velocity_label_training, x_velocity_label[time_lag:testing_data_index+time_lag ]), axis=0)
+        x_velocity_label_testing = np.concatenate((x_velocity_label_testing, x_velocity_label[testing_data_index+time_lag:]), axis=0)
+        
+        y_velocity_label_training = np.concatenate((y_velocity_label_training, y_velocity_label[time_lag:testing_data_index+time_lag ] ), axis=0)
+        y_velocity_label_testing = np.concatenate((y_velocity_label_testing, y_velocity_label[testing_data_index+time_lag:]), axis=0)
 
-    z_position_label_training=z_position_label[time_lag:testing_data_index+time_lag ]
-    z_position_label_testing=z_position_label[testing_data_index+time_lag:]
+        z_velocity_label_training = np.concatenate((z_velocity_label_training, z_velocity_label[time_lag:testing_data_index+time_lag ]), axis=0)
+        z_velocity_label_testing = np.concatenate((z_velocity_label_testing, z_velocity_label[testing_data_index+time_lag:]), axis=0)
 
-    x_velocity_label_training=x_velocity_label[time_lag:testing_data_index+time_lag ]
-    x_velocity_label_testing=x_velocity_label[testing_data_index+time_lag:]
+        x_acceleration_label_training = np.concatenate((x_acceleration_label_training, x_acceleration_label[time_lag:testing_data_index+time_lag ]), axis=0)
+        x_acceleration_label_testing = np.concatenate((x_acceleration_label_testing, x_acceleration_label[testing_data_index+time_lag:]), axis=0)
 
-    y_velocity_label_training=y_velocity_label[time_lag:testing_data_index+time_lag ] 
-    y_velocity_label_testing=y_velocity_label[testing_data_index+time_lag:]
+        y_acceleration_label_training = np.concatenate((y_acceleration_label_training, y_acceleration_label[time_lag:testing_data_index+time_lag ]), axis=0)
+        y_acceleration_label_testing = np.concatenate((y_acceleration_label_testing, y_acceleration_label[testing_data_index+time_lag:]), axis=0)
 
-    z_velocity_label_training=z_velocity_label[time_lag:testing_data_index+time_lag ]
-    z_velocity_label_testing=z_velocity_label[testing_data_index+time_lag:]
+        z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[time_lag:testing_data_index+time_lag ]), axis=0)
+        z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index+time_lag:]), axis=0)
+    
 
-    x_acceleration_label_training=x_acceleration_label[time_lag:testing_data_index+time_lag ]
-    x_acceleration_label_testing=x_acceleration_label[testing_data_index+time_lag:]
 
-    y_acceleration_label_training=y_acceleration_label[time_lag:testing_data_index+time_lag ]
-    y_acceleration_label_testing=y_acceleration_label[testing_data_index+time_lag:]
-
-    z_acceleration_label_training=z_acceleration_label[time_lag:testing_data_index+time_lag ]
-    z_acceleration_label_testing=z_acceleration_label[testing_data_index+time_lag:]
+# cross sessions control end
 
 # All models fit and predict, show R2 score
 print('In time lag: ', time_lag, '\n')
@@ -548,7 +589,7 @@ if order_index >=2:
     if time_lag==0:
         x_position_predict=model_x_position.predict( X_for_prediction )
     else:
-        x_position_predict=model_x_position.predict( XX[testing_data_index:-time_lag] )
+        x_position_predict=model_x_position.predict( X_for_prediction_with_time_lag )
     print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
 
     model_y_position = LinearRegression(fit_intercept=True)
@@ -640,7 +681,7 @@ if order_index==1:
     print('\n')
 
     model_x_velocity=LinearRegression(fit_intercept=True)
-    model_x_velocity.fit( XX[:testing_data_index,:], x_velocity_label_training )
+    model_x_velocity.fit( X_for_training, x_velocity_label_training )
     if time_lag==0:
         x_velocity_predict=model_x_velocity.predict(X_for_prediction)
     else:
@@ -648,7 +689,7 @@ if order_index==1:
     print('* model_x_velocity score in order ', order_index, ': ', r2_score( x_velocity_label_testing , x_velocity_predict))
 
     model_y_velocity=LinearRegression(fit_intercept=True)
-    model_y_velocity.fit( XX[:testing_data_index,:], y_velocity_label_training )
+    model_y_velocity.fit( X_for_training, y_velocity_label_training )
     if time_lag==0:
         y_velocity_predict=model_y_velocity.predict(X_for_prediction)
     else:
@@ -656,7 +697,7 @@ if order_index==1:
     print('* model_y_velocity score in order ', order_index, ': ', r2_score( y_velocity_label_testing, y_velocity_predict))
 
     model_z_velocity=LinearRegression(fit_intercept=True)
-    model_z_velocity.fit( XX[:testing_data_index,:], z_velocity_label_training)
+    model_z_velocity.fit( X_for_training, z_velocity_label_training)
     if time_lag==0:
         z_velocity_predict=model_z_velocity.predict(X_for_prediction)
     else:
@@ -753,8 +794,11 @@ if order_index==0:
 
 print('There are '+str(units_have_value)+' units have value in this session')
 print('\n')
-
+print('z_acceleration_label_training.shape= ', z_acceleration_label_training.shape)
+print('X_for_training shape= ', X_for_training.shape)
+print('X_for_prediction= ', X_for_prediction.shape)
 print('How many weights in model_y_position: ', model_y_position.coef_.shape[0])
+
 '''
 for i in range(model_y_position.coef_.shape[0] ):
     print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
