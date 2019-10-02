@@ -413,7 +413,9 @@ for session_index in range(file_numbers):
 
         for i in range(no_sorting_firing_rate.shape[1]):
             index=0
-            for k in range(channel_number-(units_numbers_in_this_dataset-1)): # Maximum 3 units in this session, indy_20160407_02.
+            k=0
+            while index < channel_number:
+            #for k in range(channel_number-(units_numbers_in_this_dataset-1)): # Maximum 3 units in this session, indy_20160407_02.
                 #print('index: ',index,end='')
                 firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
 
@@ -421,7 +423,9 @@ for session_index in range(file_numbers):
                 #firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
 
                 #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
-                index = index+1
+                index = index + 1
+                k = k+ units_numbers_in_this_dataset
+                #print('index: ', index, 'k: ', k)
 
         print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
         print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
@@ -485,8 +489,8 @@ for session_index in range(file_numbers):
         x_position_label_training = np.concatenate((x_position_label_training, x_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
         x_position_label_testing = np.concatenate((x_position_label_testing, x_position_label[testing_data_index+order_index+time_lag:]), axis=0)
 
-        y_position_label_training =  np.concatenate((y_position_label_training, y_position_label_training, y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
-        y_position_label_testing = np.concatenate((y_position_label_testing, y_position_label_testing, y_position_label[testing_data_index+order_index+time_lag:]), axis=0)
+        y_position_label_training =  np.concatenate((y_position_label_training, y_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
+        y_position_label_testing = np.concatenate((y_position_label_testing,  y_position_label[testing_data_index+order_index+time_lag:]), axis=0)
 
         z_position_label_training = np.concatenate((z_position_label_training, z_position_label[order_index+time_lag:testing_data_index+order_index+time_lag]), axis=0)
         z_position_label_testing = np.concatenate((z_position_label_testing, z_position_label[testing_data_index+order_index+time_lag:]), axis=0)
