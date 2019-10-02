@@ -40,9 +40,12 @@ def running_mean(x, N):
    
 # Read data
 filename = '../The_nwb_Raw_Dataset/indy_20160624_03.nwb'
-f = h5py.File(filename, 'r')
-data = f['/acquisition/timeseries/broadband/data']
+nwb_file = h5py.File(filename, 'r')
+data = nwb_file['/acquisition/timeseries/broadband/data']
 conversion = data.attrs['conversion']
+
+print('print all nwb_file keys: ',end='')
+print( list( nwb_file.keys() ) )
 
 #####################
 sample_rate = 24400
