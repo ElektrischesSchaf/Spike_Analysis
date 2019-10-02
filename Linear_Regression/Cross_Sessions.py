@@ -13,12 +13,12 @@ from sklearn.feature_selection import RFE
 from  sklearn.svm import SVC
 from sklearn.svm import SVR
 
-file_name_1='indy_20160407_02.mat'
-file_name_2='indy_20160411_01.mat'
-file_name_3='indy_20160411_02.mat'
-file_name_4='indy_20160418_01.mat'
-file_name_5='indy_20160419_01.mat'
-file_name_6='indy_20160420_01.mat'
+file_name_1='../Sorted_Spike_Dataset/indy_20160407_02.mat'
+file_name_2='../Sorted_Spike_Dataset/indy_20160411_01.mat'
+file_name_3='../Sorted_Spike_Dataset/indy_20160411_02.mat'
+file_name_4='../Sorted_Spike_Dataset/indy_20160418_01.mat'
+file_name_5='../Sorted_Spike_Dataset/indy_20160419_01.mat'
+file_name_6='../Sorted_Spike_Dataset/indy_20160420_01.mat'
 file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
 tStart=time.time()
 
@@ -28,15 +28,24 @@ tStart=time.time()
 testing_data_index=0 # Should be 10222 in indy_20160407_02
 channel_number=0
 units_have_value=0 # unit numbers that is not empty
-feature_numbers=288 # TODO must fix this
+
 
 ###################################### Parameters should be assigned
 the_sampling_rate=16
 file_numbers=6
 time_lag=0
 order=0
-with_sorted_spikes=True
+with_sorted_spikes=False
 include_hash_unit=True
+
+# Must know these two numbers beforehand
+channel_numbers_in_this_dataset=96
+units_numbers_in_this_dataset=3
+
+if with_sorted_spikes==True:
+    feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
+else:
+    feature_numbers=channel_numbers_in_this_dataset
 
 
 def histc(X, bins):
