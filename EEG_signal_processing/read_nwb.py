@@ -39,7 +39,7 @@ def running_mean(x, N):
     return (cumsum[N:] - cumsum[:-N]) / float(N)
    
 # Read data
-filename = 'nwb_raw_data/indy_20160624_03.nwb'
+filename = '../The_nwb_Raw_Dataset/indy_20160624_03.nwb'
 f = h5py.File(filename, 'r')
 data = f['/acquisition/timeseries/broadband/data']
 conversion = data.attrs['conversion']

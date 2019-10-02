@@ -2,7 +2,7 @@
 import numpy as np
 import h5py
 
-with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
+with h5py.File('../Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') as mat_file:
     # <KeysViewHDF5 ['#refs#', 'chan_names', 'cursor_pos', 'finger_pos', 'spikes', 't', 'target_pos', 'wf']>
     print('print all keys: ',end='')
     print( list( mat_file.keys() ) )

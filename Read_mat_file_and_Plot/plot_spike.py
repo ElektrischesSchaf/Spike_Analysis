@@ -5,7 +5,7 @@ import os
 import numpy
 import matplotlib.pyplot as plot 
 
-with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
+with h5py.File('../Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') as mat_file:
     # <KeysViewHDF5 ['#refs#', 'chan_names', 'cursor_pos', 'finger_pos', 'spikes', 't', 'target_pos', 'wf']>
     print('print all keys: ',end='')
     print( list( mat_file.keys() ) )
@@ -158,7 +158,7 @@ with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
         # Display the spike raster plot
         #plot.show()
 
-        path=r'''Spike_Train_Plots/Spike_Train_Channel_'''
+        path=r'''../Spike_Train_Plots/Spike_Train_Channel_'''
         plot.savefig(path+ str(channel_index+1) +'.png')
 
     # plot spike train end

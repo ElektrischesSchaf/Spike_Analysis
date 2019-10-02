@@ -4,8 +4,8 @@ import h5py
 
 import numpy
 import matplotlib.pyplot as plot 
-path=r'''Kinematic_Variables_Plots/'''
-with h5py.File('indy_20160407_02.mat', 'r') as mat_file:
+path=r'''../Kinematic_Variables_Plots/'''
+with h5py.File('../Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') as mat_file:
 
     finger_pos = mat_file['finger_pos']
     time_stamp=mat_file['t']
