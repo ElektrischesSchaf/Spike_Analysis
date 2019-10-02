@@ -13,7 +13,7 @@ from sklearn.feature_selection import RFE
 from  sklearn.svm import SVC
 from sklearn.svm import SVR
 
-file_name_1='Sorted_Spike_Dataset/indy_20160407_02.mat'
+file_name_1='../Sorted_Spike_Dataset/indy_20160407_02.mat'
 tStart=time.time()
 
 ###################################### Auto-assigned parameters
