@@ -159,7 +159,7 @@ with h5py.File('../Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') as mat_file:
         #plot.show()
 
         path=r'''../Spike_Train_Plots/Spike_Train_Channel_'''
-        plot.savefig(path+ str(channel_index+1) +'.png')
+        plot.savefig(path+ str( f"{channel_index+1:03}" )  +'.png')
 
     # plot spike train end
 
