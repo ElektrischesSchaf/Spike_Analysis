@@ -32,7 +32,7 @@ units_have_value=0 # unit numbers that is not empty
 
 ###################################### Parameters should be assigned
 the_sampling_rate=16
-file_numbers=6
+file_numbers=1
 time_lag=0
 order=0
 with_sorted_spikes=False
@@ -413,7 +413,7 @@ for session_index in range(file_numbers):
 
         for i in range(no_sorting_firing_rate.shape[1]):
             index=0
-            for k in range(channel_number-2): # Maximum 3 units in this session, indy_20160407_02.
+            for k in range(channel_number-(units_numbers_in_this_dataset-1)): # Maximum 3 units in this session, indy_20160407_02.
                 #print('index: ',index,end='')
                 firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
 
