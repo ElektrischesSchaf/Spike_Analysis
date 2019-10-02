@@ -23,14 +23,15 @@ with h5py.File('../Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') as mat_file:
     print('numpy_wf_array shape: ',end='')
     print(numpy_wf_array.shape)  #  (3, 192) in indy_20160407_02.mat
 
-    for channel_index in range(0, 13):
+    for channel_index in range(0, 15):
         temp_wf_cell_1=mat_file[ ( wf[0][channel_index] ) ][()]
         temp_wf_cell_2=mat_file[ ( wf[1][channel_index] ) ][()]
         temp_wf_cell_3=mat_file[ ( wf[2][channel_index] ) ][()]
 
         print('shape of temp_wf_cell_2: ', temp_wf_cell_2.shape)
         
-        #temp_wf_cell_2=temp_wf_cell_1[0,:] # TODO figure out this
+        if(temp_wf_cell_2.shape[0]!=2 ):
+            temp_wf_cell_2=temp_wf_cell_2[: , 0] # TODO figure out this
 
         print('shape of temp_wf_cell_2: ', temp_wf_cell_2.shape)
 
@@ -61,7 +62,7 @@ with h5py.File('../Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') as mat_file:
         plot.scatter(x, temp_wf_cell_2, color=colorCodes)
 
         # Provide the title for the spike raster plot
-        title_text='Wave form Plot Channel ' + str(channel_index+1) +' unit 2' 
+        title_text='Wave form Plot Channel ' + str(channel_index+1) +' unit 3' 
         plot.title(  title_text )
 
         # Give x axis label for the spike raster plot
@@ -71,6 +72,6 @@ with h5py.File('../Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') as mat_file:
         plot.ylabel('Amptitude')
 
         # Display the spike raster plot
-        #plot.show()
+        plot.show()
         path=r'''../Wave_Form_Plot/'''
-        plot.savefig(path+ 'unit_2_'+'channel_' +str( f"{channel_index+1:03}" )  +'.png')
+        #plot.savefig(path+ 'unit_2_'+'channel_' +str( f"{channel_index+1:03}" )  +'.png')
