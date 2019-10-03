@@ -1,7 +1,7 @@
 - [Spike_Analysis](#Spike-Analysis)  <br>
     - [Test](#Test-123-456)  <br>
     - [Plots](#plots)<br>
-        - [Spike Train](#Spike-Train)<br>
+        - [Spike Train](#Spike-Train)<br> 
         - [Trajectory of finger tip](#Trajectory-of-finger-tip)<br>
         - [Velocity in each axis](#Velocity-in-each-axis)<br>
     - [Coefficient of Determination (R square) session indy_20160407_02](#Coefficient-of-Determination-R-square-session-indy_20160407_02)<br>
@@ -10,20 +10,20 @@
                 - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes)  <br>
                 - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes)  <br>
                 - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes)  <br>
-            - [Without hash unit](#Without-hash-unit)<br>
+            - [Without hash unit](#Without-hash-unit)<br> 
                 - [R square of session indy_20160407_02, 0 time lag, 0-2 order, with sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-with-sorted-spikes-without-hash-unit)  <br>
                 - [R square of session indy_20160407_02, 1 time lag, 0-2 order, with sorted spikes, without hash unit](#R-square-of-session-indy_20160407_02-1-time-lag-0-2-order-with-sorted-spikes-without-hash-unit) <br>
                 - [R square of session indy_20160407_02, 2 time lag, 0-2 order, with sorted spikes, without hash unit](#R-square-of-session-indy_20160407_02-2-time-lag-0-2-order-with-sorted-spikes-without-hash-unit) <br>
-        - [Without sorted spikes](#Without-sorted-spikes)  <br>
+        - [Without sorted spikes](#Without-sorted-spikes)  <br> <!-- TODO wrong answer -->
             - [With hash unit](#With-hash-unit)<br>
                 - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes)  <br>
                 - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes)  <br>
                 - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes)  <br>
-            - [Without hash unit](#Without-hash-unit)<br>
+            - [Without hash unit](#Without-hash-unit)<br>  <!-- TODO wrong answer -->
                 - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
                 - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br> 
                 - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
-    - [Coefficient of Determination (R square) in six sessions](#Coefficient-of-Determination-R-square-in-six-sessions) <br>
+    - [Coefficient of Determination (R square) in six sessions](#Coefficient-of-Determination-R-square-in-six-sessions) <br> <!-- TODO wrong hyper link -->
         - [With sorted spikes](#With-sorted-spikes)<br>
             - [With hash unit](#With-hash-unit)<br>
             - [Without hash unit](#Without-hash-unit)<br>

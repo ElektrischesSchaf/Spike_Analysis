@@ -32,10 +32,10 @@ units_have_value=0 # unit numbers that is not empty
 
 ###################################### Parameters should be assigned
 the_sampling_rate=16
-file_numbers=1
+file_numbers=6
 time_lag=0
 order=0
-with_sorted_spikes=True
+with_sorted_spikes=False
 include_hash_unit=True
 
 # Must know these two numbers beforehand
