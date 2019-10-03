@@ -23,7 +23,13 @@
                 - [R square of session indy_20160407_02, 0 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-0-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
                 - [R square of session indy_20160407_02, 1 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-1-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br> 
                 - [R square of session indy_20160407_02, 2 time lag, 0-2 order, without sorted spikes, without hash unit](#r-square-of-session-indy_20160407_02-2-time-lag-0-2-order-without-sorted-spikes-without-hash-unit) <br>
-
+    - [Coefficient of Determination (R square) in six sessions](#Coefficient-of-Determination-R-square-in-six-sessions) <br>
+        - [With sorted spikes](#With-sorted-spikes)<br>
+            - [With hash unit](#With-hash-unit)<br>
+            - [Without hash unit](#Without-hash-unit)<br>
+        - [Without sorted spikes](#Without-sorted-spikes)  <br>
+            - [With hash unit](#With-hash-unit)<br>
+            - [Without hash unit](#Without-hash-unit)<br>
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 # Spike Analysis
@@ -511,4 +517,62 @@ model_z_acceleration score:  -0.029691575320161423
 
 * model_z_acceleration score:  -0.010821068598025674
 
+## Coefficient of Determination (R square) in six sessions
+### With sorted spikes
+#### With hash unit
+* model_x_position score in order  0 :  0.21262676860054186
+* model_y_position score in order  0 :  0.24682829773971315
+* model_z_position score in order  0 :  0.389220262579711
 
+
+* model_x_velocity score in order  0 :  0.24581712475512252
+* model_y_velocity score in order  0 :  0.31679418367252543
+* model_z_velocity score in order  0 :  0.05947447000796002
+
+
+* model_x_acceleration score in order  0 :  0.11015972063649948
+* model_y_acceleration score in order  0 :  0.11570917482294796
+* model_z_acceleration score in order  0 :  0.008580461602417322
+#### Without hash unit
+* model_x_position score in order  0 :  0.15057048802839412
+* model_y_position score in order  0 :  0.16293589088426463
+* model_z_position score in order  0 :  0.33576073359282865
+
+
+* model_x_velocity score in order  0 :  0.1673185007867367
+* model_y_velocity score in order  0 :  0.18395478150869027
+* model_z_velocity score in order  0 :  0.032943702596678226
+
+
+* model_x_acceleration score in order  0 :  0.06687033858338154
+* model_y_acceleration score in order  0 :  0.08346568473783367
+* model_z_acceleration score in order  0 :  0.003008177941475565
+### Without sorted spikes
+#### With hash unit
+* model_x_position score in order  0 :  0.18347082724949715
+* model_y_position score in order  0 :  0.21237724001141434
+* model_z_position score in order  0 :  0.3293247770818736
+
+
+* model_x_velocity score in order  0 :  0.20294802123535383
+* model_y_velocity score in order  0 :  0.29201350504515966
+* model_z_velocity score in order  0 :  0.04815387599344323
+
+
+* model_x_acceleration score in order  0 :  0.09907218649670813
+* model_y_acceleration score in order  0 :  0.09051077809407226
+* model_z_acceleration score in order  0 :  0.011354390220861266
+#### Without hash unit
+* model_x_position score in order  0 :  0.12904502531756812
+* model_y_position score in order  0 :  0.13181480619340347
+* model_z_position score in order  0 :  0.264018881740654
+
+
+* model_x_velocity score in order  0 :  0.1382717089116846
+* model_y_velocity score in order  0 :  0.15782791279045516
+* model_z_velocity score in order  0 :  0.026107390222354088
+
+
+* model_x_acceleration score in order  0 :  0.057761361819957724
+* model_y_acceleration score in order  0 :  0.06273761046775095
+* model_z_acceleration score in order  0 :  0.004607774874052617
