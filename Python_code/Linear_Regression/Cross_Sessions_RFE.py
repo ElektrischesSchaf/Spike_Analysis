@@ -35,7 +35,8 @@ the_sampling_rate=16
 file_numbers=1
 time_lag=0
 order=0
-i_feature=90
+i_feature=50
+step_for_FS=1 # If greater than or equal to 1, then step corresponds to the (integer) number of features to remove at each iteration.
 with_sorted_spikes=False
 include_hash_unit=True
 
@@ -350,7 +351,7 @@ def get_labels(the_file_name, the_sampling_rate):
 
 def RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, label_training):
     estimator=SVR(kernel="linear")
-    selector = RFE(estimator, i_feature, step=1 )
+    selector = RFE(estimator, i_feature, step=step_for_FS )
     selector = selector.fit(X_for_training[:total_testing_data_index], label_training[:total_testing_data_index])
     X_for_training_FS = X_for_training[:,selector.support_]
     X_for_prediction_FS = X_for_prediction[:,selector.support_]
@@ -749,6 +750,8 @@ if order_index==1:
 
 if order_index==0:
 
+    [X_for_training_FS, X_for_prediction_FS, X_for_prediction_with_time_lag_FS] = RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, x_position_label_training)
+
     model_x_position = LinearRegression(fit_intercept=True)
     model_x_position.fit( X_for_training, x_position_label_training )
     if time_lag==0:
@@ -756,6 +759,8 @@ if order_index==0:
     else:
         x_position_predict=model_x_position.predict( X_for_prediction_with_time_lag )
     print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict))
+
+    [X_for_training_FS, X_for_prediction_FS, X_for_prediction_with_time_lag_FS] = RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, y_position_label_training)
 
     model_y_position = LinearRegression(fit_intercept=True)
     model_y_position.fit( X_for_training, y_position_label_training )
@@ -794,12 +799,15 @@ if order_index==0:
         x_velocity_predict=model_x_velocity.predict( X_for_prediction_with_time_lag_FS )
     print('* model_x_velocity score in order ', order_index, ': ', r2_score(  x_velocity_label_testing, x_velocity_predict))
 
+
+    [X_for_training_FS, X_for_prediction_FS, X_for_prediction_with_time_lag_FS] = RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, y_velocity_label_training)
+
     model_y_velocity = LinearRegression(fit_intercept=True)
-    model_y_velocity.fit( X_for_training, y_velocity_label_training)
+    model_y_velocity.fit( X_for_training_FS, y_velocity_label_training)
     if time_lag==0:
-        y_velocity_predict=model_y_velocity.predict( X_for_prediction )
+        y_velocity_predict=model_y_velocity.predict( X_for_prediction_FS )
     else:
-        y_velocity_predict=model_y_velocity.predict( X_for_prediction_with_time_lag )
+        y_velocity_predict=model_y_velocity.predict( X_for_prediction_with_time_lag_FS )
     print('* model_y_velocity score in order ', order_index, ': ', r2_score( y_velocity_label_testing, y_velocity_predict))
 
     model_z_velocity = LinearRegression(fit_intercept=True)
@@ -827,6 +835,7 @@ if order_index==0:
     z_acceleration_predict=model_z_acceleration.predict( X_for_prediction_with_time_lag_2 )
     print('* model_z_acceleration score in order ', order_index, ': ', r2_score( z_acceleration_label_testing, z_acceleration_predict ))
 
+print("file_numbers ", file_numbers)
 
 print('There are '+str(units_have_value)+' units have value in this session')
 print('\n')
@@ -834,8 +843,13 @@ print('z_acceleration_label_training.shape= ', z_acceleration_label_training.sha
 print('X_for_training shape= ', X_for_training.shape)
 print('X_for_prediction= ', X_for_prediction.shape)
 print('total_testing_data_index ', total_testing_data_index)
+
+print('How many weights in model_x_position: ', model_x_position.coef_.shape[0])
 print('How many weights in model_y_position: ', model_y_position.coef_.shape[0])
 print('How many weights in model_x_velocity: ', model_x_velocity.coef_.shape[0])
+print('How many weights in model_y_velocity: ', model_y_velocity.coef_.shape[0])
+
+print('step_for_FS :' ,step_for_FS)
 '''
 for i in range(model_y_position.coef_.shape[0] ):
     print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
