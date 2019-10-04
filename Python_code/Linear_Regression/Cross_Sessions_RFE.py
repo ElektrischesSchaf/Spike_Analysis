@@ -9,6 +9,8 @@ from sklearn.linear_model import LinearRegression
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, svm, metrics
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.svm import SVR
+from sklearn.feature_selection import RFE
 
 file_name_1='../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat'
 file_name_2='../../Dataset/Sorted_Spike_Dataset/indy_20160411_01.mat'
@@ -22,16 +24,18 @@ tStart=time.time()
 ###################################### Auto-assigned parameters
 #testing_data_index=5000
 #testing_data_index=10222
-testing_data_index=0 # Should be 10222 in indy_20160407_02
+testing_data_index=0 # Session by session, should be 10222 in indy_20160407_02
+total_testing_data_index=0 # accumulate the testing_data_index in different sessions, for feature selection
 channel_number=0
 units_have_value=0 # unit numbers that is not empty
 
 
 ###################################### Parameters should be assigned
 the_sampling_rate=16
-file_numbers=6
+file_numbers=1
 time_lag=0
 order=0
+i_feature=90
 with_sorted_spikes=False
 include_hash_unit=True
 
@@ -107,6 +111,8 @@ def get_spike_bins_matrix(the_file_name, the_sampling_rate):
         
         testing_data_index=int(int(len(time_stamp_64ms))*0.8) # split 80% into training
         print('testing_data_index= ',testing_data_index) # 10222 in indy_20160407_02.mat
+        global total_testing_data_index
+        total_testing_data_index += testing_data_index
 
         # make x, y, z position label matrix with the sampling_rate
         '''
@@ -341,6 +347,15 @@ def get_labels(the_file_name, the_sampling_rate):
         y_acceleration_label=finger_y_acceleration
         z_acceleration_label=finger_z_acceleration
     return [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]
+
+def RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, label_training):
+    estimator=SVR(kernel="linear")
+    selector = RFE(estimator, i_feature, step=1 )
+    selector = selector.fit(X_for_training[:total_testing_data_index], label_training[:total_testing_data_index])
+    X_for_training_FS = X_for_training[:,selector.support_]
+    X_for_prediction_FS = X_for_prediction[:,selector.support_]
+    X_for_prediction_with_time_lag_FS = X_for_prediction_with_time_lag[:,selector.support_]
+    return [X_for_training_FS, X_for_prediction_FS, X_for_prediction_with_time_lag_FS]
 
 X_for_training = np.empty([0, feature_numbers*(order+1)])
 X_for_prediction = np.empty([0, feature_numbers*(order+1)])
@@ -760,12 +775,23 @@ if order_index==0:
 
     print('\n')
 
+    # first feature selection 
+    '''
+    estimator=SVR(kernel="linear")
+    selector = RFE(estimator, i_feature, step=1)
+    selector = selector.fit(X_for_training[:total_testing_data_index], x_velocity_label_training[:total_testing_data_index])
+    X_for_training_FS=X_for_training[:,selector.support_]
+    X_for_prediction_FS=X_for_prediction[:,selector.support_]
+    X_for_prediction_with_time_lag_FS=X_for_prediction_with_time_lag[:,selector.support_]
+    '''
+    [X_for_training_FS, X_for_prediction_FS, X_for_prediction_with_time_lag_FS] = RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, x_velocity_label_training)
+
     model_x_velocity = LinearRegression(fit_intercept=True)
-    model_x_velocity.fit( X_for_training, x_velocity_label_training  )
+    model_x_velocity.fit( X_for_training_FS, x_velocity_label_training  )
     if time_lag==0:
-        x_velocity_predict=model_x_velocity.predict( X_for_prediction )
+        x_velocity_predict=model_x_velocity.predict( X_for_prediction_FS )
     else:
-        x_velocity_predict=model_x_velocity.predict( X_for_prediction_with_time_lag )
+        x_velocity_predict=model_x_velocity.predict( X_for_prediction_with_time_lag_FS )
     print('* model_x_velocity score in order ', order_index, ': ', r2_score(  x_velocity_label_testing, x_velocity_predict))
 
     model_y_velocity = LinearRegression(fit_intercept=True)
@@ -807,8 +833,9 @@ print('\n')
 print('z_acceleration_label_training.shape= ', z_acceleration_label_training.shape)
 print('X_for_training shape= ', X_for_training.shape)
 print('X_for_prediction= ', X_for_prediction.shape)
+print('total_testing_data_index ', total_testing_data_index)
 print('How many weights in model_y_position: ', model_y_position.coef_.shape[0])
-
+print('How many weights in model_x_velocity: ', model_x_velocity.coef_.shape[0])
 '''
 for i in range(model_y_position.coef_.shape[0] ):
     print('W_'+str( f'{i+1:03}' )+ ' = ',end='')
