@@ -32,10 +32,10 @@ units_have_value=0 # unit numbers that is not empty
 
 ###################################### Parameters should be assigned
 the_sampling_rate=16
-file_numbers=1
+file_numbers=6
 time_lag=0
 order=0
-i_feature=50
+i_feature=60
 step_for_FS=1 # If greater than or equal to 1, then step corresponds to the (integer) number of features to remove at each iteration.
 with_sorted_spikes=False
 include_hash_unit=True
@@ -753,21 +753,21 @@ if order_index==0:
     [X_for_training_FS, X_for_prediction_FS, X_for_prediction_with_time_lag_FS] = RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, x_position_label_training)
 
     model_x_position = LinearRegression(fit_intercept=True)
-    model_x_position.fit( X_for_training, x_position_label_training )
+    model_x_position.fit( X_for_training_FS, x_position_label_training )
     if time_lag==0:
-        x_position_predict=model_x_position.predict( X_for_prediction )
+        x_position_predict=model_x_position.predict( X_for_prediction_FS )
     else:
-        x_position_predict=model_x_position.predict( X_for_prediction_with_time_lag )
+        x_position_predict=model_x_position.predict( X_for_prediction_with_time_lag_FS )
     print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict))
 
     [X_for_training_FS, X_for_prediction_FS, X_for_prediction_with_time_lag_FS] = RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, y_position_label_training)
 
     model_y_position = LinearRegression(fit_intercept=True)
-    model_y_position.fit( X_for_training, y_position_label_training )
+    model_y_position.fit( X_for_training_FS, y_position_label_training )
     if time_lag==0:
-        y_position_predict=model_y_position.predict( X_for_prediction )
+        y_position_predict=model_y_position.predict( X_for_prediction_FS )
     else:
-        y_position_predict=model_y_position.predict( X_for_prediction_with_time_lag )
+        y_position_predict=model_y_position.predict( X_for_prediction_with_time_lag_FS )
     print('* model_y_position score in order ', order_index, ': ', r2_score( y_position_label_testing, y_position_predict))
 
     model_z_position = LinearRegression(fit_intercept=True)

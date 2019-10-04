@@ -38,7 +38,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') a
     duration=numpy_time_stamp.shape[1]
 
     for i in range(duration):
-        print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
+        #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
         
         if ( i<duration-1 ):
             velocity=( numpy_finger_pos[0][i+1] - numpy_finger_pos[0][i] ) / ( numpy_time_stamp[0][i+1]-numpy_time_stamp[0][i] )
@@ -70,7 +70,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') a
     velocity_time_coor=np.array(velocity_time_coor)
 
     for i in range(duration):
-        print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
+        #print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
         if(i<duration-1):
             acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
             finger_x_acceleration.append(acceleration)
