@@ -37,7 +37,7 @@ the_sampling_rate=16
 file_numbers=1
 time_lag=0
 order=0
-i_feature=94
+i_feature=90
 step_for_FS=1 # If greater than or equal to 1, then step corresponds to the (integer) number of features to remove at each iteration.
 with_sorted_spikes=False
 include_hash_unit=True
@@ -400,9 +400,13 @@ z_acceleration_label_testing= np.empty([0])
 
 # Write file related
 date = time.strftime('%Y-%m-%d_T_%H_%M_%S')
-root_name='RFE_session_number_'
-feature_number_tag='_features_number_'
-f1=open(root_name+str(file_numbers)+feature_number_tag+str(i_feature)+'_'+date+'.csv', 'w')
+root_name = 'RFE_session_number_'
+feature_number_tag = '_features_number_'
+csv_file_name = root_name+str(file_numbers)+feature_number_tag+str(i_feature)+'_'+date+'.csv'
+
+f1=open(csv_file_name, 'w')
+f1.write('session(s) number\n'+ str(file_numbers)+'\n')
+f1.write('featurenumber \n'+ str(i_feature)+'\n')
 
 # cross sessions control start
 for session_index in range(file_numbers):
@@ -774,8 +778,10 @@ if order_index==0:
         x_position_predict=model_x_position.predict( X_for_prediction_with_time_lag_FS )
     print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict))
 
+
     f1.write('* model_x_position score in order '+ str(order_index) +'\n'+ str( r2_score( x_position_label_testing, x_position_predict) ) +'\n')
     f1.write('FS ranking: \n'+ '  '.join(map(str, feature_ranking)) +'\n')
+
 
     [X_for_training_FS, X_for_prediction_FS, X_for_prediction_with_time_lag_FS, feature_ranking] = RFE_feature_selection(total_testing_data_index, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, y_position_label_training)
 
@@ -787,9 +793,11 @@ if order_index==0:
         y_position_predict=model_y_position.predict( X_for_prediction_with_time_lag_FS )
     print('* model_y_position score in order ', order_index, ': ', r2_score( y_position_label_testing, y_position_predict))
 
+
     f1.write('* model_y_position score in order '+ str(order_index) +'\n'+ str( r2_score( y_position_label_testing, y_position_predict) ) +'\n' )
     f1.write('FS ranking: \n'+ '  '.join(map(str, feature_ranking))+'\n' )
 
+    
     model_z_position = LinearRegression(fit_intercept=True)
     model_z_position.fit( X_for_training, z_position_label_training)
     if time_lag==0:
@@ -800,7 +808,6 @@ if order_index==0:
 
     print('\n')
 
-    # first feature selection 
     '''
     estimator=SVR(kernel="linear")
     selector = RFE(estimator, i_feature, step=1)
@@ -819,6 +826,7 @@ if order_index==0:
         x_velocity_predict=model_x_velocity.predict( X_for_prediction_with_time_lag_FS )
     print('* model_x_velocity score in order ', order_index, ': ', r2_score(  x_velocity_label_testing, x_velocity_predict))
 
+
     f1.write('* model_x_velocity score in order '+ str(order_index) +'\n'+ str( r2_score( x_velocity_label_testing, x_velocity_predict) ) +'\n' )
     f1.write('FS ranking: \n'+ '  '.join(map(str, feature_ranking)) +'\n')
 
@@ -833,8 +841,10 @@ if order_index==0:
         y_velocity_predict=model_y_velocity.predict( X_for_prediction_with_time_lag_FS )
     print('* model_y_velocity score in order ', order_index, ': ', r2_score( y_velocity_label_testing, y_velocity_predict))
 
+
     f1.write('* model_y_velocity score in order '+ str(order_index) +'\n'+ str( r2_score( y_velocity_label_testing, y_velocity_predict) ) +'\n' )
     f1.write('FS ranking: \n'+ '  '.join(map(str, feature_ranking))+'\n' )
+
 
     model_z_velocity = LinearRegression(fit_intercept=True)
     model_z_velocity.fit( X_for_training, z_velocity_label_training )
@@ -886,6 +896,7 @@ print('\n')
 
 tEnd=time.time()
 print('Overall processing time: '+ str ( round(tEnd-tStart, 3) )+'seconds' )
+
 
 f1.write('time used:'+ str ( round( (tEnd-tStart)/86400 , 3) )+' day(s)' )
 f1.close()
