@@ -3,75 +3,97 @@ import numpy as np
 import matplotlib.pyplot as plot 
 import h5py
 
-with h5py.File('../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') as mat_file:
+file_name_1 = 'indy_20160407_02.mat'
+file_name_2 = 'indy_20160411_01.mat'
+file_name_3 = 'indy_20160411_02.mat'
+file_name_4 = 'indy_20160418_01.mat'
+file_name_5 = 'indy_20160419_01.mat'
+file_name_6 = 'indy_20160420_01.mat'
+file_name_7 = 'indy_20160426_01.mat'
+file_name_8 = 'indy_20160622_01.mat'
+file_name_9 = 'indy_20160624_03.mat'
 
-    numpy_channel_names_array=mat_file.get('chan_names')
-    numpy_channel_names_array=np.array(numpy_channel_names_array)
+file_list=[ file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6, file_name_7, file_name_8, file_name_9]
 
-    numpy_spikes_array=mat_file.get('spikes')
-    numpy_spikes_array=np.array(numpy_spikes_array)
+for file_index in range( len(file_list) ):
 
-    numpy_wf_array=mat_file.get('wf')
-    numpy_wf_array=np.array(numpy_wf_array)
+    with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+file_list[file_index], 'r') as mat_file:
 
-    chan_names = mat_file['chan_names'] 
-    spikes = mat_file['spikes']
-    wf = mat_file['wf']
+        numpy_channel_names_array=mat_file.get('chan_names')
+        numpy_channel_names_array=np.array(numpy_channel_names_array)
 
-    channel_number=int(numpy_spikes_array.shape[1] / 2) # 96 in indy_20160407_02
+        numpy_spikes_array=mat_file.get('spikes')
+        numpy_spikes_array=np.array(numpy_spikes_array)
 
-    print('numpy_wf_array shape: ',end='')
-    print(numpy_wf_array.shape)  #  (3, 192) in indy_20160407_02.mat
+        numpy_wf_array=mat_file.get('wf')
+        numpy_wf_array=np.array(numpy_wf_array)
 
-    for channel_index in range(0, 15):
-        temp_wf_cell_1=mat_file[ ( wf[0][channel_index] ) ][()]
-        temp_wf_cell_2=mat_file[ ( wf[1][channel_index] ) ][()]
-        temp_wf_cell_3=mat_file[ ( wf[2][channel_index] ) ][()]
+        chan_names = mat_file['chan_names'] 
+        spikes = mat_file['spikes']
+        wf = mat_file['wf']
 
-        print('shape of temp_wf_cell_3: ', temp_wf_cell_3.shape)
-        
-        if(temp_wf_cell_3.shape[0]!=2 ):
-            temp_wf_cell_3=temp_wf_cell_2[: , 0] # TODO figure out this
+        channel_number=int(numpy_spikes_array.shape[1] / 2) # 96 in indy_20160407_02
 
-        print('shape of temp_wf_cell_3: ', temp_wf_cell_3.shape)
+        print('numpy_wf_array shape: ',end='')
+        print(numpy_wf_array.shape)  #  (3, 192) in indy_20160407_02.mat
 
-        temp_wf_cell_1=temp_wf_cell_1.flatten()
-        temp_wf_cell_2=temp_wf_cell_2.flatten()
-        temp_wf_cell_3=temp_wf_cell_3.flatten()
+        for channel_index in range(96):
+            temp_wf_cell_1=mat_file[ ( wf[0][channel_index] ) ][()]
+            temp_wf_cell_2=mat_file[ ( wf[1][channel_index] ) ][()]
+            temp_wf_cell_3=mat_file[ ( wf[2][channel_index] ) ][()]
 
-        print('shape of temp_wf_cell_2: ', temp_wf_cell_2.shape)
+            print('shape of temp_wf_cell_3: ', temp_wf_cell_3.shape) # (48, ...), 48 is the sample period of a waveform
 
-        # Set different colors for each neuron
-        #colorCodes = np.array([ [1, 1, 0],[0, 0, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1], [1, 0, 1] ])
-        colorCodes = np.array([ [0, 0, 0] ])
-        # Set spike colors for each neuron
-        lineSize = [0.9]
-        
-        plot.figure(figsize=(15,5))
-        plot.margins(0,0)
-        axes = plot.gca()
-        #axes.set_xlim([50, 900])
-        #axes.set_ylim([0.5, 3.5])
+            if(temp_wf_cell_1.shape[0]!=2 ):
+                temp_wf_cell_1=temp_wf_cell_1[: , 0] # (48,) 
+            
+            if(temp_wf_cell_2.shape[0]!=2 ):
+                temp_wf_cell_2=temp_wf_cell_2[: , 0] # (48,) 
 
-        x=[]
+            if(temp_wf_cell_3.shape[0]!=2 ):
+                temp_wf_cell_3=temp_wf_cell_3[: , 0] # (48,) 
 
-        for i in range( temp_wf_cell_3.shape[0]):
-            x.append(i)
 
-        # Draw a spike raster plot
-        plot.scatter(x, temp_wf_cell_3, color=colorCodes)
 
-        # Provide the title for the spike raster plot
-        title_text='Wave form Plot Channel ' + str(channel_index+1) +' unit 3' 
-        plot.title(  title_text )
+            print('shape of temp_wf_cell_3: ', temp_wf_cell_3.shape)
 
-        # Give x axis label for the spike raster plot
-        plot.xlabel('Time')
+            temp_wf_cell_1=temp_wf_cell_1.flatten()
+            temp_wf_cell_2=temp_wf_cell_2.flatten()
+            temp_wf_cell_3=temp_wf_cell_3.flatten()
 
-        # Give y axis label for the spike raster plot
-        plot.ylabel('Amptitude')
+            print('shape of temp_wf_cell_2: ', temp_wf_cell_2.shape)
 
-        # Display the spike raster plot
-        #plot.show()
-        path=r'''../../Figures/Wave_Form_Plot/'''
-        plot.savefig(path+ 'unit_3_'+'channel_' +str( f"{channel_index+1:03}" )  +'.png')
+            # Set different colors for each neuron
+            #colorCodes = np.array([ [1, 1, 0],[0, 0, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 1], [1, 0, 1] ])
+            colorCodes = np.array([ [0, 0, 0] ])
+            # Set spike colors for each neuron
+            lineSize = [0.9]
+            
+            plot.figure(figsize=(15,5))
+            plot.margins(0,0)
+            axes = plot.gca()
+            #axes.set_xlim([50, 900])
+            #axes.set_ylim([0.5, 3.5])
+
+            x=[]
+
+            for i in range( temp_wf_cell_3.shape[0]):
+                x.append(i)
+
+            # Draw a spike raster plot
+            plot.scatter(x, temp_wf_cell_3, color=colorCodes)
+
+            # Provide the title for the spike raster plot
+            title_text='Wave form from channel ' + str(channel_index+1) +' unit 3'+ ' in session '+str(file_index+1)
+            plot.title(  title_text )
+
+            # Give x axis label for the spike raster plot
+            plot.xlabel('Time')
+
+            # Give y axis label for the spike raster plot
+            plot.ylabel('Amptitude')
+
+            # Display the spike raster plot
+            #plot.show()
+            path=r'''../../Figures/Wave_Form_Plot/'''
+            plot.savefig(path+ 'unit_3_'+'channel_' +str( f"{channel_index+1:03}" ) +'_session_'+ str(file_index+1) +'.png')
