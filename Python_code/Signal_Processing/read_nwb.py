@@ -44,8 +44,20 @@ nwb_file = h5py.File(filename, 'r')
 data = nwb_file['/acquisition/timeseries/broadband/data']
 conversion = data.attrs['conversion']
 
+electrode_map = nwb_file['/general/extracellular_ephys/electrode_map']
+
+timestamp = nwb_file['/acquisition/timeseries/broadband/timestamps']
+
 print('print all nwb_file keys: ',end='')
 print( list( nwb_file.keys() ) )
+
+print('shape of data ', data.shape, '\n') # (12695457, 96) in indy_20160624_03
+#print('shape of conversion', conversion.data, '\n')
+print('shape of electrode_map ', electrode_map.shape, '\n') # (96, 3) in indy_20160624_03
+print('shape of timestamp ', timestamp.shape, '\n') #  (12695457,) in indy_20160624_03
+
+plt.scatter(timestamp[:100000], data[:100000, 0])
+plt.show()
 
 #####################
 sample_rate = 24400
@@ -104,7 +116,7 @@ CAR_selected = np.mean(pos_data[:, idx_to_select], axis=1)
 chan = 36
 plt.figure(figsize=(11, 9))
 j = 0
-for i in idx_to_select:#range(channel):
+for i in idx_to_select: # range(channel):
     low_pass = butter_lowpass_filter(pos_data[:, i], 4, new_sample_rate/2)
     plt.plot(low_pass + j * 1000, label = i)
     j = j + 1
