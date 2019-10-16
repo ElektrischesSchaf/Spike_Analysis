@@ -16,7 +16,7 @@ conversion = data.attrs['conversion']
 electrode_map = nwb_file['/general/extracellular_ephys/electrode_map']
 
 timestamp = nwb_file['/acquisition/timeseries/broadband/timestamps']
-sampling_frequency=1 / (timestamp[1]-timestamp[0])
+sampling_frequency = 1 / (timestamp[1]-timestamp[0]) # 1 / Δt 
 
 s=data[:1000000, selected_channel]
 
@@ -44,11 +44,11 @@ fig.tight_layout()
 #plt.show()
 plt.savefig('../../Figures/nwb_Data_Plot/spectrum_on_1_session.png')
 
-'''
+
 plt.clf()
 plt.magnitude_spectrum(s, Fs=sampling_frequency)
 plt.show()
-'''
+
 
 plt.clf()
 plt.close()
