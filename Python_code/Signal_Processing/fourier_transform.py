@@ -120,9 +120,18 @@ plt.close()
 plt.figure(figsize=(17, 17), dpi=200)
 c = plt.subplot(111)
 Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=2*1024, Fs=600, noverlap=0)
+print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im)  )
+print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
 c.set_title('LFP Spectrogram in Channel '+str(selected_channel+1))
 c.set_ylim([0, 300])
 c.set_xlabel('Time (Sample)')
 c.set_ylabel('Frequency')
 #plt.show()
 plt.savefig('../../Figures/nwb_Data_Plot/LFP_spectrum_on_1_session.png')
+
+'''
+# From image to matrix
+im.figure.canvas.draw()
+X=np.array( im.canvas.renderer.buffer_rgba() )
+print('X.shape= ', X.shape(), '\n')
+'''
