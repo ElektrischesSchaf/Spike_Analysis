@@ -118,11 +118,11 @@ plt.clf()
 plt.close()
 #
 plt.figure(figsize=(17, 17), dpi=200)
-fig, c = plt.subplots(figsize=(17,17))
+fig, c = plt.subplots()
 Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=2*1024, Fs=600, noverlap=0)
 
 print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
-
+print('bins[0]=', bins[0],'\n')
 print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
 
 c.set_title('LFP Spectrogram in Channel '+str(selected_channel+1))
