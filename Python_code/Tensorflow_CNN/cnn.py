@@ -14,6 +14,7 @@ class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
                'dog', 'frog', 'horse', 'ship', 'truck']
 
 plt.figure(figsize=(10,10))
+
 for i in range(25):
     plt.subplot(5,5,i+1)
     plt.xticks([])
@@ -47,8 +48,8 @@ model.compile(optimizer='adam',
 history = model.fit(train_images, train_labels, epochs=10, 
                     validation_data=(test_images, test_labels))
 
-plt.plot(history.history['accuracy'], label='accuracy')
-plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
+plt.plot(history.history['acc'], label='accuracy')
+plt.plot(history.history['val_acc'], label = 'val_accuracy')
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.ylim([0.5, 1])
