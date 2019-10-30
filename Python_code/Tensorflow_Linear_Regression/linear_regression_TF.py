@@ -7,7 +7,7 @@ import copy
 from sklearn.metrics import mean_squared_error, r2_score
 import tensorflow as tf
 
-file_name='../../Dataset/indy_20160407_02.mat'
+file_name='../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat'
 tStart=time.time()
 #testing_data_index=5000
 testing_data_index=10222
