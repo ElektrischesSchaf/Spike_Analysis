@@ -1,9 +1,12 @@
 import h5py
 from scipy import signal
 from scipy.signal import butter, lfilter
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
+
+test_sampling_duration=1000000
 
 # Low pass
 def butter_lowpass(cutoff, nyq_freq, order=4):
@@ -55,7 +58,7 @@ timestamp = nwb_file['/acquisition/timeseries/broadband/timestamps']
 sampling_frequency = 1 / (timestamp[1]-timestamp[0]) # 1 / Δt 
 print('sampling_frequency= ', sampling_frequency, '\n')
 
-s=data[:1000000, selected_channel]
+s=data[:test_sampling_duration, selected_channel]
 
 '''
 s=butter_highpass_filter(s, 300, sampling_frequency/2)
@@ -69,11 +72,11 @@ s=butter_highpass_filter(s, 300, sampling_frequency/2)
 spike_signal=butter_bandpass_filter(s, 300, 3000, sampling_frequency, order=5)
 local_field_potential_signal=butter_lowpass_filter(s,3000, sampling_frequency/2)
 
-fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(17, 17))
+fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(17, 17), dpi=100)
 
-print('Duration= ', timestamp[1000000]-timestamp[0],'\n')
+print('Duration= ', timestamp[test_sampling_duration]-timestamp[0],'\n')
 
-axes[0,0].scatter(timestamp[:1000000], s, s=1)
+axes[0,0].scatter(timestamp[:test_sampling_duration], s, s=1)
 axes[0, 0].set_title('Signal')
 
 axes[1,0].set_title("Magnitude Spectrum")
@@ -95,42 +98,66 @@ fig.tight_layout()
 #plt.show()
 plt.savefig('../../Figures/nwb_Data_Plot/spectrum_on_1_session.png')
 
-plt.clf()
+#plt.clf()
+#plt.close()
 #plt.magnitude_spectrum(spike_signal, Fs=sampling_frequency)
 #plt.show()
 
 plt.clf()
 plt.close()
 
-plt.figure(figsize=(17, 17), dpi=200)
-c = plt.subplot(111)
+#plt.figure(figsize=(17, 17), dpi=200)
+
+fig, c = plt.subplots(figsize=(0.513, 0.976), dpi=1000, frameon=False)
 Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, Fs=6000, noverlap=0)
-c.set_title('Spike Spectrogram in Channel '+str(selected_channel+1))
+print('bins[0]=', bins[0],'\n')
+print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
+#c.set_title('Spike Spectrogram in Channel '+str(selected_channel+1))
 c.set_ylim([300, 3000])
-c.set_xlabel('Time (Sample)')
-c.set_ylabel('Frequency')
-#plt.show()
+
+#c.set_xlabel('Time (Sample)')
+#c.set_ylabel('Frequency')
+
+#c.get_xaxis().set_visible(False)
+#c.get_yaxis().set_visible(False)
+plt.axis('off')
+
+mpl.rcParams['savefig.pad_inches'] = 0
+plt.box(on=None)
+plt.autoscale(tight=True)
+
 plt.savefig('../../Figures/nwb_Data_Plot/spike_spectrum_on_1_session.png')
-#width, height = plt.size()
+#plt.show()
+
 print('bins= ', len(bins), ' im= ', im, '\n')
 
 plt.clf()
 plt.close()
-#
-plt.figure(figsize=(17, 17), dpi=200)
-fig, c = plt.subplots()
+
+#plt.figure(figsize=(17, 17), dpi=200)
+
+fig, c = plt.subplots(figsize=(1.025, 0.488), dpi=1000, frameon=False)
 Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=2*1024, Fs=600, noverlap=0)
 
 print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
 print('bins[0]=', bins[0],'\n')
 print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
 
-c.set_title('LFP Spectrogram in Channel '+str(selected_channel+1))
+#c.set_title('LFP Spectrogram in Channel '+str(selected_channel+1))
 c.set_ylim([0, 300])
-c.set_xlabel('Time (Sample)')
-c.set_ylabel('Frequency')
-#plt.show()
+#c.set_xlabel('Time (Sample)')
+#c.set_ylabel('Frequency')
+
+#c.get_xaxis().set_visible(False)
+#c.get_yaxis().set_visible(False)
+plt.axis('off')
+
+mpl.rcParams['savefig.pad_inches'] = 0
+plt.box(on=None)
+plt.autoscale(tight=True)
+
 plt.savefig('../../Figures/nwb_Data_Plot/LFP_spectrum_on_1_session.png')
+#plt.show()
 
 fig.canvas.draw()
 X = np.array(fig.canvas.renderer.buffer_rgba())
