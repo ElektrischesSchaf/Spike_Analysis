@@ -121,24 +121,28 @@ c.set_title('Spike Spectrogram in Channel '+str(selected_channel+1))
 c.set_ylim([300, 3000])
 c.set_xlabel('Time (Sample)')
 c.set_ylabel('Frequency')
+fig.colorbar(im)
+
 plt.show()
 
 plt.clf()
 plt.close()
 
 #save spectrogram for CNN
+plt.tick_params(top='off', bottom='off', left='off', right='off', labelleft='off', labelbottom='off')
+
 fig, c = plt.subplots(figsize=(freqs_cnn, bins_cnn), dpi=1, frameon=False)
 Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, Fs=6000, noverlap=0)
-
-
+print('len of Pxx: ', len(Pxx), '\n')
+print('len of Pxx[0]=', len(Pxx[0]), '\n')
 c.set_ylim([300, 3000])
 
 #c.get_xaxis().set_visible(False)
 #c.get_yaxis().set_visible(False)
+c.axis('off')
 plt.axis('off')
-
 mpl.rcParams['savefig.pad_inches'] = 0
-plt.box(on=None)
+#plt.box(on=None)
 plt.autoscale(tight=True)
 
 plt.savefig('../../Figures/nwb_Data_Plot/spike_spectrum_on_1_session.png')
@@ -167,32 +171,38 @@ c.set_title('LFP Spectrogram in Channel '+str(selected_channel+1))
 c.set_ylim([0, 300])
 c.set_xlabel('Time (Sample)')
 c.set_ylabel('Frequency')
-
+fig.colorbar(im)
 plt.show()
 
 plt.clf()
 plt.close()
 
 #save spectrogram for CNN
+plt.tick_params(top='off', bottom='off', left='off', right='off', labelleft='off', labelbottom='off')
+
 fig, c = plt.subplots(figsize=(freqs_cnn, bins_cnn), dpi=1, frameon=False)
 Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=2*1024, Fs=600, noverlap=0)
+print('len of Pxx: ', len(Pxx), '\n')
+print('len of Pxx[0]=', len(Pxx[0]), '\n')
 c.set_ylim([0, 300])
 
 #c.get_xaxis().set_visible(False)
 #c.get_yaxis().set_visible(False)
+c.axis('off')
 plt.axis('off')
-
 mpl.rcParams['savefig.pad_inches'] = 0
-plt.box(on=None)
+#plt.box(on=None)
 plt.autoscale(tight=True)
+
 
 plt.savefig('../../Figures/nwb_Data_Plot/LFP_spectrum_on_1_session.png')
 
 # Convert to matrix form
 fig.canvas.draw()
 X = np.array(fig.canvas.renderer.buffer_rgba())
-print('len(X)= ', len(X), '\n')
-print('len(X[0])', len(X[0]), '\n')
+print('len(X) = ', len(X), '\n')
+print('len(X[0]) = ', len(X[0]), '\n')
+print(X[0][500])
 
 plt.clf()
 plt.close()
