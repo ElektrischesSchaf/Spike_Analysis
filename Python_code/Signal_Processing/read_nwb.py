@@ -55,27 +55,26 @@ print('shape of data ', data.shape, '\n') # (12695457, 96) in indy_20160624_03
 #print('shape of conversion', conversion.data, '\n')
 print('shape of electrode_map ', electrode_map.shape, '\n') # (96, 3) in indy_20160624_03
 print('shape of timestamp ', timestamp.shape, '\n') #  (12695457,) in indy_20160624_03
-'''
-for i in range():
-    if timestamp[i,0]>11 and timestamp[i,0]<17:
-       print(i)
-'''
 
-#half_delta=(timestamp[1,]-timestamp[0,])/2
-#print('first timestamp= ', timestamp[0,], '\n')
-
-#index_start_time=np.all(timestamp[:,]>711 and timestamp[:,]<711+half_delta)
-#index_end_time=np.all(timestamp[:,]>717 and timestamp[:,]<717+half_delta)
-#print( (timestamp[:,] > 711) and (timestamp[:,] <717) , '\n')
-
-#print('index_start_time= ', timestamp[index_start_time], '\n')
-#print('index_end_time= ', timestamp[index_end_time], '\n')
 
 print(np.where(np.logical_and(timestamp[:,]>711, timestamp[:,]<717 ) ))
-print('1000988= ', timestamp[1000988,], '\n')
-print('1147473= ', timestamp[1147473,], '\n')
+array_time_interval=np.where(np.logical_and(timestamp[:,]>711, timestamp[:,]<717 ) )
+print('type of array_time_interval=', type(array_time_interval),'\n')
+print('array_time_interval start time index=', array_time_interval[0][0],'\n')
+print('array_time_interval end time index=', array_time_interval[0][-1],'\n')
 
-plt.scatter(timestamp[:100000], data[:100000, 0])
+new_time_stamp= timestamp[array_time_interval[0][0]:array_time_interval[0][-1],]
+new_data=data[ array_time_interval[0][0]:array_time_interval[0][-1],0]
+
+print('new timestamp=', new_time_stamp,'\n')
+
+#plt.scatter(timestamp[:100000], data[:100000, 0])
+#plt.show()
+
+plt.scatter(new_time_stamp, new_data, s=1)
+plt.title("Raw Data indy_20160624_03.nwb")
+plt.xlabel("Time (Second)")
+plt.ylabel("Amptitude (mV)")
 plt.show()
 
 #####################
