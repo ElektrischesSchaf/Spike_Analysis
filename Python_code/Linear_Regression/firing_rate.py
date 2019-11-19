@@ -865,7 +865,7 @@ print('\n')
 tEnd=time.time()
 print('Overall processing time: '+ str ( round(tEnd-tStart, 3) )+'seconds' )
 
-'''
+
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, x_position_predict, s=1)
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_position_predict, 'b--',label='Prediction' )
@@ -916,7 +916,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_predict[:-1], 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('velocity x prediction and ground truth')
@@ -932,7 +932,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-2], y_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], y_velocity_predict[:-1], 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], y_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('velocity y prediction and ground truth')
@@ -948,7 +948,7 @@ plot.clf()
 
 plot.figure(figsize=(15,5))
 #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
-plot.plot(time_stamp_64ms[testing_data_index:-2], z_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], z_velocity_predict[:-1], 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], z_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('velocity z prediction and ground truth')
@@ -1006,4 +1006,4 @@ axes = plot.gca()
 #axes.set_xlim([60, 890])
 plot.show()
 #plot.savefig('Z_position_prediction.png' )
-'''
+
