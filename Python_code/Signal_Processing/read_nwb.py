@@ -35,9 +35,9 @@ def butter_highpass_filter(data, cutoff_freq, nyq_freq, order=4):
 
 #https://stackoverflow.com/questions/13728392/moving-average-or-running-mean?answertab=votes
 def running_mean(x, N):
-    cumsum = np.cumsum(np.insert(x, 0, 0)) 
+    cumsum = np.cumsum(np.insert(x, 0, 0))
     return (cumsum[N:] - cumsum[:-N]) / float(N)
-   
+
 # Read data
 filename = '../../Dataset/The_nwb_Raw_Dataset/indy_20160624_03.nwb'
 nwb_file = h5py.File(filename, 'r')
@@ -55,6 +55,25 @@ print('shape of data ', data.shape, '\n') # (12695457, 96) in indy_20160624_03
 #print('shape of conversion', conversion.data, '\n')
 print('shape of electrode_map ', electrode_map.shape, '\n') # (96, 3) in indy_20160624_03
 print('shape of timestamp ', timestamp.shape, '\n') #  (12695457,) in indy_20160624_03
+'''
+for i in range():
+    if timestamp[i,0]>11 and timestamp[i,0]<17:
+       print(i)
+'''
+
+#half_delta=(timestamp[1,]-timestamp[0,])/2
+#print('first timestamp= ', timestamp[0,], '\n')
+
+#index_start_time=np.all(timestamp[:,]>711 and timestamp[:,]<711+half_delta)
+#index_end_time=np.all(timestamp[:,]>717 and timestamp[:,]<717+half_delta)
+#print( (timestamp[:,] > 711) and (timestamp[:,] <717) , '\n')
+
+#print('index_start_time= ', timestamp[index_start_time], '\n')
+#print('index_end_time= ', timestamp[index_end_time], '\n')
+
+print(np.where(np.logical_and(timestamp[:,]>711, timestamp[:,]<717 ) ))
+print('1000988= ', timestamp[1000988,], '\n')
+print('1147473= ', timestamp[1147473,], '\n')
 
 plt.scatter(timestamp[:100000], data[:100000, 0])
 plt.show()
@@ -106,7 +125,7 @@ diff_min_max = np.abs(max_96_chans-min_96_chans)
 # remove channels have small variation for all diff_min_max < 1500
 idx_to_delete_outlier = np.argwhere((diff_median > 1000))
 idx_to_delete_small_vari = np.argwhere((diff_min_max < 3000))
-# selected 
+# selected
 idx_to_selected_1 = np.argwhere((diff_median < 1000))
 idx_to_selected_2 = np.argwhere((diff_min_max > 3000))
 idx_to_select = np.intersect1d(idx_to_selected_1, idx_to_selected_2)

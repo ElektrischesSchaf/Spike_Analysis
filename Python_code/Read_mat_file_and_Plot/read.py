@@ -18,7 +18,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') a
     numpy_spikes_array=mat_file.get('spikes')
     numpy_spikes_array=np.array(numpy_spikes_array)
 
-    chan_names = mat_file['chan_names'] 
+    chan_names = mat_file['chan_names']
     spikes = mat_file['spikes']
 
     print('numpy_channel_names_array shape: ',end='')
@@ -34,7 +34,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') a
     print(spikes.shape) # (3, 192) in indy_20160407_02.mat
 
     print('chan_names dtype:  ',end='')
-    print(chan_names.dtype)  # object 
+    print(chan_names.dtype)  # object
 
     print('spikes dtype: ',end='')
     print(spikes.dtype)   # object
@@ -65,7 +65,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') a
     spikes_data_1=mat_file[ ( spikes[0][0] ) ][()]
     print('shape of spikes_data_1: ',end='')
     print( spikes_data_1.shape )  # (1, 5595) in indy_20160407_02.mat
-    
+
     print( 'value of spikes_data_1[0][1000]: ',end='')
     print( spikes_data_1[0][1000] )  #  224.40043620355942 in indy_20160407_02.mat
 
@@ -75,7 +75,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat', 'r') a
     for i in range( spikes.shape[1] ):
         data=''.join([ chr(v[0]) for v in mat_file[ ( spikes[0][i] ) ]  ])
         print(data)
-    '''    
+    '''
 
     '''
     #valid
