@@ -2,3 +2,4 @@
 *.pdf
 *.nwb
 *.wav
+myvenv/
