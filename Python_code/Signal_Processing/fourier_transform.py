@@ -47,8 +47,8 @@ sampling_frequency=0 # sampling frequency
 selected_channel=0
 
 
-filename = '../../Dataset/The_nwb_Raw_Dataset/indy_20160624_03.nwb'
-nwb_file = h5py.File(filename, 'r')
+nwb_filename = '../../Dataset/The_nwb_Raw_Dataset/indy_20160624_03.nwb'
+nwb_file = h5py.File(nwb_filename, 'r')
 data = nwb_file['/acquisition/timeseries/broadband/data']
 conversion = data.attrs['conversion']
 
