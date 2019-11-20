@@ -77,44 +77,63 @@ mat_file=h5py.File(mat_file_name_1, 'r')
 mat_timestamp=mat_file.get('t')
 mat_timestamp=np.array(mat_timestamp)
 print('shape of mat_timestamp', mat_timestamp.shape, '\n')
-print(np.where(np.logical_and(mat_timestamp[0,:]>start_second, mat_timestamp[0,:]<end_second ) ))
 mat_time_interval=np.where(np.logical_and(mat_timestamp[0,:]>start_second, mat_timestamp[0,:]<end_second ) )
-print('mat_time_interval start time index=', mat_time_interval[0][0],'\n')
-print('mat_time_interval end time index=', mat_time_interval[0][-1],'\n')
-new_mat_time_stamp=mat_timestamp[mat_time_interval[0][0]:mat_time_interval[0][-1],]
+print('mat_timestamp np.where result = ', end='')
+print(mat_time_interval, '\n')
+print('type of mat_time_interval=', type(mat_time_interval),'\n')
+print('mat_time_interval start time index = ', mat_time_interval[0][0],'\n')
+print('mat_time_interval end time index = ', mat_time_interval[0][-1],'\n')
+new_mat_time_stamp=mat_timestamp[0,mat_time_interval[0][0]:mat_time_interval[0][-1]]
+
+print('new_mat_time_stamp = ', new_mat_time_stamp,'\n')
+
 
 spikes = mat_file['spikes']
 temp_spike_cell_1=mat_file[ ( spikes[0][channel_number] ) ][()]
 temp_spike_cell_2=mat_file[ ( spikes[1][channel_number] ) ][()]
 temp_spike_cell_3=mat_file[ ( spikes[2][channel_number] ) ][()]
 
-temp_spike_cell_1=temp_spike_cell_1[mat_time_interval[0][0]:mat_time_interval[0][-1],]
-temp_spike_cell_2=temp_spike_cell_2[mat_time_interval[0][0]:mat_time_interval[0][-1],]
-temp_spike_cell_3=temp_spike_cell_3[mat_time_interval[0][0]:mat_time_interval[0][-1],]
+#print('shape of temp_spike_cell_1 = ', temp_spike_cell_1.shape, '\n')
+#print('temp_spike_cell_1 = ', temp_spike_cell_1, '\n')
+
+spike_cell_1_interval=np.where(np.logical_and( temp_spike_cell_1[0,:]>start_second, temp_spike_cell_1[0,:]<end_second ))
+print('spike_cell_1_interval = ', spike_cell_1_interval, '\n')
+temp_spike_cell_1=temp_spike_cell_1[0, spike_cell_1_interval[0][0]:spike_cell_1_interval[0][-1]]
+
+spike_cell_2_interval=np.where(np.logical_and( temp_spike_cell_2[0,:]>start_second, temp_spike_cell_2[0,:]<end_second ))
+print('spike_cell_2_interval = ', spike_cell_2_interval, '\n')
+temp_spike_cell_2=temp_spike_cell_2[0, spike_cell_2_interval[0][0]:spike_cell_2_interval[0][-1]]
+
+#spike_cell_3_interval=np.where(np.logical_and( temp_spike_cell_3[0,:]>start_second, temp_spike_cell_3[0,:]<end_second ))
+#print('spike_cell_3_interval = ', spike_cell_3_interval, '\n')
+#temp_spike_cell_3=temp_spike_cell_3[0, spike_cell_3_interval[0][0]:spike_cell_3_interval[0][-1]]
+
+print('temp_spike_cell_1 = ', temp_spike_cell_1, '\n')
+print('temp_spike_cell_2 = ', temp_spike_cell_2, '\n')
+
 
 # Extract time interval from nwb file
-print(np.where(np.logical_and(nwb_timestamp[:,]>start_second, nwb_timestamp[:,]<end_second ) ))
 nwb_time_interval=np.where(np.logical_and(nwb_timestamp[:,]>start_second, nwb_timestamp[:,]<end_second ) )
-print('type of nwb_time_interval=', type(nwb_time_interval),'\n')
-print('nwb_time_interval start time index=', nwb_time_interval[0][0],'\n')
-print('nwb_time_interval end time index=', nwb_time_interval[0][-1],'\n')
+print('nwb_timestamp np.where result = ', end='')
+print(nwb_time_interval, '\n')
+print('type of nwb_time_interval = ', type(nwb_time_interval),'\n')
+print('nwb_time_interval start time index = ', nwb_time_interval[0][0],'\n')
+print('nwb_time_interval end time index = ', nwb_time_interval[0][-1],'\n')
 
 new_nwb_time_stamp= nwb_timestamp[nwb_time_interval[0][0]:nwb_time_interval[0][-1],]
 new_data=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1],0+channel_number]
 
-print('new nwb_timestamp=', new_nwb_time_stamp,'\n')
+print('new_nwb_time_stamp = ', new_nwb_time_stamp,'\n')
 
 #plt.scatter(nwb_timestamp[:100000], data[:100000, 0])
 #plt.show()
 
-new_nwb_time_stamp=new_nwb_time_stamp*1000 # Second to MilliSeconds
-new_mat_time_stamp=new_mat_time_stamp*1000
 
 plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
 plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1),fontsize=30, color="black")
-plt.xlabel("Time (ms)", fontsize=25, color="black")
+plt.xlabel("Time (s)", fontsize=25, color="black")
 plt.ylabel("Amp. (mV)", fontsize=25, color="black")
-plt.xlim(start_second*1000, end_second*1000)
+plt.xlim(start_second, end_second)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 plt.show()
@@ -129,20 +148,21 @@ new_sample_rate = 1000
 plt.close()
 plt.clf()
 
+plt.figure(figsize=(29,7))
 spike_signal=butter_bandpass_filter(new_data, 500, 5000, sampling_rate, order=4)
-plt.scatter(new_nwb_time_stamp, spike_signal, s=1, color= 'black')
-plt.scatter(new_mat_time_stamp, temp_spike_cell_1, s=100, color= 'red')
-plt.scatter(new_mat_time_stamp, temp_spike_cell_2, s=100, color= 'red')
-plt.scatter(new_mat_time_stamp, temp_spike_cell_3, s=100, color= 'red')
+plt.plot(new_nwb_time_stamp, spike_signal, color= 'black', zorder=2, linewidth=0.5)
+plt.eventplot(temp_spike_cell_1, color='red', linelengths=20, lineoffsets=100)
+plt.eventplot(temp_spike_cell_2, color='blue', linelengths=20, lineoffsets=90)
+plt.eventplot(temp_spike_cell_3, color='red', linelengths=10)
 plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1),fontsize=30, color="black")
-plt.xlabel("Time (ms)", fontsize=25, color="black")
+plt.xlabel("Time (s)", fontsize=25, color="black")
 plt.ylabel("Amp. (mV)", fontsize=25, color="black")
-plt.xlim(start_second*1000, end_second*1000)
+plt.xlim(start_second, end_second)
 plt.ylim(120,-120)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
-plt.show()
-
+#plt.show()
+plt.savefig('Filtered_raw_data_and_spike_label_on_Channel_' + str(channel_number+1) + '.png')
 plt.close()
 plt.clf()
 
