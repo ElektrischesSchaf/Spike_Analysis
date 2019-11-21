@@ -5,6 +5,7 @@ from scipy.signal import butter, lfilter
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib as mpl
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
@@ -48,9 +49,9 @@ def running_mean(x, N):
     return (cumsum[N:] - cumsum[:-N]) / float(N)
 
 # Read data and plot raw waveform
-channel_number=50
-start_second=311
-end_second=317
+channel_number=49
+start_second=310
+end_second=312
 
 # nwb file
 nwb_filename = '../../Dataset/The_nwb_Raw_Dataset/indy_20161007_02.nwb'
@@ -92,25 +93,35 @@ spikes = mat_file['spikes']
 temp_spike_cell_1=mat_file[ ( spikes[0][channel_number] ) ][()]
 temp_spike_cell_2=mat_file[ ( spikes[1][channel_number] ) ][()]
 temp_spike_cell_3=mat_file[ ( spikes[2][channel_number] ) ][()]
+temp_spike_cell_4=mat_file[ ( spikes[3][channel_number] ) ][()]
 
 #print('shape of temp_spike_cell_1 = ', temp_spike_cell_1.shape, '\n')
 #print('temp_spike_cell_1 = ', temp_spike_cell_1, '\n')
 
 spike_cell_1_interval=np.where(np.logical_and( temp_spike_cell_1[0,:]>start_second, temp_spike_cell_1[0,:]<end_second ))
 print('spike_cell_1_interval = ', spike_cell_1_interval, '\n')
-temp_spike_cell_1=temp_spike_cell_1[0, spike_cell_1_interval[0][0]:spike_cell_1_interval[0][-1]]
+if spike_cell_1_interval[0]!=[]:
+    temp_spike_cell_1=temp_spike_cell_1[0, spike_cell_1_interval[0][0]:spike_cell_1_interval[0][-1]]
 
 spike_cell_2_interval=np.where(np.logical_and( temp_spike_cell_2[0,:]>start_second, temp_spike_cell_2[0,:]<end_second ))
 print('spike_cell_2_interval = ', spike_cell_2_interval, '\n')
-temp_spike_cell_2=temp_spike_cell_2[0, spike_cell_2_interval[0][0]:spike_cell_2_interval[0][-1]]
+if spike_cell_2_interval[0]!=[]:
+    temp_spike_cell_2=temp_spike_cell_2[0, spike_cell_2_interval[0][0]:spike_cell_2_interval[0][-1]]
 
-#spike_cell_3_interval=np.where(np.logical_and( temp_spike_cell_3[0,:]>start_second, temp_spike_cell_3[0,:]<end_second ))
-#print('spike_cell_3_interval = ', spike_cell_3_interval, '\n')
-#temp_spike_cell_3=temp_spike_cell_3[0, spike_cell_3_interval[0][0]:spike_cell_3_interval[0][-1]]
+spike_cell_3_interval=np.where(np.logical_and( temp_spike_cell_3[0,:]>start_second, temp_spike_cell_3[0,:]<end_second ))
+print('spike_cell_3_interval = ', spike_cell_3_interval, '\n')
+if spike_cell_3_interval[0]!=[]:
+    temp_spike_cell_3=temp_spike_cell_3[0, spike_cell_3_interval[0][0]:spike_cell_3_interval[0][-1]]
+
+spike_cell_4_interval=np.where(np.logical_and( temp_spike_cell_4[0,:]>start_second, temp_spike_cell_4[0,:]<end_second ))
+print('spike_cell_4_interval = ', spike_cell_4_interval, '\n')
+if spike_cell_4_interval[0]!=[]:
+    temp_spike_cell_4=temp_spike_cell_4[0, spike_cell_4_interval[0][0]:spike_cell_4_interval[0][-1]]
 
 print('temp_spike_cell_1 = ', temp_spike_cell_1, '\n')
 print('temp_spike_cell_2 = ', temp_spike_cell_2, '\n')
-
+print('temp_spike_cell_3 = ', temp_spike_cell_3, '\n')
+print('temp_spike_cell_4 = ', temp_spike_cell_4, '\n')
 
 # Extract time interval from nwb file
 nwb_time_interval=np.where(np.logical_and(nwb_timestamp[:,]>start_second, nwb_timestamp[:,]<end_second ) )
@@ -128,44 +139,57 @@ print('new_nwb_time_stamp = ', new_nwb_time_stamp,'\n')
 #plt.scatter(nwb_timestamp[:100000], data[:100000, 0])
 #plt.show()
 
+# 出圖比例
+my_plot_width=29
+my_plot_height=7
 
+plt.figure(figsize=(my_plot_width, my_plot_height))
 plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
 plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1),fontsize=30, color="black")
 plt.xlabel("Time (s)", fontsize=25, color="black")
 plt.ylabel("Amp. (mV)", fontsize=25, color="black")
+
 plt.xlim(start_second, end_second)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
-plt.show()
+#plt.show()
+plt.savefig('Raw_data_on_Channel_' + str(channel_number+1) + '.png')
+plt.clf()
+plt.cla()
+plt.close()
+
 
 sampling_rate=1/( nwb_timestamp[1,]- nwb_timestamp[0,])
 print('sampling rate= ',sampling_rate, '\n')
-#butterworth filter
-cutoff_frequency = 300.0
-# Downsample data
-new_sample_rate = 1000
 
-plt.close()
-plt.clf()
+plt.figure(figsize=(my_plot_width, my_plot_height))
+plt.gca().invert_yaxis()
 
-plt.figure(figsize=(29,7))
-spike_signal=butter_bandpass_filter(new_data, 500, 5000, sampling_rate, order=4)
+spike_signal=butter_bandpass_filter(new_data, 500, 5000, sampling_rate, order=3)
 plt.plot(new_nwb_time_stamp, spike_signal, color= 'black', zorder=2, linewidth=0.5)
-plt.eventplot(temp_spike_cell_1, color='red', linelengths=20, lineoffsets=100)
-plt.eventplot(temp_spike_cell_2, color='blue', linelengths=20, lineoffsets=90)
-plt.eventplot(temp_spike_cell_3, color='red', linelengths=10)
+
+spike_line_width=4
+spike_line_length=18
+spike_line_offlet=150
+plt.eventplot(temp_spike_cell_1, color='red', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-2*spike_line_length, linestyles='dotted')
+plt.eventplot(temp_spike_cell_2, color='blue', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet, linestyles='dotted')
+plt.eventplot(temp_spike_cell_3, color='green', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-1*spike_line_length, linestyles='dotted')
+plt.eventplot(temp_spike_cell_4, color='yellow', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-3*spike_line_length, linestyles='dotted')
+
 plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1),fontsize=30, color="black")
+
 plt.xlabel("Time (s)", fontsize=25, color="black")
 plt.ylabel("Amp. (mV)", fontsize=25, color="black")
+
 plt.xlim(start_second, end_second)
-plt.ylim(120,-120)
+plt.ylim(0, 200)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 #plt.show()
 plt.savefig('Filtered_raw_data_and_spike_label_on_Channel_' + str(channel_number+1) + '.png')
-plt.close()
 plt.clf()
-
+plt.cla()
+plt.close()
 
 '''
 
