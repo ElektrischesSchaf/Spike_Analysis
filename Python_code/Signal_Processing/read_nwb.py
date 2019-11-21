@@ -142,6 +142,7 @@ print('new_nwb_time_stamp = ', new_nwb_time_stamp,'\n')
 # 出圖比例
 my_plot_width=29
 my_plot_height=7
+figure_path='../../Figures/Raw_data_and_Spike/'
 
 plt.figure(figsize=(my_plot_width, my_plot_height))
 plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
@@ -153,7 +154,7 @@ plt.xlim(start_second, end_second)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 #plt.show()
-plt.savefig('Raw_data_on_Channel_' + str(channel_number+1) + '.png')
+plt.savefig(figure_path+'Raw_data_on_Channel_' + str(channel_number+1) + '.png')
 plt.clf()
 plt.cla()
 plt.close()
@@ -186,10 +187,53 @@ plt.ylim(0, 200)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 #plt.show()
-plt.savefig('Filtered_raw_data_and_spike_label_on_Channel_' + str(channel_number+1) + '.png')
+plt.savefig(figure_path+'Filtered_raw_data_and_spike_label_on_Channel_' + str(channel_number+1) + '.png')
 plt.clf()
 plt.cla()
 plt.close()
+
+# Combining the above two into one figure
+
+plt.figure(1, figsize=(my_plot_width, my_plot_width*2) )
+
+plt.subplot(211)
+plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
+#plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1),fontsize=30, color="black")
+#plt.xlabel("Time (s)", fontsize=25, color="black")
+plt.ylabel("Amp. (mV)", fontsize=25, color="black")
+
+plt.xlim(start_second, end_second)
+#plt.xticks(fontsize=20, color="black")
+plt.xticks([], [])
+plt.yticks(fontsize=20, color="black")
+
+plt.subplot(212)
+plt.gca().invert_yaxis()
+
+spike_signal=butter_bandpass_filter(new_data, 500, 5000, sampling_rate, order=3)
+plt.plot(new_nwb_time_stamp, spike_signal, color= 'black', zorder=2, linewidth=0.5)
+
+spike_line_width=4
+spike_line_length=18
+spike_line_offlet=190
+plt.eventplot(temp_spike_cell_1, color='red', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-2*spike_line_length, linestyles='solid')
+plt.eventplot(temp_spike_cell_2, color='blue', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet, linestyles='solid')
+plt.eventplot(temp_spike_cell_3, color='green', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-1*spike_line_length, linestyles='solid')
+plt.eventplot(temp_spike_cell_4, color='yellow', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-3*spike_line_length, linestyles='solid')
+
+#plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1),fontsize=30, color="black")
+
+plt.xlabel("Time (s)", fontsize=25, color="black")
+plt.ylabel("Amp. (mV)", fontsize=25, color="black")
+
+plt.xlim(start_second, end_second)
+plt.ylim(0, 200)
+plt.xticks(fontsize=20, color="black")
+plt.yticks(fontsize=20, color="black")
+
+plt.show()
+#plt.savefig(figure_path+'Combined_Filtered_raw_data_and_spike_label_on_Channel_' + str(channel_number+1) + '.png')
+
 
 '''
 
