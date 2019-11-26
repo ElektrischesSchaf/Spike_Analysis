@@ -31,9 +31,9 @@ units_have_value=0 # unit numbers that is not empty
 the_sampling_rate=16
 file_numbers=1
 time_lag=0
-order=5
-with_sorted_spikes=False
-include_hash_unit=False
+order=1
+with_sorted_spikes=True
+include_hash_unit=True
 
 # Must know these two numbers beforehand
 channel_numbers_in_this_dataset=96
