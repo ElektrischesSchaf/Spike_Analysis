@@ -2,6 +2,23 @@
 ## Single Session, With Hash unit, with spike sorting
 ### In time lag:  0
 
+* model_x_position score in order  0 :  0.11435610816030484
+* model_y_position score in order  0 :  0.18804542863076756
+* model_z_position score in order  0 :  -0.010893968477762472
+
+
+* model_x_velocity score in order  0 :  0.2908923622211801
+* model_y_velocity score in order  0 :  0.3213251108746724
+* model_z_velocity score in order  0 :  -0.0007922085518157207
+
+
+* model_x_acceleration score in order  0 :  0.09966378444822588
+* model_y_acceleration score in order  0 :  0.0975972421152016
+* model_z_acceleration score in order  0 :  -0.023233799082207796
+
+
+---
+
 * model_x_position score in order  1 :  0.1823359287652213
 * model_y_position score in order  1 :  0.2765317540822321
 * model_z_position score in order  1 :  -0.018270748544601645
@@ -115,6 +132,23 @@
 ---
 
 ### In time lag:  1
+
+* model_x_position score in order  0 :  0.12569332638109
+* model_y_position score in order  0 :  0.1883654397295187
+* model_z_position score in order  0 :  -0.020096794966500298
+
+
+* model_x_velocity score in order  0 :  0.38492102313746945
+* model_y_velocity score in order  0 :  0.39845265187567624
+* model_z_velocity score in order  0 :  0.01041646683870523
+
+
+* model_x_acceleration score in order  0 :  0.08492222487913426
+* model_y_acceleration score in order  0 :  0.07174566349791811
+* model_z_acceleration score in order  0 :  -0.024885176898776118
+
+
+---
 
 * model_x_position score in order  1 :  0.19458950392380836
 * model_y_position score in order  1 :  0.2773303022045296
