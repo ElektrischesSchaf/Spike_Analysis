@@ -4,6 +4,10 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.utils.data as Data
 
+
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -597,6 +601,9 @@ for session_index in range(file_numbers):
 
 x = torch.from_numpy(X_for_training)
 y = torch.from_numpy(x_position_label_training)
+
+x=x.float()
+y=y.float()
 #x = X_for_training
 #y = x_position_label_training
 
@@ -625,7 +632,7 @@ class Net(torch.nn.Module):
         x = self.predict(x)             # linear output
         return x
 
-net = Net(n_feature=1, n_hidden=10, n_output=1)     # define the network
+net = Net(n_feature=288, n_hidden=10, n_output=1)     # define the network
 # print(net)  # net architecture
 optimizer = torch.optim.SGD(net.parameters(), lr=0.2)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
