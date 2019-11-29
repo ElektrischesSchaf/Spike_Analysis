@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
+import gumpy
+
 test_sampling_duration=1000000
 
 # Low pass
@@ -111,8 +113,13 @@ plt.figure(figsize=(17, 17), dpi=10)
 fig, c = plt.subplots()
 Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, Fs=sampling_frequency, noverlap=0)
 print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
-print('bins= ', len(bins), ' im= ', im, '\n')
+print('len (bins)= ', len(bins), ' im= ', im, '\n')
 print('bins[0]=', bins[0],'\n')
+print('len of Pxx: ', len(Pxx), '\n')
+print('len of Pxx[0]=', len(Pxx[0]), '\n')
+print('shape of Pxx', Pxx.shape, '\n')
+print('shape of freqs', freqs.shape, '\n')
+print('shape of bins', bins.shape, '\n')
 print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
 freqs_cnn=len(freqs)
 bins_cnn=len(bins)
@@ -121,13 +128,54 @@ c.set_title('Spike Spectrogram in Channel '+str(selected_channel+1))
 c.set_ylim([300, 3000])
 c.set_xlabel('Time (Sample)')
 c.set_ylabel('Frequency')
-fig.colorbar(im)
-
-plt.show()
+fig.colorbar()
+plt.savefig('../../Figures/nwb_Data_Plot/spike_spectrum_on_1_session.png')
+#plt.show()
 
 plt.clf()
 plt.close()
 
+
+# use gumpy STFT below
+print('shape of Pxx', Pxx.shape, '\n')
+y_augmented=np.zeros(len(Pxx),)
+x_augmented, y_augmented = gumpy.signal.sliding_window(data = Pxx,
+                                                          labels = y_augmented,
+                                                          window_sz = 512,
+                                                          n_hop = sampling_frequency // 10000,
+                                                          n_start = sampling_frequency * 1,
+                                                          show_status=True)
+
+
+print('\n after STFT, ')
+# x_augmented shape = (, y_augmented = 
+print('\nshape of x_augmented, ', x_augmented.shape, ' Shape of y_augmented, ', y_augmented.shape)
+
+# Plot x_augmented as spectrogram
+my_dpi=96
+my_suptitle_size=60
+
+
+channel_1=x_augmented[:,:] # 
+print('\n shape of H = ', channel_1.shape)
+
+fig=plt.figure(figsize=(1000/my_dpi, 12369/my_dpi), dpi=my_dpi)
+fig.suptitle('channel 1 spectrogram', fontsize=my_suptitle_size)
+ax=fig.add_subplot(111)
+#ax.set_title('channel 1 spectrogram', fontsize=30)
+ax.imshow(channel_1)
+fig.colorbar()
+plt.savefig('Test_spectrogram_from_gumpy.png')
+
+plt.cla()
+plt.clf()
+plt.close()
+
+
+
+
+
+'''
 #save spectrogram for CNN
 plt.tick_params(top='off', bottom='off', left='off', right='off', labelleft='off', labelbottom='off')
 
@@ -145,7 +193,7 @@ mpl.rcParams['savefig.pad_inches'] = 0
 #plt.box(on=None)
 plt.autoscale(tight=True)
 
-plt.savefig('../../Figures/nwb_Data_Plot/spike_spectrum_on_1_session.png')
+#plt.savefig('../../Figures/nwb_Data_Plot/spike_spectrum_on_1_session.png')
 
 # Convert to matrix form
 fig.canvas.draw()
@@ -155,14 +203,21 @@ print('len(X[0])', len(X[0]), '\n')
 
 plt.clf()
 plt.close()
+'''
 
 #plot spectrogram for inspection
 plt.figure(figsize=(17, 17), dpi=10)
 fig, c = plt.subplots()
 Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=2*1024, Fs=sampling_frequency, noverlap=0)
 print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
-print('bins= ', len(bins), ' im= ', im, '\n')
+print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
+print('len (bins)= ', len(bins), ' im= ', im, '\n')
 print('bins[0]=', bins[0],'\n')
+print('len of Pxx: ', len(Pxx), '\n')
+print('len of Pxx[0]=', len(Pxx[0]), '\n')
+print('shape of Pxx', Pxx.shape, '\n')
+print('shape of freqs', freqs.shape, '\n')
+print('shape of bins', bins.shape, '\n')
 print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
 freqs_cnn=len(freqs)
 bins_cnn=len(bins)
@@ -171,12 +226,14 @@ c.set_title('LFP Spectrogram in Channel '+str(selected_channel+1))
 c.set_ylim([0, 300])
 c.set_xlabel('Time (Sample)')
 c.set_ylabel('Frequency')
-fig.colorbar(im)
-plt.show()
+fig.colorbar()
+#plt.show()
+plt.savefig('../../Figures/nwb_Data_Plot/LFP_spectrum_on_1_session.png')
 
 plt.clf()
 plt.close()
 
+'''
 #save spectrogram for CNN
 plt.tick_params(top='off', bottom='off', left='off', right='off', labelleft='off', labelbottom='off')
 
@@ -195,7 +252,7 @@ mpl.rcParams['savefig.pad_inches'] = 0
 plt.autoscale(tight=True)
 
 
-plt.savefig('../../Figures/nwb_Data_Plot/LFP_spectrum_on_1_session.png')
+#plt.savefig('../../Figures/nwb_Data_Plot/LFP_spectrum_on_1_session.png')
 
 # Convert to matrix form
 fig.canvas.draw()
@@ -203,6 +260,7 @@ X = np.array(fig.canvas.renderer.buffer_rgba())
 print('len(X) = ', len(X), '\n')
 print('len(X[0]) = ', len(X[0]), '\n')
 print(X[0][500])
+'''
 
 plt.clf()
 plt.close()
