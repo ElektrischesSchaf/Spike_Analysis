@@ -3,3 +3,4 @@
 *.nwb
 *.wav
 myvenv/
+Spectrogram_all_Channels/

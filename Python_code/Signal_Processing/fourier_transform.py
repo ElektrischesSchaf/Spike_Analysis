@@ -125,7 +125,7 @@ for selected_channel in range(96):
     c.set_ylabel('Frequency')
     fig.colorbar(im)
 
-    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/Spike/spike_spectrum_on_1_session.png')
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/Spike/spike_spectrum_on_'+str(selected_channel)+'_channel.png')
 
     plt.clf()
     plt.close()
@@ -176,7 +176,7 @@ for selected_channel in range(96):
     c.set_xlabel('Time (Sample)')
     c.set_ylabel('Frequency')
     fig.colorbar(im)
-    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/LFP_spectrum_on_1_session.png')
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/LFP_spectrum_on_'+str(selected_channel)+'_channel.png')
 
     plt.clf()
     plt.close()
