@@ -291,13 +291,13 @@ def get_labels(the_file_name, the_sampling_rate):
                 pass
         
         finger_x_velocity=np.array(finger_x_velocity)
-        finger_x_velocity=finger_x_velocity.astype(np.float64)
+        finger_x_velocity=finger_x_velocity.astype(np.float32)
         
         finger_y_velocity=np.array(finger_y_velocity)
-        finger_y_velocity=finger_y_velocity.astype(np.float64)
+        finger_y_velocity=finger_y_velocity.astype(np.float32)
 
         finger_z_velocity=np.array(finger_z_velocity)
-        finger_z_velocity=finger_z_velocity.astype(np.float64)
+        finger_z_velocity=finger_z_velocity.astype(np.float32)
 
         velocity_time_coor=np.array(velocity_time_coor)
 
@@ -328,13 +328,13 @@ def get_labels(the_file_name, the_sampling_rate):
                 '''
                 pass
         finger_x_acceleration=np.array(finger_x_acceleration)
-        finger_x_acceleration=finger_x_acceleration.astype(np.float64)
+        finger_x_acceleration=finger_x_acceleration.astype(np.float32)
         
         finger_y_acceleration=np.array(finger_y_acceleration)
-        finger_y_acceleration=finger_y_acceleration.astype(np.float64)
+        finger_y_acceleration=finger_y_acceleration.astype(np.float32)
             
         finger_z_acceleration=np.array(finger_z_acceleration)
-        finger_z_acceleration=finger_z_acceleration.astype(np.float64)
+        finger_z_acceleration=finger_z_acceleration.astype(np.float32)
 
         acceleration_time_coor=np.array(acceleration_time_coor)
 
@@ -441,19 +441,19 @@ for session_index in range(file_numbers):
 
     # Making label data
     x_position_label=np.array(x_position_label)
-    x_position_label=x_position_label.astype(np.float64)
+    x_position_label=x_position_label.astype(np.float32)
     print('position x_position_label  list shape: ',end='') 
     print( x_position_label.shape ) # x is the label array should be feed into the model, (12777,)
     print('\n')
 
     y_position_label=np.array(y_position_label)
-    y_position_label=y_position_label.astype(np.float64)
+    y_position_label=y_position_label.astype(np.float32)
     print('position y_position_label list shape: ',end='')
     print( y_position_label.shape ) # y is the label array should be feed into the model, (12777,)
     print('\n')
 
     z_position_label=np.array(z_position_label)
-    z_position_label=z_position_label.astype(np.float64)
+    z_position_label=z_position_label.astype(np.float32)
     print('position z_position_label list shape: ',end='')
     print( z_position_label.shape ) # z is the label array should be feed into the model, (12777,)
     print('\n')
@@ -463,7 +463,7 @@ for session_index in range(file_numbers):
     print('\n')
     feature_numbers= firing_rate_matrix.shape[1]
 
-    X=firing_rate_matrix.astype(np.float64)
+    X=firing_rate_matrix.astype(np.float32)
     print('fetures list shape: ',end='')
     print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
     print('\n')
