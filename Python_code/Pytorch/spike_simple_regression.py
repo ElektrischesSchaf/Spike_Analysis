@@ -632,7 +632,7 @@ class Net(torch.nn.Module):
         x = self.predict(x)             # linear output
         return x
 
-net = Net(n_feature=288, n_hidden=10, n_output=1)     # define the network
+net = Net(n_feature=288, n_hidden=50, n_output=1)     # define the network
 # print(net)  # net architecture
 optimizer = torch.optim.SGD(net.parameters(), lr=0.2)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -641,9 +641,10 @@ my_images = []
 fig, ax = plt.subplots(figsize=(12,7))
 
 # train the network
-for t in range(200):
+for t in range(2000):
   
-    prediction = net(x)     # input x and predict based on x
+    prediction = net(x).flatten()     # input x and predict based on x
+    #print('size of prediction= ', prediction.shape, ' size of y= ',y.shape,'\n')
 
     loss = loss_func(prediction, y)     # must be (1. nn output, 2. target)
 
@@ -680,4 +681,5 @@ for t in range(200):
 # save images as a gif    
 #imageio.mimsave('./curve_1.gif', my_images, fps=10)
 
-print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, prediction))
+print('shape of x_position_label_training = ', x_position_label_training.shape, '\n shape of prediction = ', prediction.shape, '\n')
+print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_training.flatten(), prediction.data.numpy()))
