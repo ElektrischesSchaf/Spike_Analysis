@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 import imageio
-
-
+import time
+import h5py
 torch.manual_seed(1)    # reproducible
 
 from sklearn import datasets, svm, metrics
@@ -595,9 +595,10 @@ for session_index in range(file_numbers):
 
 # All models fit and predict, show R2 score
 
-
-x = X_for_training
-y = x_position_label_training
+x = torch.from_numpy(X_for_training)
+y = torch.from_numpy(x_position_label_training)
+#x = X_for_training
+#y = x_position_label_training
 
 # torch can only train on Variable, so convert them to Variable
 x, y = Variable(x), Variable(y)
