@@ -33,7 +33,7 @@ units_have_value=0 # unit numbers that is not empty
 ###################################### Parameters should be assigned
 the_sampling_rate=16
 file_numbers=1
-time_lag=0
+time_lag=1
 order=0
 with_sorted_spikes=True
 include_hash_unit=True
@@ -596,7 +596,7 @@ print('In time lag: ', time_lag, '\n')
 
 for my_estimator in range (1,31):
     if order_index >=2:
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator)
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, loss='exponential')
         regr.fit(X_for_training, x_position_label_training)
         if time_lag==0:
             x_position_predict=regr.predict( X_for_prediction )
@@ -605,7 +605,7 @@ for my_estimator in range (1,31):
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator)
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, loss='exponential')
         regr.fit(X_for_training, x_position_label_training)
         if time_lag==0:
             x_position_predict=regr.predict( X_for_prediction )
@@ -614,7 +614,7 @@ for my_estimator in range (1,31):
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator)
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, loss='exponential')
         regr.fit(X_for_training, x_position_label_training)
         if time_lag==0:
             x_position_predict=regr.predict( X_for_prediction )
@@ -625,7 +625,7 @@ for my_estimator in range (1,31):
 
         print('\n')
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator)
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, loss='exponential')
         regr.fit(X_for_training, x_position_label_training)
         if time_lag==0:
             x_position_predict=regr.predict( X_for_prediction )
@@ -634,7 +634,7 @@ for my_estimator in range (1,31):
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator)
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, loss='exponential')
         regr.fit(X_for_training, x_position_label_training)
         if time_lag==0:
             x_position_predict=regr.predict( X_for_prediction )
@@ -643,7 +643,7 @@ for my_estimator in range (1,31):
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator)
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, loss='exponential')
         regr.fit(X_for_training, x_position_label_training)
         if time_lag==0:
             x_position_predict=regr.predict( X_for_prediction )
@@ -717,6 +717,6 @@ for my_estimator in range (1,31):
             z_velocity_predict=regr.predict( X_for_prediction_with_time_lag )
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_z_velocity score in order ', order_index, ': ', r2_score( z_velocity_label_testing, z_velocity_predict ))
-        print('\n',regr.score(X_for_training, x_velocity_label_training),'\n')
+        print('\n',regr.score(X_for_training, z_velocity_label_training),'\n')
 
         print('\n')
