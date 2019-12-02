@@ -1,4 +1,4 @@
-# Linear Regression on the dataset
+# Linear Regression on the dataset indy_20160407_02
 ## Single Session, With Hash unit, with spike sorting
 ### In time lag:  0
 
