@@ -592,93 +592,154 @@ for session_index in range(file_numbers):
 # All models fit and predict, show R2 score
 print('In time lag: ', time_lag, '\n')
 
-
-for max_depth_i in range (1,30):
+#my_estimators=100
+max_depth_i=20
+for my_estimators in range (80,125,5):
     if order_index >=2:
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, x_position_label_training)
         if time_lag==0:
             x_position_predict=clf.predict( X_for_prediction )
         else:
             x_position_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
 
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, y_position_label_training)
         if time_lag==0:
             y_position_predict=clf.predict( X_for_prediction )
         else:
             y_position_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_y_position score in order ', order_index, ': ', r2_score( y_position_label_testing, y_position_predict ))
 
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, z_position_label_training)
         if time_lag==0:
             z_position_predict=clf.predict( X_for_prediction )
         else:
             z_position_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_z_position score in order ', order_index, ': ', r2_score( z_position_label_testing, z_position_predict ))
 
         print('\n')
 
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, x_velocity_label_training)
         if time_lag==0:
             x_velocity_predict=clf.predict( X_for_prediction )
         else:
             x_velocity_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_x_velocity score in order ', order_index, ': ', r2_score( x_velocity_label_testing, x_velocity_predict ))
 
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, y_velocity_label_training)
         if time_lag==0:
             y_velocity_predict=clf.predict( X_for_prediction )
         else:
             y_velocity_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_y_velocity score in order ', order_index, ': ', r2_score( y_velocity_label_testing, y_velocity_predict ))
 
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, z_velocity_label_training)
         if time_lag==0:
             z_velocity_predict=clf.predict( X_for_prediction )
         else:
             z_velocity_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_z_velocity score in order ', order_index, ': ', r2_score( z_velocity_label_testing, z_velocity_predict ))
 
         print('\n')
 
     if order_index==0:
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        '''
+        # Position
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
+        clf.fit(X_for_training, x_position_label_training)
+        if time_lag==0:
+            x_position_predict=clf.predict( X_for_prediction )
+        else:
+            x_position_predict=clf.predict( X_for_prediction_with_time_lag )
+        print('my_estimators=', str(my_estimators), end='  ')
+        print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
+
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
+        clf.fit(X_for_training, y_position_label_training)
+        if time_lag==0:
+            y_position_predict=clf.predict( X_for_prediction )
+        else:
+            y_position_predict=clf.predict( X_for_prediction_with_time_lag )
+        print('my_estimators=', str(my_estimators), end='  ')
+        print('* model_y_position score in order ', order_index, ': ', r2_score( y_position_label_testing, y_position_predict ))
+
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
+        clf.fit(X_for_training, z_position_label_training)
+        if time_lag==0:
+            z_position_predict=clf.predict( X_for_prediction )
+        else:
+            z_position_predict=clf.predict( X_for_prediction_with_time_lag )
+        print('my_estimators=', str(my_estimators), end='  ')
+        print('* model_z_position score in order ', order_index, ': ', r2_score( z_position_label_testing, z_position_predict ))
+
+        print('\n')
+
+        # Velocity
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, x_velocity_label_training)
         if time_lag==0:
             x_velocity_predict=clf.predict( X_for_prediction )
         else:
             x_velocity_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_x_velocity score in order ', order_index, ': ', r2_score( x_velocity_label_testing, x_velocity_predict ))
 
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, y_velocity_label_training)
         if time_lag==0:
             y_velocity_predict=clf.predict( X_for_prediction )
         else:
             y_velocity_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_y_velocity score in order ', order_index, ': ', r2_score( y_velocity_label_testing, y_velocity_predict ))
 
-        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=100)
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, z_velocity_label_training)
         if time_lag==0:
             z_velocity_predict=clf.predict( X_for_prediction )
         else:
             z_velocity_predict=clf.predict( X_for_prediction_with_time_lag )
-        print('max_depth_i=', str(max_depth_i), end='  ')
+        print('my_estimators=', str(my_estimators), end='  ')
         print('* model_z_velocity score in order ', order_index, ': ', r2_score( z_velocity_label_testing, z_velocity_predict ))
+
+        print('\n')
+        '''
+
+        # Acceleration
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
+        clf.fit(X_for_training, x_acceleration_label_training)
+
+        x_acceleration_predict=clf.predict( X_for_prediction_with_time_lag_2 )
+
+        print('my_estimators=', str(my_estimators), end='  ')
+        print('* model_x_acceleration score in order ', order_index, ': ', r2_score( x_acceleration_label_testing, x_acceleration_predict ))
+
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
+        clf.fit(X_for_training, y_acceleration_label_training)
+
+        y_acceleration_predict=clf.predict( X_for_prediction_with_time_lag_2 )
+
+        print('my_estimators=', str(my_estimators), end='  ')
+        print('* model_y_acceleration score in order ', order_index, ': ', r2_score( y_acceleration_label_testing, y_acceleration_predict ))
+
+        clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
+        clf.fit(X_for_training, z_acceleration_label_training)
+
+        z_acceleration_predict=clf.predict( X_for_prediction_with_time_lag_2 )
+
+        print('my_estimators=', str(my_estimators), end='  ')
+        print('* model_z_acceleration score in order ', order_index, ': ', r2_score( z_acceleration_label_testing, z_acceleration_predict ))
 
         print('\n')

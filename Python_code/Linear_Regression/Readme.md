@@ -519,3 +519,10 @@
 * model_z_acceleration score in order  7 :  -0.20282177146106206
 
 ---
+
+Outlier 數學定義。
+證明 Spike Data is non-linear
+找到 Spike Data 中的 outlier
+腦波資料特性分析。
+random forest 方法分析。
+找出 input data 與 model 選擇的原因，與選擇此model的優點所在之處。
