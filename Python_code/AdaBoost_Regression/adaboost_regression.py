@@ -656,7 +656,7 @@ for my_estimator in range (1,31):
 
     if order_index==0:
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=6))
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=4))
         regr.fit(X_for_training, x_position_label_training)
         if time_lag==0:
             x_position_predict=regr.predict( X_for_prediction )
@@ -664,9 +664,9 @@ for my_estimator in range (1,31):
             x_position_predict=regr.predict( X_for_prediction_with_time_lag )
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing, x_position_predict ))
-        print('\n', regr.score(X_for_prediction, x_position_label_testing),'\n')
+        #print('\n', regr.score(X_for_prediction, x_position_label_testing),'\n')
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=6))
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=4))
         regr.fit(X_for_training, y_position_label_training)
         if time_lag==0:
             y_position_predict=regr.predict( X_for_prediction )
@@ -674,9 +674,9 @@ for my_estimator in range (1,31):
             y_position_predict=regr.predict( X_for_prediction_with_time_lag )
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_y_position score in order ', order_index, ': ', r2_score( y_position_label_testing, y_position_predict ))
-        print('\n',regr.score(X_for_prediction, y_position_label_testing),'\n')
+        #print('\n',regr.score(X_for_prediction, y_position_label_testing),'\n')
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=6))
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=4))
         regr.fit(X_for_training, z_position_label_training)
         if time_lag==0:
             z_position_predict=regr.predict( X_for_prediction )
@@ -684,12 +684,12 @@ for my_estimator in range (1,31):
             z_position_predict=regr.predict( X_for_prediction_with_time_lag )
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_z_position score in order ', order_index, ': ', r2_score( z_position_label_testing, z_position_predict ))
-        print('\n',regr.score(X_for_prediction, z_position_label_testing),'\n')
+        #print('\n',regr.score(X_for_prediction, z_position_label_testing),'\n')
 
 
 
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=6))
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=4))
         regr.fit(X_for_training, x_velocity_label_training)
         if time_lag==0:
             x_velocity_predict=regr.predict( X_for_prediction )
@@ -697,9 +697,9 @@ for my_estimator in range (1,31):
             x_velocity_predict=regr.predict( X_for_prediction_with_time_lag )
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_x_velocity score in order ', order_index, ': ', r2_score( x_velocity_label_testing, x_velocity_predict ))
-        print('\n', regr.score(X_for_prediction, x_velocity_label_testing),'\n')
+        #print('\n', regr.score(X_for_prediction, x_velocity_label_testing),'\n')
 
-        regr_y_velocity=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=6))
+        regr_y_velocity=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=4))
         regr_y_velocity.fit(X_for_training, y_velocity_label_training)
         if time_lag==0:
             y_velocity_predict=regr_y_velocity.predict( X_for_prediction )
@@ -707,9 +707,9 @@ for my_estimator in range (1,31):
             y_velocity_predict=regr_y_velocity.predict( X_for_prediction_with_time_lag )
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_y_velocity score in order ', order_index, ': ', r2_score( y_velocity_label_testing, y_velocity_predict ))
-        print('\n',regr_y_velocity.score(X_for_prediction, y_velocity_label_testing),'\n')
+        #print('\n',regr_y_velocity.score(X_for_prediction, y_velocity_label_testing),'\n')
 
-        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=6))
+        regr=AdaBoostRegressor(random_state=0, n_estimators=my_estimator, base_estimator=DecisionTreeRegressor(max_depth=4))
         regr.fit(X_for_training, z_velocity_label_training)
         if time_lag==0:
             z_velocity_predict=regr.predict( X_for_prediction )
@@ -717,6 +717,6 @@ for my_estimator in range (1,31):
             z_velocity_predict=regr.predict( X_for_prediction_with_time_lag )
         print('n_estimators=', str(my_estimator), end='  ')
         print('* model_z_velocity score in order ', order_index, ': ', r2_score( z_velocity_label_testing, z_velocity_predict ))
-        print('\n',regr.score(X_for_prediction, z_velocity_label_testing),'\n')
+        #print('\n',regr.score(X_for_prediction, z_velocity_label_testing),'\n')
 
         print('\n')
