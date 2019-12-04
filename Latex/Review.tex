@@ -1,0 +1,133 @@
+% !TeX document-id = {0ff8d363-52f6-4b94-8740-bd0bc657a460}
+% !TeX program = XeLaTeX
+\documentclass[8pt,a4paper]{article}
+\usepackage{fullpage}
+\usepackage{indentfirst} %首段縮排
+\usepackage[top=0.5cm, bottom=0.5cm, left=0.5cm, right=0.5cm]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd,longtable}
+\usepackage{lastpage}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{float}  % in order to use H for figure position
+\usepackage{graphicx}
+\graphicspath{{./Figures_for_main_paper/}{./Figures_for_A_New_Numerical_Method/}}
+\DeclareGraphicsExtensions{.pdf,.jpg,.png,.mps} % Portable Document Format,
+%\usepackage{luacode}  % This can not let Reference to be showed by Butters
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{xeCJK} %For Traditional Chinese in XeLaTeX
+\setCJKmainfont{MingLiU} %For Traditional Chinese in XeLaTeX
+\setCJKsansfont{Microsoft JhengHei} %For Traditional Chinese in XeLaTeX
+
+% BibTeX
+%\usepackage{bibentry} %Function unknown added by Per Sahlholm
+%\usepackage[round,authoryear]{natbib} %Nice author (year) citations
+\usepackage[square,numbers]{natbib} %Nice numbered citations
+%\usepackage{cite} % Make references as [1-4], not [1,2,3,4]
+%\newcommand{\bibspace}{\vspace{2mm}}
+\bibliographystyle{unsrtnat} % Unsorted bibliography by Butters
+%\bibliographystyle{plainnat} %Choose for including URLs   %Commented by Butters
+%\bibliographystyle{unsrt} 
+%\bibpunct{[}{]}{,}{y}{,}{,}
+%\renewcommand{\bibsection}{} %Removes the References chapter title
+%\usepackage[numbib,notlof,notlot,nottoc]{tocbibind} %Adds number to bibliography
+
+\let\ds\displaystyle
+\usepackage[shortlabels]{enumitem}
+\pagenumbering{gobble}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  linkbordercolor={0 0 1}
+}
+ 
+\renewcommand\lstlistingname{Algorithm}
+\renewcommand\lstlistlistingname{Algorithms}
+\def\lstlistingautorefname{Alg.}
+
+\usepackage{listings}
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.05in}
+
+% Edit these as appropriate
+\begin{comment}
+    \newcommand\course{Digital Control}
+    \newcommand\hwnumber{}                  % <-- homework number
+    \newcommand\NetIDa{Esteban Roman}           % <-- NetID of person #1
+    \newcommand\NetIDb{and his team}           % <-- NetID of person #2 (Comment this line out for problem sets)
+
+    \pagestyle{fancyplain}
+    \headheight 35pt
+    \lhead{\NetIDa}
+    \lhead{\NetIDa\\\NetIDb}                 % <-- Comment this line out for problem sets (make sure you are person #1)
+    \chead{\textbf{\Large Final Project \hwnumber}}
+    \rhead{\course \\ \today}
+    \lfoot{}
+    \cfoot{}
+    \rfoot{\small\thepage}
+    \headsep 1.5em
+\end{comment}
+
+\begin{document}
+%makecell setting for fonts, spacing etc.
+
+\title{\bf{ My literature review on neural signal decoding articles }}
+\author{ 伍錫志 N16074988 }
+
+\begin{comment}
+    \setlength\rotheadsize{3cm}
+    \renewcommand\theadfont{\small}
+    \renewcommand\theadfont{\bfseries}
+    \renewcommand\theadset{\renewcommand\arraystretch{0.9}%
+    \setlength\extrarowheight{1pt}}
+    \renewcommand\cellalign{cc}
+    \renewcommand\cellgape{\Gape[2pt]}
+\end{comment}
+
+\maketitle       
+
+\section*{Abstract}
+
+Nowadays, digital control has received much attentions for many researchers to investigated before real time digital simulator has been found. 
+By utilizing digital signal processing, the signal data can be saved and it is also able to be analyzed for some information. 
+Before real-time digital simulator has been established, many researchers tried to develop iteration operator for real time 
+approximation of continuous system. It has been verified that the traditional operation prove too slow at that timefor real-time 
+simulation due to lack of the numerical integration techniques. Such that, the author in the main paper tried to simplify the iteration discrete 
+approximation operator. In this report, the results and comparison has been summarized from two literatures. The results shown that
+IBM method could convert the discrete-time system to approximately continuous-time system compare to the other iteration methods.
+
+Digital signal processing has been very developed due to the emerging speed of hardware nowadays.\cite{McLaren1992}
+    We can do the simulation approximately real-time as much as an actual event. 
+    On the other hand, understanding digital control is not something that able to accomplished. 
+
+
+\bibliography{./library} \label{sec:references}
+\newpage
+
+\end{document}

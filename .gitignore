@@ -4,3 +4,11 @@
 *.wav
 myvenv/
 Spectrogram_all_Channels/
+
+# Latex
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.gz
