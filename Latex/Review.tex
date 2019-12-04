@@ -3,7 +3,7 @@
 \documentclass[8pt,a4paper]{article}
 \usepackage{fullpage}
 \usepackage{indentfirst} %首段縮排
-\usepackage[top=0.5cm, bottom=0.5cm, left=0.5cm, right=0.5cm]{geometry}
+% \usepackage[top=0.5cm, bottom=0.5cm, left=0.5cm, right=0.5cm]{geometry} 伍錫志
 \usepackage{amsmath,amsthm,amsfonts,amssymb,amscd,longtable}
 \usepackage{lastpage}
 \usepackage{enumerate}
@@ -97,8 +97,9 @@
 \begin{document}
 %makecell setting for fonts, spacing etc.
 
-\title{\bf{ My literature review on neural signal decoding articles }}
+\title{\bf{ Literature review on neural signal decoding articles }}
 \author{ 伍錫志 N16074988 }
+\date{}
 
 \begin{comment}
     \setlength\rotheadsize{3cm}
@@ -112,19 +113,26 @@
 
 \maketitle       
 
-\section*{Abstract}
+\section*{Model-Based Spike Detection of Epileptic EEG Data} \cite{Liu2014}
+\label{sec:Model-Based Spike Detection of Epileptic EEG Data}
 
-Nowadays, digital control has received much attentions for many researchers to investigated before real time digital simulator has been found. 
-By utilizing digital signal processing, the signal data can be saved and it is also able to be analyzed for some information. 
-Before real-time digital simulator has been established, many researchers tried to develop iteration operator for real time 
-approximation of continuous system. It has been verified that the traditional operation prove too slow at that timefor real-time 
-simulation due to lack of the numerical integration techniques. Such that, the author in the main paper tried to simplify the iteration discrete 
-approximation operator. In this report, the results and comparison has been summarized from two literatures. The results shown that
-IBM method could convert the discrete-time system to approximately continuous-time system compare to the other iteration methods.
+ This article is working on spike classification in EEG signal.\\
 
-Digital signal processing has been very developed due to the emerging speed of hardware nowadays.\cite{McLaren1992}
-    We can do the simulation approximately real-time as much as an actual event. 
-    On the other hand, understanding digital control is not something that able to accomplished. 
+ Using k-point nonlinear energy operator (k-NEO) to dectect all possible spike candidates, 
+ and then the proposed  spike model applied only to these candidates for further classification. 
+ The proposed models is designed to include both the conventional signal spike model and ones with slow wave-related morpohological features. 
+ AdaBoost classifiers were trained and used to classify EEG patterns into three classes: 
+ single spike, spike with slow wave and non-spike. 
+ The slow wave features are proven effective in improving spike classification.\\
+
+ NEO is good at detecting the sudden occurence of high frequency signals, but sensitive to high noise peaks.
+ \cite{Choi2002} proposed the extended version k-NEO:\\
+ $\Psi_{k} {x(n)}=x(n)^2-x(n-k)x(n+k)$
+\\
+x(n) is the input sample
+k is a input resolution parameter related to the peak width of detected spike candidates.
+The higher the $\Psi_{k}$, the higher possibility the spike candidate is detected.
+A Hamming window of length 4k+1 is adopted to eliminate noise after k-NEO processing.
 
 
 \bibliography{./library} \label{sec:references}
