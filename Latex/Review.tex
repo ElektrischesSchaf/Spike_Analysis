@@ -111,7 +111,22 @@
     \renewcommand\cellgape{\Gape[2pt]}
 \end{comment}
 
-\maketitle       
+\maketitle
+
+\section*{Machine learning for neural decoding} \cite{Glaser2017}
+\label{sec:Machine learning for neural decoding}
+Talks about linear and non-learn methods of neural decoding, such as linear regresion, 
+Kalman filter...and also ensemble methods, combining different model together.
+
+For example, if neural activity that express a wide array of input/output relationships, 
+a method that can express nonlinear functions will outperform a linear method like a Kalman filter. 
+In general, a good docoder will incorporate prior knowledge about the outputs, 
+but still be nonlinear and relatively agnostic about the overall input/output relationship. 
+
+Many traditional methods assume that neural data relates linearly to the outputs, 
+for example, or through a specific nonlinearty chosen beforehand. 
+Machine learning, on the other hand, can learn how outputs relate to neural activity 
+even if the relationship is quite nonlinear, and thus outperform other methods.
 
 \section*{Model-Based Spike Detection of Epileptic EEG Data} \cite{Liu2014}
 \label{sec:Model-Based Spike Detection of Epileptic EEG Data}
