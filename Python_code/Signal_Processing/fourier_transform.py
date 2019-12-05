@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 channel_number=49
 start_second=310
-end_second=312
+end_second=330
 
 # Low pass
 def butter_lowpass(cutoff, nyq_freq, order=4):
@@ -145,7 +145,7 @@ for selected_channel in range(0, 96):
     '''
 
     new_data=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], selected_channel]
-    
+
     my_plot_width=30
     my_plot_height=30
 
@@ -154,7 +154,7 @@ for selected_channel in range(0, 96):
 
     #plot spectrogram for inspection
     plt.figure()
-    fig, (c, ax2) = plt.subplots(2,1,sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1]})
+    fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
     Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, Fs=sampling_frequency, noverlap=0)
     print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
     print('bins= ', len(bins), ' im= ', im, '\n')
@@ -165,13 +165,24 @@ for selected_channel in range(0, 96):
 
     c.set_title('Spike Spectrogram in Channel '+str(selected_channel+1))
     c.set_ylim([300, 3000])
-    c.set_xlabel('Time (Sample)')
+    c.set_xlabel('Time (Seconds)')
     c.set_ylabel('Frequency')
     #fig.colorbar(im)
 
-    ax2.scatter(new_mat_time_stamp, finger_x_coor)
-    ax2.set_xlim(start_second, end_second)
+    pos_x.scatter(new_mat_time_stamp, finger_x_coor)
+    pos_x.set_xlim(start_second, end_second)
 
+    pos_y.scatter(new_mat_time_stamp, finger_y_coor)
+    pos_y.set_xlim(start_second, end_second)
+
+    pos_z.scatter(new_mat_time_stamp, finger_z_coor)
+    pos_z.set_xlim(start_second, end_second)
+
+    '''
+    plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+    plt.margins(0,0)
+    '''
+    plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
     plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/Spike/spike_spectrum_on_'+str(selected_channel+1)+'_channel.png')
     
     plt.clf()
@@ -208,8 +219,8 @@ for selected_channel in range(0, 96):
     '''
 
     #plot spectrogram for inspection
-    plt.figure(figsize=(17, 17), dpi=10)
-    fig, c = plt.subplots()
+    plt.figure()
+    fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
     Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=2*1024, Fs=sampling_frequency, noverlap=0)
     print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
     print('bins= ', len(bins), ' im= ', im, '\n')
@@ -220,11 +231,22 @@ for selected_channel in range(0, 96):
 
     c.set_title('LFP Spectrogram in Channel '+str(selected_channel+1))
     c.set_ylim([0, 300])
-    c.set_xlabel('Time (Sample)')
+    c.set_xlabel('Time (Seconds)')
     c.set_ylabel('Frequency')
-    fig.colorbar(im)
-    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/LFP_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    #fig.colorbar(im)
 
+    pos_x.scatter(new_mat_time_stamp, finger_x_coor)
+    pos_x.set_xlim(start_second, end_second)
+
+    pos_y.scatter(new_mat_time_stamp, finger_y_coor)
+    pos_y.set_xlim(start_second, end_second)
+
+    pos_z.scatter(new_mat_time_stamp, finger_z_coor)
+    pos_z.set_xlim(start_second, end_second)
+
+    plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/LFP_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    
     plt.clf()
     plt.close()
 
