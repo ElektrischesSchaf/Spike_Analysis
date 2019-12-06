@@ -36,6 +36,7 @@ time_lag=0
 order=0
 with_sorted_spikes=False
 include_hash_unit=True
+time_stamp_64ms=[]
 
 # Must know these two numbers beforehand
 channel_numbers_in_this_dataset=96
@@ -88,7 +89,7 @@ def get_spike_bins_matrix(the_file_name, the_sampling_rate):
         y_acceleration_label=[]
         z_acceleration_label=[]
 
-        time_stamp_64ms=[]
+        global time_stamp_64ms
 
         sampling_rate=the_sampling_rate # because 64ms
 
@@ -594,7 +595,7 @@ print('In time lag: ', time_lag, '\n')
 
 #my_estimators=100
 max_depth_i=20
-for my_estimators in range (80,125,5):
+for my_estimators in range (100,105,5):
     if order_index >=2:
         clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, x_position_label_training)
@@ -655,7 +656,7 @@ for my_estimators in range (80,125,5):
         print('\n')
 
     if order_index==0:
-        '''
+        
         # Position
         clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
         clf.fit(X_for_training, x_position_label_training)
@@ -715,7 +716,7 @@ for my_estimators in range (80,125,5):
         print('* model_z_velocity score in order ', order_index, ': ', r2_score( z_velocity_label_testing, z_velocity_predict ))
 
         print('\n')
-        '''
+        
 
         # Acceleration
         clf=RandomForestRegressor(max_depth=max_depth_i, random_state=0, n_estimators=my_estimators)
@@ -743,3 +744,67 @@ for my_estimators in range (80,125,5):
         print('* model_z_acceleration score in order ', order_index, ': ', r2_score( z_acceleration_label_testing, z_acceleration_predict ))
 
         print('\n')
+
+        plot.figure(figsize=(15,5))
+        #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
+        plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
+        plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
+        plot.legend(loc='upper right')
+        plot.title('Random Forest velocity x prediction and ground truth')
+        plot.xlabel('time (second)')
+        plot.ylabel('x velocity')
+        axes = plot.gca()
+        #axes.set_xlim([60, 890])
+        plot.show()
+        #plot.savefig('x_velocity_predict.png' )
+
+        plot.cla()
+        plot.clf()
+
+        plot.figure(figsize=(15,5))
+        #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
+        plot.plot(time_stamp_64ms[testing_data_index:-1], y_velocity_predict, 'b--',label='Prediction' )
+        plot.plot(time_stamp_64ms[testing_data_index:-2], y_velocity_label[testing_data_index:-1], 'r--', label='True value')
+        plot.legend(loc='upper right')
+        plot.title('Random Forest velocity y prediction and ground truth')
+        plot.xlabel('time (second)')
+        plot.ylabel('y velocity')
+        axes = plot.gca()
+        #axes.set_xlim([60, 890])
+        plot.show()
+        #plot.savefig('y_velocity_predict.png' )
+
+        plot.cla()
+        plot.clf()
+
+        plot.figure(figsize=(15,5))
+        #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
+        plot.plot(time_stamp_64ms[testing_data_index:-2], x_acceleration_predict, 'b--',label='Prediction' )
+        plot.plot(time_stamp_64ms[testing_data_index:-3], x_acceleration_label[testing_data_index:-1], 'r--', label='True value')
+        plot.legend(loc='upper right')
+        plot.title('Random Forest acceleration x prediction and ground truth')
+        plot.xlabel('time (second)')
+        plot.ylabel('x acceleration')
+        axes = plot.gca()
+        #axes.set_xlim([60, 890])
+        plot.show()
+        #plot.savefig('x_acceleration_predict.png' )
+
+        plot.cla()
+        plot.clf()
+
+        plot.figure(figsize=(15,5))
+        #plot.scatter(time_stamp_64ms, y_position_predict, s=1)
+        plot.plot(time_stamp_64ms[testing_data_index:-2], y_acceleration_predict, 'b--',label='Prediction' )
+        plot.plot(time_stamp_64ms[testing_data_index:-3], y_acceleration_label[testing_data_index:-1], 'r--', label='True value')
+        plot.legend(loc='upper right')
+        plot.title('Random Forest acceleration y prediction and ground truth')
+        plot.xlabel('time (second)')
+        plot.ylabel('y acceleration')
+        axes = plot.gca()
+        #axes.set_xlim([60, 890])
+        plot.show()
+        #plot.savefig('y_acceleration_predict.png' )
+
+        plot.cla()
+        plot.clf()
