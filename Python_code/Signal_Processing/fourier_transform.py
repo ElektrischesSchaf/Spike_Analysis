@@ -12,6 +12,8 @@ channel_number=49
 start_second=310
 end_second=330
 
+
+
 # Low pass
 def butter_lowpass(cutoff, nyq_freq, order=4):
     normal_cutoff = float(cutoff) / nyq_freq
@@ -148,14 +150,17 @@ for selected_channel in range(0, 96):
 
     my_plot_width=30
     my_plot_height=30
+    new_sample_rate_spike = 6010
+    new_sample_rate_LFP = 610
 
-    spike_signal=butter_bandpass_filter(new_data, 300, 3000, sampling_frequency, order=5)
-    local_field_potential_signal=butter_lowpass_filter(new_data, 3000, sampling_frequency/2)
+    spike_signal=butter_bandpass_filter(new_data, 300, 3000, new_sample_rate_spike, order=5)
+    local_field_potential_signal=butter_lowpass_filter(new_data, 300, new_sample_rate_LFP/2)
 
-    #plot spectrogram for inspection
+    '''
+    #plot power spectral density Spike spectrogram for inspection
     plt.figure()
     fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
-    Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, Fs=sampling_frequency, noverlap=0)
+    Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, mode='psd', cmap='tab20c', Fs=sampling_frequency, noverlap=0) 
     print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
     print('bins= ', len(bins), ' im= ', im, '\n')
     print('bins[0]=', bins[0],'\n')
@@ -163,7 +168,8 @@ for selected_channel in range(0, 96):
     freqs_cnn=len(freqs)
     bins_cnn=len(bins)
 
-    c.set_title('Spike Spectrogram in Channel '+str(selected_channel+1))
+    Pxx=Pxx[300:3000,:]
+    c.set_title('Spike Power Spectral Density Spectrogram in Channel '+str(selected_channel+1))
     c.set_ylim([300, 3000])
     c.set_xlabel('Time (Seconds)')
     c.set_ylabel('Frequency')
@@ -178,12 +184,129 @@ for selected_channel in range(0, 96):
     pos_z.scatter(new_mat_time_stamp, finger_z_coor)
     pos_z.set_xlim(start_second, end_second)
 
-    '''
-    plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
-    plt.margins(0,0)
-    '''
+    
+    #plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+    #plt.margins(0,0)
+    
     plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
-    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/Spike/spike_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/Spike/psd/spike_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    
+    plt.clf()
+    plt.close()
+
+    '''
+
+    '''
+    #plot phase Spike spectrogram for inspection
+    plt.figure()
+    fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
+    Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, mode='phase', scale='linear', cmap='tab20c', Fs=sampling_frequency, noverlap=0) 
+    print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
+    print('bins= ', len(bins), ' im= ', im, '\n')
+    print('bins[0]=', bins[0],'\n')
+    print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
+    freqs_cnn=len(freqs)
+    bins_cnn=len(bins)
+
+    Pxx=Pxx[300:3000,:]
+    c.set_title('Spike Phase Spectrogram in Channel '+str(selected_channel+1))
+    c.set_ylim([300, 3000])
+    c.set_xlabel('Time (Seconds)')
+    c.set_ylabel('Frequency')
+    #fig.colorbar(im)
+
+    pos_x.scatter(new_mat_time_stamp, finger_x_coor)
+    pos_x.set_xlim(start_second, end_second)
+
+    pos_y.scatter(new_mat_time_stamp, finger_y_coor)
+    pos_y.set_xlim(start_second, end_second)
+
+    pos_z.scatter(new_mat_time_stamp, finger_z_coor)
+    pos_z.set_xlim(start_second, end_second)
+
+
+    #plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+    #plt.margins(0,0)
+
+    plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/Spike/phase/spike_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    
+    plt.clf()
+    plt.close()
+    '''
+
+    '''
+    #plot magnitude Spike spectrogram for inspection
+    plt.figure()
+    fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
+    Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, mode='magnitude', scale='dB', cmap='tab20c', Fs=sampling_frequency, noverlap=0) 
+    print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
+    print('bins= ', len(bins), ' im= ', im, '\n')
+    print('bins[0]=', bins[0],'\n')
+    print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
+    freqs_cnn=len(freqs)
+    bins_cnn=len(bins)
+
+    Pxx=Pxx[300:3000,:]
+    c.set_title('Magnitude Spectrogram in Channel '+str(selected_channel+1))
+    c.set_ylim([300, 3000])
+    c.set_xlabel('Time (Seconds)')
+    c.set_ylabel('Frequency')
+    #fig.colorbar(im)
+
+    pos_x.scatter(new_mat_time_stamp, finger_x_coor)
+    pos_x.set_xlim(start_second, end_second)
+
+    pos_y.scatter(new_mat_time_stamp, finger_y_coor)
+    pos_y.set_xlim(start_second, end_second)
+
+    pos_z.scatter(new_mat_time_stamp, finger_z_coor)
+    pos_z.set_xlim(start_second, end_second)
+
+
+    #plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+    #plt.margins(0,0)
+
+    plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/Spike/magnitude/spike_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    
+    plt.clf()
+    plt.close()
+    '''
+
+    #plot angle Spike spectrogram for inspection
+    plt.figure()
+    fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
+    Pxx, freqs, bins, im = c.specgram(spike_signal, NFFT=1024, mode='angle', scale='linear', cmap='tab20c', Fs=sampling_frequency, noverlap=0) 
+    print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
+    print('bins= ', len(bins), ' im= ', im, '\n')
+    print('bins[0]=', bins[0],'\n')
+    print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
+    freqs_cnn=len(freqs)
+    bins_cnn=len(bins)
+
+    Pxx=Pxx[300:3000,:]
+    c.set_title('Spike Angle Spectrogram in Channel '+str(selected_channel+1))
+    c.set_ylim([300, 3000])
+    c.set_xlabel('Time (Seconds)')
+    c.set_ylabel('Frequency')
+    #fig.colorbar(im)
+
+    pos_x.scatter(new_mat_time_stamp, finger_x_coor)
+    pos_x.set_xlim(start_second, end_second)
+
+    pos_y.scatter(new_mat_time_stamp, finger_y_coor)
+    pos_y.set_xlim(start_second, end_second)
+
+    pos_z.scatter(new_mat_time_stamp, finger_z_coor)
+    pos_z.set_xlim(start_second, end_second)
+
+
+    #plt.subplots_adjust(top=1,bottom=0,left=0,right=1,hspace=0,wspace=0)
+    #plt.margins(0,0)
+
+    plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/Spike/angle/spike_spectrum_on_'+str(selected_channel+1)+'_channel.png')
     
     plt.clf()
     plt.close()
@@ -218,18 +341,19 @@ for selected_channel in range(0, 96):
     plt.close()
     '''
 
-    #plot spectrogram for inspection
+    '''
+    #plot power spectral density LFP spectrogram spectrogram for inspection
     plt.figure()
     fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
-    Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=2*1024, Fs=sampling_frequency, noverlap=0)
+    Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=1024, cmap='tab20c', mode='psd', Fs=sampling_frequency, noverlap=0)
     print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
     print('bins= ', len(bins), ' im= ', im, '\n')
     print('bins[0]=', bins[0],'\n')
     print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
     freqs_cnn=len(freqs)
     bins_cnn=len(bins)
-
-    c.set_title('LFP Spectrogram in Channel '+str(selected_channel+1))
+    Pxx=Pxx[:300,:]
+    c.set_title('LFP Power Spectral Density Spectrogram in Channel '+str(selected_channel+1))
     c.set_ylim([0, 300])
     c.set_xlabel('Time (Seconds)')
     c.set_ylabel('Frequency')
@@ -245,7 +369,108 @@ for selected_channel in range(0, 96):
     pos_z.set_xlim(start_second, end_second)
 
     plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
-    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/LFP_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/psd/LFP_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    
+    plt.clf()
+    plt.close()
+    '''
+
+    '''
+    #plot phase LFP spectrogram for inspection
+    plt.figure()
+    fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
+    Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=1024, cmap='tab20c', mode='phase', scale='linear', Fs=sampling_frequency, noverlap=0)
+    print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
+    print('bins= ', len(bins), ' im= ', im, '\n')
+    print('bins[0]=', bins[0],'\n')
+    print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
+    freqs_cnn=len(freqs)
+    bins_cnn=len(bins)
+    Pxx=Pxx[:300,:]
+    c.set_title('LFP Phase Spectrogram in Channel '+str(selected_channel+1))
+    c.set_ylim([0, 300])
+    c.set_xlabel('Time (Seconds)')
+    c.set_ylabel('Frequency')
+    #fig.colorbar(im)
+
+    pos_x.scatter(new_mat_time_stamp, finger_x_coor)
+    pos_x.set_xlim(start_second, end_second)
+
+    pos_y.scatter(new_mat_time_stamp, finger_y_coor)
+    pos_y.set_xlim(start_second, end_second)
+
+    pos_z.scatter(new_mat_time_stamp, finger_z_coor)
+    pos_z.set_xlim(start_second, end_second)
+
+    plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/phase/LFP_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    
+    plt.clf()
+    plt.close()
+    '''
+
+    '''
+    #plot magnitude LFP spectrogram for inspection
+    plt.figure()
+    fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
+    Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=1024, cmap='tab20c', mode='magnitude', scale='dB', Fs=sampling_frequency, noverlap=0)
+    print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
+    print('bins= ', len(bins), ' im= ', im, '\n')
+    print('bins[0]=', bins[0],'\n')
+    print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
+    freqs_cnn=len(freqs)
+    bins_cnn=len(bins)
+    Pxx=Pxx[:300,:]
+    c.set_title('LFP Magnitude Spectrogram in Channel '+str(selected_channel+1))
+    c.set_ylim([0, 300])
+    c.set_xlabel('Time (Seconds)')
+    c.set_ylabel('Frequency')
+    #fig.colorbar(im)
+
+    pos_x.scatter(new_mat_time_stamp, finger_x_coor)
+    pos_x.set_xlim(start_second, end_second)
+
+    pos_y.scatter(new_mat_time_stamp, finger_y_coor)
+    pos_y.set_xlim(start_second, end_second)
+
+    pos_z.scatter(new_mat_time_stamp, finger_z_coor)
+    pos_z.set_xlim(start_second, end_second)
+
+    plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/magnitude/LFP_spectrum_on_'+str(selected_channel+1)+'_channel.png')
+    
+    plt.clf()
+    plt.close()
+    '''
+
+    #plot angle LFP spectrogram for inspection
+    plt.figure()
+    fig, (c, pos_x, pos_y, pos_z) = plt.subplots(4, 1, sharex=False, figsize=(my_plot_width, my_plot_height), gridspec_kw={'height_ratios': [10, 1, 1, 1]})
+    Pxx, freqs, bins, im = c.specgram(local_field_potential_signal, NFFT=1024, cmap='tab20c', mode='angle', scale='linear', Fs=sampling_frequency, noverlap=0)
+    print('type of c, Pxx, freqs, bins, im  ', type(c), type(Pxx), type(freqs), type(bins), type(im) )
+    print('bins= ', len(bins), ' im= ', im, '\n')
+    print('bins[0]=', bins[0],'\n')
+    print('shape of freqs ', len(freqs), ' shape of bins ', len(bins) ,  '\n')
+    freqs_cnn=len(freqs)
+    bins_cnn=len(bins)
+    Pxx=Pxx[:300,:]
+    c.set_title('LFP Angle Spectrogram in Channel '+str(selected_channel+1))
+    c.set_ylim([0, 300])
+    c.set_xlabel('Time (Seconds)')
+    c.set_ylabel('Frequency')
+    #fig.colorbar(im)
+
+    pos_x.scatter(new_mat_time_stamp, finger_x_coor)
+    pos_x.set_xlim(start_second, end_second)
+
+    pos_y.scatter(new_mat_time_stamp, finger_y_coor)
+    pos_y.set_xlim(start_second, end_second)
+
+    pos_z.scatter(new_mat_time_stamp, finger_z_coor)
+    pos_z.set_xlim(start_second, end_second)
+
+    plt.subplots_adjust(top=0.95, bottom=0.05, left= 0.05, right=0.95, hspace=0.05, wspace=0)
+    plt.savefig('../../Figures/nwb_Data_Plot/Spectrogram_all_Channels/LFP/angle/LFP_spectrum_on_'+str(selected_channel+1)+'_channel.png')
     
     plt.clf()
     plt.close()
