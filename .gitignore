@@ -4,6 +4,7 @@
 *.wav
 myvenv/
 Spectrogram_all_Channels/
+PCA_plot/
 
 # Latex
 *.aux

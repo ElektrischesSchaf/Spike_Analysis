@@ -32,9 +32,9 @@ def scatterPlot(xDF, yDF, algoName):
     ax.set_title("Separation of Observations using " + algoName)
 
 
-
 import h5py
 import time
+tStart=time.time()
 import copy
 
 from sklearn.linear_model import LinearRegression
@@ -49,7 +49,14 @@ file_name_4='../../Dataset/Sorted_Spike_Dataset/indy_20160418_01.mat'
 file_name_5='../../Dataset/Sorted_Spike_Dataset/indy_20160419_01.mat'
 file_name_6='../../Dataset/Sorted_Spike_Dataset/indy_20160420_01.mat'
 file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
-tStart=time.time()
+
+FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
+List_FILE = os.listdir(FILE_PATH)
+List_FILE.sort()
+
+#if want to seleted some one ex:
+List_FILE=List_FILE[:]
+
 time_stamp_64ms=[]
 
 ###################################### Auto-assigned parameters
@@ -65,12 +72,12 @@ the_sampling_rate=16
 file_numbers=1
 time_lag=0
 order=0
-with_sorted_spikes=True
+with_sorted_spikes=False
 include_hash_unit=True
 
 # Must know these two numbers beforehand
 channel_numbers_in_this_dataset=96
-units_numbers_in_this_dataset=3
+units_numbers_in_this_dataset=0
 
 if with_sorted_spikes==True:
     feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
@@ -97,7 +104,12 @@ def get_spike_bins_matrix(the_file_name, the_sampling_rate):
         
 
         print('spikes shape: ', spikes.shape) #  (3, 192) in indy_20160407_02
-        channel_number=int(spikes.shape[1] / 2) # 96 in indy_20160407_02
+
+        global units_numbers_in_this_dataset
+        units_numbers_in_this_dataset=int(spikes.shape[0])
+
+        #channel_number=int(spikes.shape[1] / 2) # 96 in indy_20160407_02
+        channel_number=96 # 2019-12-10 must fixed be 96 otherwise it will be errors in 5 units session
         numpy_finger_pos_1=np.empty([])
         numpy_finger_pos_GET_1=mat_file.get('finger_pos')
         numpy_finger_pos_1=np.array(numpy_finger_pos_GET_1)
@@ -407,12 +419,22 @@ y_acceleration_label_testing= np.empty([0])
 z_acceleration_label_training= np.empty([0])
 z_acceleration_label_testing= np.empty([0])
 
-# cross sessions control start
-for session_index in range(file_numbers):
-    print('In session '+ str(session_index+1) + ': ' + '\n' )
 
-    [firing_rate_cell, channel_number, testing_data_index, x_position_label, y_position_label, z_position_label]=get_spike_bins_matrix(file_list[session_index], the_sampling_rate)
-    [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=get_labels(file_list[session_index], the_sampling_rate)
+
+GET_FILE = []
+for FILE_NAME in List_FILE:
+    GET_FILE.append(FILE_PATH + FILE_NAME)
+
+#print(GET_FILE)
+
+# session by sessions control start
+for k in range(len(GET_FILE)):
+    the_session_name= str(List_FILE[k])[:-4]
+
+    print('\n In session '+ str(List_FILE[k]) + ' : ' + '\n' )
+
+    [firing_rate_cell, channel_number, testing_data_index, x_position_label, y_position_label, z_position_label]=get_spike_bins_matrix(str(GET_FILE[k]), the_sampling_rate)
+    [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=get_labels(str(GET_FILE[k]), the_sampling_rate)
 
     # Extract firing_rate_cell with rows have length bigger than zero
     firing_rate_final=[] # not[[]]
@@ -447,7 +469,15 @@ for session_index in range(file_numbers):
             while index < channel_number:
             #for k in range(channel_number-(units_numbers_in_this_dataset-1)): # Maximum 3 units in this session, indy_20160407_02.
                 #print('index: ',index,end='')
-                firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
+
+                #if units_numbers_in_this_dataset==3:
+                #    firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
+
+                #if units_numbers_in_this_dataset==6:
+                #    firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]+no_sorting_firing_rate[k+3][i]+no_sorting_firing_rate[k+4][i]
+                units_numbers_in_this_dataset=3
+                for unit_control in range(units_numbers_in_this_dataset):
+                    firing_rate_matrix[index][i]+=no_sorting_firing_rate[k+unit_control][i]
 
                 # Test another way to exclude hash unit, but this only works in 96 features.
                 #firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
@@ -618,45 +648,70 @@ for session_index in range(file_numbers):
         z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[time_lag:testing_data_index+time_lag ]), axis=0)
         z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index+time_lag:]), axis=0)
 
-# cross sessions control end
-
-'''
-from sklearn.decomposition import IncrementalPCA
-
-n_components = 288
-batch_size = None
-
-incrementalPCA = IncrementalPCA(n_components=2, batch_size=batch_size)
-
-X_train_incrementalPCA = incrementalPCA.fit_transform(X_for_training)
-print(X_train_incrementalPCA.explained_variance_)
+    # session by sessions control end
 
 
-#scatterPlot(X_train_incrementalPCA, x_position_label_training, "Incremental PCA")
-'''
+    '''
+    from sklearn.decomposition import IncrementalPCA
 
-from sklearn.decomposition import PCA
-pca = PCA(n_components=3)
+    n_components = 288
+    batch_size = None
 
-pca.fit(X_for_training)
+    incrementalPCA = IncrementalPCA(n_components=2, batch_size=batch_size)
 
-X=pca.transform(X_for_training)
-
-print('\n')
-print(pca.explained_variance_)
-print('\n')
-print(pca.n_components_)
+    X_train_incrementalPCA = incrementalPCA.fit_transform(X_for_training)
+    print(X_train_incrementalPCA.explained_variance_)
 
 
-from mpl_toolkits.mplot3d import Axes3D
-fig = plt.figure(1, figsize=(4, 3))
-plt.clf()
-ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+    #scatterPlot(X_train_incrementalPCA, x_position_label_training, "Incremental PCA")
+    '''
 
-ax.scatter(X[:, 0], X[:, 1], X[:, 2], cmap=plt.cm.nipy_spectral,  edgecolor='k')
+    from sklearn.decomposition import PCA
+    pca = PCA(n_components=3)
 
-ax.w_xaxis.set_ticklabels([])
-ax.w_yaxis.set_ticklabels([])
-ax.w_zaxis.set_ticklabels([])
+    pca.fit(X_for_training)
 
-plt.show()
+    X_after_pca=pca.transform(X_for_training)
+
+    print('Principle Component = 3\n')
+
+    print('X_after_pca shape = ', X_after_pca.shape, '\n')
+
+    print('pca.explained_variance_ = ', pca.explained_variance_, '\n')
+    print('pca.n_components_ = ', pca.n_components_ , '\n')
+    print('pca.explained_variance_ratio_ = ', pca.explained_variance_ratio_, '\n')
+    print('sum = ', sum(pca.explained_variance_ratio_ ) )
+
+    from mpl_toolkits.mplot3d import Axes3D
+    fig = plt.figure(1, figsize=(40, 30))
+    plt.clf()
+    ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+
+    ax.scatter(X_after_pca[:, 0], X_after_pca[:, 1], X_after_pca[:, 2], cmap=plt.cm.nipy_spectral,  edgecolor='k')
+    print("in session " + str(the_session_name))
+
+    plt.title( '3D PCA in session ' + str(the_session_name)  +' \n Variance:'+ str(sum(pca.explained_variance_ratio_ )), fontsize=40)
+    ax.w_xaxis.set_ticklabels([])
+    ax.w_yaxis.set_ticklabels([])
+    ax.w_zaxis.set_ticklabels([])
+    
+    ax.w_xaxis.set_label_text('Pricipal Component 1', fontsize=30)
+    ax.w_yaxis.set_label_text('Pricipal Component 2', fontsize=30)
+    ax.w_zaxis.set_label_text('Pricipal Component 3', fontsize=30)
+
+    #plt.show()
+    plt.savefig('../../Figures/PCA_plot/PCA_in_session_' + the_session_name +'.png')
+
+    pca = PCA(n_components=10)
+
+    pca.fit(X_for_training)
+
+    X_after_pca=pca.transform(X_for_training)
+
+    print('Principal Component = 10\n')
+    print('X_after_pca shape = ', X_after_pca.shape, '\n')
+
+    print('pca.explained_variance_ = ', pca.explained_variance_, '\n')
+    print('pca.n_components_ = ', pca.n_components_ , '\n')
+    print('pca.explained_variance_ratio_ = ', pca.explained_variance_ratio_, '\n')
+    print('sum = ', sum(pca.explained_variance_ratio_ ) )
