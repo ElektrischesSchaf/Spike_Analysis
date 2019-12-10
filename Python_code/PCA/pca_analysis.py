@@ -636,34 +636,27 @@ print(X_train_incrementalPCA.explained_variance_)
 '''
 
 from sklearn.decomposition import PCA
-pca = PCA(n_components=2)
+pca = PCA(n_components=3)
+
 pca.fit(X_for_training)
+
+X=pca.transform(X_for_training)
 
 print('\n')
 print(pca.explained_variance_)
 print('\n')
 print(pca.n_components_)
 
-def draw_vector(v0, v1, ax=None):
-    ax = ax or plt.gca()
-    arrowprops=dict(arrowstyle='->',
-                    linewidth=2,
-                    shrinkA=0, shrinkB=0)
-    ax.annotate('', v1, v0, arrowprops=arrowprops)
 
-# plot data
-#plt.scatter(X_for_training[:, 0], X_for_training[:, 1], alpha=0.2)
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure(1, figsize=(4, 3))
+plt.clf()
+ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
 
-for length, vector in zip(pca.explained_variance_, pca.components_):
-    print('length= ',length,'\n')
-    print('vector=', vector,'\n')
-    print('length of vector', vector.shape, '\n')
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], cmap=plt.cm.nipy_spectral,  edgecolor='k')
 
-    v = vector * 3 * np.sqrt(length)
-    print('shape of pca.mean_', pca.mean_.shape, '\n')
-    print('length of v', v.shape, '\n')
+ax.w_xaxis.set_ticklabels([])
+ax.w_yaxis.set_ticklabels([])
+ax.w_zaxis.set_ticklabels([])
 
-    draw_vector(pca.mean_, pca.mean_ + v)
-
-
-plt.axis('equal')
+plt.show()
