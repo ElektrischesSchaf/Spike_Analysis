@@ -106,16 +106,15 @@ finger_y_coor=finger_y_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
 for selected_channel in range(0, 96):    
 
     # ploting with fixed duration
-    '''
+    test_sampling_duration=1000000
     s=data[:test_sampling_duration, selected_channel]
     spike_signal=butter_bandpass_filter(s, 300, 3000, sampling_frequency, order=5)
     local_field_potential_signal=butter_lowpass_filter(s,3000, sampling_frequency/2)
 
     fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(17, 17), dpi=100)
-    test_sampling_duration=1000000
-    print('Duration= ', timestamp[test_sampling_duration]-timestamp[0],'\n')
+    print('Duration= ', nwb_timestamp[test_sampling_duration]-nwb_timestamp[0],'\n')
 
-    axes[0,0].scatter(timestamp[:test_sampling_duration], s, s=1)
+    axes[0,0].scatter(nwb_timestamp[:test_sampling_duration], s, s=1)
     axes[0, 0].set_title('Signal')
 
     axes[1,0].set_title("Magnitude Spectrum")
@@ -137,14 +136,16 @@ for selected_channel in range(0, 96):
     #plt.show()
     plt.savefig('../../Figures/nwb_Data_Plot/spectrum_on_1_session.png')
 
-    #plt.clf()
-    #plt.close()
-    #plt.magnitude_spectrum(spike_signal, Fs=sampling_frequency)
+    plt.clf()
+    plt.close()
+    plt.title('Magnitude Spectrum in Channel '+str(selected_channel+1))
+    plt.magnitude_spectrum(spike_signal, Fs=sampling_frequency)
     #plt.show()
+    plt.savefig('../../Figures/nwb_Data_Plot/magnitude_spectrum_channel_'+str(selected_channel+1)+'.png')
 
     plt.clf()
     plt.close()
-    '''
+    
 
     new_data=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], selected_channel]
 
