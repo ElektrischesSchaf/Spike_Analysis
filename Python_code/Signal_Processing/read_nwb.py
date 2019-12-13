@@ -196,7 +196,7 @@ plt.close()
 
 plt.figure(1, figsize=(my_plot_width, my_plot_width*2) )
 
-plt.subplot(211)
+plt.subplot(311)
 plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
 #plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1),fontsize=30, color="black")
 #plt.xlabel("Time (s)", fontsize=25, color="black")
@@ -207,7 +207,13 @@ plt.xlim(start_second, end_second)
 plt.xticks([], [])
 plt.yticks(fontsize=20, color="black")
 
-plt.subplot(212)
+plt.subplot(312)
+powerSpectrum, freqenciesFound, time, imageAxis=plt.specgram(new_data, Fs=1/(new_nwb_time_stamp[1]-new_nwb_time_stamp[0]), mode='phase', NFFT=512)
+#plt.xlabel('Time', fontsize=25, color="black")
+plt.ylabel('Frequency', fontsize=25, color="black")
+
+
+plt.subplot(313)
 plt.gca().invert_yaxis()
 
 spike_signal=butter_bandpass_filter(new_data, 500, 5000, sampling_rate, order=3)
