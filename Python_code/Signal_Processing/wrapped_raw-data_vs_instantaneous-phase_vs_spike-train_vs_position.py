@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib as mpl
+from scipy.signal import hilbert
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
@@ -51,7 +52,7 @@ def running_mean(x, N):
 # Read data and plot raw waveform
 channel_number=49
 start_second=310
-plot_time_duration=2
+plot_time_duration=1
 end_second=start_second+plot_time_duration
 
 # start_second & end_second loop control
@@ -144,7 +145,7 @@ for i in range(50):
     print('nwb_time_interval end time index = ', nwb_time_interval[0][-1],'\n')
 
     new_nwb_time_stamp= nwb_timestamp[nwb_time_interval[0][0]:nwb_time_interval[0][-1],]
-    new_data=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1],0+channel_number]
+    new_data=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number]
 
     print('new_nwb_time_stamp = ', new_nwb_time_stamp,'\n')
 
@@ -154,7 +155,8 @@ for i in range(50):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
-    figure_path='../../Figures/Raw_data_and_Spike/phase_spectrogram/'
+    figure_path='../../Figures/Raw_data_and_Spike/instantaneous_phase/wrapped/'
+    # figure_path='../../Figures/Raw_data_and_Spike/instantaneous_phase/unwrapped/'
 
     plt.figure(figsize=(my_plot_width, my_plot_height))
     plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
@@ -223,10 +225,26 @@ for i in range(50):
     plt.yticks(fontsize=10, color="black")
 
     plt.subplot(412)
-    powerSpectrum, freqenciesFound, time, imageAxis=plt.specgram(new_data, Fs=1/(new_nwb_time_stamp[1]-new_nwb_time_stamp[0]), mode='phase', NFFT=512)
-    #plt.xlabel('Time', fontsize=25, color="black")
+    
+    analytic_signal = hilbert(new_data)
+
+    # instantaneous_phase = np.unwrap(np.angle(analytic_signal))
+    instantaneous_phase = np.angle(analytic_signal)
+
+    plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=1, c='black')
+    plt.xlim(start_second, end_second)
+    #plt.ylim(np.pi, -np.pi)
+
     plt.xticks([], [])
-    plt.ylabel('Frequency (Phase)', fontsize=10, color="black")
+
+    # tick_pos= [0, np.pi , 2*np.pi, -np.pi, -2*np.pi]
+    # labels = ['0', '$\pi$', '$2\pi$', '$-\pi$', '$-2\pi$']
+
+    tick_pos= [0, np.pi , -np.pi]
+    labels = ['0', '$\pi$', '$-\pi$']
+    plt.yticks(tick_pos, labels)
+
+    plt.ylabel('Wrapped Phase', fontsize=10, color="black")
 
     plt.subplot(413)
     plt.gca().invert_yaxis()
@@ -264,7 +282,7 @@ for i in range(50):
     plt.ylabel("Position (cm)", fontsize=10, color="black")
 
     # plt.show()
-    plt.savefig(figure_path+'raw-data_vs_phase-spectro_vs_spike-train_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+    plt.savefig(figure_path+'raw-data_vs_instantaneous-phase_vs_spike-train_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration

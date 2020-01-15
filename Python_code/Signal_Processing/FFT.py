@@ -42,7 +42,7 @@ print('dt=',dt,'\n')
 #t = np.linspace( t0, t0+1024*dt, 1024, endpoint=False )
 #signal = np.sin( t*(2*np.pi)*freq )
 
-signal=data[:1000,0]
+signal=data[:100000,49]
 
 print('shape of signal', signal.shape)
 ## Fourier transform of real valued signal
@@ -73,8 +73,8 @@ fftFreq = np.fft.rfftfreq(len(signal), dt)
 plt.figure( figsize=(10, 4) )
 
 ax1 = plt.subplot( 1, 2, 1 )
-ax1.plot( nwb_timestamp[:1000], signal, label='signal')
-ax1.plot( nwb_timestamp[:1000], newSignal, label='new signal')
+ax1.plot( nwb_timestamp[:100000], signal, label='signal')
+ax1.plot( nwb_timestamp[:100000], newSignal, label='new signal')
 ax1.set_ylabel( 'Signal' )
 ax1.set_xlabel( 'time' )
 ax1.legend()
@@ -103,17 +103,18 @@ analytic_signal = hilbert(signal)
 amplitude_envelope = np.abs(analytic_signal)
 #instantaneous_phase = np.unwrap(np.angle(analytic_signal))
 instantaneous_phase = np.angle(analytic_signal)
-#instantaneous_frequency = (np.diff(instantaneous_phase) /  (2.0*np.pi) * fs)
-instantaneous_frequency = (np.diff(instantaneous_phase) /  (2.0*np.pi) )
+instantaneous_frequency = (np.diff(instantaneous_phase) /  (2.0*np.pi) * fs)
+#instantaneous_frequency = (np.diff(instantaneous_phase) /  (2.0*np.pi) )
+
 fig = plt.figure()
 ax0 = fig.add_subplot(211)
-ax0.plot(nwb_timestamp[:1000], signal, label='signal')
-#ax0.plot(nwb_timestamp[:1000], amplitude_envelope, label='envelope')
+ax0.plot(nwb_timestamp[:100000], signal, label='signal')
+#ax0.plot(nwb_timestamp[:100000], amplitude_envelope, label='envelope')
 ax0.set_xlabel("time in seconds")
 ax0.legend()
 ax1 = fig.add_subplot(212)
 #ax1.plot(t[1:], instantaneous_frequency)
-ax1.plot(nwb_timestamp[:1000], instantaneous_phase)
+ax1.plot(nwb_timestamp[:100000], instantaneous_phase)
 ax1.set_xlabel("time in seconds")
 #ax1.set_ylim(0.0, 120.0)
 
