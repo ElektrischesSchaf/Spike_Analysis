@@ -53,6 +53,7 @@ channel_number=49
 start_second=310
 end_second=312
 
+
 # nwb file
 nwb_filename = '../../Dataset/The_nwb_Raw_Dataset/indy_20161007_02.nwb'
 nwb_file = h5py.File(nwb_filename, 'r')
@@ -154,7 +155,8 @@ plt.xlim(start_second, end_second)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 #plt.show()
-plt.savefig(figure_path+'Raw_data_on_Channel_' + str(channel_number+1) + '.png')
+#plt.savefig(figure_path+'Raw_data_on_Channel_' + str(channel_number+1) + '.png')
+
 plt.clf()
 plt.cla()
 plt.close()
@@ -187,14 +189,15 @@ plt.ylim(0, 200)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 #plt.show()
-plt.savefig(figure_path+'Filtered_raw_data_and_spike_label_on_Channel_' + str(channel_number+1) + '.png')
+#plt.savefig(figure_path+'Filtered_raw_data_and_spike_label_on_Channel_' + str(channel_number+1) + '.png')
+
 plt.clf()
 plt.cla()
 plt.close()
 
 # Combining the above two into one figure
 
-plt.figure(1, figsize=(my_plot_width, my_plot_width*2) )
+plt.figure(1, figsize=(my_plot_width, my_plot_height) )
 
 plt.subplot(311)
 plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
@@ -237,86 +240,5 @@ plt.ylim(0, 200)
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 
-plt.show()
-#plt.savefig(figure_path+'Combined_Filtered_raw_data_and_spike_label_on_Channel_' + str(channel_number+1) + '.png')
-
-
-'''
-
-#####################
-sample_rate = 24400
-duration = 10
-start = 0
-channel = 96
-signal_length = (int) (duration * sample_rate)
-################################
-
-#butterworth filter
-cutoff_frequency = 300.0
-# Downsample data
-new_sample_rate = 1000
-new_signal_length = (int) (duration*new_sample_rate)
-
-#preprocessing to achieve LFP
-start_idx = start*sample_rate
-end_idx = start*sample_rate + signal_length
-pre_data = data[start_idx:end_idx]
-pos_data = np.empty([new_signal_length,channel])
-
-#preprocessing for all channels
-for i in range(channel):
-    low_pass = butter_lowpass_filter(pre_data[:, i], cutoff_frequency, sample_rate/2)
-    down_sample = signal.resample(low_pass, new_signal_length)
-    pos_data[:,i] = down_sample
-
-car_data = np.mean(pos_data, axis=1)
-
-# box plot for all channels
-
-new_pos_data = np.empty([new_signal_length,channel + 1])
-new_pos_data[:, 0:channel] = pos_data
-new_pos_data[:, channel] = car_data
-
-
-# remove outlier channels and channels have small variation
-# find min and max for all channels
-max_96_chans = np.max(pos_data, axis=0)
-min_96_chans = np.min(pos_data, axis=0)
-median_96_chans = np.median(pos_data, axis=0)
-median_car =  np.median(car_data, axis=0)
-diff_median = np.abs(median_96_chans - median_car)
-diff_min_max = np.abs(max_96_chans-min_96_chans)
-# remove outlier channels for all diff median > 1500
-# remove channels have small variation for all diff_min_max < 1500
-idx_to_delete_outlier = np.argwhere((diff_median > 1000))
-idx_to_delete_small_vari = np.argwhere((diff_min_max < 3000))
-# selected
-idx_to_selected_1 = np.argwhere((diff_median < 1000))
-idx_to_selected_2 = np.argwhere((diff_min_max > 3000))
-idx_to_select = np.intersect1d(idx_to_selected_1, idx_to_selected_2)
-
-# car from selected channels
-CAR_selected = np.mean(pos_data[:, idx_to_select], axis=1)
-chan = 36
-plt.figure(figsize=(11, 9))
-j = 0
-for i in idx_to_select: # range(channel):
-    low_pass = butter_lowpass_filter(pos_data[:, i], 4, new_sample_rate/2)
-    plt.plot(low_pass + j * 1000, label = i)
-    j = j + 1
-#plt.plot(CAR_selected, color='r', label = "car from selected channels")
-plt.title("Selected channels to be kept")
-plt.xlabel('{} Samples of {}s'.format(new_signal_length, duration))
-plt.ylabel('Amplitude (dB)')
-#plt.legend(idx_to_select, loc = "best")
-plt.legend()
-plt.show()
-
-plt.figure(figsize=(11, 9))
-plt.title("Box plot for selected channel")
-plt.xlabel("Channel")
-plt.ylabel("amplitude value")
-plt.boxplot(new_pos_data[:, idx_to_select], labels = idx_to_select)
-plt.show()
-
-'''
+#plt.show()
+plt.savefig(figure_path+'Combined_Filtered_raw_data_and_spike_train_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
