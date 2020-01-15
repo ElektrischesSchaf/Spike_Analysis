@@ -56,6 +56,8 @@ end_second=start_second+plot_time_duration
 
 # start_second & end_second loop control
 for i in range(50):
+
+
     # nwb file
     nwb_filename = '../../Dataset/The_nwb_Raw_Dataset/indy_20161007_02.nwb'
     nwb_file = h5py.File(nwb_filename, 'r')
@@ -87,11 +89,18 @@ for i in range(50):
     print('type of mat_time_interval=', type(mat_time_interval),'\n')
     print('mat_time_interval start time index = ', mat_time_interval[0][0],'\n')
     print('mat_time_interval end time index = ', mat_time_interval[0][-1],'\n')
+    # new timestamp in mat file
     new_mat_time_stamp=mat_timestamp[0,mat_time_interval[0][0]:mat_time_interval[0][-1]]
-
     print('new_mat_time_stamp = ', new_mat_time_stamp,'\n')
-
-
+    # finger position in mat file
+    numpy_finger_pos=mat_file.get('finger_pos')
+    finger_z_coor=numpy_finger_pos[0][:]
+    finger_z_coor=finger_z_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
+    finger_x_coor=numpy_finger_pos[1][:]
+    finger_x_coor=finger_x_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
+    finger_y_coor=numpy_finger_pos[2][:]
+    finger_y_coor=finger_y_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
+    # sourted spikes in mat file
     spikes = mat_file['spikes']
     temp_spike_cell_1=mat_file[ ( spikes[0][channel_number] ) ][()]
     temp_spike_cell_2=mat_file[ ( spikes[1][channel_number] ) ][()]
@@ -181,7 +190,7 @@ for i in range(50):
     plt.eventplot(temp_spike_cell_3, color='green', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-1*spike_line_length, linestyles='dotted')
     plt.eventplot(temp_spike_cell_4, color='yellow', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-3*spike_line_length, linestyles='dotted')
 
-    plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1),fontsize=30, color="black")
+    plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1), fontsize=10, color="black")
 
     plt.xlabel("Time (s)", fontsize=25, color="black")
     plt.ylabel("Amp. (mV)", fontsize=25, color="black")
@@ -199,26 +208,27 @@ for i in range(50):
 
     # Combining the above two into one figure
 
-    plt.figure(1, figsize=(my_plot_width, my_plot_height) )
+    plt.figure(1, figsize=(my_plot_width, my_plot_height*1.5) )
 
-    plt.subplot(311)
+    plt.subplot(411)
     plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
-    #plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1),fontsize=30, color="black")
-    #plt.xlabel("Time (s)", fontsize=25, color="black")
-    plt.ylabel("Amp. (mV)", fontsize=25, color="black")
+    plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1), fontsize=10, color="black")
+
+    #plt.xlabel("Time (s)", fontsize=10, color="black")
+    plt.ylabel("Amp. (mV)", fontsize=10, color="black")
 
     plt.xlim(start_second, end_second)
     #plt.xticks(fontsize=20, color="black")
     plt.xticks([], [])
-    plt.yticks(fontsize=20, color="black")
+    plt.yticks(fontsize=10, color="black")
 
-    plt.subplot(312)
+    plt.subplot(412)
     powerSpectrum, freqenciesFound, time, imageAxis=plt.specgram(new_data, Fs=1/(new_nwb_time_stamp[1]-new_nwb_time_stamp[0]), mode='phase', NFFT=512)
     #plt.xlabel('Time', fontsize=25, color="black")
-    plt.ylabel('Frequency', fontsize=25, color="black")
+    plt.xticks([], [])
+    plt.ylabel('Frequency (Phase)', fontsize=10, color="black")
 
-
-    plt.subplot(313)
+    plt.subplot(413)
     plt.gca().invert_yaxis()
 
     spike_signal=butter_bandpass_filter(new_data, 500, 5000, sampling_rate, order=3)
@@ -234,13 +244,24 @@ for i in range(50):
 
     #plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1),fontsize=30, color="black")
 
-    plt.xlabel("Time (s)", fontsize=25, color="black")
-    plt.ylabel("Amp. (mV)", fontsize=25, color="black")
+    #plt.xlabel("Time (s)", fontsize=10, color="black")
+    plt.xticks([], [])
+    plt.ylabel("Amp. (mV)", fontsize=10, color="black")
 
     plt.xlim(start_second, end_second)
     plt.ylim(0, 200)
-    plt.xticks(fontsize=20, color="black")
-    plt.yticks(fontsize=20, color="black")
+    plt.xticks(fontsize=10, color="black")
+    plt.yticks(fontsize=10, color="black")
+
+    plt.subplot(414)
+    #print('\nin subplot 414, new_nwb_time_stamp.shape=', new_nwb_time_stamp.shape, ' finger_x_coor.shape=', finger_x_coor.shape, '\n')
+    x_pos=plt.scatter(new_mat_time_stamp, finger_x_coor, s=5, c='blue')
+    y_pos=plt.scatter(new_mat_time_stamp, finger_y_coor, s=5, c='green')
+    z_pos=plt.scatter(new_mat_time_stamp, finger_z_coor, s=5, c='orange')
+    plt.xlim(start_second, end_second)
+    plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left')
+    plt.xlabel("Time (second)", fontsize=10, color="black")
+    plt.ylabel("Position (cm)", fontsize=10, color="black")
 
     #plt.show()
     plt.savefig(figure_path+'Combined_Filtered_raw_data_and_spike_train_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
