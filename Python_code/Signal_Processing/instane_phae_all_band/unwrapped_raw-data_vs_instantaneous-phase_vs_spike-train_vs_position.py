@@ -156,7 +156,7 @@ for i in range(50):
     my_plot_width=29
     my_plot_height=7
     # figure_path='../../Figures/Raw_data_and_Spike/instantaneous_phase/wrapped/'
-    figure_path='../../Figures/Raw_data_and_Spike/instantaneous_phase/unwrapped/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/unwrapped/'
 
     plt.figure(figsize=(my_plot_width, my_plot_height))
     plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
