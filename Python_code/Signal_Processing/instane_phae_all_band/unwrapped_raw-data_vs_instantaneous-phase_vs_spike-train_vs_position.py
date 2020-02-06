@@ -60,7 +60,7 @@ for i in range(50):
 
 
     # nwb file
-    nwb_filename = '../../Dataset/The_nwb_Raw_Dataset/indy_20161007_02.nwb'
+    nwb_filename = '../../../Dataset/The_nwb_Raw_Dataset/indy_20161007_02.nwb'
     nwb_file = h5py.File(nwb_filename, 'r')
 
     data = nwb_file['/acquisition/timeseries/broadband/data']
@@ -79,7 +79,7 @@ for i in range(50):
     print('first of nwb_timestamp= ', nwb_timestamp[0,],'\n')
 
     # mat file
-    mat_file_name_1='../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
+    mat_file_name_1='../../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
     mat_file=h5py.File(mat_file_name_1, 'r')
     mat_timestamp=mat_file.get('t')
     mat_timestamp=np.array(mat_timestamp)
