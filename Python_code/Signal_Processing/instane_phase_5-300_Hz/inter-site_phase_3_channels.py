@@ -160,7 +160,7 @@ for i in range(100):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
-    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/inter-site_phase/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/inter-site_phase_3_channels/'
     # figure_path='../../Figures/Raw_data_and_Spike/instantaneous_phase/unwrapped/'
 
     plt.figure(figsize=(my_plot_width, my_plot_height))
