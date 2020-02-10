@@ -346,7 +346,7 @@ for i in range(100):
     plt.ylabel("Position (cm)", fontsize=10, color="black")
     '''
 
-
+    plt.tight_layout()
     # plt.show()
     plt.savefig(figure_path+'raw-data_vs_instantaneous-phase_vs_spike-train_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
