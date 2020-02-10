@@ -218,7 +218,9 @@ for i in range(100):
     # plt.subplot(411)
     plt.subplot(211)
 
-    for channel_number_yee in range(0,10):
+    good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
+    for channel_number_yee in good_channel_list_start_from_one:
+        channel_number_yee=channel_number_yee-1
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
         filtered_data=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3)
         analytic_signal = hilbert(filtered_data)
