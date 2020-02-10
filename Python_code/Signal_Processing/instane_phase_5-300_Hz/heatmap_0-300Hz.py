@@ -53,7 +53,7 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=309
+start_second=429
 plot_time_duration=3
 end_second=start_second+plot_time_duration
 
@@ -241,11 +241,10 @@ for i in range(100):
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number_yee]
         filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3)
         analytic_signal_1 = hilbert(filtered_data_1)
-        instantaneous_phase_1 = np.angle(analytic_signal_1)    
+        instantaneous_phase_1 = np.angle(analytic_signal_1)
         result.append(instantaneous_phase_1)
 
     result=np.array(result)
-
     print('result shape = ', result.shape, '\n')
 
     sns.set()
@@ -258,7 +257,7 @@ for i in range(100):
     # labels = ['0', '$\pi$', '$-\pi$']
     # plt.yticks(tick_pos, labels)
 
-    plt.ylabel('Wrapped Phase', fontsize=10, color="black")    
+    plt.ylabel('Channels', fontsize=10, color="black")    
 
 
     # Second subplot
