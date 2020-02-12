@@ -36,14 +36,14 @@ def butter_highpass_filter(data, cutoff_freq, nyq_freq, order=4):
     return y
 
 # Band pass
-def butter_bandpass(lowcut, highcut, fs, order=5):
+def butter_bandpass(lowcut, highcut, fs, order=4):
     nyq = 0.5 * fs
     low = lowcut / nyq
     high = highcut / nyq
     b, a = butter(order, [low, high], btype='band')
     return b, a
 
-def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
+def butter_bandpass_filter(data, lowcut, highcut, fs, order=4):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = lfilter(b, a, data)
     return y
@@ -59,7 +59,7 @@ start_second=309
 plot_time_duration=3
 end_second=start_second+plot_time_duration
 
-band_start=5
+band_start=0
 band_cutoff=300
 session_name='indy_20161007_02'
 
@@ -163,7 +163,7 @@ for i in range(100):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
-    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/heatmap_5-300Hz/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/heatmap_0-300Hz/'
     my_fontsize=30
 
     '''
@@ -233,7 +233,7 @@ for i in range(100):
     # for channel_number_yee in good_channel_list_start_from_one:
         # channel_number_yee=channel_number_yee-1
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number_yee]
-        filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3)
+        filtered_data_1=butter_lowpass_filter(channel_1, band_cutoff, sampling_rate, order=4)
         analytic_signal_1 = hilbert(filtered_data_1)
         instantaneous_phase_1 = np.angle(analytic_signal_1)
         result.append(instantaneous_phase_1)
