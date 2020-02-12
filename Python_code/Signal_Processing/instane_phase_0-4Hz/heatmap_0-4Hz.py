@@ -61,13 +61,15 @@ end_second=start_second+plot_time_duration
 
 band_start=0
 band_cutoff=4
+session_name='indy_20161007_02'
+
 
 # start_second & end_second loop control
 for i in range(100):
 
 
     # nwb file
-    nwb_filename = '../../../Dataset/The_nwb_Raw_Dataset/indy_20161007_02.nwb'
+    nwb_filename = '../../../Dataset/The_nwb_Raw_Dataset/'+session_name+'.nwb'
     nwb_file = h5py.File(nwb_filename, 'r')
 
     data = nwb_file['/acquisition/timeseries/broadband/data']
@@ -86,7 +88,7 @@ for i in range(100):
     # print('first of nwb_timestamp= ', nwb_timestamp[0,],'\n')
 
     # mat file
-    mat_file_name_1='../../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
+    mat_file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
     mat_file=h5py.File(mat_file_name_1, 'r')
     mat_timestamp=mat_file.get('t')
     mat_timestamp=np.array(mat_timestamp)
@@ -162,6 +164,8 @@ for i in range(100):
     my_plot_width=29
     my_plot_height=7
     figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/heatmap_0-4Hz/'
+    my_fontsize=30
+
     '''
     plt.figure(figsize=(my_plot_width, my_plot_height))
     plt.scatter(new_nwb_time_stamp, channel_1, s=1, color= 'black')
@@ -221,10 +225,10 @@ for i in range(100):
 
     # First subplot
     plt.subplot(211)
-    plt.title('indy_20161007_02' + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
+    plt.title(session_name + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
     result=[]
 
-    good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
+    good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,21,2,54]
     # for channel_number_yee in range(96):
     for channel_number_yee in good_channel_list_start_from_one:
         channel_number_yee=channel_number_yee-1
@@ -249,7 +253,7 @@ for i in range(100):
     # labels = ['0', '$\pi$', '$-\pi$']
     # plt.yticks(tick_pos, labels)
 
-    plt.ylabel('Channels', fontsize=30, color="black")
+    plt.ylabel('Channels', fontsize=my_fontsize, color="black")
 
     # Second subplot
     plt.subplot(212)
@@ -258,9 +262,11 @@ for i in range(100):
     y_pos=plt.scatter(new_mat_time_stamp, finger_y_coor, s=5, c='green')
     z_pos=plt.scatter(new_mat_time_stamp, finger_z_coor, s=5, c='orange')
     plt.xlim(start_second, end_second)
-    plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left', fontsize=15)
-    plt.xlabel("Time (second)", fontsize=30, color="black")
-    plt.ylabel("Position (cm)", fontsize=30, color="black")
+    plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left', fontsize=my_fontsize)
+    plt.xlabel("Time (second)", fontsize=my_fontsize, color="black")
+    plt.ylabel("Position (cm)", fontsize=my_fontsize, color="black")
+    plt.xticks(fontsize=my_fontsize)
+    plt.yticks(fontsize=my_fontsize)
 
     plt.tight_layout()
 
