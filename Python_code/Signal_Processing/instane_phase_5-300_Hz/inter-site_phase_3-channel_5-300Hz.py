@@ -12,13 +12,13 @@ import seaborn as sns
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
-def butter_lowpass(cutoff, fs, order=4):
+def butter_lowpass(cutoff, fs, order):
     nyq_freq = 0.5 * fs
     normal_cutoff = float(cutoff) / nyq_freq
     b, a = signal.butter(order, normal_cutoff, btype='lowpass')
     return b, a
 
-def butter_lowpass_filter(data, cutoff_freq, fs, order=4):
+def butter_lowpass_filter(data, cutoff_freq, fs, order):
 
     b, a = butter_lowpass(cutoff_freq, fs, order=order)
     y = signal.filtfilt(b, a, data)
@@ -36,14 +36,14 @@ def butter_highpass_filter(data, cutoff_freq, nyq_freq, order=4):
     return y
 
 # Band pass
-def butter_bandpass(lowcut, highcut, fs, order=5):
+def butter_bandpass(lowcut, highcut, fs, order=4):
     nyq = 0.5 * fs
     low = lowcut / nyq
     high = highcut / nyq
     b, a = butter(order, [low, high], btype='band')
     return b, a
 
-def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
+def butter_bandpass_filter(data, lowcut, highcut, fs, order=4):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = lfilter(b, a, data)
     return y
@@ -56,7 +56,7 @@ def running_mean(x, N):
 # Read data and plot raw waveform
 channel_number=31
 start_second=309
-plot_time_duration=3
+plot_time_duration=5
 end_second=start_second+plot_time_duration
 
 band_start=5
@@ -163,7 +163,7 @@ for i in range(100):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
-    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/heatmap_5-300Hz/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/inter-site_phase_3_channels_5-300Hz/'
     my_fontsize=30
 
     '''
@@ -228,32 +228,37 @@ for i in range(100):
     plt.title(session_name + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
     result=[]
 
-    # good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,21,2,54]
-    for channel_number_yee in range(96):
-    # for channel_number_yee in good_channel_list_start_from_one:
-        # channel_number_yee=channel_number_yee-1
-        channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number_yee]
-        filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=4)
-        analytic_signal_1 = hilbert(filtered_data_1)
-        instantaneous_phase_1 = np.angle(analytic_signal_1)
-        result.append(instantaneous_phase_1)
+    channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number]
+    channel_2=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+69]
+    channel_3=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+50]
 
-    result=np.array(result)
-    print('result shape = ', result.shape, '\n')
+    filtered_data=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3)
+    analytic_signal = hilbert(filtered_data)
+    # instantaneous_phase = np.unwrap(np.angle(analytic_signal))
+    instantaneous_phase = np.angle(analytic_signal)
+    plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.5, c='blue')
 
-    sns.set()
-    ax = sns.heatmap(result, xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
+    filtered_data_2=butter_bandpass_filter(channel_2, band_start, band_cutoff, sampling_rate, order=3)    
+    analytic_signal_2 = hilbert(filtered_data_2)
+    # instantaneous_phase = np.unwrap(np.angle(analytic_signal_2))
+    instantaneous_phase_2 = np.angle(analytic_signal_2)
+    plt.scatter(new_nwb_time_stamp, instantaneous_phase_2, s=0.5, c='red')
 
-    # plt.colorbar(ax.get_children()[0], orientation="horizontal", size=0.5)
-    # plt.xlim(start_second, end_second)
+    filtered_data_3=butter_bandpass_filter(channel_3, band_start, band_cutoff, sampling_rate, order=3)    
+    analytic_signal_3 = hilbert(filtered_data_3)
+    # instantaneous_phase = np.unwrap(np.angle(analytic_signal_3))
+    instantaneous_phase_3 = np.angle(analytic_signal_3)
+    plt.scatter(new_nwb_time_stamp, instantaneous_phase_3, s=0.5, c='black')
+
+    plt.xlim(start_second, end_second)
 
     # plt.xticks([], [])
 
-    # tick_pos= [0, np.pi , -np.pi]
-    # labels = ['0', '$\pi$', '$-\pi$']
-    # plt.yticks(tick_pos, labels)
+    tick_pos= [0, np.pi , -np.pi]
+    labels = ['0', '$\pi$', '$-\pi$']
+    plt.yticks(tick_pos, labels, fontsize=my_fontsize)
 
-    plt.ylabel('Channels', fontsize=my_fontsize, color="black")
+    plt.ylabel('Phase', fontsize=my_fontsize, color="black")
 
     # Second subplot
     plt.subplot(212)
@@ -271,7 +276,7 @@ for i in range(100):
     plt.tight_layout()
 
     # plt.show()
-    plt.savefig(figure_path+'raw-data_vs_instantaneous-phase_vs_spike-train_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+    plt.savefig(figure_path+'instantaneous-phase_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration

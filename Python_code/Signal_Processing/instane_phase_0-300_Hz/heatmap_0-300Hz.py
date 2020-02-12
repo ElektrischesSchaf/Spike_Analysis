@@ -12,13 +12,13 @@ import seaborn as sns
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
-def butter_lowpass(cutoff, fs, order=4):
+def butter_lowpass(cutoff, fs, order):
     nyq_freq = 0.5 * fs
     normal_cutoff = float(cutoff) / nyq_freq
     b, a = signal.butter(order, normal_cutoff, btype='lowpass')
     return b, a
 
-def butter_lowpass_filter(data, cutoff_freq, fs, order=4):
+def butter_lowpass_filter(data, cutoff_freq, fs, order):
 
     b, a = butter_lowpass(cutoff_freq, fs, order=order)
     y = signal.filtfilt(b, a, data)
@@ -271,7 +271,7 @@ for i in range(100):
     plt.tight_layout()
 
     # plt.show()
-    plt.savefig(figure_path+'raw-data_vs_instantaneous-phase_vs_spike-train_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+    plt.savefig(figure_path+'instantaneous-phase-heatmap_vs_position_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
