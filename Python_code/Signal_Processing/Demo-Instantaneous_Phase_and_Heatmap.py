@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cmath
 from scipy.signal import hilbert, chirp
+import seaborn as sns
 # Generate a model signal
 t0 = 1250.0
 dt = 0.152
@@ -61,6 +62,7 @@ plt.tight_layout()
 
 plt.clf()
 plt.close()
+my_font_size=20
 
 fs=(1./dt)/128
 analytic_signal = hilbert(signal)
@@ -70,15 +72,31 @@ instantaneous_phase = np.angle(analytic_signal)
 #instantaneous_frequency = (np.diff(instantaneous_phase) /  (2.0*np.pi) * fs)
 instantaneous_frequency = (np.diff(instantaneous_phase) /  (2.0*np.pi) )
 fig = plt.figure()
-ax0 = fig.add_subplot(211)
+ax0 = fig.add_subplot(311)
 ax0.plot(t, signal, label='signal')
 ax0.plot(t, amplitude_envelope, label='envelope')
 ax0.set_xlabel("time in seconds")
+plt.xlim(t[0:][0],t[0:][-1])
+plt.ylabel('Origianl Signal', fontsize=my_font_size, color='black')
 ax0.legend()
-ax1 = fig.add_subplot(212)
+ax1 = fig.add_subplot(312)
 #ax1.plot(t[1:], instantaneous_frequency)
 ax1.plot(t[0:], instantaneous_phase)
 ax1.set_xlabel("time in seconds")
+plt.xlim(t[0:][0],t[0:][-1])
 #ax1.set_ylim(0.0, 120.0)
+tick_pos= [0, np.pi , -np.pi]
+labels = ['0', '$\pi$', '$-\pi$']
+plt.yticks(tick_pos, labels)
+
+plt.ylabel('Wrapped Phase', fontsize=my_font_size, color='black')
+
+ax3 = fig.add_subplot(313)
+sns.set()
+instantaneous_phase=np.reshape(instantaneous_phase,(1,-1))
+ax = sns.heatmap(instantaneous_phase, xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
+plt.colorbar(ax.get_children()[0], orientation="horizontal")
+plt.ylabel('Phase Heatmap', fontsize=my_font_size, color='black')
+
 
 plt.show()
