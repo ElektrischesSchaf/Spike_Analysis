@@ -31,9 +31,8 @@
 
 % BibTeX
 %\usepackage{bibentry} %Function unknown added by Per Sahlholm
-%\usepackage[round,authoryear]{natbib} %Nice author (year) citations
-\usepackage[square,numbers]{natbib} %Nice numbered citations
-%\usepackage{cite} % Make references as [1-4], not [1,2,3,4]
+\usepackage[round,authoryear]{natbib} %Nice author (year) citations
+% \usepackage[square,numbers]{natbib} %Nice numbered citations
 %\newcommand{\bibspace}{\vspace{2mm}}
 \bibliographystyle{unsrtnat} % Unsorted bibliography by Butters
 %\bibliographystyle{plainnat} %Choose for including URLs   %Commented by Butters
@@ -141,7 +140,19 @@ Because of its phase-dependent excitability,
 the relaxation oscillator separates the information transfer ("duty cycle") phase from the receiving phase. 
 Relaxation oscillators synchronize robustly and with great stability." \cite{buzsaki2004} \\
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cccc}
+        \hline
+        Aritcle & Frequency Band & Phase style & Objective and Notes  \\
+        \hline \\
+        \makecell{\cite{kumar2018}} &  & instantaneous phase & \makecell{Motor imagery\\classification}   \\ \\
+        \makecell{\cite{quiroga2009}\\Review} & LFP & instantaneous phase &  \makecell{ Heading of the mouse  \\  Merging Spike and LFP} \\ \\
+        \makecell{\cite{einevoll2013}\\Review} & LFP &  & \makecell{Sensory Stimuli \\ LFP-spike analysis \\ cross-frequency \\phase-phase inter-frequency coupling} \\ \\
 
+
+    \end{tabular}
+\end{table}
 
 
 \section*{Articles Notes}
