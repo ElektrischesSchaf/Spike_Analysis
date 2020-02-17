@@ -25,13 +25,14 @@ def butter_lowpass_filter(data, cutoff_freq, fs, order=4):
     return y
 
 # High pass
-def butter_highpass(cutoff, nyq_freq, order=4):
+def butter_highpass(cutoff, fs, order=4):
+    nyq_freq = 0.5 * fs
     normal_cutoff = float(cutoff) / nyq_freq
     b, a = signal.butter(order, normal_cutoff, btype='highpass')
     return b, a
 
-def butter_highpass_filter(data, cutoff_freq, nyq_freq, order=4):
-    b, a = butter_highpass(cutoff_freq, nyq_freq, order=order)
+def butter_highpass_filter(data, cutoff_freq, fs, order=4):
+    b, a = butter_highpass(cutoff_freq, fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
 
@@ -56,7 +57,7 @@ def running_mean(x, N):
 # Read data and plot raw waveform
 channel_number=31
 start_second=309
-plot_time_duration=5
+plot_time_duration=3
 end_second=start_second+plot_time_duration
 
 band_start=7
@@ -281,7 +282,8 @@ for i in range(100):
     # for channel_number_yee in good_channel_list_start_from_one:
         # channel_number_yee=channel_number_yee-1
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number_yee]
-        filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=4)
+        filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=5)
+        filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=5)
         analytic_signal_1 = hilbert(filtered_data_1)
         instantaneous_phase_1 = np.angle(analytic_signal_1)
         result.append(instantaneous_phase_1)
