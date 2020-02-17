@@ -275,7 +275,7 @@ for i in range(100):
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
-
+    del ax
     plt.clf()
     plt.cla()
     plt.close()

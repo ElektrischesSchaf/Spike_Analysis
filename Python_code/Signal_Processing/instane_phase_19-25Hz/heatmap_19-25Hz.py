@@ -59,8 +59,8 @@ start_second=309
 plot_time_duration=5
 end_second=start_second+plot_time_duration
 
-band_start=0
-band_cutoff=4
+band_start=19
+band_cutoff=25
 session_name='indy_20161007_02'
 
 # 'pos' or 'vel'
@@ -281,7 +281,7 @@ for i in range(100):
     # for channel_number_yee in good_channel_list_start_from_one:
         # channel_number_yee=channel_number_yee-1
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number_yee]
-        filtered_data_1=butter_lowpass_filter(channel_1, band_cutoff, sampling_rate, order=4)
+        filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=4)
         analytic_signal_1 = hilbert(filtered_data_1)
         instantaneous_phase_1 = np.angle(analytic_signal_1)
         result.append(instantaneous_phase_1)
@@ -346,7 +346,6 @@ for i in range(100):
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
-
     del ax
     plt.clf()
     plt.cla()
