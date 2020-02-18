@@ -12,26 +12,27 @@ import seaborn as sns
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
-def butter_lowpass(cutoff, fs, order):
+def butter_lowpass(cutoff, fs, order=4):
     nyq_freq = 0.5 * fs
     normal_cutoff = float(cutoff) / nyq_freq
     b, a = signal.butter(order, normal_cutoff, btype='lowpass')
     return b, a
 
-def butter_lowpass_filter(data, cutoff_freq, fs, order):
+def butter_lowpass_filter(data, cutoff_freq, fs, order=4):
 
     b, a = butter_lowpass(cutoff_freq, fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
 
 # High pass
-def butter_highpass(cutoff, nyq_freq, order=4):
+def butter_highpass(cutoff, fs, order=4):
+    nyq_freq = 0.5 * fs
     normal_cutoff = float(cutoff) / nyq_freq
     b, a = signal.butter(order, normal_cutoff, btype='highpass')
     return b, a
 
-def butter_highpass_filter(data, cutoff_freq, nyq_freq, order=4):
-    b, a = butter_highpass(cutoff_freq, nyq_freq, order=order)
+def butter_highpass_filter(data, cutoff_freq, fs, order=4):
+    b, a = butter_highpass(cutoff_freq, fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
 
@@ -63,6 +64,8 @@ band_start=5
 band_cutoff=300
 session_name='indy_20161007_02'
 
+# 'pos' or 'vel'
+kinematic_variable_type='vel'
 
 # start_second & end_second loop control
 for i in range(100):
@@ -101,15 +104,61 @@ for i in range(100):
     # print('mat_time_interval end time index = ', mat_time_interval[0][-1],'\n')
     # new timestamp in mat file
     new_mat_time_stamp=mat_timestamp[0,mat_time_interval[0][0]:mat_time_interval[0][-1]]
-    # print('new_mat_time_stamp = ', new_mat_time_stamp,'\n')
+    print('new_mat_time_stamp = ', new_mat_time_stamp,'\n')
+
     # finger position in mat file
     numpy_finger_pos=mat_file.get('finger_pos')
     finger_z_coor=numpy_finger_pos[0][:]
     finger_z_coor=finger_z_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
+
     finger_x_coor=numpy_finger_pos[1][:]
     finger_x_coor=finger_x_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
+
     finger_y_coor=numpy_finger_pos[2][:]
     finger_y_coor=finger_y_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
+
+    # finger velocity in mat file
+
+    finger_x_velocity=[]
+    finger_y_velocity=[]
+    finger_z_velocity=[]
+    velocity_time_coor=[]
+
+    duration=new_mat_time_stamp.shape[0]
+
+    for i in range(duration):
+        #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
+        
+        if ( i<duration-1 ):
+            velocity=( finger_x_coor[i+1] -finger_x_coor[i] ) / ( new_mat_time_stamp[i+1]-new_mat_time_stamp[i] )
+            finger_x_velocity.append(velocity)
+
+            velocity=( finger_y_coor[i+1] - finger_y_coor[i] ) / ( new_mat_time_stamp[i+1]-new_mat_time_stamp[i] )
+            finger_y_velocity.append(velocity)
+
+            velocity=( finger_z_coor[i+1] - finger_z_coor[i] ) / ( new_mat_time_stamp[i+1]-new_mat_time_stamp[i] )
+            finger_z_velocity.append(velocity)
+
+            velocity_time_coor.append( new_mat_time_stamp[i] )
+
+        else:        
+            finger_x_velocity.append(0)
+            finger_y_velocity.append(0)
+            finger_z_velocity.append(0)
+            velocity_time_coor.append(0)
+    
+    finger_x_velocity=np.array(finger_x_velocity)
+    finger_x_velocity=finger_x_velocity.astype(np.float64)
+    
+    finger_y_velocity=np.array(finger_y_velocity)
+    finger_y_velocity=finger_y_velocity.astype(np.float64)
+
+    finger_z_velocity=np.array(finger_z_velocity)
+    finger_z_velocity=finger_z_velocity.astype(np.float64)
+
+    velocity_time_coor=np.array(velocity_time_coor)
+
+
     # sourted spikes in mat file
     spikes = mat_file['spikes']
     temp_spike_cell_1=mat_file[ ( spikes[0][channel_number] ) ][()]
@@ -163,7 +212,7 @@ for i in range(100):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
-    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/inter-site_phase_3_channels_5-300Hz/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/inter-site_3_channels_5-300Hz/'
     my_fontsize=30
 
     '''
@@ -226,57 +275,74 @@ for i in range(100):
     # First subplot
     plt.subplot(211)
     plt.title(session_name + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
-    result=[]
 
-    channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number]
-    channel_2=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+69]
-    channel_3=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+50]
-
-    filtered_data=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3)
-    analytic_signal = hilbert(filtered_data)
-    # instantaneous_phase = np.unwrap(np.angle(analytic_signal))
-    instantaneous_phase = np.angle(analytic_signal)
-    plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.5, c='blue')
-
-    filtered_data_2=butter_bandpass_filter(channel_2, band_start, band_cutoff, sampling_rate, order=3)    
-    analytic_signal_2 = hilbert(filtered_data_2)
-    # instantaneous_phase = np.unwrap(np.angle(analytic_signal_2))
-    instantaneous_phase_2 = np.angle(analytic_signal_2)
-    plt.scatter(new_nwb_time_stamp, instantaneous_phase_2, s=0.5, c='red')
-
-    filtered_data_3=butter_bandpass_filter(channel_3, band_start, band_cutoff, sampling_rate, order=3)    
-    analytic_signal_3 = hilbert(filtered_data_3)
-    # instantaneous_phase = np.unwrap(np.angle(analytic_signal_3))
-    instantaneous_phase_3 = np.angle(analytic_signal_3)
-    plt.scatter(new_nwb_time_stamp, instantaneous_phase_3, s=0.5, c='black')
+    good_channel_list_start_from_one=[32,70,51]
+    color_list=['blue', 'red', 'black']
+    color_list_index=0
+    for channel_number_yee in good_channel_list_start_from_one:
+        channel_number_yee=channel_number_yee-1
+        channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
+        # filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3) # must order 3
+        filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=3) # must order 3
+        filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=3) # must order 3
+        analytic_signal = hilbert(filtered_data_1)
+        instantaneous_phase = np.angle(analytic_signal)
+        plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.1, c=color_list[color_list_index])
+        color_list_index+=1
 
     plt.xlim(start_second, end_second)
+    #plt.ylim(np.pi, -np.pi)
 
-    # plt.xticks([], [])
+    plt.xticks([], [])
+
+    # tick_pos= [0, np.pi , 2*np.pi, -np.pi, -2*np.pi]
+    # labels = ['0', '$\pi$', '$2\pi$', '$-\pi$', '$-2\pi$']
 
     tick_pos= [0, np.pi , -np.pi]
     labels = ['0', '$\pi$', '$-\pi$']
-    plt.yticks(tick_pos, labels, fontsize=my_fontsize)
+    plt.yticks(tick_pos, labels)
 
-    plt.ylabel('Phase', fontsize=my_fontsize, color="black")
+    plt.ylabel('Wrapped Phase', fontsize=my_fontsize, color="black")
 
     # Second subplot
     plt.subplot(212)
-    #print('\nin subplot 414, new_nwb_time_stamp.shape=', new_nwb_time_stamp.shape, ' finger_x_coor.shape=', finger_x_coor.shape, '\n')
-    x_pos=plt.scatter(new_mat_time_stamp, finger_x_coor, s=5, c='blue')
-    y_pos=plt.scatter(new_mat_time_stamp, finger_y_coor, s=5, c='green')
-    z_pos=plt.scatter(new_mat_time_stamp, finger_z_coor, s=5, c='orange')
+    
+    if kinematic_variable_type=='pos':
+        x_pos=plt.scatter(new_mat_time_stamp, finger_x_coor, s=5, c='blue')
+        y_pos=plt.scatter(new_mat_time_stamp, finger_y_coor, s=5, c='green')
+        z_pos=plt.scatter(new_mat_time_stamp, finger_z_coor, s=5, c='orange')
+        plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left', fontsize=my_fontsize)
+
+    if kinematic_variable_type=='vel':
+        x_vel=plt.scatter(velocity_time_coor, finger_x_velocity, s=5, c='blue')
+        # x_pos=plt.scatter(new_mat_time_stamp, finger_x_coor, s=5, c='green')
+        y_vel=plt.scatter(velocity_time_coor, finger_y_velocity, s=5, c='green')
+        # z_vel=plt.scatter(velocity_time_coor, finger_z_velocity, s=5, c='orange')
+        lgnd=plt.legend((x_vel, y_vel), ('x velocity', 'y velocity'),loc='lower left', fontsize=my_fontsize)
+        # lgnd=plt.legend((x_vel, x_pos), ('x vel', 'x pos'),loc='lower left', fontsize=my_fontsize)
+        lgnd.legendHandles[0].set_sizes([100.0])
+        lgnd.legendHandles[1].set_sizes([100.0])
     plt.xlim(start_second, end_second)
-    plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left', fontsize=my_fontsize)
+   
     plt.xlabel("Time (second)", fontsize=my_fontsize, color="black")
-    plt.ylabel("Position (cm)", fontsize=my_fontsize, color="black")
+
+    if kinematic_variable_type=='pos':
+        plt.ylabel("Position (cm)", fontsize=my_fontsize, color="black")
+
+    if kinematic_variable_type=='vel':
+        plt.ylabel("Velocity (cm)", fontsize=my_fontsize, color="black")
+
     plt.xticks(fontsize=my_fontsize)
     plt.yticks(fontsize=my_fontsize)
 
     plt.tight_layout()
 
     # plt.show()
-    plt.savefig(figure_path+'instantaneous-phase_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+    if kinematic_variable_type=='pos':
+        plt.savefig(figure_path+'inter-site_clustering_vs_position_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+    
+    if kinematic_variable_type=='vel':
+        plt.savefig(figure_path+'inter-site_clustering_vs_velocity_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration

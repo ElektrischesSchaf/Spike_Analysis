@@ -25,13 +25,14 @@ def butter_lowpass_filter(data, cutoff_freq, fs, order=4):
     return y
 
 # High pass
-def butter_highpass(cutoff, nyq_freq, order=4):
+def butter_highpass(cutoff, fs, order=4):
+    nyq_freq = 0.5 * fs
     normal_cutoff = float(cutoff) / nyq_freq
     b, a = signal.butter(order, normal_cutoff, btype='highpass')
     return b, a
 
-def butter_highpass_filter(data, cutoff_freq, nyq_freq, order=4):
-    b, a = butter_highpass(cutoff_freq, nyq_freq, order=order)
+def butter_highpass_filter(data, cutoff_freq, fs, order=4):
+    b, a = butter_highpass(cutoff_freq, fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
 
