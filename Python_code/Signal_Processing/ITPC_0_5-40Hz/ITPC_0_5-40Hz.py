@@ -9,6 +9,9 @@ import matplotlib as mpl
 from scipy.signal import hilbert
 import seaborn as sns
 
+import statistics
+import math
+
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
@@ -57,7 +60,7 @@ def running_mean(x, N):
 # Read data and plot raw waveform
 channel_number=31
 start_second=309
-plot_time_duration=5
+plot_time_duration=10
 end_second=start_second+plot_time_duration
 
 band_start=0.5
@@ -273,21 +276,23 @@ for i in range(100):
     plt.figure(1, figsize=(my_plot_width, my_plot_height*1.5) )    
 
     # First subplot
+    
     plt.subplot(311)
     plt.title(session_name + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
 
     instance_phase_all_channels=[]
 
-    # good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
-    # for channel_number_yee in good_channel_list_start_from_one:
-    #     channel_number_yee=channel_number_yee-1
-    for channel_number_yee in range(48):
+    good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
+    for channel_number_yee in good_channel_list_start_from_one:
+        channel_number_yee=channel_number_yee-1
+    # for channel_number_yee in range(48):
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
         # filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3) # must order 3
         filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=3) # must order 3
         filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=3) # must order 3
         analytic_signal = hilbert(filtered_data_1)
         instantaneous_phase = np.angle(analytic_signal)
+
         plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.1, c='black')
         
         instance_phase_all_channels.append(instantaneous_phase)
@@ -308,7 +313,7 @@ for i in range(100):
     tick_pos= [0, np.pi , -np.pi]
     labels = ['0', '$\pi$', '$-\pi$']
     plt.yticks(tick_pos, labels)
-
+    plt.yticks(fontsize=my_fontsize)
     plt.ylabel('Wrapped Phase', fontsize=my_fontsize, color="black")
 
     # Second subplot
@@ -317,17 +322,18 @@ for i in range(100):
     ITPC=[]
 
     for itpc_loop in range( instance_phase_all_channels.shape[1] ) :
+        itpc=0
         # itpc = abs(mean(exp( i* 1-D_signal_array )))
         # print('1: ', instance_phase_all_channels[:][itpc_loop:itpc_loop+1],'\n')
-        itpc=np.abs(np.mean(np.exp( 1j*instance_phase_all_channels[:,itpc_loop] )))
+        # print('1j * instance_phase_all_channels[:,itpc_loop]=', 1j * instance_phase_all_channels[:,itpc_loop],'\n')
+        itpc=np.abs( np.mean (np.exp( 1j * instance_phase_all_channels[:,itpc_loop]  )))
         ITPC.append(itpc)
 
     print(len(ITPC), ' ', ITPC[:20])
     plt.xlim(start_second, end_second)
-    bottom, top = plt.ylim()
-    plt.ylim(bottom, top)
     plt.ylabel('ITPC', fontsize=my_fontsize, color="black")
-    plt.plot(ITPC)   
+    plt.yticks(fontsize=my_fontsize)
+    plt.scatter(new_nwb_time_stamp, ITPC, s=0.1, c='black')
 
     del ITPC
     del instance_phase_all_channels
@@ -365,12 +371,12 @@ for i in range(100):
 
     plt.tight_layout()
 
-    plt.show()
-    # if kinematic_variable_type=='pos':
-    #     plt.savefig(figure_path+'ITPC_vs_position_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+    # plt.show()
+    if kinematic_variable_type=='pos':
+        plt.savefig(figure_path+'ITPC_vs_position_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
     
-    # if kinematic_variable_type=='vel':
-    #     plt.savefig(figure_path+'ITPC_vs_velocity_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+    if kinematic_variable_type=='vel':
+        plt.savefig(figure_path+'ITPC_vs_velocity_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
