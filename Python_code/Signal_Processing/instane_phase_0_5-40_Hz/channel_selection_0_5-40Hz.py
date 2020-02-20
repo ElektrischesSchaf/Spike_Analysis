@@ -98,7 +98,7 @@ for i in range(100):
     # 出圖比例
     my_plot_width=30
     my_plot_height=50
-    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/channel_selection/0_5-40Hz/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/channel_selection/0_5-40Hz/96/'
     my_fontsize=30
 
     sampling_rate=1/( nwb_timestamp[1,]- nwb_timestamp[0,])
@@ -107,7 +107,8 @@ for i in range(100):
     plt.title(session_name + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
     result=[]
     
-    bad_channels=[15,19,46,57,58,59,60,64,65,68,70,77,78,8,81,93,94]
+    # bad_channels=[15,19,46,57,58,59,60,64,65,68,70,77,78,8,81,93,94]
+    bad_channels=[]
     new_channel_ticks=[]
     for channel_number_yee in range(96):
         if channel_number_yee not in bad_channels:
