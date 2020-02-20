@@ -124,7 +124,6 @@ for i in range(100):
 
     result=None
 
-    # plt.colorbar(ax.get_children()[0], orientation="horizontal", size=0.5)
     # plt.xlim(start_second, end_second)
 
     # plt.xticks([], [])
@@ -137,7 +136,7 @@ for i in range(100):
     plt.yticks(fontsize=my_fontsize, rotation=20)
 
     plt.ylabel('Channels', fontsize=my_fontsize, color="black")
-
+    plt.xlabel('Time', fontsize=my_fontsize, color="black")
   
 
     plt.tight_layout()
