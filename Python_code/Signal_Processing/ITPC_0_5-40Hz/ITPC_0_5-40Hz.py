@@ -282,20 +282,23 @@ for i in range(100):
 
     instance_phase_all_channels=[]
 
-    good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
-    for channel_number_yee in good_channel_list_start_from_one:
-        channel_number_yee=channel_number_yee-1
-    # for channel_number_yee in range(48):
-        channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
-        # filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3) # must order 3
-        filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=3) # must order 3
-        filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=3) # must order 3
-        analytic_signal = hilbert(filtered_data_1)
-        instantaneous_phase = np.angle(analytic_signal)
+    # good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
+    # for channel_number_yee in good_channel_list_start_from_one:
+    #     channel_number_yee=channel_number_yee-1
 
-        plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.1, c='black')
-        
-        instance_phase_all_channels.append(instantaneous_phase)
+    bad_channels=[15,19,46,57,58,59,60,64,65,68,70,77,78,8,81,93,94]
+    for channel_number_yee in range(96):
+        if channel_number_yee not in bad_channels:
+            channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
+            # filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3) # must order 3
+            filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=3) # must order 3
+            filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=3) # must order 3
+            analytic_signal = hilbert(filtered_data_1)
+            instantaneous_phase = np.angle(analytic_signal)
+
+            plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.1, c='black')
+            
+            instance_phase_all_channels.append(instantaneous_phase)
 
     instance_phase_all_channels=np.array(instance_phase_all_channels)
     # print('isinstance_phase_all_channels shape = ', instance_phase_all_channels.shape ,'\n')
@@ -335,8 +338,8 @@ for i in range(100):
     plt.yticks(fontsize=my_fontsize)
     plt.scatter(new_nwb_time_stamp, ITPC, s=0.1, c='black')
 
-    del ITPC
-    del instance_phase_all_channels
+    
+    
 
     # Third subplot
     plt.subplot(313)
@@ -373,14 +376,15 @@ for i in range(100):
 
     # plt.show()
     if kinematic_variable_type=='pos':
-        plt.savefig(figure_path+'ITPC_vs_position_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+        plt.savefig(figure_path+'ITPC_vs_velocity_on_'+ str(instance_phase_all_channels.shape[0])+'_channels_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
     
     if kinematic_variable_type=='vel':
-        plt.savefig(figure_path+'ITPC_vs_velocity_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+        plt.savefig(figure_path+'ITPC_vs_velocity_on_'+ str(instance_phase_all_channels.shape[0])+'_channels_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
-
+    del ITPC
+    del instance_phase_all_channels
     plt.clf()
     plt.cla()
     plt.close()

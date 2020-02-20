@@ -107,22 +107,23 @@ for i in range(100):
     plt.title(session_name + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
     result=[]
     
+    bad_channels=[15,19,46,57,58,59,60,64,65,68,70,77,78,8,81,93,94]
+    new_channel_ticks=[]
     for channel_number_yee in range(96):
-        channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number_yee]
-        # filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=5)
-        # filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=5)
-        filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=2) # order more than 3 doesn't work
-        analytic_signal_1 = hilbert(filtered_data_1)
-        instantaneous_phase_1 = np.angle(analytic_signal_1)
-        result.append(instantaneous_phase_1)
-
+        if channel_number_yee not in bad_channels:
+            channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee ]
+            # filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=5)
+            # filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=5)
+            filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=2) # order more than 3 doesn't work
+            analytic_signal_1 = hilbert(filtered_data_1)
+            instantaneous_phase_1 = np.angle(analytic_signal_1)
+            result.append(instantaneous_phase_1)
+            new_channel_ticks.append(channel_number_yee)
     result=np.array(result)
     print('result shape = ', result.shape, '\n')
 
     sns.set()
-    ax = sns.heatmap(result, xticklabels=False,  yticklabels=True, cbar=False, cmap='seismic')
-
-    result=None
+    ax = sns.heatmap(result, xticklabels=False,  yticklabels=new_channel_ticks, cbar=False, cmap='seismic')
 
     # plt.xlim(start_second, end_second)
 
@@ -143,11 +144,11 @@ for i in range(100):
 
     # plt.show()
 
-    plt.savefig(figure_path+'channel_selection_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+    plt.savefig(figure_path+'channel_selection_with_total_'+str(result.shape[0])+'_channels_from_'  + str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
-
+    result=None
     plt.clf()
     plt.cla()
     plt.close()
