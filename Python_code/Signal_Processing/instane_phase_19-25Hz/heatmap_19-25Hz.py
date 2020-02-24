@@ -56,8 +56,8 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=309
-plot_time_duration=5
+start_second=300
+plot_time_duration=10
 end_second=start_second+plot_time_duration
 
 band_start=19
@@ -270,7 +270,7 @@ for i in range(100):
     '''
 
     sampling_rate=1/( nwb_timestamp[1,]- nwb_timestamp[0,])
-    plt.figure(1, figsize=(my_plot_width, my_plot_height*1.5) )    
+    fig=plt.figure(1, figsize=(my_plot_width, my_plot_height*1.5) )    
 
     # First subplot
     plt.subplot(211)
@@ -278,7 +278,7 @@ for i in range(100):
     result=[]
 
     # good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,21,2,54]
-    for channel_number_yee in range(48):
+    for channel_number_yee in range(96):
     # for channel_number_yee in good_channel_list_start_from_one:
         # channel_number_yee=channel_number_yee-1
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number_yee]
@@ -351,4 +351,4 @@ for i in range(100):
     del ax
     plt.clf()
     plt.cla()
-    plt.close()
+    plt.close(fig)

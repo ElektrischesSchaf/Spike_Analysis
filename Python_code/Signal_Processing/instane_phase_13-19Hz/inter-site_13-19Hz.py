@@ -56,8 +56,8 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=309
-plot_time_duration=3
+start_second=300
+plot_time_duration=10
 end_second=start_second+plot_time_duration
 
 band_start=13
@@ -270,7 +270,7 @@ for i in range(100):
     '''
 
     sampling_rate=1/( nwb_timestamp[1,]- nwb_timestamp[0,])
-    plt.figure(1, figsize=(my_plot_width, my_plot_height*1.5) )    
+    fig=plt.figure(1, figsize=(my_plot_width, my_plot_height*1.5) )
 
     # First subplot
     plt.subplot(211)
@@ -297,7 +297,7 @@ for i in range(100):
     tick_pos= [0, np.pi , -np.pi]
     labels = ['0', '$\pi$', '$-\pi$']
     plt.yticks(tick_pos, labels)
-
+    plt.yticks(fontsize=my_fontsize)
     plt.ylabel('Wrapped Phase', fontsize=my_fontsize, color="black")
 
     # Second subplot
@@ -343,6 +343,6 @@ for i in range(100):
     start_second+=plot_time_duration
     end_second+=plot_time_duration
 
-    plt.clf()
-    plt.cla()
-    plt.close()
+    # plt.clf()
+    # plt.cla()
+    plt.close(fig)

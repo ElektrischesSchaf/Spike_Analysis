@@ -8,7 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib as mpl
 from scipy.signal import hilbert
 import seaborn as sns
-
+import gc
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
@@ -56,7 +56,7 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=309
+start_second=300
 plot_time_duration=5
 end_second=start_second+plot_time_duration
 
@@ -298,7 +298,7 @@ for i in range(100):
     tick_pos= [0, np.pi , -np.pi]
     labels = ['0', '$\pi$', '$-\pi$']
     plt.yticks(tick_pos, labels)
-
+    plt.yticks(fontsize=my_fontsize)
     plt.ylabel('Wrapped Phase', fontsize=my_fontsize, color="black")
 
     # Second subplot
@@ -347,3 +347,5 @@ for i in range(100):
     plt.clf()
     plt.cla()
     plt.close()
+
+    gc.collect()

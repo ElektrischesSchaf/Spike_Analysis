@@ -56,8 +56,8 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=340
-plot_time_duration=10
+start_second=300
+plot_time_duration=5
 end_second=start_second+plot_time_duration
 
 band_start=0.5

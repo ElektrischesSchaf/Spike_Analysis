@@ -59,8 +59,8 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=340
-plot_time_duration=10
+start_second=300
+plot_time_duration=5
 end_second=start_second+plot_time_duration
 
 band_start=0.5
@@ -336,7 +336,7 @@ for i in range(100):
 
     print(len(ITPC), ' ', ITPC[:20])
     plt.xlim(start_second, end_second)
-    plt.ylabel('Average Angle', fontsize=my_fontsize, color="black")
+    plt.ylabel('Avg. Angle', fontsize=my_fontsize, color="black")
     tick_pos= [0, np.pi , -np.pi]
     labels = ['0', '$\pi$', '$-\pi$']
     plt.yticks(tick_pos, labels)
