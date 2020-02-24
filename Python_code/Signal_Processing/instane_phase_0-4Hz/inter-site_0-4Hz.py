@@ -56,8 +56,8 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=309
-plot_time_duration=3
+start_second=300
+plot_time_duration=10
 end_second=start_second+plot_time_duration
 
 band_start=0
@@ -276,10 +276,10 @@ for i in range(100):
     plt.subplot(211)
     plt.title(session_name + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
 
-    # good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
-    # for channel_number_yee in good_channel_list_start_from_one:
-        # channel_number_yee=channel_number_yee-1
-    for channel_number_yee in range(48):
+    good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
+    for channel_number_yee in good_channel_list_start_from_one:
+        channel_number_yee=channel_number_yee-1
+    # for channel_number_yee in range(48):
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
         filtered_data_1=butter_lowpass_filter(channel_1, band_cutoff, sampling_rate, order=4)
         analytic_signal = hilbert(filtered_data_1)

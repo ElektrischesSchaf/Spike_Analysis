@@ -9,6 +9,9 @@ import matplotlib as mpl
 from scipy.signal import hilbert
 import seaborn as sns
 
+import statistics
+import math
+
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
@@ -56,7 +59,7 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=310
+start_second=340
 plot_time_duration=10
 end_second=start_second+plot_time_duration
 
@@ -66,6 +69,7 @@ session_name='indy_20161007_02'
 
 # 'pos' or 'vel'
 kinematic_variable_type='vel'
+
 
 # start_second & end_second loop control
 for i in range(100):
@@ -212,7 +216,7 @@ for i in range(100):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
-    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/inter-site_0_5-40Hz/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/ITPC-angle/ITPC_0_5-40Hz/96/'
     my_fontsize=30
 
     '''
@@ -273,19 +277,35 @@ for i in range(100):
     plt.figure(1, figsize=(my_plot_width, my_plot_height*1.5) )    
 
     # First subplot
-    plt.subplot(211)
+    
+    plt.subplot(311)
     plt.title(session_name + ' signal from '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
 
-    good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
-    for channel_number_yee in good_channel_list_start_from_one:
-        channel_number_yee=channel_number_yee-1
-        channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
-        # filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3) # must order 3
-        filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=3) # must order 3
-        filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=3) # must order 3
-        analytic_signal = hilbert(filtered_data_1)
-        instantaneous_phase = np.angle(analytic_signal)
-        plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.1, c='black')
+    instance_phase_all_channels=[]
+
+    # good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
+    # for channel_number_yee in good_channel_list_start_from_one:
+    #     channel_number_yee=channel_number_yee-1
+
+    # bad_channels=[15,19,46,57,58,59,60,64,65,68,70,77,78,8,81,93,94]
+    bad_channels=[]
+    for channel_number_yee in range(96):
+        if channel_number_yee not in bad_channels:
+            channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
+            # filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3) # must order 3
+            filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=3) # must order 3
+            filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=3) # must order 3
+            analytic_signal = hilbert(filtered_data_1)
+            instantaneous_phase = np.angle(analytic_signal)
+
+            plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.1, c='black')
+            
+            instance_phase_all_channels.append(instantaneous_phase)
+
+    instance_phase_all_channels=np.array(instance_phase_all_channels)
+    # print('isinstance_phase_all_channels shape = ', instance_phase_all_channels.shape ,'\n')
+    # print('instance_phase_all_channels.shape[1] = ', instance_phase_all_channels.shape[1], '\n')
+    # print('instance_phase_all_channels[:,2] = ', instance_phase_all_channels[:,2], '\n')
 
     plt.xlim(start_second, end_second)
     #plt.ylim(np.pi, -np.pi)
@@ -302,7 +322,33 @@ for i in range(100):
     plt.ylabel('Wrapped Phase', fontsize=my_fontsize, color="black")
 
     # Second subplot
-    plt.subplot(212)
+    plt.subplot(312)
+
+    ITPC=[]
+
+    for itpc_loop in range( instance_phase_all_channels.shape[1] ) :
+        itpc=0
+        # itpc = abs(mean(exp( i* 1-D_signal_array )))
+        # print('1: ', instance_phase_all_channels[:][itpc_loop:itpc_loop+1],'\n')
+        # print('1j * instance_phase_all_channels[:,itpc_loop]=', 1j * instance_phase_all_channels[:,itpc_loop],'\n')
+        itpc=np.angle( np.mean (np.exp( 1j * instance_phase_all_channels[:,itpc_loop]  )))
+        ITPC.append(itpc)
+
+    print(len(ITPC), ' ', ITPC[:20])
+    plt.xlim(start_second, end_second)
+    plt.ylabel('Average Angle', fontsize=my_fontsize, color="black")
+    tick_pos= [0, np.pi , -np.pi]
+    labels = ['0', '$\pi$', '$-\pi$']
+    plt.yticks(tick_pos, labels)
+    plt.yticks(fontsize=my_fontsize)
+    plt.xticks([], [])
+    plt.scatter(new_nwb_time_stamp, ITPC, s=0.1, c='black')
+
+    
+    
+
+    # Third subplot
+    plt.subplot(313)
     
     if kinematic_variable_type=='pos':
         x_pos=plt.scatter(new_mat_time_stamp, finger_x_coor, s=5, c='blue')
@@ -327,7 +373,7 @@ for i in range(100):
         plt.ylabel("Position (cm)", fontsize=my_fontsize, color="black")
 
     if kinematic_variable_type=='vel':
-        plt.ylabel("Velocity (cm)", fontsize=my_fontsize, color="black")
+        plt.ylabel("Velocity (cm/s)", fontsize=my_fontsize, color="black")
 
     plt.xticks(fontsize=my_fontsize)
     plt.yticks(fontsize=my_fontsize)
@@ -336,14 +382,15 @@ for i in range(100):
 
     # plt.show()
     if kinematic_variable_type=='pos':
-        plt.savefig(figure_path+'inter-site_clustering_vs_position_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+        plt.savefig(figure_path+'ITPC_vs_velocity_on_'+ str(instance_phase_all_channels.shape[0])+'_channels_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
     
     if kinematic_variable_type=='vel':
-        plt.savefig(figure_path+'inter-site_clustering_vs_velocity_on_all_channel_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+        plt.savefig(figure_path+'ITPC_vs_velocity_on_'+ str(instance_phase_all_channels.shape[0])+'_channels_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
-
+    del ITPC
+    del instance_phase_all_channels
     plt.clf()
     plt.cla()
     plt.close()
