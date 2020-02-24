@@ -49,17 +49,21 @@ def running_mean(x, N):
     return (cumsum[N:] - cumsum[:-N]) / float(N)
 
 # Read data and plot raw waveform
-channel_number=49
+channel_number=31 # channel 49 is decicive; 31 is not
 start_second=310
 plot_time_duration=10
 end_second=start_second+plot_time_duration
+
+session_name='indy_20161007_02'
+# 'pos' or 'vel'
+kinematic_variable_type='vel'
 
 # start_second & end_second loop control
 for i in range(50):
 
 
     # nwb file
-    nwb_filename = '../../Dataset/The_nwb_Raw_Dataset/indy_20161007_02.nwb'
+    nwb_filename = '../../Dataset/The_nwb_Raw_Dataset/'+session_name+'.nwb'
     nwb_file = h5py.File(nwb_filename, 'r')
 
     data = nwb_file['/acquisition/timeseries/broadband/data']
@@ -78,7 +82,7 @@ for i in range(50):
     print('first of nwb_timestamp= ', nwb_timestamp[0,],'\n')
 
     # mat file
-    mat_file_name_1='../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
+    mat_file_name_1='../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
     mat_file=h5py.File(mat_file_name_1, 'r')
     mat_timestamp=mat_file.get('t')
     mat_timestamp=np.array(mat_timestamp)
@@ -100,6 +104,48 @@ for i in range(50):
     finger_x_coor=finger_x_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
     finger_y_coor=numpy_finger_pos[2][:]
     finger_y_coor=finger_y_coor[mat_time_interval[0][0]:mat_time_interval[0][-1]]
+
+    # finger velocity in mat file
+
+    finger_x_velocity=[]
+    finger_y_velocity=[]
+    finger_z_velocity=[]
+    velocity_time_coor=[]
+
+    duration=new_mat_time_stamp.shape[0]
+
+    for i in range(duration):
+        #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
+        
+        if ( i<duration-1 ):
+            velocity=( finger_x_coor[i+1] -finger_x_coor[i] ) / ( new_mat_time_stamp[i+1]-new_mat_time_stamp[i] )
+            finger_x_velocity.append(velocity)
+
+            velocity=( finger_y_coor[i+1] - finger_y_coor[i] ) / ( new_mat_time_stamp[i+1]-new_mat_time_stamp[i] )
+            finger_y_velocity.append(velocity)
+
+            velocity=( finger_z_coor[i+1] - finger_z_coor[i] ) / ( new_mat_time_stamp[i+1]-new_mat_time_stamp[i] )
+            finger_z_velocity.append(velocity)
+
+            velocity_time_coor.append( new_mat_time_stamp[i] )
+
+        else:        
+            finger_x_velocity.append(0)
+            finger_y_velocity.append(0)
+            finger_z_velocity.append(0)
+            velocity_time_coor.append(0)
+    
+    finger_x_velocity=np.array(finger_x_velocity)
+    finger_x_velocity=finger_x_velocity.astype(np.float64)
+    
+    finger_y_velocity=np.array(finger_y_velocity)
+    finger_y_velocity=finger_y_velocity.astype(np.float64)
+
+    finger_z_velocity=np.array(finger_z_velocity)
+    finger_z_velocity=finger_z_velocity.astype(np.float64)
+
+    velocity_time_coor=np.array(velocity_time_coor)
+
     # sourted spikes in mat file
     spikes = mat_file['spikes']
     temp_spike_cell_1=mat_file[ ( spikes[0][channel_number] ) ][()]
@@ -155,9 +201,9 @@ for i in range(50):
     my_plot_width=29
     my_plot_height=7
     my_fontsize=30
-    figure_path='../../Figures/Raw_data_and_Spike/phase_spectrogram/'
+    figure_path='../../Figures/Raw_data_and_Spike/Spike_train_and_kinematic/'
 
-    plt.figure(figsize=(my_plot_width, my_plot_height))
+    plt.figure(figsize=(my_plot_width, my_plot_height*1.5))
     plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
     plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1),fontsize=30, color="black")
     plt.xlabel("Time (s)", fontsize=25, color="black")
@@ -191,7 +237,7 @@ for i in range(50):
     plt.eventplot(temp_spike_cell_3, color='green', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-1*spike_line_length, linestyles='dotted')
     plt.eventplot(temp_spike_cell_4, color='yellow', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-3*spike_line_length, linestyles='dotted')
 
-    plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1), fontsize=10, color="black")
+    plt.title( session_name+ " Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1), fontsize=10, color="black")
 
     plt.xlabel("Time (s)", fontsize=25, color="black")
     plt.ylabel("Amp. (mV)", fontsize=25, color="black")
@@ -259,22 +305,43 @@ for i in range(50):
 
     plt.subplot(313)
     #print('\nin subplot 414, new_nwb_time_stamp.shape=', new_nwb_time_stamp.shape, ' finger_x_coor.shape=', finger_x_coor.shape, '\n')
-    x_pos=plt.scatter(new_mat_time_stamp, finger_x_coor, s=5, c='blue')
-    y_pos=plt.scatter(new_mat_time_stamp, finger_y_coor, s=5, c='green')
-    z_pos=plt.scatter(new_mat_time_stamp, finger_z_coor, s=5, c='orange')
+
+    if kinematic_variable_type=='pos':
+        x_pos=plt.scatter(new_mat_time_stamp, finger_x_coor, s=5, c='blue')
+        y_pos=plt.scatter(new_mat_time_stamp, finger_y_coor, s=5, c='green')
+        z_pos=plt.scatter(new_mat_time_stamp, finger_z_coor, s=5, c='orange')
+        lgnd=plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left', fontsize=my_fontsize)
+        lgnd.legendHandles[0].set_sizes([100.0])
+        lgnd.legendHandles[1].set_sizes([100.0])
+        lgnd.legendHandles[2].set_sizes([100.0])
+
+    if kinematic_variable_type=='vel':
+        x_vel=plt.scatter(velocity_time_coor, finger_x_velocity, s=5, c='blue')
+        y_vel=plt.scatter(velocity_time_coor, finger_y_velocity, s=5, c='green')
+        lgnd=plt.legend((x_vel, y_vel), ('x velocity', 'y velocity'),loc='lower left', fontsize=my_fontsize)
+        lgnd.legendHandles[0].set_sizes([100.0])
+        lgnd.legendHandles[1].set_sizes([100.0])
+
     plt.xlim(start_second, end_second)
     plt.yticks(fontsize=my_fontsize*0.5, color="black")
     plt.xticks(fontsize=my_fontsize, color="black")
-    lgnd=plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left', fontsize=my_fontsize)
-    lgnd.legendHandles[0].set_sizes([100.0])
-    lgnd.legendHandles[1].set_sizes([100.0])
-    lgnd.legendHandles[2].set_sizes([100.0])
+
     plt.xlabel("Time (second)", fontsize=my_fontsize, color="black")
-    plt.ylabel("Position (cm)", fontsize=my_fontsize, color="black")
+
+    if kinematic_variable_type=='pos':
+        plt.ylabel("Position (cm)", fontsize=my_fontsize, color="black")
+
+    if kinematic_variable_type=='vel':
+        plt.ylabel("Velocity (cm/s)", fontsize=my_fontsize, color="black")
 
     plt.tight_layout()
     # plt.show()
-    plt.savefig(figure_path+'raw-data_vs_phase-spectro_vs_spike-train_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+
+    if kinematic_variable_type=='pos':
+        plt.savefig(figure_path+'raw-data_vs_spike-train_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
+
+    if kinematic_variable_type=='vel':
+        plt.savefig(figure_path+'raw-data_vs_spike-train_vs_velocity_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
