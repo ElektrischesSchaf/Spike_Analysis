@@ -51,7 +51,7 @@ def running_mean(x, N):
 # Read data and plot raw waveform
 channel_number=49
 start_second=310
-plot_time_duration=2
+plot_time_duration=10
 end_second=start_second+plot_time_duration
 
 # start_second & end_second loop control
@@ -154,6 +154,7 @@ for i in range(50):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
+    my_fontsize=30
     figure_path='../../Figures/Raw_data_and_Spike/phase_spectrogram/'
 
     plt.figure(figsize=(my_plot_width, my_plot_height))
@@ -208,27 +209,30 @@ for i in range(50):
 
     # Combining the above two into one figure
 
-    plt.figure(1, figsize=(my_plot_width, my_plot_height*1.5) )
+    plt.figure(1, figsize=(my_plot_width, my_plot_height*2) )
 
-    plt.subplot(411)
+    plt.subplot(311)
     plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
-    plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1), fontsize=10, color="black")
+    plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1), fontsize=my_fontsize, color="black")
 
-    #plt.xlabel("Time (s)", fontsize=10, color="black")
-    plt.ylabel("Amp. (mV)", fontsize=10, color="black")
+    #plt.xlabel("Time (s)", fontsize=my_fontsize, color="black")
+    plt.ylabel("Amp. (mV)", fontsize=my_fontsize, color="black")
 
     plt.xlim(start_second, end_second)
     #plt.xticks(fontsize=20, color="black")
     plt.xticks([], [])
-    plt.yticks(fontsize=10, color="black")
+    plt.yticks(fontsize=my_fontsize*0.5, color="black")
 
+    ''' Hide Spectrogram
     plt.subplot(412)
     powerSpectrum, freqenciesFound, time, imageAxis=plt.specgram(new_data, Fs=1/(new_nwb_time_stamp[1]-new_nwb_time_stamp[0]), mode='phase', NFFT=512)
     #plt.xlabel('Time', fontsize=25, color="black")
     plt.xticks([], [])
-    plt.ylabel('Frequency (Phase)', fontsize=10, color="black")
+    plt.yticks(fontsize=my_fontsize*0.5, color="black")
+    plt.ylabel('Frequency (Phase)', fontsize=my_fontsize, color="black")
+    '''
 
-    plt.subplot(413)
+    plt.subplot(312)
     plt.gca().invert_yaxis()
 
     spike_signal=butter_bandpass_filter(new_data, 500, 5000, sampling_rate, order=3)
@@ -244,25 +248,31 @@ for i in range(50):
 
     #plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1),fontsize=30, color="black")
 
-    #plt.xlabel("Time (s)", fontsize=10, color="black")
+    #plt.xlabel("Time (s)", fontsize=my_fontsize, color="black")
     plt.xticks([], [])
-    plt.ylabel("Amp. (mV)", fontsize=10, color="black")
+    plt.ylabel("Amp. (mV)", fontsize=my_fontsize, color="black")
 
     plt.xlim(start_second, end_second)
     plt.ylim(0, 200)
-    plt.xticks(fontsize=10, color="black")
-    plt.yticks(fontsize=10, color="black")
+    plt.xticks(fontsize=my_fontsize*0.5, color="black")
+    plt.yticks(fontsize=my_fontsize*0.5, color="black")
 
-    plt.subplot(414)
+    plt.subplot(313)
     #print('\nin subplot 414, new_nwb_time_stamp.shape=', new_nwb_time_stamp.shape, ' finger_x_coor.shape=', finger_x_coor.shape, '\n')
     x_pos=plt.scatter(new_mat_time_stamp, finger_x_coor, s=5, c='blue')
     y_pos=plt.scatter(new_mat_time_stamp, finger_y_coor, s=5, c='green')
     z_pos=plt.scatter(new_mat_time_stamp, finger_z_coor, s=5, c='orange')
     plt.xlim(start_second, end_second)
-    plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left')
-    plt.xlabel("Time (second)", fontsize=10, color="black")
-    plt.ylabel("Position (cm)", fontsize=10, color="black")
+    plt.yticks(fontsize=my_fontsize*0.5, color="black")
+    plt.xticks(fontsize=my_fontsize, color="black")
+    lgnd=plt.legend((x_pos, y_pos, z_pos), ('x', 'y', 'z'),loc='lower left', fontsize=my_fontsize)
+    lgnd.legendHandles[0].set_sizes([100.0])
+    lgnd.legendHandles[1].set_sizes([100.0])
+    lgnd.legendHandles[2].set_sizes([100.0])
+    plt.xlabel("Time (second)", fontsize=my_fontsize, color="black")
+    plt.ylabel("Position (cm)", fontsize=my_fontsize, color="black")
 
+    plt.tight_layout()
     # plt.show()
     plt.savefig(figure_path+'raw-data_vs_phase-spectro_vs_spike-train_vs_position_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
