@@ -216,7 +216,7 @@ for i in range(100):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
-    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/ITPC-angle/ITPC_0_5-40Hz/96/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/ITPC-angle/ITPC_0_5-40Hz/79/'
     my_fontsize=30
 
     '''
@@ -287,8 +287,8 @@ for i in range(100):
     # for channel_number_yee in good_channel_list_start_from_one:
     #     channel_number_yee=channel_number_yee-1
 
-    # bad_channels=[15,19,46,57,58,59,60,64,65,68,70,77,78,8,81,93,94]
-    bad_channels=[]
+    bad_channels=[15,19,46,57,58,59,60,64,65,68,70,77,78,8,81,93,94]
+    # bad_channels=[]
     for channel_number_yee in range(96):
         if channel_number_yee not in bad_channels:
             channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
