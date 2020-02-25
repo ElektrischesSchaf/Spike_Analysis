@@ -19,7 +19,7 @@ ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True, facecolor='#d5de9c')
 r = np.arange(0, 3.0, 0.01)
 theta = 2*np.pi*r
 ax.plot(theta, r, color='#ee8d18', lw=3)
-ax.set_rmax(2.0)
+# ax.set_rmax(2.0)
 plt.grid(True)
 
 ax.set_title("And there was much rejoicing!", fontsize=20)
