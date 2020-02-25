@@ -60,7 +60,7 @@ def running_mean(x, N):
 
 # Read data and plot raw waveform
 channel_number=31
-start_second=350
+start_second=300
 plot_time_duration=5
 end_second=start_second+plot_time_duration
 
@@ -162,7 +162,7 @@ for i in range(100):
         for i in range(len( instance_phase_all_channels[:,itpc_loop] )):
             ax.set_title(session_name+'\nt= ' + str( new_nwb_time_stamp[i] ), fontsize=20)  
             
-            plt.arrow( instance_phase_all_channels[:,itpc_loop][i], 0, 0, 1, alpha = 0.3, width = 0.005,  edgecolor = 'blue', facecolor = 'blue', lw = 2, zorder = 0)
+            plt.arrow( instance_phase_all_channels[:,itpc_loop][i], 0, 0, 1, alpha = 0.3, width = 0.005,  edgecolor = 'blue', facecolor = 'blue', lw = 1, zorder = 0)
 
         itpc_angle=np.angle( np.mean (np.exp( 1j * instance_phase_all_channels[:,itpc_loop]  )))        
         itpc_abs=np.abs( np.mean (np.exp( 1j * instance_phase_all_channels[:,itpc_loop]  )))
