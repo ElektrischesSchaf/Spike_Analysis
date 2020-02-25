@@ -216,7 +216,7 @@ for i in range(100):
     # 出圖比例
     my_plot_width=29
     my_plot_height=7
-    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/ITPC-angle/ITPC_0_5-40Hz/79/'
+    figure_path='../../../Figures/Raw_data_and_Spike/instantaneous_phase/ITPC-angle/ITPC_0_5-40Hz/11/'
     my_fontsize=30
 
     '''
@@ -283,10 +283,19 @@ for i in range(100):
 
     instance_phase_all_channels=[]
 
-    # good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
-    # for channel_number_yee in good_channel_list_start_from_one:
-    #     channel_number_yee=channel_number_yee-1
+    good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,77,58,54]
+    for channel_number_yee in good_channel_list_start_from_one:
+        channel_number_yee=channel_number_yee-1
+        channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_yee]
+        # filtered_data_1=butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=3) # must order 3
+        filtered_data_1=butter_highpass_filter(channel_1, band_start, sampling_rate, order=3) # must order 3
+        filtered_data_1=butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=3) # must order 3
+        analytic_signal = hilbert(filtered_data_1)
+        instantaneous_phase = np.angle(analytic_signal)
+        plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.1, c='black')        
+        instance_phase_all_channels.append(instantaneous_phase)
 
+    '''
     bad_channels=[15,19,46,57,58,59,60,64,65,68,70,77,78,8,81,93,94]
     # bad_channels=[]
     for channel_number_yee in range(96):
@@ -301,6 +310,7 @@ for i in range(100):
             plt.scatter(new_nwb_time_stamp, instantaneous_phase, s=0.1, c='black')
             
             instance_phase_all_channels.append(instantaneous_phase)
+    '''
 
     instance_phase_all_channels=np.array(instance_phase_all_channels)
     # print('isinstance_phase_all_channels shape = ', instance_phase_all_channels.shape ,'\n')
