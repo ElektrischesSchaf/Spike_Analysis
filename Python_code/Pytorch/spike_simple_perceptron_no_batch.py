@@ -40,7 +40,7 @@ units_have_value=0 # unit numbers that is not empty
 the_sampling_rate=16
 file_numbers=1
 time_lag=0
-order=0
+order=1
 with_sorted_spikes=True
 include_hash_unit=True
 
@@ -468,7 +468,7 @@ for session_index in range(file_numbers):
     feature_numbers= firing_rate_matrix.shape[1]
 
     X=firing_rate_matrix.astype(np.float32)
-    print('fetures list shape: ',end='')
+    print('features list shape: ',end='')
     print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
     print('\n')
 
@@ -601,7 +601,6 @@ for session_index in range(file_numbers):
 
 x = torch.from_numpy(X_for_training)
 y = torch.from_numpy(x_position_label_training)
-
 x=x.float()
 y=y.float()
 
@@ -620,7 +619,7 @@ class Net(torch.nn.Module):
         x = self.predict(x)             # linear output
         return x
 
-net = Net(n_feature=288, n_hidden=50, n_output=1)     # define the network
+net = Net(n_feature=x.shape[1], n_hidden=50, n_output=1)     # define the network
 # print(net)  # net architecture
 optimizer = torch.optim.SGD(net.parameters(), lr=0.2)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -628,7 +627,7 @@ loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
 net.to(device)
 
 # train the network
-for t in range(2000):
+for t in range(100):
   
     prediction = net( x.to(device) ).flatten()     # input x and predict based on x
     #print('size of prediction= ', prediction.shape, ' size of y= ',y.shape,'\n')
@@ -640,32 +639,15 @@ for t in range(2000):
     optimizer.step()        # apply gradients
 
 
-    
-    # plot and show learning process
-    '''
-    plt.cla()
-    ax.set_title('Regression Analysis', fontsize=35)
-    ax.set_xlabel('Independent variable', fontsize=24)
-    ax.set_ylabel('Dependent variable', fontsize=24)
-    ax.set_xlim(-1.05, 1.5)
-    ax.set_ylim(-0.25, 1.25)
-    ax.scatter(x.data.numpy(), y.data.numpy(), color = "orange")
-    ax.plot(x.data.numpy(), prediction.data.numpy(), 'g-', lw=3)
-    ax.text(1.0, 0.1, 'Step = %d' % t, fontdict={'size': 24, 'color':  'red'})
-    ax.text(1.0, 0, 'Loss = %.4f' % loss.data.numpy(),
-            fontdict={'size': 24, 'color':  'red'})
-    
-
-    # Used to return the plot as an image array 
-    # (https://ndres.me/post/matplotlib-animated-gifs-easily/)
-    fig.canvas.draw()       # draw the canvas, cache the renderer
-    image = np.frombuffer(fig.canvas.tostring_rgb(), dtype='uint8')
-    image  = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-
-    my_images.append(image)
-    '''
-
-
 
 print('shape of x_position_label_training = ', x_position_label_training.shape, '\n shape of prediction = ', prediction.shape, '\n')
 print('\n* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_training.flatten(), prediction.cpu().data.numpy()))
+
+
+# predict from testing feature matrix
+x=torch.from_numpy(X_for_prediction)
+x=x.float()
+
+prediction=net( x.to(device) ).flatten()
+print('shape of x_position_label_testing = ', x_position_label_testing.shape, '\n shape of prediction = ', prediction.shape, '\n')
+print('\n* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing.flatten(), prediction.cpu().data.numpy()))
