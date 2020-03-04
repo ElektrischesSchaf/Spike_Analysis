@@ -604,11 +604,8 @@ y = torch.from_numpy(x_position_label_training)
 
 x=x.float()
 y=y.float()
-#x = X_for_training
-#y = x_position_label_training
 
-# torch can only train on Variable, so convert them to Variable
-# x, y = Variable(x), Variable(y)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 # this is one way to define a network
@@ -628,14 +625,15 @@ net = Net(n_feature=288, n_hidden=50, n_output=1)     # define the network
 optimizer = torch.optim.SGD(net.parameters(), lr=0.2)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
 
+net.to(device)
 
 # train the network
 for t in range(2000):
   
-    prediction = net(x).flatten()     # input x and predict based on x
+    prediction = net( x.to(device) ).flatten()     # input x and predict based on x
     #print('size of prediction= ', prediction.shape, ' size of y= ',y.shape,'\n')
 
-    loss = loss_func(prediction, y)     # must be (1. nn output, 2. target)
+    loss = loss_func(prediction, y.to(device))     # must be (1. nn output, 2. target)
 
     optimizer.zero_grad()   # clear gradients for next train
     loss.backward()         # backpropagation, compute gradients
@@ -670,4 +668,4 @@ for t in range(2000):
 
 
 print('shape of x_position_label_training = ', x_position_label_training.shape, '\n shape of prediction = ', prediction.shape, '\n')
-print('\n* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_training.flatten(), prediction.data.numpy()))
+print('\n* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_training.flatten(), prediction.cpu().data.numpy()))
