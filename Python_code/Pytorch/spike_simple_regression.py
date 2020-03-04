@@ -608,17 +608,8 @@ y=y.float()
 #y = x_position_label_training
 
 # torch can only train on Variable, so convert them to Variable
-x, y = Variable(x), Variable(y)
+# x, y = Variable(x), Variable(y)
 
-'''
-# view data
-plt.figure(figsize=(10,4))
-plt.scatter(x.data.numpy(), y.data.numpy(), color = "orange")
-plt.title('Regression Analysis')
-plt.xlabel('Independent varible')
-plt.ylabel('Dependent varible')
-plt.show()
-'''
 
 # this is one way to define a network
 class Net(torch.nn.Module):
@@ -637,8 +628,6 @@ net = Net(n_feature=288, n_hidden=50, n_output=1)     # define the network
 optimizer = torch.optim.SGD(net.parameters(), lr=0.2)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
 
-my_images = []
-fig, ax = plt.subplots(figsize=(12,7))
 
 # train the network
 for t in range(2000):
@@ -678,8 +667,7 @@ for t in range(2000):
     my_images.append(image)
     '''
 
-# save images as a gif    
-#imageio.mimsave('./curve_1.gif', my_images, fps=10)
+
 
 print('shape of x_position_label_training = ', x_position_label_training.shape, '\n shape of prediction = ', prediction.shape, '\n')
-print('* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_training.flatten(), prediction.data.numpy()))
+print('\n* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_training.flatten(), prediction.data.numpy()))
