@@ -20,6 +20,11 @@ torch.manual_seed(1)    # reproducible
 from sklearn import datasets, svm, metrics
 from sklearn.metrics import mean_squared_error, r2_score
 
+# My module
+import data_processing.parameters as my_parameters
+
+my_parameters=my_parameters.my_parameters()
+
 file_name_1='../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat'
 file_name_2='../../Dataset/Sorted_Spike_Dataset/indy_20160411_01.mat'
 file_name_3='../../Dataset/Sorted_Spike_Dataset/indy_20160411_02.mat'
@@ -38,12 +43,12 @@ units_have_value=0 # unit numbers that is not empty
 
 
 ###################################### Parameters should be assigned
-the_sampling_rate=16
-file_numbers=1
-time_lag=0
-order=0
-with_sorted_spikes=False
-include_hash_unit=True
+the_sampling_rate=my_parameters.the_sampling_rate
+file_numbers=my_parameters.file_numbers
+time_lag=my_parameters.time_lag
+order=my_parameters.order
+with_sorted_spikes=my_parameters.with_sorted_spikes
+include_hash_unit=my_parameters.include_hash_unit
 
 # Must know these two numbers beforehand
 channel_numbers_in_this_dataset=96
