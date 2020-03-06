@@ -4,6 +4,7 @@
 *.wav
 *.csv
 myvenv/
+__pycache__/
 Spectrogram_all_Channels/
 PCA_plot/
 
