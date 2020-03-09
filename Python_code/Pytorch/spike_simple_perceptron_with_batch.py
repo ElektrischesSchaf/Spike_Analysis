@@ -342,7 +342,6 @@ for epoch in range(num_epochs):
 
 x_velocity_predict=my_prediction
 plot.figure(figsize=(15,5))
-#plot.scatter(time_stamp_64ms, y_position_predict, s=1)
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
@@ -351,7 +350,6 @@ plot.xlabel('time (second)')
 plot.ylabel('x velocity')
 axes = plot.gca()
 axes.set_xlim([740, 760])
-#plot.show()
 plot.savefig('x_velocity_predict.png' )
 
 plot.cla()
