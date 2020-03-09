@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
-
+import matplotlib.pyplot as plot
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -214,15 +214,15 @@ if not os.path.exists(csv_path):
 df = pd.DataFrame(X_for_training)
 df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
 
-df=pd.DataFrame(x_position_label_training)
-df.to_csv(os.path.join(csv_path,'x_position_label_training.csv'), index=False)
+df=pd.DataFrame(x_velocity_label_training)
+df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
 
 
 df = pd.DataFrame(X_for_prediction)
 df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
 
-df=pd.DataFrame(x_position_label_testing)
-df.to_csv(os.path.join(csv_path,'x_position_label_testing.csv'), index=False)
+df=pd.DataFrame(x_velocity_label_testing)
+df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
 
 class AbstractDataset(Dataset):
     def __init__(self, feature_matrix, label_matrix):
@@ -233,26 +233,28 @@ class AbstractDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
+        # print('\nYee:', self.data[index], ', ' ,self.label[index])
         return self.data[index], self.label[index]
     
     def collate_fn(self, datas):
         # datas = [ batch_size X ( data + label ) ]
         print('\ncollate_fn！')
         print('\ndatas: ', datas)
+        # return self.data, self.label
 
 
 # read from csv file
-x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
-y=pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype=float)
+training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
+training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)
 
-x = torch.from_numpy(x.values) # .values can turn pandas dataframe to numpy array
-y = torch.from_numpy(y.values)
+training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
+training_y = torch.from_numpy(training_y.values)
 
-x=x.float()
-y=y.float()
+training_x=training_x.float()
+training_y=training_y.float()
 
 testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
-testing_y=pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)
+testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)
 
 testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
 testing_y = torch.from_numpy(testing_y.values)
@@ -261,11 +263,12 @@ testing_x=testing_x.float()
 testing_y=testing_y.float()
 
 batch_size = 16
-n_iters = 3000
-num_epochs = n_iters / ( (x.shape[0]) / batch_size )
+learning_rate=1e-3
+n_iters = 50000
+num_epochs = n_iters / ( (training_x.shape[0]) // batch_size )
 num_epochs = int(num_epochs)
 
-training_dataset=AbstractDataset(x,y)
+training_dataset=AbstractDataset(training_x,training_y)
 testing_dataset=AbstractDataset(testing_x, testing_y)
 
 # TODO collate_fn
@@ -281,20 +284,25 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 class Net(torch.nn.Module):
     def __init__(self, n_feature, n_hidden, n_output):
         super(Net, self).__init__()
-        self.hidden = torch.nn.Linear(n_feature, n_hidden)   # hidden layer
-        self.predict = torch.nn.Linear(n_hidden, n_output)   # output layer
+        self.hidden1 = torch.nn.Linear(n_feature, n_hidden)   # hidden layer
+        self.hidden2 = torch.nn.Linear(n_hidden, n_hidden//2)
+        self.predict = torch.nn.Linear(n_hidden//2, n_output)   # output layer
 
     def forward(self, x):
-        x = F.relu(self.hidden(x))      # activation function for hidden layer
+        x = F.relu(self.hidden1(x))      # activation function for hidden layer
+        x = F.relu(self.hidden2(x))      # activation function for hidden layer
         x = self.predict(x)             # linear output
         return x
 
-net = Net(n_feature=x.shape[1], n_hidden=50, n_output=1)     # define the network
+net = Net(n_feature=training_x.shape[1], n_hidden=50, n_output=1)     # define the network
 # print(net)  # net architecture
-optimizer = torch.optim.SGD(net.parameters(), lr=0.2)
+optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
 
 net.to(device)
+
+global my_prediction
+global real_y_all
 
 # train the network
 iter = 0
@@ -311,18 +319,40 @@ for epoch in range(num_epochs):
 
         iter += 1
 
-        if iter % 100 == 0:
+        if iter % 1000 == 0:
 
             my_prediction=[]
+            real_y_all=[]
 
             for i, (testing_x, testing_y) in enumerate(test_loader):
                 prediction=net( testing_x.to(device) ).flatten()
+                real_y=testing_y.cpu().data.numpy()
                 # print('prediction=', prediction.cpu().data.numpy(),'\n')
                 for ele in prediction.cpu().data.numpy():
                     my_prediction.append( ele )
+
+                for ele in real_y:
+                    real_y_all.append(ele)
                 # print('len of my_prediction=', len(my_prediction), '\n')
 
             # predict from testing feature matrix
 
-            print('shape of x_position_label_testing = ', x_position_label_testing.shape, '\n len of my_prediction = ', len(my_prediction), '\n')
-            print('\n* model_x_position score in order ', order_index, ': ', r2_score( x_position_label_testing.flatten(), my_prediction))
+            print('len of real_y_all = ', len(real_y_all), '\n len of my_prediction = ', len(my_prediction), '\n')
+            print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
+
+x_velocity_predict=my_prediction
+plot.figure(figsize=(15,5))
+#plot.scatter(time_stamp_64ms, y_position_predict, s=1)
+plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
+plot.legend(loc='upper right')
+plot.title('Linear Regression velocity x prediction and ground truth')
+plot.xlabel('time (second)')
+plot.ylabel('x velocity')
+axes = plot.gca()
+axes.set_xlim([740, 760])
+#plot.show()
+plot.savefig('x_velocity_predict.png' )
+
+plot.cla()
+plot.clf()
