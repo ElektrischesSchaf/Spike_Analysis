@@ -6,6 +6,7 @@ import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 import matplotlib.pyplot as plot
+import json
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -16,7 +17,9 @@ import imageio
 import time
 import h5py
 torch.manual_seed(1)    # reproducible
-
+from tqdm import tqdm_notebook as tqdm
+#from tqdm import tqdm
+from tqdm import trange
 from sklearn import datasets, svm, metrics
 from sklearn.metrics import mean_squared_error, r2_score
 
@@ -265,6 +268,7 @@ testing_y=testing_y.float()
 batch_size = 16
 learning_rate=1e-3
 n_iters = 50000
+max_epoch=100
 num_epochs = n_iters / ( (training_x.shape[0]) // batch_size )
 num_epochs = int(num_epochs)
 
@@ -273,8 +277,8 @@ testing_dataset=AbstractDataset(testing_x, testing_y)
 
 # TODO collate_fn
 # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
-train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
-test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)
+# train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
+# test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -298,12 +302,146 @@ net = Net(n_feature=training_x.shape[1], n_hidden=50, n_output=1)     # define t
 # print(net)  # net architecture
 optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
-
 net.to(device)
+history = {'train':[],'valid':[]}
 
-global my_prediction
-global real_y_all
 
+def _run_epoch(epoch, mode):
+    net.train(True)
+    if mode=='train':
+        descrpition='Train'
+        dataset=training_dataset
+        schuffle=False
+    else:
+        descrpition='Valid'
+        dataset=testing_dataset
+        shuffle=False
+    dataloader=torch.utils.data.DataLoader(dataset=dataset,
+                                            batch_size=batch_size,
+                                            shuffle=False
+                                            #collate_fn=dataset.collate_fn,
+                                            )
+    trange=tqdm(enumerate(dataloader), total=len(dataloader), desc=descrpition)
+    loss=0
+
+    my_prediction = []
+    real_y_all=[]
+
+    for i, (x, y) in trange:
+
+        o_labels, batch_loss = _run_iter(x,y)
+
+        if mode=='train':
+            optimizer.zero_grad()   # clear gradients for next train
+            batch_loss.backward()         # backpropagation, compute gradients
+            optimizer.step()        # apply gradients
+
+        loss+=batch_loss.item()
+
+        real_y=y.cpu().data.numpy()
+        for ele in o_labels.cpu().data.numpy():
+            my_prediction.append(ele)
+
+        for ele in real_y:
+            real_y_all.append(ele)
+        
+        R_square=r2_score( real_y_all, my_prediction)
+
+        trange.set_postfix(loss=loss/(i+1), R_square=R_square)
+
+    if mode=='train':
+        history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
+        # writer.add_scalar('Loss/train', loss/len(trange), epoch)
+    else:
+        history['valid'].append({'loss':loss/len(trange), 'R^2': R_square })
+        # writer.add_scalar('Loss/valid', loss/len(trange), epoch)
+    trange.close()
+
+def _run_iter(x,y):
+    feature = x.to(device)
+    labels = y.to(device)
+    #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
+    o_labels = net(feature)
+    #print('The output shape: ', o_labels.shape, ' The label shape: ', labels.shape, '\n')
+    l_loss = loss_func(o_labels, labels)
+    return o_labels, l_loss
+
+def save(epoch):
+    if not os.path.exists(os.path.join(CWD,'save')):
+        os.makedirs(os.path.join(CWD,'save'))
+    torch.save(net.state_dict(), os.path.join( CWD,'save/model.pkl.'+str(epoch) ))
+    with open( os.path.join( CWD,'save/history.json'), 'w') as f:
+        json.dump(history, f, indent=4)
+
+for epoch in range(max_epoch):
+    print('Epoch: {}'.format(epoch))
+    _run_epoch(epoch, 'train')
+    _run_epoch(epoch, 'valid')
+    save(epoch)
+
+# Plot the training results 
+with open(os.path.join(CWD,'save/history.json'), 'r') as f:
+    history = json.loads(f.read())
+    
+train_loss = [l['loss'] for l in history['train']]
+valid_loss = [l['loss'] for l in history['valid']]
+
+train_R_square = [l['R^2'] for l in history['train']]
+valid_R_square = [l['R^2'] for l in history['valid']]
+
+
+plt.figure(figsize=(7,5))
+plt.title('Loss')
+plt.plot(train_loss, label='train')
+plt.plot(valid_loss, label='valid')
+plt.legend()
+#plt.show()
+plt.savefig("Loss.png")
+
+plt.figure(figsize=(7,5))
+plt.title('R-square')
+plt.plot(train_R_square, label='train')
+plt.plot(valid_R_square, label='valid')
+plt.legend()
+#plt.show()
+plt.savefig("R-square.png")
+
+#global my_prediction
+#global real_y_all
+
+
+best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['valid'])])
+print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')
+print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['valid'])]))
+
+
+# Testing
+best_model=best_epoch # TODO
+net.load_state_dict(state_dict=torch.load(os.path.join(CWD,'save/model.pkl.{}'.format(best_model))))
+net.train(False)
+# start testing
+dataloader = DataLoader(dataset=testing_dataset,
+                            batch_size=batch_size,
+                            shuffle=False
+                            #collate_fn=testData.collate_fn,
+                            #num_workers=8
+                            )
+trange = tqdm(enumerate(dataloader), total=len(dataloader), desc='Predict')
+my_prediction = []
+real_y_all=[]
+
+for i, (x, testing_y) in trange:
+    o_labels = net(x.to(device))
+    real_y=testing_y.cpu().data.numpy()
+    for ele in o_labels.cpu().data.numpy():
+        my_prediction.append(ele)
+
+    for ele in real_y:
+        real_y_all.append(ele)
+
+print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
+
+'''
 # train the network
 iter = 0
 for epoch in range(num_epochs):
@@ -339,7 +477,8 @@ for epoch in range(num_epochs):
 
             print('len of real_y_all = ', len(real_y_all), '\n len of my_prediction = ', len(my_prediction), '\n')
             print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
-            
+'''
+
 
 x_velocity_predict=my_prediction
 plot.figure(figsize=(15,5))
