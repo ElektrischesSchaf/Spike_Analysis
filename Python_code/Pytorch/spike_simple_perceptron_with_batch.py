@@ -21,6 +21,8 @@ from sklearn import datasets, svm, metrics
 from sklearn.metrics import mean_squared_error, r2_score
 
 # My module
+import sys
+sys.path.append("..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 
@@ -35,7 +37,7 @@ file_name_5='../../Dataset/Sorted_Spike_Dataset/indy_20160419_01.mat'
 file_name_6='../../Dataset/Sorted_Spike_Dataset/indy_20160420_01.mat'
 file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
 tStart=time.time()
-
+time_stamp_64ms=[]
 ###################################### Auto-assigned parameters
 #testing_data_index=5000
 #testing_data_index=10222
@@ -97,8 +99,8 @@ z_acceleration_label_testing= np.empty([0])
 for session_index in range(file_numbers):
     print('In session '+ str(session_index+1) + ': ' + '\n' )
 
-    [firing_rate_cell, channel_number, testing_data_index, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_list[session_index], the_sampling_rate, include_hash_unit)
-    [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_list[session_index], the_sampling_rate)
+    [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_list[session_index], the_sampling_rate, time_stamp_64ms, include_hash_unit)
+    [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_list[session_index], the_sampling_rate, time_stamp_64ms)
 
     # Extract firing_rate_cell with rows have length bigger than zero
     firing_rate_final=[] # not[[]]

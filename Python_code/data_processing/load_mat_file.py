@@ -13,7 +13,7 @@ class mat_file_processing():
             r[i-1] += 1
         return r
 
-    def get_spike_bins_matrix(self, the_file_name, the_sampling_rate, include_hash_unit):
+    def get_spike_bins_matrix(self, the_file_name, the_sampling_rate, time_stamp_64ms, include_hash_unit):
         with h5py.File(the_file_name, 'r') as mat_file:        
             time_stamp=mat_file['t']  
             # or
@@ -180,9 +180,9 @@ class mat_file_processing():
                 print('\n')
                 print('End of one channel '+ str(channel_index+1) +'\n') 
                 '''
-        return [firing_rate_cell, channel_number, testing_data_index, x_position_label, y_position_label, z_position_label]
+        return [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]
 
-    def get_labels(self, the_file_name, the_sampling_rate):
+    def get_labels(self, the_file_name, the_sampling_rate, time_stamp_64ms):
         with h5py.File(the_file_name, 'r') as mat_file:
             finger_pos = mat_file['finger_pos']
             time_stamp=mat_file['t']
@@ -301,7 +301,7 @@ class mat_file_processing():
             x_acceleration_label=finger_x_acceleration
             y_acceleration_label=finger_y_acceleration
             z_acceleration_label=finger_z_acceleration
-        return [x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]
+        return [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]
 
     def order_and_timelag_processing(self, order_index, X, testing_data_index, time_lag, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, X_for_prediction_with_time_lag_2,
     x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label,
