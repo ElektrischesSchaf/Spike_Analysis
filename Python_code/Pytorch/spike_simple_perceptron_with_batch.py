@@ -339,6 +339,7 @@ for epoch in range(num_epochs):
 
             print('len of real_y_all = ', len(real_y_all), '\n len of my_prediction = ', len(my_prediction), '\n')
             print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
+            
 
 x_velocity_predict=my_prediction
 plot.figure(figsize=(15,5))
