@@ -3,7 +3,7 @@
 *.nwb
 *.wav
 *.csv
-*.pkl
+
 myvenv/
 __pycache__/
 Spectrogram_all_Channels/

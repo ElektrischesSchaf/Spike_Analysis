@@ -205,8 +205,8 @@ for session_index in range(file_numbers):
 
 # Write featrue and label to csv files
 CWD = os.getcwd()
-if 'Perceptron' not in CWD:
-    CWD = os.path.join(CWD, 'Perceptron')
+if 'RNN' not in CWD:
+    CWD = os.path.join(CWD, 'RNN')
     if not os.path.exists(CWD):
         os.mkdir(CWD)
 
@@ -265,10 +265,17 @@ testing_y = torch.from_numpy(testing_y.values)
 testing_x=testing_x.float()
 testing_y=testing_y.float()
 
+# Neural Network
 batch_size = 16
 learning_rate=1e-3
 n_iters = 50000
 max_epoch=100
+
+# RNN
+hidden_dim=100
+layer_dim=2
+output_dim=1
+
 num_epochs = n_iters / ( (training_x.shape[0]) // batch_size )
 num_epochs = int(num_epochs)
 
@@ -285,20 +292,55 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # All models fit and predict, show R2 score
 
 # this is one way to define a network
-class Net(torch.nn.Module):
-    def __init__(self, n_feature, n_hidden, n_output):
-        super(Net, self).__init__()
-        self.hidden1 = torch.nn.Linear(n_feature, n_hidden)   # hidden layer
-        self.hidden2 = torch.nn.Linear(n_hidden, n_hidden//2)
-        self.predict = torch.nn.Linear(n_hidden//2, n_output)   # output layer
-
+class RNNModel(torch.nn.Module):
+    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
+        super(RNNModel, self).__init__()
+        # Hidden dimensions
+        self.hidden_dim = hidden_dim
+        
+        # Number of hidden layers
+        self.layer_dim = layer_dim
+        
+        # Building your RNN
+        # batch_first=True causes input/output tensors to be of shape
+        # (batch_dim, seq_dim, feature_dim)
+        self.rnn = torch.nn.RNN(input_dim, hidden_dim, layer_dim, batch_first=True, nonlinearity='relu')
+        
+        # Readout layer
+        self.fc = torch.nn.Linear(hidden_dim, output_dim)
+    
     def forward(self, x):
-        x = F.relu(self.hidden1(x))      # activation function for hidden layer
-        x = F.relu(self.hidden2(x))      # activation function for hidden layer
-        x = self.predict(x)             # linear output
-        return x
+        # Initialize hidden state with zeros
+        x=x.unsqueeze(0)
+        # print('\nshape of x: ', x.size(), ' ')
 
-net = Net(n_feature=training_x.shape[1], n_hidden=50, n_output=1)     # define the network
+        h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_()
+        h0=h0.to(device)
+        
+        out, hn = self.rnn(x, h0)
+
+        # print('\nshape of out1: ', out.size(), ' ')
+        
+        '''
+        Index hidden state of last time step
+        out.size() --> 100, 28, 100
+        out[:, -1, :] --> 100, 100 --> just want last time step hidden states! 
+        out = self.fc(out[:, -1, :])
+        out.size() --> 100, 10
+        '''
+        
+        out = self.fc(out)
+
+        # print('\nshape of out2: ', out.size(), ' ')
+
+        out=out.squeeze(0)
+
+        # print('\nshape of out3: ', out.size(), ' ')
+
+
+        return out
+
+net = RNNModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
 # print(net)  # net architecture
 optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -391,23 +433,23 @@ valid_R_square = [l['R^2'] for l in history['valid']]
 
 
 plt.figure(figsize=(7,5))
-plt.title('Perceptron Loss')
+plt.title('RNN Loss')
 plt.plot(train_loss, label='train')
 plt.plot(valid_loss, label='valid')
 plt.xlabel('Epoch')
 plt.legend()
 plt.tight_layout()
-plt.savefig("Perceptron_Loss.png")
+plt.savefig("RNN_Loss.png")
 
 plt.figure(figsize=(7,5))
-plt.title('Perceptron performance')
+plt.title('RNN performance')
 plt.plot(train_R_square, label='train')
 plt.plot(valid_R_square, label='valid')
 plt.xlabel('Epoch')
 plt.ylabel('R square')
 plt.legend()
 plt.tight_layout()
-plt.savefig("Perceptron_R-square.png")
+plt.savefig("RNN_R-square.png")
 
 #global my_prediction
 #global real_y_all
@@ -488,13 +530,13 @@ plot.figure(figsize=(15,5))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
-plot.title('Perceptron Model: velocity x prediction and ground truth')
+plot.title('RNN Model: velocity x prediction and ground truth')
 plot.xlabel('time (second)')
 plot.ylabel('x velocity')
 axes = plot.gca()
 axes.set_xlim([740, 760])
 plot.tight_layout()
-plot.savefig('Perceptron_x-velocity_predict.png' )
+plot.savefig('RNN_x-velocity_predict.png' )
 
 plot.cla()
 plot.clf()
