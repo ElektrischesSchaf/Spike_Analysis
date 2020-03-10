@@ -5,6 +5,7 @@
 *.csv
 *.pkl
 myvenv/
+save/
 __pycache__/
 Spectrogram_all_Channels/
 PCA_plot/
