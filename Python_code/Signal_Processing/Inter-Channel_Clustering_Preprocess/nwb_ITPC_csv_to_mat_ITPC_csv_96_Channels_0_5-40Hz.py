@@ -13,6 +13,8 @@ import os
 import math
 import pandas as pd
 import itertools
+import time
+tStart=time.time()
 # Load my module
 import sys
 sys.path.append("..") # Adds higher directory to python modules path
@@ -48,7 +50,7 @@ chunksize = 1e5
 nwb_timestamp_to_mat_timestamp=[]
 ITPC_abs_250Hz=[]
 ITPC_angle_250Hz=[]
-
+skip=0 # TODO
 for i in range(0,mat_timestamp.shape[1]):
 
     target=mat_timestamp[0][i]
@@ -57,14 +59,17 @@ for i in range(0,mat_timestamp.shape[1]):
     # https://stackoverflow.com/questions/9394803/python-combine-two-for-loops
     # https://stackoverflow.com/questions/1663807/how-to-iterate-through-two-lists-in-parallel
     # https://stackoverflow.com/questions/28138392/skip-iterations-in-enumerated-list-object-python
+    # https://kite.com/python/answers/how-to-skip-the-first-element-of-a-for-loop-in-python
     iterator=enumerate(zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(High_angle, chunksize=chunksize), pd.read_csv(High_abs, chunksize=chunksize) ))
+    
+    for _ in range(skip):
+        next(iterator, None)
+
     for yee, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:
 
         chunk_new_nwb_time_stamp=np.array(chunk_new_nwb_time_stamp)
         chunk_High_angle=np.array(chunk_High_angle)
-        chunk_High_abs=np.array(chunk_High_abs)
-
-        skip=0 # TODO
+        chunk_High_abs=np.array(chunk_High_abs)        
 
         print('enumerate= ', yee, '\n')
         print('first= ', chunk_new_nwb_time_stamp[0], '\n')
@@ -73,8 +78,7 @@ for i in range(0,mat_timestamp.shape[1]):
         # TODO
         if chunk_new_nwb_time_stamp[-1]<target:
             skip+=1 
-            for _ in range(skip):
-                next(iterator, None)
+
 
         if chunk_new_nwb_time_stamp[0]>target:
             break
@@ -126,3 +130,6 @@ df=pd.DataFrame(ITPC_angle_250Hz)
 df.to_csv(os.path.join(csv_path,'ITPC_angle_250Hz.csv'), mode='a', index=False, header=False)
 
 print('end one target search\n')
+
+tEnd=time.time()
+print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
