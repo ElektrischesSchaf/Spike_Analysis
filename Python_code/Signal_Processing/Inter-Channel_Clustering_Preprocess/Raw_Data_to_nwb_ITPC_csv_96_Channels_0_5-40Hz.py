@@ -51,11 +51,12 @@ mat_timestamp=mat_file.get('t')
 mat_timestamp=np.array(mat_timestamp)
 print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
 
-start_second=math.ceil(mat_timestamp[0][0])
+start_second=math.floor(mat_timestamp[0][0])
 last_mat_timestep=math.floor(mat_timestamp[0][-1])
 end_second=start_second+plot_time_duration
 
 while(end_second<last_mat_timestep):
+
 
     mat_time_interval=np.where(np.logical_and(mat_timestamp[0,:]>start_second, mat_timestamp[0,:]<end_second ) )
     # print('mat_timestamp np.where result = ', end='')
@@ -126,9 +127,14 @@ while(end_second<last_mat_timestep):
     if 'Inter-Channel_Clustering_Output_Table' not in CWD:
         CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
         if not os.path.exists(CWD):
-                os.mkdir(CWD)   
+                os.mkdir(CWD)
 
-    csv_path=os.path.join(CWD, '0_5-40Hz')
+    if '0_5-40Hz' not in CWD:
+        CWD=os.path.join(CWD, '0_5-40Hz')
+        if not os.path.exists(CWD):
+                os.mkdir(CWD)
+
+    csv_path=os.path.join(CWD, '24kHz')
     if not os.path.exists(csv_path):
         os.mkdir(str(csv_path))
 
@@ -136,13 +142,13 @@ while(end_second<last_mat_timestep):
 
     # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file
     df = pd.DataFrame(ITPC_angle)
-    df.to_csv(os.path.join(csv_path,'High-angle_0_5-40Hz.csv'), mode='a', index=False, header=True)
+    df.to_csv(os.path.join(csv_path,'24kHz_angle_0_5-40Hz.csv'), mode='a', index=False, header=False)
 
     df = pd.DataFrame(ITPC_abs)
-    df.to_csv(os.path.join(csv_path,'High-abs_0_5-40Hz.csv'), mode='a', index=False, header=True)
+    df.to_csv(os.path.join(csv_path,'24kHz_abs_0_5-40Hz.csv'), mode='a', index=False, header=False)
 
     df = pd.DataFrame(new_nwb_time_stamp)
-    df.to_csv(os.path.join(csv_path,'new_nwb_time_stamp.csv'), mode='a', index=False, header=True)
+    df.to_csv(os.path.join(csv_path,'24kHz_nwb_time_stamp.csv'), mode='a', index=False, header=False)
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
