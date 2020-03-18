@@ -56,12 +56,26 @@ for i in range(0,mat_timestamp.shape[1]):
 
     # https://stackoverflow.com/questions/9394803/python-combine-two-for-loops
     # https://stackoverflow.com/questions/1663807/how-to-iterate-through-two-lists-in-parallel
-    for chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs in zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(High_angle, chunksize=chunksize), pd.read_csv(High_abs, chunksize=chunksize) ):
+    # https://stackoverflow.com/questions/28138392/skip-iterations-in-enumerated-list-object-python
+    iterator=enumerate(zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(High_angle, chunksize=chunksize), pd.read_csv(High_abs, chunksize=chunksize) ))
+    for yee, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:
+
         chunk_new_nwb_time_stamp=np.array(chunk_new_nwb_time_stamp)
         chunk_High_angle=np.array(chunk_High_angle)
         chunk_High_abs=np.array(chunk_High_abs)
-        # print('first= ', chunk_new_nwb_time_stamp[0], '\n')
-        # print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
+
+        skip=0 # TODO
+
+        print('enumerate= ', yee, '\n')
+        print('first= ', chunk_new_nwb_time_stamp[0], '\n')
+        print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
+
+        # TODO
+        if chunk_new_nwb_time_stamp[-1]<target:
+            skip+=1 
+            for _ in range(skip):
+                next(iterator, None)
+
         if chunk_new_nwb_time_stamp[0]>target:
             break
         # print('shape of chunk_new_nwb_time_stamp: ', chunk_new_nwb_time_stamp.shape, '\n')
