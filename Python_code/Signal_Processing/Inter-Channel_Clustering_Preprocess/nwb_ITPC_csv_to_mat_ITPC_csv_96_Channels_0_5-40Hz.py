@@ -42,24 +42,26 @@ delta= nwb_timestamp[1,]- nwb_timestamp[0,]
 High_angle='Inter-Channel_Clustering_Output_Table/0_5-40Hz/24kHz/24kHz_angle_0_5-40Hz.csv'
 High_abs='Inter-Channel_Clustering_Output_Table/0_5-40Hz/24kHz/24kHz_abs_0_5-40Hz.csv'
 new_nwb_time_stamp='Inter-Channel_Clustering_Output_Table/0_5-40Hz/24kHz/24kHz_nwb_time_stamp.csv'
-chunksize = 1e7
+chunksize = 1e5
 
 
-
+nwb_timestamp_to_mat_timestamp=[]
+ITPC_abs_250Hz=[]
+ITPC_angle_250Hz=[]
 
 for i in range(0,mat_timestamp.shape[1]):
 
-    nwb_timestamp_to_mat_timestamp=[]
-    ITPC_abs_250Hz=[]
-    ITPC_angle_250Hz=[]
-
     target=mat_timestamp[0][i]
     print('-'*50, '\ntarget= ', target, '\n')
-    for chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs in itertools.product( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(High_angle, chunksize=chunksize), pd.read_csv(High_abs, chunksize=chunksize) ):
+
+    # https://stackoverflow.com/questions/9394803/python-combine-two-for-loops
+    # https://stackoverflow.com/questions/1663807/how-to-iterate-through-two-lists-in-parallel
+    for chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs in zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(High_angle, chunksize=chunksize), pd.read_csv(High_abs, chunksize=chunksize) ):
         chunk_new_nwb_time_stamp=np.array(chunk_new_nwb_time_stamp)
         chunk_High_angle=np.array(chunk_High_angle)
         chunk_High_abs=np.array(chunk_High_abs)
         # print('first= ', chunk_new_nwb_time_stamp[0], '\n')
+        # print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
         if chunk_new_nwb_time_stamp[0]>target:
             break
         # print('shape of chunk_new_nwb_time_stamp: ', chunk_new_nwb_time_stamp.shape, '\n')
@@ -74,39 +76,39 @@ for i in range(0,mat_timestamp.shape[1]):
             ITPC_angle_250Hz.append(chunk_High_angle[chunk_index][0][0])
 
             break
-        # print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
+        
 
 
-    nwb_timestamp_to_mat_timestamp=np.array(nwb_timestamp_to_mat_timestamp).transpose()
-    ITPC_abs_250Hz=np.array(ITPC_abs_250Hz).transpose()
-    ITPC_angle_250Hz=np.array(ITPC_angle_250Hz).transpose()
+nwb_timestamp_to_mat_timestamp=np.array(nwb_timestamp_to_mat_timestamp).transpose()
+ITPC_abs_250Hz=np.array(ITPC_abs_250Hz).transpose()
+ITPC_angle_250Hz=np.array(ITPC_angle_250Hz).transpose()
 
-    # Write result to csv
-    CWD = os.getcwd()
+# Write result to csv
+CWD = os.getcwd()
 
-    if 'Inter-Channel_Clustering_Output_Table' not in CWD:
-        CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
-        if not os.path.exists(CWD):
-                os.mkdir(CWD)   
+if 'Inter-Channel_Clustering_Output_Table' not in CWD:
+    CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
+    if not os.path.exists(CWD):
+            os.mkdir(CWD)   
 
-    if '0_5-40Hz' not in CWD:
-        CWD=os.path.join(CWD, '0_5-40Hz')
-        if not os.path.exists(CWD):
-                os.mkdir(CWD)
+if '0_5-40Hz' not in CWD:
+    CWD=os.path.join(CWD, '0_5-40Hz')
+    if not os.path.exists(CWD):
+            os.mkdir(CWD)
 
-    csv_path=os.path.join(CWD, '250Hz')
-    if not os.path.exists(csv_path):
-        os.mkdir(str(csv_path))
+csv_path=os.path.join(CWD, '250Hz')
+if not os.path.exists(csv_path):
+    os.mkdir(str(csv_path))
 
-    print('csv_path= ', csv_path, '\n')
+print('csv_path= ', csv_path, '\n')
 
-    df=pd.DataFrame(nwb_timestamp_to_mat_timestamp)
-    df.to_csv(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'), mode='a', index=False, header=False)
+df=pd.DataFrame(nwb_timestamp_to_mat_timestamp)
+df.to_csv(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'), mode='a', index=False, header=False)
 
-    df=pd.DataFrame(ITPC_abs_250Hz)
-    df.to_csv(os.path.join(csv_path,'ITPC_abs_250Hz.csv'), mode='a', index=False, header=False)
+df=pd.DataFrame(ITPC_abs_250Hz)
+df.to_csv(os.path.join(csv_path,'ITPC_abs_250Hz.csv'), mode='a', index=False, header=False)
 
-    df=pd.DataFrame(ITPC_angle_250Hz)
-    df.to_csv(os.path.join(csv_path,'ITPC_angle_250Hz.csv'), mode='a', index=False, header=False)
+df=pd.DataFrame(ITPC_angle_250Hz)
+df.to_csv(os.path.join(csv_path,'ITPC_angle_250Hz.csv'), mode='a', index=False, header=False)
 
-    print('end one target search\n')
+print('end one target search\n')
