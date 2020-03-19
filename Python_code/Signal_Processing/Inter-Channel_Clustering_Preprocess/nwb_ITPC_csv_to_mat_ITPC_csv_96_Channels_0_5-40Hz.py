@@ -50,6 +50,7 @@ chunksize = 1e5
 
 
 
+is_first_loop=True # Optimize write file system
 
 # https://stackoverflow.com/questions/9394803/python-combine-two-for-loops
 # https://stackoverflow.com/questions/1663807/how-to-iterate-through-two-lists-in-parallel
@@ -127,6 +128,16 @@ for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs)
                 os.mkdir(str(csv_path))
 
             # print('csv_path= ', csv_path, '\n')
+
+            if is_first_loop==True:
+                is_first_loop=False
+                try:
+                    os.remove(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'))
+                    os.remove(os.path.join(csv_path,'ITPC_abs_250Hz.csv'))
+                    os.remove(os.path.join(csv_path,'ITPC_angle_250Hz.csv'))
+                    print('\nOld file deleted\n')
+                except:
+                    print('\nNo old files\n')
 
             df=pd.DataFrame(nwb_timestamp_to_mat_timestamp)
             df.to_csv(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'), mode='a', index=False, header=False)

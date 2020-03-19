@@ -12,6 +12,8 @@ import seaborn as sns
 import os
 import math
 import pandas as pd
+import time
+tStart=time.time()
 # Load my module
 import sys
 sys.path.append("..") # Adds higher directory to python modules path
@@ -54,6 +56,8 @@ print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
 start_second=math.floor(mat_timestamp[0][0])
 last_mat_timestep=math.floor(mat_timestamp[0][-1])
 end_second=start_second+plot_time_duration
+
+is_first_loop=True # Optimize write file system
 
 while(end_second<last_mat_timestep):
 
@@ -140,6 +144,15 @@ while(end_second<last_mat_timestep):
 
     print('csv_path= ', csv_path, '\n')
 
+    if is_first_loop==True:
+        is_first_loop=False
+        try:
+            os.remove(os.path.join(csv_path,'24kHz_angle_0_5-40Hz.csv'))
+            os.remove(os.path.join(csv_path,'24kHz_abs_0_5-40Hz.csv'))
+            os.remove(os.path.join(csv_path,'24kHz_nwb_time_stamp.csv'))
+            print('\nOld file deleted\n')
+        except:
+            print('\nNo old files\n')
     # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file
     df = pd.DataFrame(ITPC_angle)
     df.to_csv(os.path.join(csv_path,'24kHz_angle_0_5-40Hz.csv'), mode='a', index=False, header=False)
@@ -152,3 +165,6 @@ while(end_second<last_mat_timestep):
 
     start_second+=plot_time_duration
     end_second+=plot_time_duration
+
+tEnd=time.time()
+print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
