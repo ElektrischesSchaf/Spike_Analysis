@@ -39,7 +39,7 @@ mat_file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 mat_file=h5py.File(mat_file_name_1, 'r')
 mat_timestamp=mat_file.get('t')
 mat_timestamp=np.array(mat_timestamp)
-print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
+print('nwb_loop_indexE shape of mat_timestamp', mat_timestamp.shape, '\n')
 
 delta= nwb_timestamp[1,]- nwb_timestamp[0,]
 
@@ -50,42 +50,48 @@ chunksize = 1e5
 
 
 
+
+# https://stackoverflow.com/questions/9394803/python-combine-two-for-loops
+# https://stackoverflow.com/questions/1663807/how-to-iterate-through-two-lists-in-parallel
+# https://stackoverflow.com/questions/28138392/skip-iterations-in-enumerated-list-object-python
+# https://kite.com/python/answers/how-to-skip-the-first-element-of-a-for-loop-in-python
+# https://stackoverflow.com/questions/10079216/skip-first-entry-in-for-loop-in-python
+
+iterator=enumerate(zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(High_angle, chunksize=chunksize), pd.read_csv(High_abs, chunksize=chunksize) ))
+
 skip=0
-for i in range(0,mat_timestamp.shape[1]):
-    target_start=time.time()
+for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:
 
-    nwb_timestamp_to_mat_timestamp=[]
-    ITPC_abs_250Hz=[]
-    ITPC_angle_250Hz=[]
-    target=mat_timestamp[0][i]
-    print('-'*50, '\ntarget= ', target, '\n')
+    chunk_new_nwb_time_stamp=np.array(chunk_new_nwb_time_stamp)
+    chunk_High_angle=np.array(chunk_High_angle)
+    chunk_High_abs=np.array(chunk_High_abs)
+    print('nwb_loop_index = ', nwb_loop_index, '\n')
 
-    # https://stackoverflow.com/questions/9394803/python-combine-two-for-loops
-    # https://stackoverflow.com/questions/1663807/how-to-iterate-through-two-lists-in-parallel
-    # https://stackoverflow.com/questions/28138392/skip-iterations-in-enumerated-list-object-python
-    # https://kite.com/python/answers/how-to-skip-the-first-element-of-a-for-loop-in-python
-    iterator=enumerate(zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(High_angle, chunksize=chunksize), pd.read_csv(High_abs, chunksize=chunksize) ))
-    
-    # for _ in range(skip):
-        # next(iterator, None)
-    # for yee, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:
+    for mat_loop_index in range(skip, mat_timestamp.shape[1]):
 
-    # https://stackoverflow.com/questions/10079216/skip-first-entry-in-for-loop-in-python
-    for yee, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in islice(iterator, skip, None):
+        target_start=time.time()
 
-        chunk_new_nwb_time_stamp=np.array(chunk_new_nwb_time_stamp)
-        chunk_High_angle=np.array(chunk_High_angle)
-        chunk_High_abs=np.array(chunk_High_abs)        
+        nwb_timestamp_to_mat_timestamp=[]
+        ITPC_abs_250Hz=[]
+        ITPC_angle_250Hz=[]
+        target=mat_timestamp[0][mat_loop_index]
+        print('-'*50, '\ntarget= ', target, '\n')
+        
+        # for _ in range(skip):
+            # next(iterator, None)
+        # for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:  
 
-        print('enumerate number= ', yee, '\n')
+        print('enumerate number= ', nwb_loop_index, '\n')
         print('first= ', chunk_new_nwb_time_stamp[0], '\n')
         print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
 
         if chunk_new_nwb_time_stamp[-1]<target:
-            skip+=1
-
-        if chunk_new_nwb_time_stamp[0]>target:
+            skip=mat_loop_index-1
             break
+
+        # if chunk_new_nwb_time_stamp[0]>target:
+        #     break
+
         # print('shape of chunk_new_nwb_time_stamp: ', chunk_new_nwb_time_stamp.shape, '\n')
         chunk_index=np.where( np.logical_and(target>chunk_new_nwb_time_stamp[:,0], target-delta<chunk_new_nwb_time_stamp[:,0] ))
         # print(type(chunk_index[0]))
@@ -95,12 +101,9 @@ for i in range(0,mat_timestamp.shape[1]):
             
             nwb_timestamp_to_mat_timestamp.append(target)
             ITPC_abs_250Hz.append(chunk_High_abs[chunk_index][0][0])
-            ITPC_angle_250Hz.append(chunk_High_angle[chunk_index][0][0])       
+            ITPC_angle_250Hz.append(chunk_High_angle[chunk_index][0][0])
 
-            del chunk_new_nwb_time_stamp
-            del chunk_High_angle
-            del chunk_High_abs
-            gc.collect()
+
 
             nwb_timestamp_to_mat_timestamp=np.array(nwb_timestamp_to_mat_timestamp).transpose()
             ITPC_abs_250Hz=np.array(ITPC_abs_250Hz).transpose()
@@ -137,7 +140,11 @@ for i in range(0,mat_timestamp.shape[1]):
             print('end one target search\n')
             target_end=time.time()
             print('target processing time: '+ str ( round( (target_end-target_start) , 7) )+' seconds' )
-            break
+        
+    del chunk_new_nwb_time_stamp
+    del chunk_High_angle
+    del chunk_High_abs
+    gc.collect()
 
 
 tEnd=time.time()
