@@ -10,9 +10,11 @@ import matplotlib as mpl
 from scipy.signal import hilbert
 import seaborn as sns
 import os
+import gc
 import math
 import pandas as pd
 import itertools
+from itertools import islice
 import time
 tStart=time.time()
 # Load my module
@@ -47,12 +49,14 @@ new_nwb_time_stamp='Inter-Channel_Clustering_Output_Table/0_5-40Hz/24kHz/24kHz_n
 chunksize = 1e5
 
 
-nwb_timestamp_to_mat_timestamp=[]
-ITPC_abs_250Hz=[]
-ITPC_angle_250Hz=[]
-skip=0 # TODO
-for i in range(0,mat_timestamp.shape[1]):
 
+skip=0
+for i in range(0,mat_timestamp.shape[1]):
+    target_start=time.time()
+
+    nwb_timestamp_to_mat_timestamp=[]
+    ITPC_abs_250Hz=[]
+    ITPC_angle_250Hz=[]
     target=mat_timestamp[0][i]
     print('-'*50, '\ntarget= ', target, '\n')
 
@@ -62,23 +66,23 @@ for i in range(0,mat_timestamp.shape[1]):
     # https://kite.com/python/answers/how-to-skip-the-first-element-of-a-for-loop-in-python
     iterator=enumerate(zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(High_angle, chunksize=chunksize), pd.read_csv(High_abs, chunksize=chunksize) ))
     
-    for _ in range(skip):
-        next(iterator, None)
+    # for _ in range(skip):
+        # next(iterator, None)
+    # for yee, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:
 
-    for yee, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:
+    # https://stackoverflow.com/questions/10079216/skip-first-entry-in-for-loop-in-python
+    for yee, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in islice(iterator, skip, None):
 
         chunk_new_nwb_time_stamp=np.array(chunk_new_nwb_time_stamp)
         chunk_High_angle=np.array(chunk_High_angle)
         chunk_High_abs=np.array(chunk_High_abs)        
 
-        print('enumerate= ', yee, '\n')
+        print('enumerate number= ', yee, '\n')
         print('first= ', chunk_new_nwb_time_stamp[0], '\n')
         print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
 
-        # TODO
         if chunk_new_nwb_time_stamp[-1]<target:
-            skip+=1 
-
+            skip+=1
 
         if chunk_new_nwb_time_stamp[0]>target:
             break
@@ -91,45 +95,50 @@ for i in range(0,mat_timestamp.shape[1]):
             
             nwb_timestamp_to_mat_timestamp.append(target)
             ITPC_abs_250Hz.append(chunk_High_abs[chunk_index][0][0])
-            ITPC_angle_250Hz.append(chunk_High_angle[chunk_index][0][0])
+            ITPC_angle_250Hz.append(chunk_High_angle[chunk_index][0][0])       
 
+            del chunk_new_nwb_time_stamp
+            del chunk_High_angle
+            del chunk_High_abs
+            gc.collect()
+
+            nwb_timestamp_to_mat_timestamp=np.array(nwb_timestamp_to_mat_timestamp).transpose()
+            ITPC_abs_250Hz=np.array(ITPC_abs_250Hz).transpose()
+            ITPC_angle_250Hz=np.array(ITPC_angle_250Hz).transpose()
+
+            # Write result to csv
+            CWD = os.getcwd()
+
+            if 'Inter-Channel_Clustering_Output_Table' not in CWD:
+                CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
+                if not os.path.exists(CWD):
+                        os.mkdir(CWD)   
+
+            if '0_5-40Hz' not in CWD:
+                CWD=os.path.join(CWD, '0_5-40Hz')
+                if not os.path.exists(CWD):
+                        os.mkdir(CWD)
+
+            csv_path=os.path.join(CWD, '250Hz')
+            if not os.path.exists(csv_path):
+                os.mkdir(str(csv_path))
+
+            # print('csv_path= ', csv_path, '\n')
+
+            df=pd.DataFrame(nwb_timestamp_to_mat_timestamp)
+            df.to_csv(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'), mode='a', index=False, header=False)
+
+            df=pd.DataFrame(ITPC_abs_250Hz)
+            df.to_csv(os.path.join(csv_path,'ITPC_abs_250Hz.csv'), mode='a', index=False, header=False)
+
+            df=pd.DataFrame(ITPC_angle_250Hz)
+            df.to_csv(os.path.join(csv_path,'ITPC_angle_250Hz.csv'), mode='a', index=False, header=False)
+
+            print('end one target search\n')
+            target_end=time.time()
+            print('target processing time: '+ str ( round( (target_end-target_start) , 7) )+' seconds' )
             break
-        
 
-
-nwb_timestamp_to_mat_timestamp=np.array(nwb_timestamp_to_mat_timestamp).transpose()
-ITPC_abs_250Hz=np.array(ITPC_abs_250Hz).transpose()
-ITPC_angle_250Hz=np.array(ITPC_angle_250Hz).transpose()
-
-# Write result to csv
-CWD = os.getcwd()
-
-if 'Inter-Channel_Clustering_Output_Table' not in CWD:
-    CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
-    if not os.path.exists(CWD):
-            os.mkdir(CWD)   
-
-if '0_5-40Hz' not in CWD:
-    CWD=os.path.join(CWD, '0_5-40Hz')
-    if not os.path.exists(CWD):
-            os.mkdir(CWD)
-
-csv_path=os.path.join(CWD, '250Hz')
-if not os.path.exists(csv_path):
-    os.mkdir(str(csv_path))
-
-print('csv_path= ', csv_path, '\n')
-
-df=pd.DataFrame(nwb_timestamp_to_mat_timestamp)
-df.to_csv(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'), mode='a', index=False, header=False)
-
-df=pd.DataFrame(ITPC_abs_250Hz)
-df.to_csv(os.path.join(csv_path,'ITPC_abs_250Hz.csv'), mode='a', index=False, header=False)
-
-df=pd.DataFrame(ITPC_angle_250Hz)
-df.to_csv(os.path.join(csv_path,'ITPC_angle_250Hz.csv'), mode='a', index=False, header=False)
-
-print('end one target search\n')
 
 tEnd=time.time()
 print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
