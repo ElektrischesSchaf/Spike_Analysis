@@ -25,20 +25,20 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 # My module
 import sys
-sys.path.append("..") # Adds higher directory to python modules path.
+sys.path.append("../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
+
 
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-file_name_1='../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
-file_name_2='../../Dataset/Sorted_Spike_Dataset/indy_20160411_01.mat'
-file_name_3='../../Dataset/Sorted_Spike_Dataset/indy_20160411_02.mat'
-file_name_4='../../Dataset/Sorted_Spike_Dataset/indy_20160418_01.mat'
-file_name_5='../../Dataset/Sorted_Spike_Dataset/indy_20160419_01.mat'
-file_name_6='../../Dataset/Sorted_Spike_Dataset/indy_20160420_01.mat'
-file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
+file_name_1='../../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
+file_list=[file_name_1]
+file_itpc_abs_1='./250Hz/ITPC_abs_250Hz.csv'
+file_itpc_angle_1='./250Hz/ITPC_angle_250Hz.csv'
+file_itpc_time_stamp_1='./250Hz/nwb_timestamp_to_mat_timestamp.csv'
+
 tStart=time.time()
 time_stamp_64ms=[]
 ###################################### Auto-assigned parameters
@@ -56,6 +56,7 @@ time_lag=my_parameters.time_lag
 order=my_parameters.order
 with_sorted_spikes=my_parameters.with_sorted_spikes
 include_hash_unit=my_parameters.include_hash_unit
+
 
 # Must know these two numbers beforehand
 channel_numbers_in_this_dataset=96
@@ -97,6 +98,28 @@ y_acceleration_label_testing= np.empty([0])
 
 z_acceleration_label_training= np.empty([0])
 z_acceleration_label_testing= np.empty([0])
+
+
+# ITPC read file
+iptc_abs=pd.read_csv(file_itpc_abs_1, dtype=float)
+iptc_angle=pd.read_csv(file_itpc_angle_1, dtype=float)
+itpc_time_stamp=pd.read_csv(file_itpc_time_stamp_1, dtype=float)
+
+iptc_abs=np.array(iptc_abs)
+iptc_angle=np.array(iptc_angle)
+itpc_time_stamp=np.array(itpc_time_stamp)
+
+iptc_abs=iptc_abs[::16]
+iptc_angle=iptc_angle[::16]
+itpc_time_stamp=itpc_time_stamp[::16]
+
+print(iptc_abs.shape, ' ', iptc_abs.shape, ' ', itpc_time_stamp.shape)
+
+iptc_abs_traing=iptc_abs[:6142,:] # TODO
+iptc_abs_testing=iptc_abs[6142:,:]
+
+iptc_angle_traing=iptc_angle[:6142,:]
+iptc_angle_testing=iptc_angle[6142:,:]
 
 # cross sessions control start
 for session_index in range(file_numbers):
@@ -202,7 +225,6 @@ for session_index in range(file_numbers):
 
 # cross sessions control end
 
-
 # Write featrue and label to csv files
 CWD = os.getcwd()
 if 'LSTM' not in CWD:
@@ -227,6 +249,9 @@ df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
 df=pd.DataFrame(x_velocity_label_testing)
 df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
 
+
+
+
 class AbstractDataset(Dataset):
     def __init__(self, feature_matrix, label_matrix):
         self.data=feature_matrix
@@ -244,7 +269,6 @@ class AbstractDataset(Dataset):
         print('\ncollate_fn！')
         print('\ndatas: ', datas)
         # return self.data, self.label
-
 
 # read from csv file
 training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
@@ -265,6 +289,43 @@ testing_y = torch.from_numpy(testing_y.values)
 testing_x=testing_x.float()
 testing_y=testing_y.float()
 
+# IPTC to torch
+training_itpc_abs=torch.from_numpy(iptc_abs_traing)
+training_itpc_angle=torch.from_numpy(iptc_angle_traing)
+
+training_itpc_abs=training_itpc_abs.float()
+training_itpc_angle=training_itpc_angle.float()
+
+training_itpc=np.concatenate((training_itpc_abs, training_itpc_angle), axis=1)
+
+training_itpc=torch.from_numpy(training_itpc)
+
+testing_itpc_abs=torch.from_numpy(iptc_abs_testing)
+testing_itpc_angle=torch.from_numpy(iptc_angle_testing)
+
+testing_itpc_abs=testing_itpc_abs.float()
+testing_itpc_angle=testing_itpc_angle.float()
+
+testing_itpc=np.concatenate((testing_itpc_abs, testing_itpc_angle), axis=1)
+testing_itpc=torch.from_numpy(testing_itpc)
+
+print(training_itpc_abs.size(), ' ',training_x.size() )
+print(testing_itpc_abs.size(), ' ',testing_x.size() )
+length_difference=testing_x.size()[0]-testing_itpc_abs.size()[0]
+print(length_difference)
+print(testing_itpc_abs.size(), ' ',testing_x[:-length_difference,:].size() )
+
+testing_x=testing_x[:-length_difference,:]
+testing_y=testing_y[:-length_difference,:]
+
+print(testing_itpc_abs.size(), ' ', testing_y.size())
+
+
+new_training_x=torch.cat((training_x,training_itpc ) , 1)
+print('new_training_x= ', new_training_x.size())
+
+new_testing_x=torch.cat((testing_x, testing_itpc), 1)
+
 # Neural Network
 batch_size = 16
 learning_rate=1e-3
@@ -279,19 +340,11 @@ output_dim=1
 num_epochs = n_iters / ( (training_x.shape[0]) // batch_size )
 num_epochs = int(num_epochs)
 
-training_dataset=AbstractDataset(training_x,training_y)
-testing_dataset=AbstractDataset(testing_x, testing_y)
-
-# TODO collate_fn
-# train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
-# train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
-# test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)
+training_dataset=AbstractDataset(new_training_x, training_y)
+testing_dataset=AbstractDataset(new_testing_x, testing_y)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# All models fit and predict, show R2 score
-
-# this is one way to define a network
 class LSTMModel(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
         super(LSTMModel, self).__init__()
@@ -340,7 +393,7 @@ class LSTMModel(torch.nn.Module):
 
         return out
 
-net = LSTMModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+net = LSTMModel(input_dim=new_training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
 # print(net)  # net architecture
 optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -495,51 +548,13 @@ for i, (x, testing_y) in trange:
 
 print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
 
-'''
-# train the network
-iter = 0
-for epoch in range(num_epochs):
-    for i, (x, y) in enumerate(train_loader):
-        prediction = net( x.to(device) ) # do not flatten     # input x and predict based on x
-        #print('size of prediction= ', prediction.shape, ' size of y= ',y.shape,'\n')
-
-        loss = loss_func(prediction, y.to(device))     # must be (1. nn output, 2. target)
-
-        optimizer.zero_grad()   # clear gradients for next train
-        loss.backward()         # backpropagation, compute gradients
-        optimizer.step()        # apply gradients
-
-        iter += 1
-
-        if iter % 1000 == 0:
-
-            my_prediction=[]
-            real_y_all=[]
-
-            for i, (testing_x, testing_y) in enumerate(test_loader):
-                prediction=net( testing_x.to(device) ).flatten()
-                real_y=testing_y.cpu().data.numpy()
-                # print('prediction=', prediction.cpu().data.numpy(),'\n')
-                for ele in prediction.cpu().data.numpy():
-                    my_prediction.append( ele )
-
-                for ele in real_y:
-                    real_y_all.append(ele)
-                # print('len of my_prediction=', len(my_prediction), '\n')
-
-            # predict from testing feature matrix
-
-            print('len of real_y_all = ', len(real_y_all), '\n len of my_prediction = ', len(my_prediction), '\n')
-            print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
-'''
-
 
 x_velocity_predict=my_prediction
 plot.figure(figsize=(15,5))
-plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-1-length_difference], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
-plot.title('LSTM Model: velocity x prediction and ground truth (Spike Only')
+plot.title('LSTM Model: velocity x prediction and ground truth (Spike+ITPC)')
 plot.xlabel('time (second)')
 plot.ylabel('x velocity')
 axes = plot.gca()

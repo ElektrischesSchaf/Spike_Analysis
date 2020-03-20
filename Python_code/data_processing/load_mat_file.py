@@ -25,7 +25,7 @@ class mat_file_processing():
             
 
             print('spikes shape: ', spikes.shape) #  (3, 192) in indy_20160407_02
-            channel_number=int(spikes.shape[1] / 2) # 96 in indy_20160407_02
+            channel_number=96 # 96 in indy_20160407_02
             numpy_finger_pos_1=np.empty([])
             numpy_finger_pos_GET_1=mat_file.get('finger_pos')
             numpy_finger_pos_1=np.array(numpy_finger_pos_GET_1)
