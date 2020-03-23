@@ -335,13 +335,13 @@ for k in range(new_training_x.size(0)):
 
     for i in range(96):
         # pass
-        new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-1]*new_training_x[k,-2]
-
+        # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-1]*new_training_x[k,-2]
+        new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]
 for k in range(new_testing_x.size(0)):
     for i in range(96):
         # pass
-        new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-1]*new_testing_x[k,-2]
-
+        # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-1]*new_testing_x[k,-2]
+        new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]
 
 new_training_x=new_training_x[:,:96]
 new_testing_x=new_testing_x[:,:96]
@@ -358,7 +358,7 @@ hidden_dim=100
 layer_dim=2
 output_dim=1
 
-num_epochs = n_iters / ( (training_x.shape[0]) // batch_size )
+num_epochs = n_iters / ( (new_training_x.shape[0]) // batch_size )
 num_epochs = int(num_epochs)
 
 training_dataset=AbstractDataset(new_training_x, training_y)
