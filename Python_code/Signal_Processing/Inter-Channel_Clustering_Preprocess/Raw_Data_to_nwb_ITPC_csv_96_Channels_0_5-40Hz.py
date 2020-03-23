@@ -54,13 +54,16 @@ mat_timestamp=np.array(mat_timestamp)
 print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
 
 start_second=math.floor(mat_timestamp[0][0])
-last_mat_timestep=math.floor(mat_timestamp[0][-1])
+last_mat_timestep=mat_timestamp[0][-1]
 end_second=start_second+plot_time_duration
 
 is_first_loop=True # Optimize write file system
+is_last_loop=False
 
-while(end_second<last_mat_timestep):
+while(is_last_loop==False):
 
+    if end_second>last_mat_timestep:
+        is_last_loop=True
 
     mat_time_interval=np.where(np.logical_and(mat_timestamp[0,:]>start_second, mat_timestamp[0,:]<end_second ) )
     # print('mat_timestamp np.where result = ', end='')

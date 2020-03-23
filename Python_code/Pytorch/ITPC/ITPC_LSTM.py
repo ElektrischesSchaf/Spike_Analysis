@@ -306,17 +306,21 @@ testing_itpc_angle=torch.from_numpy(iptc_angle_testing)
 testing_itpc_abs=testing_itpc_abs.float()
 testing_itpc_angle=testing_itpc_angle.float()
 
-testing_itpc=np.concatenate((testing_itpc_abs, testing_itpc_angle), axis=1)
-testing_itpc=torch.from_numpy(testing_itpc)
+
 
 print(training_itpc_abs.size(), ' ',training_x.size() )
 print(testing_itpc_abs.size(), ' ',testing_x.size() )
-length_difference=testing_x.size()[0]-testing_itpc_abs.size()[0]
+length_difference=abs(testing_x.size()[0]-testing_itpc_abs.size()[0])
 print(length_difference)
-print(testing_itpc_abs.size(), ' ',testing_x[:-length_difference,:].size() )
 
-testing_x=testing_x[:-length_difference,:]
-testing_y=testing_y[:-length_difference,:]
+if length_difference !=0:
+    print(testing_itpc_abs.size(), ' ',testing_x[:,:].size() )
+
+    testing_itpc_abs=testing_itpc_abs[:-length_difference,:]
+    testing_itpc_angle=testing_itpc_angle[:-length_difference,:]
+
+testing_itpc=np.concatenate((testing_itpc_abs, testing_itpc_angle), axis=1)
+testing_itpc=torch.from_numpy(testing_itpc)
 
 print(testing_itpc_abs.size(), ' ', testing_y.size())
 
@@ -326,27 +330,27 @@ print('new_training_x= ', new_training_x.size())
 
 new_testing_x=torch.cat((testing_x, testing_itpc), 1)
 
-
+'''
 for _ in range(training_x.size(0)):
     for i in range(96):
-        pass
-        # training_x[:,i]=training_x[:,i]*training_x[:,-1]*training_x[:,-2]
+        # pass
+        training_x[:,i]=training_x[:,i]*training_x[:,-1]*training_x[:,-2]
 
 for _ in range(testing_x.size(0)):
     for i in range(96):
-        pass
-        # testing_x[:,i]=testing_x[:,i]*testing_x[:,-1]*testing_x[:,-2]
+        # pass
+        testing_x[:,i]=testing_x[:,i]*testing_x[:,-1]*testing_x[:,-2]
 
 
 training_x=training_x[:,:96]
 testing_x=testing_x[:,:96]
-
+'''
 
 # Neural Network
 batch_size = 16
 learning_rate=1e-3
 n_iters = 50000
-max_epoch=200
+max_epoch=300
 
 # LSTM
 hidden_dim=100
@@ -567,7 +571,7 @@ print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_
 
 x_velocity_predict=my_prediction
 plot.figure(figsize=(15,5))
-plot.plot(time_stamp_64ms[testing_data_index:-1-length_difference], x_velocity_predict, 'b--',label='Prediction' )
+plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
 plot.title('LSTM Model: velocity x prediction and ground truth (Spike+ITPC)')

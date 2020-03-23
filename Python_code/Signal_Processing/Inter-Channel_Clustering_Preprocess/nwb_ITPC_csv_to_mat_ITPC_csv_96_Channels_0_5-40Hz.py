@@ -87,7 +87,7 @@ for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs)
         print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
 
         if chunk_new_nwb_time_stamp[-1]<target:
-            skip=mat_loop_index-1
+            skip=mat_loop_index
             break
 
         # if chunk_new_nwb_time_stamp[0]>target:
@@ -96,13 +96,22 @@ for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs)
         # print('shape of chunk_new_nwb_time_stamp: ', chunk_new_nwb_time_stamp.shape, '\n')
         chunk_index=np.where( np.logical_and(target>chunk_new_nwb_time_stamp[:,0], target-delta<chunk_new_nwb_time_stamp[:,0] ))
         # print(type(chunk_index[0]))
+        if chunk_index[0].size==0:
+            # breakpoint() # TODO explain this
+            chunk_index=np.where( target<chunk_new_nwb_time_stamp[:,0] )
+
         if chunk_index[0].size>0:
+            
+
+            # if chunk_index[0].size>1:
+            #     print(chunk_index[0])
+            #     breakpoint()
 
             # print('chunk_index= ', chunk_index, ' \nchunk_new_nwb_time_stamp value=', chunk_new_nwb_time_stamp[chunk_index], '\nchunk_High_angle value=',chunk_High_angle[chunk_index], '\nchunk_High_abs value=',chunk_High_abs[chunk_index] ,'\n')
             
             nwb_timestamp_to_mat_timestamp.append(target)
-            ITPC_abs_250Hz.append(chunk_High_abs[chunk_index][0][0])
-            ITPC_angle_250Hz.append(chunk_High_angle[chunk_index][0][0])
+            ITPC_abs_250Hz.append(chunk_High_abs[chunk_index[0][0]])
+            ITPC_angle_250Hz.append(chunk_High_angle[chunk_index[0][0]])
 
 
 
