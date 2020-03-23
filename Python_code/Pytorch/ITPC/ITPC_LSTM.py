@@ -336,12 +336,12 @@ for k in range(new_training_x.size(0)):
     for i in range(96):
         # pass
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-1]*new_training_x[k,-2]
-        new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]
+        new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*abs(new_training_x[k,-1])
 for k in range(new_testing_x.size(0)):
     for i in range(96):
         # pass
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-1]*new_testing_x[k,-2]
-        new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]
+        new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*abs(new_testing_x[k,-1])
 
 new_training_x=new_training_x[:,:96]
 new_testing_x=new_testing_x[:,:96]
@@ -351,7 +351,7 @@ new_testing_x=new_testing_x[:,:96]
 batch_size = 16
 learning_rate=1e-3
 n_iters = 50000
-max_epoch=300
+max_epoch=500
 
 # LSTM
 hidden_dim=100
