@@ -330,21 +330,22 @@ print('new_training_x= ', new_training_x.size())
 
 new_testing_x=torch.cat((testing_x, testing_itpc), 1)
 
-'''
-for _ in range(training_x.size(0)):
+
+for k in range(new_training_x.size(0)):
+
     for i in range(96):
         # pass
-        training_x[:,i]=training_x[:,i]*training_x[:,-1]*training_x[:,-2]
+        new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-1]*new_training_x[k,-2]
 
-for _ in range(testing_x.size(0)):
+for k in range(new_testing_x.size(0)):
     for i in range(96):
         # pass
-        testing_x[:,i]=testing_x[:,i]*testing_x[:,-1]*testing_x[:,-2]
+        new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-1]*new_testing_x[k,-2]
 
 
-training_x=training_x[:,:96]
-testing_x=testing_x[:,:96]
-'''
+new_training_x=new_training_x[:,:96]
+new_testing_x=new_testing_x[:,:96]
+
 
 # Neural Network
 batch_size = 16
