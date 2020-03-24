@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import imageio
 import time
+tStart=time.time()
 import h5py
 torch.manual_seed(1)    # reproducible
 from tqdm import tqdm_notebook as tqdm
@@ -35,9 +36,9 @@ mat_file_processing=load_mat_file.mat_file_processing()
 
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
 file_list=[file_name_1]
-file_itpc_abs_1='./250Hz/ITPC_abs_250Hz.csv'
-file_itpc_angle_1='./250Hz/ITPC_angle_250Hz.csv'
-file_itpc_time_stamp_1='./250Hz/nwb_timestamp_to_mat_timestamp.csv'
+file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/0_5-40Hz/250Hz/ITPC_abs_250Hz.csv'
+file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/0_5-40Hz/250Hz/ITPC_angle_250Hz.csv'
+file_itpc_time_stamp_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/0_5-40Hz/250Hz/nwb_timestamp_to_mat_timestamp.csv'
 
 tStart=time.time()
 time_stamp_64ms=[]
@@ -334,32 +335,31 @@ new_testing_x=torch.cat((testing_x, testing_itpc), 1)
 for k in range(new_training_x.size(0)):
 
     for i in range(96):
-        # pass
+        pass
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-1]*new_training_x[k,-2]
-        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-1])
+        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-1])
+        # new_training_x[k,-1]=abs(new_training_x[k,-1])
 for k in range(new_testing_x.size(0)):
     for i in range(96):
-        # pass
+        pass
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-1]*new_testing_x[k,-2]
-        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-1])
+        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-1])
+        # new_testing_x[k,-1]=abs(new_testing_x[k,-1])
 
-new_training_x=new_training_x[:,:96]
-new_testing_x=new_testing_x[:,:96]
+new_training_x=new_training_x[:,-2:]
+new_testing_x=new_testing_x[:,-2:]
 
 
 # Neural Network
 batch_size = 16
 learning_rate=1e-3
-n_iters = 50000
-max_epoch=250
+max_epoch=100
 
 # LSTM
 hidden_dim=100
 layer_dim=2
 output_dim=1
 
-num_epochs = n_iters / ( (new_training_x.shape[0]) // batch_size )
-num_epochs = int(num_epochs)
 
 training_dataset=AbstractDataset(new_training_x, training_y)
 testing_dataset=AbstractDataset(new_testing_x, testing_y)
@@ -585,3 +585,7 @@ plot.savefig('LSTM_x-velocity_predict.png' )
 
 plot.cla()
 plot.clf()
+
+
+tEnd=time.time()
+print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
