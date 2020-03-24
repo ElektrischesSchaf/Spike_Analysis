@@ -110,17 +110,22 @@ iptc_abs=np.array(iptc_abs)
 iptc_angle=np.array(iptc_angle)
 itpc_time_stamp=np.array(itpc_time_stamp)
 
-iptc_abs=iptc_abs[::16]
-iptc_angle=iptc_angle[::16]
-itpc_time_stamp=itpc_time_stamp[::16]
+itpc_64ms_rate=my_parameters.the_sampling_rate
+iptc_abs=iptc_abs[::itpc_64ms_rate]
+iptc_angle=iptc_angle[::itpc_64ms_rate]
+itpc_time_stamp=itpc_time_stamp[::itpc_64ms_rate]
 
 print(iptc_abs.shape, ' ', iptc_abs.shape, ' ', itpc_time_stamp.shape)
 
-iptc_abs_traing=iptc_abs[:6142,:] # TODO
-iptc_abs_testing=iptc_abs[6142:,:]
+itpc_testing_data_index=int(int(len(itpc_time_stamp))*0.8) # split 80% into training
+print('itpc_testing_data_index= ',itpc_testing_data_index) # 6142
 
-iptc_angle_traing=iptc_angle[:6142,:]
-iptc_angle_testing=iptc_angle[6142:,:]
+
+iptc_abs_traing=iptc_abs[:itpc_testing_data_index,:] # TODO
+iptc_abs_testing=iptc_abs[itpc_testing_data_index:,:]
+
+iptc_angle_traing=iptc_angle[:itpc_testing_data_index,:]
+iptc_angle_testing=iptc_angle[itpc_testing_data_index:,:]
 
 # cross sessions control start
 for session_index in range(file_numbers):
@@ -297,7 +302,7 @@ training_itpc_angle=torch.from_numpy(iptc_angle_traing)
 training_itpc_abs=training_itpc_abs.float()
 training_itpc_angle=training_itpc_angle.float()
 
-training_itpc=np.concatenate((training_itpc_abs, training_itpc_angle), axis=1)
+training_itpc=np.concatenate((training_itpc_angle, training_itpc_abs ), axis=1)
 
 training_itpc=torch.from_numpy(training_itpc)
 
@@ -311,6 +316,7 @@ testing_itpc_angle=testing_itpc_angle.float()
 
 print(training_itpc_abs.size(), ' ',training_x.size() )
 print(testing_itpc_abs.size(), ' ',testing_x.size() )
+
 length_difference=abs(testing_x.size()[0]-testing_itpc_abs.size()[0])
 print(length_difference)
 
@@ -320,7 +326,7 @@ if length_difference !=0:
     testing_itpc_abs=testing_itpc_abs[:-length_difference,:]
     testing_itpc_angle=testing_itpc_angle[:-length_difference,:]
 
-testing_itpc=np.concatenate((testing_itpc_abs, testing_itpc_angle), axis=1)
+testing_itpc=np.concatenate((testing_itpc_angle, testing_itpc_abs), axis=1) 
 testing_itpc=torch.from_numpy(testing_itpc)
 
 print(testing_itpc_abs.size(), ' ', testing_y.size())
@@ -335,25 +341,25 @@ new_testing_x=torch.cat((testing_x, testing_itpc), 1)
 for k in range(new_training_x.size(0)):
 
     for i in range(96):
-        pass
+        # pass
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-1]*new_training_x[k,-2]
-        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-1])
-        # new_training_x[k,-1]=abs(new_training_x[k,-1])
+        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
+        new_training_x[k,-2]=abs(new_training_x[k,-2])
 for k in range(new_testing_x.size(0)):
     for i in range(96):
-        pass
+        # pass
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-1]*new_testing_x[k,-2]
-        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-1])
-        # new_testing_x[k,-1]=abs(new_testing_x[k,-1])
+        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+        new_testing_x[k,-2]=abs(new_testing_x[k,-2])
 
-new_training_x=new_training_x[:,-2:]
-new_testing_x=new_testing_x[:,-2:]
+new_training_x=new_training_x[:,:-1]
+new_testing_x=new_testing_x[:,:-1]
 
 
 # Neural Network
 batch_size = 16
 learning_rate=1e-3
-max_epoch=100
+max_epoch=300
 
 # LSTM
 hidden_dim=100

@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import imageio
 import time
+tStart=time.time()
 import h5py
 torch.manual_seed(1)    # reproducible
 from tqdm import tqdm_notebook as tqdm
@@ -268,16 +269,13 @@ testing_y=testing_y.float()
 # Neural Network
 batch_size = 16
 learning_rate=1e-3
-n_iters = 50000
-max_epoch=200
+
+max_epoch=300
 
 # LSTM
 hidden_dim=100
 layer_dim=2
 output_dim=1
-
-num_epochs = n_iters / ( (training_x.shape[0]) // batch_size )
-num_epochs = int(num_epochs)
 
 training_dataset=AbstractDataset(training_x,training_y)
 testing_dataset=AbstractDataset(testing_x, testing_y)
@@ -549,3 +547,6 @@ plot.savefig('LSTM_x-velocity_predict.png' )
 
 plot.cla()
 plot.clf()
+
+tEnd=time.time()
+print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )

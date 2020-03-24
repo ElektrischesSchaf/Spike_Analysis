@@ -111,7 +111,7 @@ for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs)
             
             nwb_timestamp_to_mat_timestamp.append(target)
             ITPC_abs_250Hz.append(chunk_High_abs[chunk_index[0][0]])
-            ITPC_angle_250Hz.append(chunk_High_angle[chunk_index[0][0]])
+            ITPC_angle_250Hz.append( chunk_High_angle[chunk_index[0][0]] )
 
 
 
