@@ -43,7 +43,7 @@ print('nwb_loop_indexE shape of mat_timestamp', mat_timestamp.shape, '\n')
 
 delta= nwb_timestamp[1,]- nwb_timestamp[0,]
 
-bandwidth_token='0_5-40Hz'
+bandwidth_token='0_5-4Hz'
 
 
 High_angle='Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/24kHz/24kHz_angle.csv'

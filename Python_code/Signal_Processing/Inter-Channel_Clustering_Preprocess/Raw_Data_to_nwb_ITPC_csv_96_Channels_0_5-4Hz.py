@@ -32,7 +32,7 @@ end_second=-2
 last_mat_timestep=-1
 
 band_start=my_parameters.band_start
-band_cutoff=my_parameters.band_cutoff
+band_cutoff=4
 session_name=my_parameters.session_name
 
 if band_start ==0.5:
