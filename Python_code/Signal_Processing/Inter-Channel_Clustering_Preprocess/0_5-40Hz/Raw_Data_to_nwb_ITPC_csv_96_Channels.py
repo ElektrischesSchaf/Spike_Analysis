@@ -136,7 +136,7 @@ while(is_last_loop==False):
 
     print('len of new_nwb_time_stamp= ', len(new_nwb_time_stamp), '\n')
     # Write result to csv
-    CWD = os.getcwd()
+    CWD = os.path.abspath(__file__)
     CWD= os.path.join('..')
 
     if 'Inter-Channel_Clustering_Output_Table' not in CWD:

@@ -123,7 +123,7 @@ for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs)
             ITPC_angle_250Hz=np.array(ITPC_angle_250Hz).transpose()
 
             # Write result to csv
-            CWD = os.getcwd()
+            CWD = os.path.abspath(__file__)
             CWD= os.path.join('..')
             if 'Inter-Channel_Clustering_Output_Table' not in CWD:
                 CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
