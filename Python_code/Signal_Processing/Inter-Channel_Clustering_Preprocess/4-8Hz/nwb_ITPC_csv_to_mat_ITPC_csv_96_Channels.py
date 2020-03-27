@@ -19,7 +19,7 @@ import time
 tStart=time.time()
 # Load my module
 import sys
-sys.path.append("../..") # Adds higher directory to python modules path
+sys.path.append("..") # Adds higher directory to python modules path
 import Inter_Channel_Module.parameters as my_parameters
 import Inter_Channel_Module.buttersworth_filter as buttersworth_filter
 my_parameters=my_parameters.my_parameters()
