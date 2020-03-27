@@ -19,14 +19,14 @@ import time
 tStart=time.time()
 # Load my module
 import sys
-sys.path.append("..") # Adds higher directory to python modules path
+sys.path.append("../..") # Adds higher directory to python modules path
 import Inter_Channel_Module.parameters as my_parameters
 import Inter_Channel_Module.buttersworth_filter as buttersworth_filter
 my_parameters=my_parameters.my_parameters()
 
 session_name=my_parameters.session_name
 # nwb file
-nwb_filename = '../../../Dataset/The_nwb_Raw_Dataset/'+session_name+'.nwb'
+nwb_filename = '../../../../Dataset/The_nwb_Raw_Dataset/'+session_name+'.nwb'
 nwb_file = h5py.File(nwb_filename, 'r')
 data = nwb_file['/acquisition/timeseries/broadband/data']
 conversion = data.attrs['conversion']
@@ -35,7 +35,7 @@ nwb_timestamp = nwb_file['/acquisition/timeseries/broadband/timestamps']
 
 # mat file
 
-mat_file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
+mat_file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 mat_file=h5py.File(mat_file_name_1, 'r')
 mat_timestamp=mat_file.get('t')
 mat_timestamp=np.array(mat_timestamp)
@@ -43,7 +43,7 @@ print('nwb_loop_indexE shape of mat_timestamp', mat_timestamp.shape, '\n')
 
 delta= nwb_timestamp[1,]- nwb_timestamp[0,]
 
-bandwidth_token='0_5-4Hz'
+bandwidth_token='8-12Hz'
 
 
 High_angle='Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/24kHz/24kHz_angle.csv'
@@ -124,7 +124,7 @@ for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs)
 
             # Write result to csv
             CWD = os.getcwd()
-
+            CWD=os.path.join(CWD,'..')
             if 'Inter-Channel_Clustering_Output_Table' not in CWD:
                 CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
                 if not os.path.exists(CWD):
