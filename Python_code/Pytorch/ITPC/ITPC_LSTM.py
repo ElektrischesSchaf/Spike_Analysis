@@ -37,7 +37,7 @@ mat_file_processing=load_mat_file.mat_file_processing()
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
 file_list=[file_name_1]
 
-bandwidth_token='0_5-4Hz'
+bandwidth_token='0_5-40Hz'
 
 file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
 file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
@@ -347,10 +347,16 @@ for k in range(new_training_x.size(0)):
         # pass
         # new_training_x[k,-2]=abs(new_training_x[k,-2])
 
+        # Phase-of-Firing
+
+        # absolute
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
 
-        new_training_x[k,-2]=abs(new_training_x[k,-2])*new_training_x[k,-1]
+        new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
+
+        # Concatenate
+        # new_training_x[k,-2]=abs(new_training_x[k,-2])*new_training_x[k,-1]
 
 
 for k in range(new_testing_x.size(0)):
@@ -358,13 +364,19 @@ for k in range(new_testing_x.size(0)):
         # pass
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
 
+        # Phase-of-Firing
+
+        # absolute
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
 
-        new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+        new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]        
 
-new_training_x=new_training_x[:,:97]
-new_testing_x=new_testing_x[:,:97]
+        # Concatenate
+        # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+
+new_training_x=new_training_x[:,:96]
+new_testing_x=new_testing_x[:,:96]
 
 
 # Neural Network
