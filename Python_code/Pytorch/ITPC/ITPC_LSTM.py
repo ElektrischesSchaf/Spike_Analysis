@@ -286,7 +286,7 @@ training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), d
 training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
 training_y = torch.from_numpy(training_y.values)
 
-training_x=training_x.float()
+training_x_spike=training_x.float()
 training_y=training_y.float()
 
 testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
@@ -295,7 +295,7 @@ testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dty
 testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
 testing_y = torch.from_numpy(testing_y.values)
 
-testing_x=testing_x.float()
+testing_x_spike=testing_x.float()
 testing_y=testing_y.float()
 
 # IPTC to torch
@@ -335,10 +335,10 @@ testing_itpc=torch.from_numpy(testing_itpc)
 print(testing_itpc_abs.size(), ' ', testing_y.size())
 
 
-new_training_x=torch.cat((training_x,training_itpc ) , 1)
+new_training_x=torch.cat(( training_x_spike,training_itpc ) , 1)
 print('new_training_x= ', new_training_x.size())
 
-new_testing_x=torch.cat((testing_x, testing_itpc), 1)
+new_testing_x=torch.cat(( testing_x_spike, testing_itpc), 1)
 
 
 for k in range(new_training_x.size(0)):
