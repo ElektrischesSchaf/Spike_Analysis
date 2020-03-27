@@ -27,7 +27,7 @@ my_parameters=my_parameters.my_parameters()
 
 session_name=my_parameters.session_name
 # nwb file
-nwb_filename = '../../../../Dataset/The_nwb_Raw_Dataset/'+session_name+'.nwb'
+nwb_filename = '../../../Dataset/The_nwb_Raw_Dataset/'+session_name+'.nwb'
 nwb_file = h5py.File(nwb_filename, 'r')
 data = nwb_file['/acquisition/timeseries/broadband/data']
 conversion = data.attrs['conversion']
@@ -36,7 +36,7 @@ nwb_timestamp = nwb_file['/acquisition/timeseries/broadband/timestamps']
 
 # mat file
 
-mat_file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
+mat_file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 mat_file=h5py.File(mat_file_name_1, 'r')
 mat_timestamp=mat_file.get('t')
 mat_timestamp=np.array(mat_timestamp)
