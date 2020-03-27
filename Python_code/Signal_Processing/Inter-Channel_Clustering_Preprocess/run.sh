@@ -1,3 +1,4 @@
+#!/bin/bash
 python ./0_5-40Hz/Raw_Data_to_nwb_ITPC_csv_96_Channels.py
 python ./0_5-40Hz/nwb_ITPC_csv_to_mat_ITPC_csv_96_Channels.py
 python ./0_5-4Hz/Raw_Data_to_nwb_ITPC_csv_96_Channels.py
