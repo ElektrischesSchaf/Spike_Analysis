@@ -124,7 +124,7 @@ for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs)
 
             # Write result to csv
             CWD = os.path.abspath(__file__)
-            CWD=os.path.join(CWD,'..')
+            # CWD=os.path.join(CWD,'..')
             if 'Inter-Channel_Clustering_Output_Table' not in CWD:
                 CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
                 if not os.path.exists(CWD):
