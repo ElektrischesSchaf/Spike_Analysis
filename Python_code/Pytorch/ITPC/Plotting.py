@@ -23,6 +23,7 @@ from tqdm import tqdm_notebook as tqdm
 from tqdm import trange
 from sklearn import datasets, svm, metrics
 from sklearn.metrics import mean_squared_error, r2_score
+import seaborn as sns
 
 # My module
 import sys
@@ -33,11 +34,16 @@ import data_processing.load_mat_file as load_mat_file
 
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
-
-file_name_1='../../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
+session_name='indy_20161007_02'
+file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
-bandwidth_token='0_5-40Hz'
+band_start=4
+band_cutoff=8
+if band_start==0.5:
+    bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
+else:
+    bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
 
 file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
 file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
@@ -341,6 +347,8 @@ print('new_training_x= ', new_training_x.size())
 new_testing_x=torch.cat(( testing_x_spike, testing_itpc), 1)
 
 
+
+
 for k in range(new_training_x.size(0)):
 
     for i in range(96):
@@ -379,242 +387,165 @@ new_training_x=new_training_x[:,:96]
 new_testing_x=new_testing_x[:,:96]
 
 
-# Neural Network
-batch_size = 16
-learning_rate=1e-3
-max_epoch=200
+# Start plotting
+reduce_time_bin=500
+my_fontsize=30
+my_plot_width=30
+my_plot_height=my_plot_width
 
-# LSTM
-hidden_dim=100
-layer_dim=2
-output_dim=1
+# Figure
+plt.figure(figsize=(my_plot_width, my_plot_height/2 ))
 
-
-training_dataset=AbstractDataset(new_training_x, training_y)
-testing_dataset=AbstractDataset(new_testing_x, testing_y)
-
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-class LSTMModel(torch.nn.Module):
-    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
-        super(LSTMModel, self).__init__()
-        # Hidden dimensions
-        self.hidden_dim = hidden_dim
-        
-        # Number of hidden layers
-        self.layer_dim = layer_dim
-        
-        # Building your LSTM
-        # batch_first=True causes input/output tensors to be of shape
-        # (batch_dim, seq_dim, feature_dim)
-        self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=True)
-        
-        # Readout layer
-        # self.fc = torch.nn.Linear(hidden_dim, output_dim) # one-directional
-        self.fc = torch.nn.Linear(hidden_dim*2, output_dim) # bidirectional
-    
-    def forward(self, x):
-
-        x=x.unsqueeze(0)
-
-        # Initialize hidden state with zeros
-        # h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-        h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
-        h0=h0.to(device)
-
-        # Initialize cell state
-        # c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-        c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
-        c0=c0.to(device)
-
-        # time steps
-        out, (hn, cn) = self.lstm(x, (h0,c0))
-
-        '''
-        Index hidden state of last time step
-        out.size() --> 100, 28, 100
-        out[:, -1, :] --> 100, 100 --> just want last time step hidden states! 
-        out = self.fc(out[:, -1, :]) 
-        out.size() --> 100, 10
-        '''
-        out = self.fc(out)
-
-        out=out.squeeze(0)
-
-        return out
-
-net = LSTMModel(input_dim=new_training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
-# print(net)  # net architecture
-optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
-loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
-net.to(device)
-history = {'train':[],'valid':[]}
-
-
-def _run_epoch(epoch, mode):
-    net.train(True)
-    if mode=='train':
-        descrpition='Train'
-        dataset=training_dataset
-        schuffle=False
-    else:
-        descrpition='Valid'
-        dataset=testing_dataset
-        shuffle=False
-    dataloader=torch.utils.data.DataLoader(dataset=dataset,
-                                            batch_size=batch_size,
-                                            shuffle=False
-                                            #collate_fn=dataset.collate_fn,
-                                            )
-    trange=tqdm(enumerate(dataloader), total=len(dataloader), desc=descrpition)
-    loss=0
-
-    my_prediction = []
-    real_y_all=[]
-
-    for i, (x, y) in trange:
-
-        # LSTM batch
-        # if(x.size()[0] is not batch_size):
-        #     continue
-
-        o_labels, batch_loss = _run_iter(x,y)
-
-        if mode=='train':
-            optimizer.zero_grad()   # clear gradients for next train
-            batch_loss.backward()         # backpropagation, compute gradients
-            optimizer.step()        # apply gradients
-
-        loss+=batch_loss.item()
-
-        real_y=y.cpu().data.numpy()
-        for ele in o_labels.cpu().data.numpy():
-            my_prediction.append(ele)
-
-        for ele in real_y:
-            real_y_all.append(ele)
-        
-        R_square=r2_score( real_y_all, my_prediction)
-
-        trange.set_postfix(loss=loss/(i+1), R_square=R_square)
-
-    if mode=='train':
-        history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
-        # writer.add_scalar('Loss/train', loss/len(trange), epoch)
-    else:
-        history['valid'].append({'loss':loss/len(trange), 'R^2': R_square })
-        # writer.add_scalar('Loss/valid', loss/len(trange), epoch)
-    trange.close()
-
-def _run_iter(x,y):
-    feature = x.to(device)
-    labels = y.to(device)
-    #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
-    o_labels = net(feature)
-    #print('The output shape: ', o_labels.shape, ' The label shape: ', labels.shape, '\n')
-    l_loss = loss_func(o_labels, labels)
-    return o_labels, l_loss
-
-def save(epoch):
-    if not os.path.exists(os.path.join(CWD,'save')):
-        os.makedirs(os.path.join(CWD,'save'))
-    torch.save(net.state_dict(), os.path.join( CWD,'save/model.pkl.'+str(epoch) ))
-    with open( os.path.join( CWD,'save/history.json'), 'w') as f:
-        json.dump(history, f, indent=4)
-
-for epoch in range(max_epoch):
-    print('Epoch: {}'.format(epoch))
-    _run_epoch(epoch, 'train')
-    _run_epoch(epoch, 'valid')
-    save(epoch)
-
-# Plot the training results 
-with open(os.path.join(CWD,'save/history.json'), 'r') as f:
-    history = json.loads(f.read())
-    
-train_loss = [l['loss'] for l in history['train']]
-valid_loss = [l['loss'] for l in history['valid']]
-
-train_R_square = [l['R^2'] for l in history['train']]
-valid_R_square = [l['R^2'] for l in history['valid']]
-
-
-plt.figure(figsize=(7,5))
-plt.title('LSTM Loss')
-plt.plot(train_loss, label='train')
-plt.plot(valid_loss, label='valid')
-plt.xlabel('Epoch')
-plt.legend()
+plt.subplot(211)
+plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
+# plt.title('test')
+sns.set(font_scale=3)
+ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=True, cmap='seismic')
+plt.xlabel('Samples', fontsize=my_fontsize, color="black")
+plt.ylabel('Channels', fontsize=my_fontsize, color="black")
 plt.tight_layout()
-plt.savefig("LSTM_Loss.png")
 
-plt.figure(figsize=(7,5))
-plt.title('LSTM performance')
-plt.plot(train_R_square, label='train')
-plt.plot(valid_R_square, label='valid')
-plt.xlabel('Epoch')
-plt.ylabel('R square')
-plt.legend()
+
+
+plt.subplot(212)
+plt.title(  session_name + ' Phase of firing '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
+# plt.title('test')
+sns.set(font_scale=3)
+ax = sns.heatmap( torch.transpose(new_training_x[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=True, cmap='seismic')
+plt.xlabel('Samples', fontsize=my_fontsize, color="black")
+plt.ylabel('Channels', fontsize=my_fontsize, color="black")
 plt.tight_layout()
-plt.savefig("LSTM_R-square.png")
-
-#global my_prediction
-#global real_y_all
 
 
-best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['valid'])])
-print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')
-print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['valid'])]))
+plt.savefig(session_name + ' FR vs Phase of firing '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz'+'.png')
+
+plt.clf()
+plt.cla()
+plt.close()
+
+plt.figure(figsize=(my_plot_width,  my_plot_height/4 ))
+plt.title(  session_name + ' x velocity', fontsize=30, color="black")
+plt.scatter( time_stamp_64ms[:reduce_time_bin] , torch.transpose(training_y[:reduce_time_bin,:],0,1), s=50, c='blue')
+plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
+plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
+plt.ylabel('Velocity', fontsize=my_fontsize, color="black")
+plt.tight_layout()
+plt.savefig('Label_x-velocity.png')
+
+plt.clf()
+plt.cla()
+plt.close()
+
+plt.figure(figsize=(my_plot_width, my_plot_height/2))
+
+plt.subplot(211)
+plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
+# plt.title('test')
+sns.set(font_scale=3)
+ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
+plt.xlabel('Samples', fontsize=my_fontsize, color="black")
+plt.ylabel('Channels', fontsize=my_fontsize, color="black")
+plt.tight_layout()
+
+plt.subplot(212)
+sns.set(font_scale=3)
+plt.scatter( time_stamp_64ms[:reduce_time_bin] , ( torch.transpose(training_itpc_angle[:reduce_time_bin,:],0,1) ), s=50, c='blue')
+plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
+plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
+plt.ylabel('Average Phase', fontsize=my_fontsize, color="black")
+plt.tight_layout()
+
+plt.savefig('FR vs average phase.png')
 
 
-# Testing
-best_model=best_epoch # TODO
-net.load_state_dict(state_dict=torch.load(os.path.join(CWD,'save/model.pkl.{}'.format(best_model))))
-net.train(False)
-# start testing
-dataloader = DataLoader(dataset=testing_dataset,
-                            batch_size=batch_size,
-                            shuffle=False
-                            #collate_fn=testData.collate_fn,
-                            #num_workers=8
-                            )
-trange = tqdm(enumerate(dataloader), total=len(dataloader), desc='Predict')
-my_prediction = []
-real_y_all=[]
+plt.clf()
+plt.cla()
+plt.close()
 
-for i, (x, testing_y) in trange:
+plt.figure(figsize=(my_plot_width, my_plot_height/2))
 
-    # LSTM batch
-    # if(x.size()[0] is not batch_size):
-    #     continue
+plt.subplot(211)
+plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
+# plt.title('test')
+sns.set(font_scale=3)
+ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
+plt.xlabel('Samples', fontsize=my_fontsize, color="black")
+plt.ylabel('Channels', fontsize=my_fontsize, color="black")
+plt.tight_layout()
 
-    o_labels = net(x.to(device))
-    real_y=testing_y.cpu().data.numpy()
-    for ele in o_labels.cpu().data.numpy():
-        my_prediction.append(ele)
+plt.subplot(212)
+sns.set(font_scale=3)
+plt.scatter( time_stamp_64ms[:reduce_time_bin] , abs( torch.transpose(training_itpc_angle[:reduce_time_bin,:],0,1) ), s=50, c='blue')
+plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
+plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
+plt.ylabel('abs(Average Phase)', fontsize=my_fontsize, color="black")
+plt.tight_layout()
 
-    for ele in real_y:
-        real_y_all.append(ele)
+plt.savefig('FR vs abs(average phase).png')
 
-print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
+plt.clf()
+plt.cla()
+plt.close()
+
+plt.figure(figsize=(my_plot_width, my_plot_height/2))
+
+plt.subplot(311)
+plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
+# plt.title('test')
+sns.set(font_scale=3)
+ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
+plt.xlabel('Samples', fontsize=my_fontsize, color="black")
+plt.ylabel('Channels', fontsize=my_fontsize, color="black")
+plt.tight_layout()
+
+plt.subplot(312)
+sns.set(font_scale=3)
+plt.scatter( time_stamp_64ms[:reduce_time_bin] , abs( torch.transpose(training_itpc_angle[:reduce_time_bin,:],0,1) ), s=50, c='blue')
+plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
+plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
+plt.ylabel('abs(Average Phase)', fontsize=my_fontsize, color="black")
+plt.tight_layout()
+
+plt.subplot(313)
+sns.set(font_scale=3)
+plt.scatter( time_stamp_64ms[:reduce_time_bin] , ( torch.transpose(training_itpc_abs[:reduce_time_bin,:],0,1) ), s=50, c='blue')
+plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
+plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
+plt.ylabel('Synchronicity', fontsize=my_fontsize, color="black")
+plt.tight_layout()
+
+plt.savefig('FR vs abs(average phase) vs sync.png')
 
 
-x_velocity_predict=my_prediction
-plot.figure(figsize=(15,5))
-plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
-plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
-plot.legend(loc='upper right')
-plot.title('LSTM Model: velocity x prediction and ground truth (Spike+ITPC)')
-plot.xlabel('time (second)')
-plot.ylabel('x velocity')
-axes = plot.gca()
-axes.set_xlim([725, 745])
-plot.tight_layout()
-plot.savefig('LSTM_x-velocity_predict.png' )
+plt.clf()
+plt.cla()
+plt.close()
 
-plot.cla()
-plot.clf()
+plt.figure(figsize=(my_plot_width, my_plot_height/2))
 
+plt.subplot(311)
+plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
+# plt.title('test')
+sns.set(font_scale=3)
+ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
+plt.xlabel('Samples', fontsize=my_fontsize, color="black")
+plt.ylabel('Channels', fontsize=my_fontsize, color="black")
+plt.tight_layout()
 
-tEnd=time.time()
-print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
+plt.subplot(312)
+sns.set(font_scale=3)
+plt.scatter( time_stamp_64ms[:reduce_time_bin] , ( torch.transpose(training_itpc_angle[:reduce_time_bin,:],0,1) ), s=50, c='blue')
+plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
+plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
+plt.ylabel('Average Phase', fontsize=my_fontsize, color="black")
+plt.tight_layout()
+
+plt.subplot(313)
+sns.set(font_scale=3)
+plt.scatter( time_stamp_64ms[:reduce_time_bin] , ( torch.transpose(training_itpc_abs[:reduce_time_bin,:],0,1) ), s=50, c='blue')
+plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
+plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
+plt.ylabel('Synchronicity', fontsize=my_fontsize, color="black")
+plt.tight_layout()
+
+plt.savefig('FR vs average phase vs sync.png')

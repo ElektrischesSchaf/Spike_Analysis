@@ -34,10 +34,16 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-file_name_1='../../../Dataset/Sorted_Spike_Dataset/indy_20161007_02.mat'
+session_name='indy_20161007_02'
+file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
-bandwidth_token='0_5-40Hz'
+band_start=0.5
+band_cutoff=40
+if band_start==0.5:
+    bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
+else:
+    bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
 
 file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
 file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
@@ -352,7 +358,7 @@ for k in range(new_training_x.size(0)):
         # absolute
         new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
-
+        # no absolute
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
 
         # Concatenate
@@ -369,8 +375,8 @@ for k in range(new_testing_x.size(0)):
         # absolute
         new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
-
-        # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]        
+        # no absolute
+        # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]
 
         # Concatenate
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
