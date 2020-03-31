@@ -39,7 +39,7 @@ file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
 band_start=0.5
-band_cutoff=40
+band_cutoff=4
 if band_start==0.5:
     bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
 else:
@@ -356,12 +356,13 @@ for k in range(new_training_x.size(0)):
         # Phase-of-Firing
 
         # absolute
-        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
+        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
         # no absolute
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
 
         # Concatenate
+        new_training_x[k,-2]=abs(new_training_x[k,-2])
         # new_training_x[k,-2]=abs(new_training_x[k,-2])*new_training_x[k,-1]
 
 
@@ -373,16 +374,17 @@ for k in range(new_testing_x.size(0)):
         # Phase-of-Firing
 
         # absolute
-        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
         # no absolute
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]
 
         # Concatenate
+        new_testing_x[k,-2]=abs(new_testing_x[k,-2])
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
 
-new_training_x=new_training_x[:,:96]
-new_testing_x=new_testing_x[:,:96]
+new_training_x=new_training_x[:,:97]
+new_testing_x=new_testing_x[:,:97]
 
 
 # Neural Network
