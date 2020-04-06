@@ -45,9 +45,9 @@ if band_start==0.5:
 else:
     bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
 
-file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
-file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
-file_itpc_time_stamp_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
+file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
+file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
+file_itpc_time_stamp_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
 
 tStart=time.time()
 time_stamp_64ms=[]
@@ -242,10 +242,20 @@ for session_index in range(file_numbers):
 
 # Write featrue and label to csv files
 CWD = os.getcwd()
-if 'LSTM' not in CWD:
-    CWD = os.path.join(CWD, 'LSTM')
+model_name='LSTM'
+
+if model_name not in CWD:
+    CWD = os.path.join(CWD, model_name)
     if not os.path.exists(CWD):
         os.mkdir(CWD)
+
+plot_path = os.path.join(CWD, 'plots')
+if not os.path.exists(plot_path):
+    os.mkdir(plot_path)
+
+plot_path = os.path.join(plot_path, session_name )
+if not os.path.exists(plot_path):
+    os.mkdir(plot_path)
 
 csv_path=os.path.join(CWD,'csv_files')
 if not os.path.exists(csv_path):
@@ -351,12 +361,12 @@ for k in range(new_training_x.size(0)):
 
     for i in range(96):
         # pass
-        new_training_x[k,-2]=abs(new_training_x[k,-2])
+        # new_training_x[k,-2]=abs(new_training_x[k,-2])
 
         # Phase-of-Firing
 
         # absolute
-        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
+        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
         # no absolute
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
@@ -369,12 +379,12 @@ for k in range(new_training_x.size(0)):
 for k in range(new_testing_x.size(0)):
     for i in range(96):
         # pass
-        new_testing_x[k,-2]=abs(new_testing_x[k,-2])
+        # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
 
         # Phase-of-Firing
 
         # absolute
-        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
         # no absolute
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]
@@ -383,8 +393,8 @@ for k in range(new_testing_x.size(0)):
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
 
-new_training_x=new_training_x[:,:]
-new_testing_x=new_testing_x[:,:]
+new_training_x=new_training_x[:,:96]
+new_testing_x=new_testing_x[:,:96]
 
 
 # Neural Network
@@ -548,23 +558,23 @@ valid_R_square = [l['R^2'] for l in history['valid']]
 
 
 plt.figure(figsize=(7,5))
-plt.title('LSTM Loss')
+plt.title(model_name+' Loss')
 plt.plot(train_loss, label='train')
 plt.plot(valid_loss, label='valid')
 plt.xlabel('Epoch')
 plt.legend()
 plt.tight_layout()
-plt.savefig("LSTM_Loss.png")
+plt.savefig( plot_path +'/'+model_name+'_Loss.png')
 
 plt.figure(figsize=(7,5))
-plt.title('LSTM performance')
+plt.title( model_name+ ' performance')
 plt.plot(train_R_square, label='train')
 plt.plot(valid_R_square, label='valid')
 plt.xlabel('Epoch')
 plt.ylabel('R square')
 plt.legend()
 plt.tight_layout()
-plt.savefig("LSTM_R-square.png")
+plt.savefig( plot_path+'/'+ model_name +'_R-square.png')
 
 #global my_prediction
 #global real_y_all
@@ -612,13 +622,13 @@ plot.figure(figsize=(15,5))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right')
-plot.title('LSTM Model: velocity x prediction and ground truth (Spike+ITPC)')
+plot.title(model_name+' Model: velocity x prediction and ground truth (Spike+ITPC)')
 plot.xlabel('time (second)')
 plot.ylabel('x velocity')
 axes = plot.gca()
 axes.set_xlim([725, 745])
 plot.tight_layout()
-plot.savefig('LSTM_x-velocity_predict.png' )
+plot.savefig(plot_path +'/'+ model_name+'_x-velocity_predict.png' )
 
 plot.cla()
 plot.clf()

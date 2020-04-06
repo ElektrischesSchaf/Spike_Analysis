@@ -45,9 +45,9 @@ if band_start==0.5:
 else:
     bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
 
-file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
-file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
-file_itpc_time_stamp_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
+file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
+file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
+file_itpc_time_stamp_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
 
 tStart=time.time()
 time_stamp_64ms=[]
