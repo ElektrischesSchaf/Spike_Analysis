@@ -16,7 +16,7 @@ import time
 tStart=time.time()
 # Load my module
 import sys
-sys.path.append("..") # Adds higher directory to python modules path
+sys.path.append('..') # Adds higher directory to python modules path
 import Inter_Channel_Module.parameters as my_parameters
 import Inter_Channel_Module.buttersworth_filter as buttersworth_filter
 
@@ -31,8 +31,8 @@ plot_time_duration=my_parameters.plot_time_duration
 end_second=-2
 last_mat_timestep=-1
 
-band_start=my_parameters.band_start
-band_cutoff=my_parameters.band_cutoff
+band_start=0.5
+band_cutoff=40
 session_name=my_parameters.session_name
 
 if band_start ==0.5:
@@ -105,8 +105,9 @@ while(is_last_loop==False):
     # for channel_number_yee in good_channel_list_start_from_one:
         # channel_number_yee=channel_number_yee-1
         channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number_yee]
-        filtered_data_1=buttersworth_filter.butter_highpass_filter(channel_1, band_start, sampling_rate, order=2)
-        filtered_data_1=buttersworth_filter.butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=2)
+        # filtered_data_1=buttersworth_filter.butter_highpass_filter(channel_1, band_start, sampling_rate, order=2)
+        # filtered_data_1=buttersworth_filter.butter_lowpass_filter(filtered_data_1, band_cutoff, sampling_rate, order=2)
+        filtered_data_1=buttersworth_filter.butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=2)
         analytic_signal_1 = hilbert(filtered_data_1)
         instantaneous_phase = np.angle(analytic_signal_1)
         instance_phase_all_channels.append(instantaneous_phase)
@@ -136,14 +137,17 @@ while(is_last_loop==False):
 
     print('len of new_nwb_time_stamp= ', len(new_nwb_time_stamp), '\n')
     # Write result to csv
-    CWD =  os.getcwd()
+    CWD = os.getcwd()
     # CWD= os.path.join('..')
-
     if 'Inter-Channel_Clustering_Output_Table' not in CWD:
         CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
         if not os.path.exists(CWD):
                 os.mkdir(CWD)
-                
+
+    if session_name not in CWD:
+        CWD=os.path.join(CWD, session_name)
+        if not os.path.exists(CWD):
+            os.mkdir(CWD)
 
 
     if bandwidth_token not in CWD:

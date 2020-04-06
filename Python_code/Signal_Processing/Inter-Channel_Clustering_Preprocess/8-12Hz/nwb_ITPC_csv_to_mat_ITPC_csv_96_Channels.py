@@ -19,7 +19,7 @@ import time
 tStart=time.time()
 # Load my module
 import sys
-sys.path.append("..") # Adds higher directory to python modules path
+sys.path.append('..') # Adds higher directory to python modules path
 import Inter_Channel_Module.parameters as my_parameters
 import Inter_Channel_Module.buttersworth_filter as buttersworth_filter
 my_parameters=my_parameters.my_parameters()
@@ -46,9 +46,9 @@ delta= nwb_timestamp[1,]- nwb_timestamp[0,]
 bandwidth_token='8-12Hz'
 
 
-High_angle='Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/24kHz/24kHz_angle.csv'
-High_abs='Inter-Channel_Clustering_Output_Table/'+bandwidth_token+'/24kHz/24kHz_abs.csv'
-new_nwb_time_stamp='Inter-Channel_Clustering_Output_Table/0_5-40Hz/24kHz/24kHz_nwb_time_stamp.csv'
+High_angle='Inter-Channel_Clustering_Output_Table/'+ session_name +'/'+bandwidth_token+'/24kHz/24kHz_angle.csv'
+High_abs='Inter-Channel_Clustering_Output_Table/'+ session_name +'/'+bandwidth_token+'/24kHz/24kHz_abs.csv'
+new_nwb_time_stamp='Inter-Channel_Clustering_Output_Table/'+ session_name +'/'+bandwidth_token+'/24kHz/24kHz_nwb_time_stamp.csv'
 chunksize = 1e5
 
 
@@ -123,17 +123,23 @@ for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs)
             ITPC_angle_250Hz=np.array(ITPC_angle_250Hz).transpose()
 
             # Write result to csv
-            CWD =  os.getcwd()
-            # CWD=os.path.join(CWD,'..')
+            CWD = os.getcwd()
+            # CWD= os.path.join('..')
+            
             if 'Inter-Channel_Clustering_Output_Table' not in CWD:
                 CWD=os.path.join(CWD, 'Inter-Channel_Clustering_Output_Table')
                 if not os.path.exists(CWD):
-                        os.mkdir(CWD)   
+                    os.mkdir(CWD)
+
+            if session_name not in CWD:
+                CWD=os.path.join(CWD, session_name)
+                if not os.path.exists(CWD):
+                    os.mkdir(CWD)
 
             if bandwidth_token not in CWD:
                 CWD=os.path.join(CWD, bandwidth_token )
                 if not os.path.exists(CWD):
-                        os.mkdir(CWD)
+                    os.mkdir(CWD)
 
             csv_path=os.path.join(CWD, '250Hz')
             if not os.path.exists(csv_path):
