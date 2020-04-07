@@ -402,7 +402,7 @@ new_testing_x=new_testing_x[:,:96]
 
 
 # Neural Network
-batch_size = 16
+batch_size = 32
 learning_rate=1e-3
 max_epoch=200
 

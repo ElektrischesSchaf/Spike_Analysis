@@ -280,7 +280,7 @@ testing_x=testing_x.float()
 testing_y=testing_y.float()
 
 # Neural Network
-batch_size = 16
+batch_size = 32
 learning_rate=1e-3
 
 max_epoch=300
