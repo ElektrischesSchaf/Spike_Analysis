@@ -38,8 +38,8 @@ session_name='indy_20161007_02'
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
-band_start=4
-band_cutoff=8
+band_start=0.5
+band_cutoff=4
 if band_start==0.5:
     bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
 else:
