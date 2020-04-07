@@ -26,22 +26,29 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 # My module
 import sys
-sys.path.append("..") # Adds higher directory to python modules path.
+sys.path.append("../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
+
 
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 session_name='indy_20161007_02'
+file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
+file_list=[file_name_1]
 
-file_name_1='../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
-# file_name_2='../../Dataset/Sorted_Spike_Dataset/indy_20160411_01.mat'
-# file_name_3='../../Dataset/Sorted_Spike_Dataset/indy_20160411_02.mat'
-# file_name_4='../../Dataset/Sorted_Spike_Dataset/indy_20160418_01.mat'
-# file_name_5='../../Dataset/Sorted_Spike_Dataset/indy_20160419_01.mat'
-# file_name_6='../../Dataset/Sorted_Spike_Dataset/indy_20160420_01.mat'
-# file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
+band_start=0.5
+band_cutoff=4
+if band_start==0.5:
+    bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
+else:
+    bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
+
+file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
+file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
+file_itpc_time_stamp_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Inter-Channel_Clustering_Output_Table/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
+
 tStart=time.time()
 time_stamp_64ms=[]
 ###################################### Auto-assigned parameters
@@ -59,6 +66,7 @@ time_lag=my_parameters.time_lag
 order=my_parameters.order
 with_sorted_spikes=my_parameters.with_sorted_spikes
 include_hash_unit=my_parameters.include_hash_unit
+
 
 # Must know these two numbers beforehand
 channel_numbers_in_this_dataset=96
@@ -101,12 +109,39 @@ y_acceleration_label_testing= np.empty([0])
 z_acceleration_label_training= np.empty([0])
 z_acceleration_label_testing= np.empty([0])
 
+
+# ITPC read file
+iptc_abs=pd.read_csv(file_itpc_abs_1, dtype=float)
+iptc_angle=pd.read_csv(file_itpc_angle_1, dtype=float)
+itpc_time_stamp=pd.read_csv(file_itpc_time_stamp_1, dtype=float)
+
+iptc_abs=np.array(iptc_abs)
+iptc_angle=np.array(iptc_angle)
+itpc_time_stamp=np.array(itpc_time_stamp)
+
+itpc_64ms_rate=my_parameters.the_sampling_rate
+iptc_abs=iptc_abs[::itpc_64ms_rate]
+iptc_angle=iptc_angle[::itpc_64ms_rate]
+itpc_time_stamp=itpc_time_stamp[::itpc_64ms_rate]
+
+print(iptc_abs.shape, ' ', iptc_abs.shape, ' ', itpc_time_stamp.shape)
+
+itpc_testing_data_index=int(int(len(itpc_time_stamp))*0.8) # split 80% into training
+print('itpc_testing_data_index= ',itpc_testing_data_index) # 6142
+
+
+iptc_abs_traing=iptc_abs[:itpc_testing_data_index,:] # TODO
+iptc_abs_testing=iptc_abs[itpc_testing_data_index:,:]
+
+iptc_angle_traing=iptc_angle[:itpc_testing_data_index,:]
+iptc_angle_testing=iptc_angle[itpc_testing_data_index:,:]
+
 # cross sessions control start
 for session_index in range(file_numbers):
     print('In session '+ str(session_index+1) + ': ' + '\n' )
 
-    [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
-    [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
+    [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_list[session_index], the_sampling_rate, time_stamp_64ms, include_hash_unit)
+    [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_list[session_index], the_sampling_rate, time_stamp_64ms)
 
     # Extract firing_rate_cell with rows have length bigger than zero
     firing_rate_final=[] # not[[]]
@@ -205,19 +240,22 @@ for session_index in range(file_numbers):
 
 # cross sessions control end
 
-
 # Write featrue and label to csv files
 CWD = os.getcwd()
 model_name='RNN'
+
 if model_name not in CWD:
     CWD = os.path.join(CWD, model_name)
     if not os.path.exists(CWD):
         os.mkdir(CWD)
 
-if session_name not in CWD:
-    CWD = os.path.join(CWD, session_name)
-    if not os.path.exists(CWD):
-        os.mkdir(CWD)
+CWD = os.path.join(CWD, session_name )
+if not os.path.exists(CWD):
+    os.mkdir(CWD)
+
+CWD = os.path.join(CWD, bandwidth_token )
+if not os.path.exists(CWD):
+    os.mkdir(CWD)
 
 csv_path=os.path.join(CWD,'csv_files')
 if not os.path.exists(csv_path):
@@ -226,7 +264,6 @@ if not os.path.exists(csv_path):
 plot_path = os.path.join(CWD, 'plots')
 if not os.path.exists(plot_path):
     os.mkdir(plot_path)
-
 
 df = pd.DataFrame(X_for_training)
 df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
@@ -240,6 +277,9 @@ df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
 
 df=pd.DataFrame(x_velocity_label_testing)
 df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+
+
+
 
 class AbstractDataset(Dataset):
     def __init__(self, feature_matrix, label_matrix):
@@ -259,7 +299,6 @@ class AbstractDataset(Dataset):
         print('\ndatas: ', datas)
         # return self.data, self.label
 
-
 # read from csv file
 training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
 training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)
@@ -267,7 +306,7 @@ training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), d
 training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
 training_y = torch.from_numpy(training_y.values)
 
-training_x=training_x.float()
+training_x_spike=training_x.float()
 training_y=training_y.float()
 
 testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
@@ -276,33 +315,108 @@ testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dty
 testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
 testing_y = torch.from_numpy(testing_y.values)
 
-testing_x=testing_x.float()
+testing_x_spike=testing_x.float()
 testing_y=testing_y.float()
+
+# IPTC to torch
+training_itpc_abs=torch.from_numpy(iptc_abs_traing)
+training_itpc_angle=torch.from_numpy(iptc_angle_traing)
+
+training_itpc_abs=training_itpc_abs.float()
+training_itpc_angle=training_itpc_angle.float()
+
+training_itpc=np.concatenate((training_itpc_angle, training_itpc_abs ), axis=1)
+
+training_itpc=torch.from_numpy(training_itpc)
+
+testing_itpc_abs=torch.from_numpy(iptc_abs_testing)
+testing_itpc_angle=torch.from_numpy(iptc_angle_testing)
+
+testing_itpc_abs=testing_itpc_abs.float()
+testing_itpc_angle=testing_itpc_angle.float()
+
+
+
+print(training_itpc_abs.size(), ' ',training_x.size() )
+print(testing_itpc_abs.size(), ' ',testing_x.size() )
+
+length_difference=abs(testing_x.size()[0]-testing_itpc_abs.size()[0])
+print(length_difference)
+
+if length_difference !=0:
+    print(testing_itpc_abs.size(), ' ',testing_x[:,:].size() )
+
+    testing_itpc_abs=testing_itpc_abs[:-length_difference,:]
+    testing_itpc_angle=testing_itpc_angle[:-length_difference,:]
+
+testing_itpc=np.concatenate((testing_itpc_angle, testing_itpc_abs), axis=1) 
+testing_itpc=torch.from_numpy(testing_itpc)
+
+print(testing_itpc_abs.size(), ' ', testing_y.size())
+
+
+new_training_x=torch.cat(( training_x_spike,training_itpc ) , 1)
+print('new_training_x= ', new_training_x.size())
+
+new_testing_x=torch.cat(( testing_x_spike, testing_itpc), 1)
+
+
+for k in range(new_training_x.size(0)):
+
+    for i in range(96):
+        # pass
+        # new_training_x[k,-2]=abs(new_training_x[k,-2])
+
+        # Phase-of-Firing
+
+        # absolute
+        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
+        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
+        # no absolute
+        # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
+
+        # Concatenate
+        # new_training_x[k,-2]=abs(new_training_x[k,-2])
+        # new_training_x[k,-2]=abs(new_training_x[k,-2])*new_training_x[k,-1]
+
+
+for k in range(new_testing_x.size(0)):
+    for i in range(96):
+        # pass
+        # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
+
+        # Phase-of-Firing
+
+        # absolute
+        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
+        # no absolute
+        # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]
+
+        # Concatenate
+        # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
+        # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+
+new_training_x=new_training_x[:,:96]
+new_testing_x=new_testing_x[:,:96]
+
 
 # Neural Network
 batch_size = 32
 learning_rate=1e-3
+max_epoch=200
 
-max_epoch=300
-
-# LSTM
+# RNN
 hidden_dim=100
 layer_dim=2
 output_dim=1
 
-training_dataset=AbstractDataset(training_x,training_y)
-testing_dataset=AbstractDataset(testing_x, testing_y)
 
-# TODO collate_fn
-# train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
-# train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
-# test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)
+training_dataset=AbstractDataset(new_training_x, training_y)
+testing_dataset=AbstractDataset(new_testing_x, testing_y)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# All models fit and predict, show R2 score
-
-# this is one way to define a network
 class RNNModel(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
         super(RNNModel, self).__init__()
@@ -351,7 +465,8 @@ class RNNModel(torch.nn.Module):
 
         return out
 
-net = RNNModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+net = RNNModel(input_dim=new_training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+
 # print(net)  # net architecture
 optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -382,7 +497,7 @@ def _run_epoch(epoch, mode):
 
     for i, (x, y) in trange:
 
-        # LSTM batch
+        # RNN batch
         # if(x.size()[0] is not batch_size):
         #     continue
 
@@ -454,17 +569,17 @@ plt.plot(valid_loss, label='valid')
 plt.xlabel('Epoch')
 plt.legend()
 plt.tight_layout()
-plt.savefig(plot_path + '/' + model_name+"_Loss.png")
+plt.savefig( plot_path +'/'+model_name+'_Loss.png')
 
 plt.figure(figsize=(7,5))
-plt.title(model_name+' performance')
+plt.title( model_name+ ' performance')
 plt.plot(train_R_square, label='train')
 plt.plot(valid_R_square, label='valid')
 plt.xlabel('Epoch')
 plt.ylabel('R square')
 plt.legend()
 plt.tight_layout()
-plt.savefig(plot_path + '/' +model_name+"_R-square.png")
+plt.savefig( plot_path+'/'+ model_name +'_R-square.png')
 
 #global my_prediction
 #global real_y_all
@@ -492,7 +607,7 @@ real_y_all=[]
 
 for i, (x, testing_y) in trange:
 
-    # LSTM batch
+    # RNN batch
     # if(x.size()[0] is not batch_size):
     #     continue
 
@@ -507,24 +622,24 @@ for i, (x, testing_y) in trange:
 print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
 testing_data_r_square=r2_score( real_y_all, my_prediction)
 
-
 x_velocity_predict=my_prediction
-plot.figure(figsize=(30,10))
+plot.figure(figsize=(30, 10))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right', fontsize=20)
-plot.title(model_name+' Model: velocity x prediction and ground truth (Spike Only), R sqaure= '+str( round( testing_data_r_square, 4) ),fontsize=30)
-plot.xlabel('Time (second)', fontsize=25)
-plot.ylabel('x velocity', fontsize=25)
+plot.title(model_name+' Model: velocity x prediction and ground truth (Spike+ITPC), R sqaure= '+str( round( testing_data_r_square, 4) ), fontsize=30, color="black")
+plot.xlabel('time (second)', fontsize=25, color="black")
+plot.ylabel('x velocity', fontsize=25, color="black")
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 axes = plot.gca()
 axes.set_xlim([725, 745])
 plot.tight_layout()
-plot.savefig( plot_path + '/' +model_name+'_x-velocity_predict.png' )
+plot.savefig(plot_path +'/'+ model_name+'_x-velocity_predict.png' )
 
 plot.cla()
 plot.clf()
+
 
 tEnd=time.time()
 print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
