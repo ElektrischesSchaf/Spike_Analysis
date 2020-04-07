@@ -38,8 +38,8 @@ session_name='indy_20161007_02'
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
-band_start=4
-band_cutoff=8
+band_start=8
+band_cutoff=12
 if band_start==0.5:
     bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
 else:
@@ -393,6 +393,21 @@ my_fontsize=30
 my_plot_width=30
 my_plot_height=my_plot_width
 
+CWD = os.getcwd()
+
+if 'Data_Visualization' not in CWD:
+    CWD = os.path.join(CWD, 'Data_Visualization')
+    if not os.path.exists(CWD):
+        os.mkdir(CWD)
+
+plot_path = os.path.join(CWD, session_name )
+if not os.path.exists(plot_path):
+    os.mkdir(plot_path)
+
+plot_path = os.path.join(plot_path, bandwidth_token )
+if not os.path.exists(plot_path):
+    os.mkdir(plot_path)
+
 # Figure
 plt.figure(figsize=(my_plot_width, my_plot_height/2 ))
 
@@ -417,7 +432,7 @@ plt.ylabel('Channels', fontsize=my_fontsize, color="black")
 plt.tight_layout()
 
 
-plt.savefig(session_name + ' FR vs Phase of firing '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz'+'.png')
+plt.savefig(plot_path+'/' +' FR vs Phase of firing '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz'+'.png')
 
 plt.clf()
 plt.cla()
@@ -430,7 +445,7 @@ plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
 plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
 plt.ylabel('Velocity', fontsize=my_fontsize, color="black")
 plt.tight_layout()
-plt.savefig('Label_x-velocity.png')
+plt.savefig(plot_path+'/' +'Label_x-velocity.png')
 
 plt.clf()
 plt.cla()
@@ -455,7 +470,7 @@ plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
 plt.ylabel('Average Phase', fontsize=my_fontsize, color="black")
 plt.tight_layout()
 
-plt.savefig('FR vs average phase.png')
+plt.savefig(plot_path+'/' 'FR vs average phase.png')
 
 
 plt.clf()
@@ -481,7 +496,7 @@ plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
 plt.ylabel('abs(Average Phase)', fontsize=my_fontsize, color="black")
 plt.tight_layout()
 
-plt.savefig('FR vs abs(average phase).png')
+plt.savefig(plot_path+'/' 'FR vs abs(average phase).png')
 
 plt.clf()
 plt.cla()
@@ -514,7 +529,7 @@ plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
 plt.ylabel('Synchronicity', fontsize=my_fontsize, color="black")
 plt.tight_layout()
 
-plt.savefig('FR vs abs(average phase) vs sync.png')
+plt.savefig(plot_path+'/' 'FR vs abs(average phase) vs sync.png')
 
 
 plt.clf()
@@ -548,4 +563,4 @@ plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
 plt.ylabel('Synchronicity', fontsize=my_fontsize, color="black")
 plt.tight_layout()
 
-plt.savefig('FR vs average phase vs sync.png')
+plt.savefig(plot_path+'/' 'FR vs average phase vs sync.png')

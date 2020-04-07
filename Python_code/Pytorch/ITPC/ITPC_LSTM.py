@@ -38,8 +38,8 @@ session_name='indy_20161007_02'
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
-band_start=0.5
-band_cutoff=4
+band_start=4
+band_cutoff=8
 if band_start==0.5:
     bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
 else:
@@ -249,17 +249,21 @@ if model_name not in CWD:
     if not os.path.exists(CWD):
         os.mkdir(CWD)
 
-plot_path = os.path.join(CWD, 'plots')
-if not os.path.exists(plot_path):
-    os.mkdir(plot_path)
+CWD = os.path.join(CWD, session_name )
+if not os.path.exists(CWD):
+    os.mkdir(CWD)
 
-plot_path = os.path.join(plot_path, session_name )
-if not os.path.exists(plot_path):
-    os.mkdir(plot_path)
+CWD = os.path.join(CWD, bandwidth_token )
+if not os.path.exists(CWD):
+    os.mkdir(CWD)
 
 csv_path=os.path.join(CWD,'csv_files')
 if not os.path.exists(csv_path):
     os.mkdir(str(csv_path))
+
+plot_path = os.path.join(CWD, 'plots')
+if not os.path.exists(plot_path):
+    os.mkdir(plot_path)
 
 df = pd.DataFrame(X_for_training)
 df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
