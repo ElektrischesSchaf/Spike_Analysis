@@ -619,16 +619,18 @@ for i, (x, testing_y) in trange:
         real_y_all.append(ele)
 
 print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
-
+testing_data_r_square=r2_score( real_y_all, my_prediction)
 
 x_velocity_predict=my_prediction
-plot.figure(figsize=(15,5))
+plot.figure(figsize=(30, 10))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
-plot.legend(loc='upper right')
-plot.title(model_name+' Model: velocity x prediction and ground truth (Spike+ITPC)')
-plot.xlabel('time (second)')
-plot.ylabel('x velocity')
+plot.legend(loc='upper right', fontsize=20)
+plot.title(model_name+' Model: velocity x prediction and ground truth (Spike+ITPC), R sqaure= '+str( round( testing_data_r_square, 4) ), fontsize=30, color="black")
+plot.xlabel('time (second)', fontsize=25, color="black")
+plot.ylabel('x velocity', fontsize=25, color="black")
+plt.xticks(fontsize=20, color="black")
+plt.yticks(fontsize=20, color="black")
 axes = plot.gca()
 axes.set_xlim([725, 745])
 plot.tight_layout()

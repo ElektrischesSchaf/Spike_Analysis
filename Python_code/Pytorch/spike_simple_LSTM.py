@@ -507,53 +507,17 @@ for i, (x, testing_y) in trange:
 print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
 testing_data_r_square=r2_score( real_y_all, my_prediction)
 
-'''
-# train the network
-iter = 0
-for epoch in range(num_epochs):
-    for i, (x, y) in enumerate(train_loader):
-        prediction = net( x.to(device) ) # do not flatten     # input x and predict based on x
-        #print('size of prediction= ', prediction.shape, ' size of y= ',y.shape,'\n')
-
-        loss = loss_func(prediction, y.to(device))     # must be (1. nn output, 2. target)
-
-        optimizer.zero_grad()   # clear gradients for next train
-        loss.backward()         # backpropagation, compute gradients
-        optimizer.step()        # apply gradients
-
-        iter += 1
-
-        if iter % 1000 == 0:
-
-            my_prediction=[]
-            real_y_all=[]
-
-            for i, (testing_x, testing_y) in enumerate(test_loader):
-                prediction=net( testing_x.to(device) ).flatten()
-                real_y=testing_y.cpu().data.numpy()
-                # print('prediction=', prediction.cpu().data.numpy(),'\n')
-                for ele in prediction.cpu().data.numpy():
-                    my_prediction.append( ele )
-
-                for ele in real_y:
-                    real_y_all.append(ele)
-                # print('len of my_prediction=', len(my_prediction), '\n')
-
-            # predict from testing feature matrix
-
-            print('len of real_y_all = ', len(real_y_all), '\n len of my_prediction = ', len(my_prediction), '\n')
-            print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
-'''
-
 
 x_velocity_predict=my_prediction
-plot.figure(figsize=(15,5))
+plot.figure(figsize=(30,10))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
-plot.legend(loc='upper right')
-plot.title(model_name+' Model: velocity x prediction and ground truth (Spike Only), R sqaure= '+str(testing_data_r_square),fontsize=30)
+plot.legend(loc='upper right', fontsize=20)
+plot.title(model_name+' Model: velocity x prediction and ground truth (Spike Only), R sqaure= '+str( round( testing_data_r_square, 4) ),fontsize=30)
 plot.xlabel('Time (second)', fontsize=25)
 plot.ylabel('x velocity', fontsize=25)
+plt.xticks(fontsize=20, color="black")
+plt.yticks(fontsize=20, color="black")
 axes = plot.gca()
 axes.set_xlim([725, 745])
 plot.tight_layout()

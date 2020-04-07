@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import imageio
 import time
+tStart=time.time()
 import h5py
 torch.manual_seed(1)    # reproducible
 from tqdm import tqdm_notebook as tqdm
@@ -32,13 +33,15 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-file_name_1='../../Dataset/Sorted_Spike_Dataset/indy_20160407_02.mat'
-file_name_2='../../Dataset/Sorted_Spike_Dataset/indy_20160411_01.mat'
-file_name_3='../../Dataset/Sorted_Spike_Dataset/indy_20160411_02.mat'
-file_name_4='../../Dataset/Sorted_Spike_Dataset/indy_20160418_01.mat'
-file_name_5='../../Dataset/Sorted_Spike_Dataset/indy_20160419_01.mat'
-file_name_6='../../Dataset/Sorted_Spike_Dataset/indy_20160420_01.mat'
-file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
+session_name='indy_20161007_02'
+
+file_name_1='../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
+# file_name_2='../../Dataset/Sorted_Spike_Dataset/indy_20160411_01.mat'
+# file_name_3='../../Dataset/Sorted_Spike_Dataset/indy_20160411_02.mat'
+# file_name_4='../../Dataset/Sorted_Spike_Dataset/indy_20160418_01.mat'
+# file_name_5='../../Dataset/Sorted_Spike_Dataset/indy_20160419_01.mat'
+# file_name_6='../../Dataset/Sorted_Spike_Dataset/indy_20160420_01.mat'
+# file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
 tStart=time.time()
 time_stamp_64ms=[]
 ###################################### Auto-assigned parameters
@@ -102,8 +105,8 @@ z_acceleration_label_testing= np.empty([0])
 for session_index in range(file_numbers):
     print('In session '+ str(session_index+1) + ': ' + '\n' )
 
-    [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_list[session_index], the_sampling_rate, time_stamp_64ms, include_hash_unit)
-    [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_list[session_index], the_sampling_rate, time_stamp_64ms)
+    [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
+    [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
 
     # Extract firing_rate_cell with rows have length bigger than zero
     firing_rate_final=[] # not[[]]
@@ -205,14 +208,25 @@ for session_index in range(file_numbers):
 
 # Write featrue and label to csv files
 CWD = os.getcwd()
-if 'Perceptron' not in CWD:
-    CWD = os.path.join(CWD, 'Perceptron')
+model_name='Perceptron'
+if model_name not in CWD:
+    CWD = os.path.join(CWD, model_name)
+    if not os.path.exists(CWD):
+        os.mkdir(CWD)
+
+if session_name not in CWD:
+    CWD = os.path.join(CWD, session_name)
     if not os.path.exists(CWD):
         os.mkdir(CWD)
 
 csv_path=os.path.join(CWD,'csv_files')
 if not os.path.exists(csv_path):
     os.mkdir(str(csv_path))
+
+plot_path = os.path.join(CWD, 'plots')
+if not os.path.exists(plot_path):
+    os.mkdir(plot_path)
+
 
 df = pd.DataFrame(X_for_training)
 df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
@@ -265,12 +279,16 @@ testing_y = torch.from_numpy(testing_y.values)
 testing_x=testing_x.float()
 testing_y=testing_y.float()
 
+# Neural Network
 batch_size = 16
 learning_rate=1e-3
-n_iters = 50000
-max_epoch=100
-num_epochs = n_iters / ( (training_x.shape[0]) // batch_size )
-num_epochs = int(num_epochs)
+
+max_epoch=300
+
+# LSTM
+hidden_dim=100
+layer_dim=2
+output_dim=1
 
 training_dataset=AbstractDataset(training_x,training_y)
 testing_dataset=AbstractDataset(testing_x, testing_y)
@@ -328,6 +346,10 @@ def _run_epoch(epoch, mode):
     real_y_all=[]
 
     for i, (x, y) in trange:
+
+        # LSTM batch
+        # if(x.size()[0] is not batch_size):
+        #     continue
 
         o_labels, batch_loss = _run_iter(x,y)
 
@@ -391,23 +413,23 @@ valid_R_square = [l['R^2'] for l in history['valid']]
 
 
 plt.figure(figsize=(7,5))
-plt.title('Perceptron Loss')
+plt.title(model_name+' Loss')
 plt.plot(train_loss, label='train')
 plt.plot(valid_loss, label='valid')
 plt.xlabel('Epoch')
 plt.legend()
 plt.tight_layout()
-plt.savefig("Perceptron_Loss.png")
+plt.savefig(plot_path + '/' + model_name+"_Loss.png")
 
 plt.figure(figsize=(7,5))
-plt.title('Perceptron performance')
+plt.title(model_name+' performance')
 plt.plot(train_R_square, label='train')
 plt.plot(valid_R_square, label='valid')
 plt.xlabel('Epoch')
 plt.ylabel('R square')
 plt.legend()
 plt.tight_layout()
-plt.savefig("Perceptron_R-square.png")
+plt.savefig(plot_path + '/' +model_name+"_R-square.png")
 
 #global my_prediction
 #global real_y_all
@@ -434,6 +456,11 @@ my_prediction = []
 real_y_all=[]
 
 for i, (x, testing_y) in trange:
+
+    # LSTM batch
+    # if(x.size()[0] is not batch_size):
+    #     continue
+
     o_labels = net(x.to(device))
     real_y=testing_y.cpu().data.numpy()
     for ele in o_labels.cpu().data.numpy():
@@ -443,58 +470,26 @@ for i, (x, testing_y) in trange:
         real_y_all.append(ele)
 
 print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
-
-'''
-# train the network
-iter = 0
-for epoch in range(num_epochs):
-    for i, (x, y) in enumerate(train_loader):
-        prediction = net( x.to(device) ) # do not flatten     # input x and predict based on x
-        #print('size of prediction= ', prediction.shape, ' size of y= ',y.shape,'\n')
-
-        loss = loss_func(prediction, y.to(device))     # must be (1. nn output, 2. target)
-
-        optimizer.zero_grad()   # clear gradients for next train
-        loss.backward()         # backpropagation, compute gradients
-        optimizer.step()        # apply gradients
-
-        iter += 1
-
-        if iter % 1000 == 0:
-
-            my_prediction=[]
-            real_y_all=[]
-
-            for i, (testing_x, testing_y) in enumerate(test_loader):
-                prediction=net( testing_x.to(device) ).flatten()
-                real_y=testing_y.cpu().data.numpy()
-                # print('prediction=', prediction.cpu().data.numpy(),'\n')
-                for ele in prediction.cpu().data.numpy():
-                    my_prediction.append( ele )
-
-                for ele in real_y:
-                    real_y_all.append(ele)
-                # print('len of my_prediction=', len(my_prediction), '\n')
-
-            # predict from testing feature matrix
-
-            print('len of real_y_all = ', len(real_y_all), '\n len of my_prediction = ', len(my_prediction), '\n')
-            print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
-'''
+testing_data_r_square=r2_score( real_y_all, my_prediction)
 
 
 x_velocity_predict=my_prediction
-plot.figure(figsize=(15,5))
+plot.figure(figsize=(30,10))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
-plot.legend(loc='upper right')
-plot.title('Perceptron Model: velocity x prediction and ground truth')
-plot.xlabel('time (second)')
-plot.ylabel('x velocity')
+plot.legend(loc='upper right', fontsize=20)
+plot.title(model_name+' Model: velocity x prediction and ground truth (Spike Only), R sqaure= '+str( round( testing_data_r_square, 4) ), fontsize=30, color="black")
+plot.xlabel('Time (second)', fontsize=25, color="black")
+plot.ylabel('x velocity', fontsize=25, color="black")
+plt.xticks(fontsize=20, color="black")
+plt.yticks(fontsize=20, color="black")
 axes = plot.gca()
-axes.set_xlim([740, 760])
+axes.set_xlim([725, 745])
 plot.tight_layout()
-plot.savefig('Perceptron_x-velocity_predict.png' )
+plot.savefig( plot_path + '/' +model_name+'_x-velocity_predict.png' )
 
 plot.cla()
 plot.clf()
+
+tEnd=time.time()
+print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
