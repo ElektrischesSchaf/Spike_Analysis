@@ -98,7 +98,7 @@
 \begin{document}
 %makecell setting for fonts, spacing etc.
 
-\title{\bf{ Literature review on neural signal decoding articles }}
+\title{\bf{ Literature Review on Neural Signal Decoding Articles }}
 \author{ 伍錫志\\ Wu, Hsi-Chih }
 \date{}
 
@@ -107,6 +107,16 @@
 \section*{Oscillation and Phase}
 \bookmark[level=chapter,page=\arabic{page}]{Oscillation and Phase}
 \label{sec:Oscillation_and_Phase}
+
+
+\subsection*{Phase-of-Firing}
+\bookmark[level=1,page=\arabic{page}]{Phase-of-Firing}
+The phase-of-firing code is a temporal coding scheme that uses the timing of spikes with respect to network fluctuations to encode information about some variables of interest (such as the identity of an external sensory stimulus) 
+that is not encoded by the firing rates of these neurons. \cite{perkel1968}
+\\ \\
+Thus, in a phase-of-firing code the time at which spikes, are fired measured with respect the cycle of network oscillations, 
+carried unique information that cannot be retrieved when ignoring the timing of spikes. \cite{cattani2015}
+\\
 
 \subsection*{Phase-lock definition}
 \bookmark[level=1,page=\arabic{page}]{Phase-lock definition}
@@ -125,7 +135,7 @@ Similary, many electrodes will record activity from the same brain sources. This
 (activity at neighboring electrodes is strongly correlated, and the strength of the correlation decreases with distance), 
 which limits spatial presision and may cause spurious or inflated results for some kinds of connectivity analysis. \cite{cohen2014}
 \\ \\
-Researchers oftern apply a high-pass filter of 0.1 to 0.5 Hz to eliminate slow fluctuations. \cite{cohen2014}
+Researchers often apply a high-pass filter of 0.1 to 0.5 Hz to eliminate slow fluctuations. \cite{cohen2014}
 \\
 
 "Rhythmic oscillation of population activity provide another possible mechanism, as discussed below.
@@ -172,7 +182,7 @@ Relaxation oscillators synchronize robustly and with great stability." \cite{buz
         \makecell{\cite{quiroga2009}\\Review} & LFP & instantaneous phase &  \makecell{ Heading of the mouse  \\  \textcolor{blue}{Merging Spike and LFP}} \\ \\
         \makecell{\cite{ahmadi2019}} & \makecell{0-4Hz\\ 0-300Hz} & \textbf{None} & \makecell{ Monkey's hand \\ movement \\  \textcolor{blue}{LMP and DHE} \\ \textcolor{blue}{delta Hilbert envelope} }\\ \\
         \makecell{\cite{einevoll2013}\\Review} & LFP & Not specified & \makecell{ Sensory Stimuli \\ \textcolor{blue}{LFP-spike analysis} \\ \textcolor{blue}{cross-frequency} \\  \textcolor{blue}{phase-phase inter-frequency coupling} } \\ \\
-
+        \makecell{\cite{cattani2015}} &  \makecell{ delta [1-4Hz] \\ theta [4-8Hz] }& instantaneous phase &  \makecell{anaesthetic macaques \\ binocularly presented a color movie \\ \textcolor{blue}{primary visual cortex} }  \\
 
     \end{tabular}
 \end{table}
@@ -182,6 +192,14 @@ Relaxation oscillators synchronize robustly and with great stability." \cite{buz
 \label{sec:Articles Notes}
 \bookmark[level=chapter,page=\arabic{page}]{Articles Notes}
 
+\subsection*{Phase-of-Firing Code}
+\label{Phase-of-Firing Code}
+\bookmark[level=1, page=\arabic{page}]{cattani2015}
+However, we often found that two different moves scenes elicited very similar firing rates and thus could not be discriminated using a rate code. 
+However, often the spikes elicited in response to scenes with similar rate were fired at a different LFP phase in each scene, 
+thereby suggesting that the phase of firing conveyed information that could not be extracted from spike rate.
+\cite{cattani2015}
+
 \subsection*{EEG based motor imagery classification using instantaneous phase difference sequence}
 \label{sec:EEG based motor imagery classification using instantaneous phase difference sequence}
 \bookmark[level=1, page=\arabic{page}]{kumar2018}
@@ -189,7 +207,6 @@ Classify motro imagery task from EEG signal. Extract phase based on phase synchr
 Common spatial patters (CSP), phase locking value (PLV), single trial phase locking value (sPLV), instantaneous phase difference (IPD). 
 The most elicited band of phase synchronization between EEG signals is 8-24Hz, containing the Mu (8-12Hz) and Beta (12-24Hz) rhythms which are involved in motor imagery. 
 Signal is also bandpass filteded into four non-overlapping frequency bands in the range 8-24Hz with the bandwidth of 4Hz, i.e. 8-12Hz, 12-16Hz, 16-20Hz, 20-24Hz.
-
 \cite{kumar2018}
 
 
