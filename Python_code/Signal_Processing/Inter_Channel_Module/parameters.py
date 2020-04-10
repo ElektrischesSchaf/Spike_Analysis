@@ -13,7 +13,7 @@ class my_parameters():
     FILE_PATH = '../../../Dataset/The_nwb_Raw_Dataset/'
     List_FILE = os.listdir(FILE_PATH)
     List_FILE.sort()
-    List_FILE=List_FILE[1:] # indy_20160622_01 can not read
+    List_FILE=List_FILE[:]
     GET_FILE = []
     for FILE_NAME in List_FILE:
         GET_FILE.append(FILE_PATH + FILE_NAME)
