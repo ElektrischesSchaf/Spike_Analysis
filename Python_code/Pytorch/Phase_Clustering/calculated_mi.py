@@ -40,6 +40,7 @@ file_list=[file_name_1]
 
 band_start=0.5
 band_cutoff=4
+
 if band_start==0.5:
     bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
 else:
@@ -353,13 +354,13 @@ new_testing_x=torch.cat(( testing_x_spike, testing_itpc), 1)
 for k in range(new_training_x.size(0)):
 
     for i in range(96):
-        # pass
+        pass
         # new_training_x[k,-2]=abs(new_training_x[k,-2])
 
         # Phase-of-Firing
 
         # absolute
-        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
+        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
 
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
@@ -370,13 +371,13 @@ for k in range(new_training_x.size(0)):
 
 for k in range(new_testing_x.size(0)):
     for i in range(96):
-        # pass
+        pass
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
 
         # Phase-of-Firing
 
         # absolute
-        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
 
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]        
@@ -414,4 +415,8 @@ print('abs(training_itpc_angle) vs training_y = ', yee, '\n')
 yee=0
 for i in range(96):
     yee=yee+gcmi.gcmi_cc(  new_training_x[i,:] , training_y )
-print('average new_training_x vs training_y = ', yee, '\n')
+print('average new_training_x vs training_y = ', yee/96, '\n')
+
+
+yee=gcmi.gcmi_cc(  np.multiply( abs(training_itpc_angle) ,  training_itpc_abs), training_y )
+print('abs(training_itpc_angle)*training_itpc_abs vs training_y = ', yee, '\n')
