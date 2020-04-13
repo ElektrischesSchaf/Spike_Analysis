@@ -360,8 +360,8 @@ for k in range(new_training_x.size(0)):
         # Phase-of-Firing
 
         # absolute
-        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
-        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
+        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
+        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
 
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
 
@@ -377,8 +377,8 @@ for k in range(new_testing_x.size(0)):
         # Phase-of-Firing
 
         # absolute
-        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
-        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
+        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
 
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]        
 
