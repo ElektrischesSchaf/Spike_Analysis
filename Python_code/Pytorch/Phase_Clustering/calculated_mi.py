@@ -34,7 +34,7 @@ import data_processing.load_mat_file as load_mat_file
 
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
-session_name='indy_20161007_02'
+session_name='indy_20160915_01'
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
@@ -354,14 +354,14 @@ new_testing_x=torch.cat(( testing_x_spike, testing_itpc), 1)
 for k in range(new_training_x.size(0)):
 
     for i in range(96):
-        # pass
+        pass
         # new_training_x[k,-2]=abs(new_training_x[k,-2])
 
         # Phase-of-Firing
 
         # absolute
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
-        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
+        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
 
         # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
 
@@ -371,14 +371,14 @@ for k in range(new_training_x.size(0)):
 
 for k in range(new_testing_x.size(0)):
     for i in range(96):
-        # pass
+        pass
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
 
         # Phase-of-Firing
 
         # absolute
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
-        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
+        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
 
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]        
 
