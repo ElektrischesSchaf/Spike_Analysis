@@ -87,11 +87,6 @@ for k in range(len(session_file_list)):
         # print('mat_time_interval start time index = ', mat_time_interval[0][0],'\n')
         # print('mat_time_interval end time index = ', mat_time_interval[0][-1],'\n')
 
-        # new timestamp in mat file
-        new_mat_time_stamp=mat_timestamp[0,mat_time_interval[0][0]:mat_time_interval[0][-1]]
-        print('new_mat_time_stamp = ', new_mat_time_stamp,'\n')
-
-
         # Extract time interval from nwb file
         nwb_time_interval=np.where(np.logical_and(nwb_timestamp[:,]>start_second, nwb_timestamp[:,]<end_second ) )
         # print('nwb_timestamp np.where result = ', end='')    
@@ -101,11 +96,6 @@ for k in range(len(session_file_list)):
         new_nwb_time_stamp= nwb_timestamp[nwb_time_interval[0][0]:nwb_time_interval[0][-1],]
         print('new_nwb_time_stamp = ', new_nwb_time_stamp, '\n')
         sampling_rate=1/( nwb_timestamp[1,]- nwb_timestamp[0,])
-
-        channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+channel_number]
-        channel_2=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+69]
-        channel_3=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], 0+50]
-
 
         instance_phase_all_channels=[]
         # good_channel_list_start_from_one=[39,41,76,42,26,29,33,93,21,2,54]
@@ -122,8 +112,10 @@ for k in range(len(session_file_list)):
 
         instance_phase_all_channels=np.array(instance_phase_all_channels)
 
-
+        print('---'*30)
         print('len of new_nwb_time_stamp= ', len(new_nwb_time_stamp), '\n')
+        print('instance_phase_all_channels shape= ', instance_phase_all_channels.shape, '\n')
+
         # Write result to csv
         CWD = os.getcwd()
         # CWD= os.path.join('..')
@@ -152,7 +144,6 @@ for k in range(len(session_file_list)):
         if is_first_loop==True:
             is_first_loop=False
             try:
-
                 os.remove(os.path.join(csv_path,'instance_phase_all_channels' +'.csv'))
                 os.remove(os.path.join(csv_path,'24kHz_nwb_time_stamp.csv'))
                 print('\nOld file deleted\n')
@@ -162,6 +153,10 @@ for k in range(len(session_file_list)):
 
         df = pd.DataFrame(instance_phase_all_channels)
         df.to_csv(os.path.join(csv_path,'instance_phase_all_channels'+ '.csv'), mode='a', index=False, header=False)
+
+        df = pd.DataFrame(new_nwb_time_stamp)
+        df.to_csv(os.path.join(csv_path,'24kHz_nwb_time_stamp.csv'), mode='a', index=False, header=False)
+
 
         start_second+=plot_time_duration
         end_second+=plot_time_duration
