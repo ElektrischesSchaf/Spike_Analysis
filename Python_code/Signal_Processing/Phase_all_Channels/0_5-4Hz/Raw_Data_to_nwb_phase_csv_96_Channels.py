@@ -39,8 +39,8 @@ session_file_list=my_parameters.List_FILE
 
 # Cross Sessions Control Start
 
-# for k in range(len(session_file_list)):
-for k in range(1):  #TODO temp
+for k in range(len(session_file_list)):
+# for k in range(1):  #TODO temp
     session_name=str(session_file_list[k])[:-4]
     print('session_name=', session_name)
     if band_start ==0.5:
