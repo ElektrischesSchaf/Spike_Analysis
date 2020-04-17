@@ -90,9 +90,11 @@ for k in range(len(session_file_list)):
         print('new_nwb_time_stamp = ', new_nwb_time_stamp, '\n')
         sampling_rate=1/( nwb_timestamp[1,]- nwb_timestamp[0,])
 
-        instance_phase_a_channel=[]
+       
         # channel control start
         for channel_number_i in range(96):
+            instance_phase_a_channel=[]
+            
             channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_i]
             filtered_data_1=buttersworth_filter.butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=2)
             analytic_signal_1 = hilbert(filtered_data_1)
