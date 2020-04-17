@@ -67,7 +67,8 @@ for k in range(len(session_file_list)):
     mat_timestamp=mat_file.get('t')
     mat_timestamp=np.array(mat_timestamp)
     print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
-
+    '''
+    
     start_second=math.floor(mat_timestamp[0][0])
     last_mat_timestep=mat_timestamp[0][-1]
     end_second=start_second+plot_time_duration
@@ -161,14 +162,12 @@ for k in range(len(session_file_list)):
 
     tEnd=time.time()
     print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
-
+    '''
 
     ########################################################################## csv to mat csv
 
 
     delta= nwb_timestamp[1,]- nwb_timestamp[0,]
-
-    bandwidth_token='0_5-4Hz'
 
     # channel control start
     for channel_number_i in range(96):
