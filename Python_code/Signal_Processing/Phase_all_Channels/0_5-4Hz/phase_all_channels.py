@@ -68,7 +68,7 @@ for k in range(len(session_file_list)):
     mat_timestamp=np.array(mat_timestamp)
     print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
     '''
-    
+
     start_second=math.floor(mat_timestamp[0][0])
     last_mat_timestep=mat_timestamp[0][-1]
     end_second=start_second+plot_time_duration
@@ -229,14 +229,13 @@ for k in range(len(session_file_list)):
                     # breakpoint() # TODO explain this
                     chunk_index=np.where( target<chunk_new_nwb_time_stamp[:,0] )
 
-                if chunk_index[0].size>0:
-                    
+                if chunk_index[0].size>0:                    
 
                     # if chunk_index[0].size>1:
                     #     print(chunk_index[0])
                     #     breakpoint()
 
-                    # print('chunk_index= ', chunk_index, ' \nchunk_new_nwb_time_stamp value=', chunk_new_nwb_time_stamp[chunk_index], '\nchunk_High_angle value=',chunk_High_angle[chunk_index], '\nchunk_High_abs value=',chunk_High_abs[chunk_index] ,'\n')
+                    print('chunk_index= ', chunk_index, ' \nchunk_new_nwb_time_stamp value=', chunk_new_nwb_time_stamp[chunk_index], '\chunk_instantaneous_phase value=', chunk_instantaneous_phase[chunk_index], '\n')
                     
                     nwb_timestamp_to_mat_timestamp.append(target)
                     instance_phase_a_channel_250Hz.append( chunk_instantaneous_phase[chunk_index[0][0]] )
