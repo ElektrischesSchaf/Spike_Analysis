@@ -9,6 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib as mpl
 from scipy.signal import hilbert
 import seaborn as sns
+import gc
 import os
 import math
 import pandas as pd
