@@ -94,7 +94,7 @@ for k in range(len(session_file_list)):
         # channel control start
         for channel_number_i in range(96):
             instance_phase_a_channel=[]
-            
+
             channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_i]
             filtered_data_1=buttersworth_filter.butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=2)
             analytic_signal_1 = hilbert(filtered_data_1)
@@ -130,7 +130,7 @@ for k in range(len(session_file_list)):
             if not os.path.exists(csv_path):
                 os.mkdir(str(csv_path))
 
-            csv_path_channel=os.path.join(CWD, str(channel_number_i))
+            csv_path_channel=os.path.join(csv_path, str(channel_number_i))
             if not os.path.exists(csv_path_channel):
                 os.mkdir(str(csv_path_channel))
 
@@ -268,7 +268,7 @@ for k in range(len(session_file_list)):
                     if not os.path.exists(csv_path):
                         os.mkdir(str(csv_path))
 
-                    csv_path_channel=os.path.join(CWD, str(channel_number_i) )
+                    csv_path_channel=os.path.join(csv_path, str(channel_number_i) )
                     if not os.path.exists(csv_path_channel):
                         os.mkdir(str(csv_path_channel))
 
