@@ -10,6 +10,7 @@ import matplotlib as mpl
 from scipy.signal import hilbert
 import seaborn as sns
 import os
+import gc
 import math
 import pandas as pd
 import time
