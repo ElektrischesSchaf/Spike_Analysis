@@ -67,7 +67,7 @@ for k in range(len(session_file_list)):
     mat_timestamp=mat_file.get('t')
     mat_timestamp=np.array(mat_timestamp)
     print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
-    '''
+    
 
     start_second=math.floor(mat_timestamp[0][0])
     last_mat_timestep=mat_timestamp[0][-1]
@@ -102,7 +102,7 @@ for k in range(len(session_file_list)):
             instantaneous_phase = np.angle(analytic_signal_1)
             instance_phase_a_channel.append(instantaneous_phase)
 
-            instance_phase_a_channel=np.array(instance_phase_a_channel)
+            instance_phase_a_channel=np.array(instance_phase_a_channel).transpose()
 
             print('---'*30)
             print('len of new_nwb_time_stamp= ', len(new_nwb_time_stamp), '\n')
@@ -162,7 +162,7 @@ for k in range(len(session_file_list)):
 
     tEnd=time.time()
     print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
-    '''
+    
 
     ########################################################################## csv to mat csv
 
@@ -234,7 +234,7 @@ for k in range(len(session_file_list)):
                     # if chunk_index[0].size>1:
                     #     print(chunk_index[0])
                     #     breakpoint()
-
+                    print('chunk_index= ', chunk_index, '\n')
                     print('chunk_index= ', chunk_index, ' \nchunk_new_nwb_time_stamp value=', chunk_new_nwb_time_stamp[chunk_index], '\chunk_instantaneous_phase value=', chunk_instantaneous_phase[chunk_index], '\n')
                     
                     nwb_timestamp_to_mat_timestamp.append(target)
