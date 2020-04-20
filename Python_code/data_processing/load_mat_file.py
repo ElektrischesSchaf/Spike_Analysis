@@ -67,8 +67,9 @@ class mat_file_processing():
             print('lenght of time_stamp_64ms: ', len(time_stamp_64ms)) # 12778 in indy_20160407_02
             
             testing_data_index=int(int(len(time_stamp_64ms))*0.8) # split 80% into training
+            # testing_data_index=5000 # TODO new
             print('testing_data_index= ',testing_data_index) # 10222 in indy_20160407_02.mat
-            testing_data_index=5000 # TODO new
+
             # make x, y, z position label matrix with the sampling_rate
             '''
             index_label=0
