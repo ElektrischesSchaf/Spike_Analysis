@@ -417,7 +417,7 @@ for session_k in range(len(session_file_list)):
     plt.title(session_name)
     plt.tight_layout()
     plt.savefig(img_path+'/'+session_name+'_bar_plot.png')
-
+    plt.close()
     #yee=gcmi.gcmi_cc(  np.multiply( abs(training_itpc_angle) ,  training_itpc_abs), training_y )
     # print('abs(training_itpc_angle)*training_itpc_abs vs training_y = ', yee, '\n')
 
@@ -437,3 +437,4 @@ plt.grid(True)
 plt.title('MI difference across sessions')
 plt.tight_layout()
 plt.savefig(img_path+'/'+'all_bar_plot.png')
+plt.close()
