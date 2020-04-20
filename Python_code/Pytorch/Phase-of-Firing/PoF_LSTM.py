@@ -250,8 +250,8 @@ for session_index in range(file_numbers):
 
 # cross sessions control end
 
-PoF_testing_data_index=testing_data_index # split 80% into training
-# PoF_testing_data_index=5000
+# PoF_testing_data_index=testing_data_index # split 80% into training
+PoF_testing_data_index=5000
 print('PoF_testing_data_index= ',PoF_testing_data_index) # 6142
 
 phase_of_firing_all_channel_traing=phase_of_firing_all_channel[:PoF_testing_data_index,:] # TODO
@@ -344,12 +344,15 @@ testing_PoF=testing_PoF.float()
 print('training_PoF.size()= ', training_PoF.size(), ' training_x.size()= ',training_x.size() , '\n')
 print('testing_PoF.size()= ', testing_PoF.size(), ' testing_x.size()= ',testing_x.size() )
 
-length_difference=abs(testing_x.size()[0]-testing_PoF.size()[0])
+length_difference=testing_x.size()[0]-testing_PoF.size()[0]
 print('length_difference= ', length_difference,'\n')
 
-if length_difference !=0:
-    # print(testing_PoF.size(), ' ',testing_x[:,:].size() )
-    testing_PoF=testing_PoF[:-length_difference,:]
+if length_difference <0:
+    testing_PoF=testing_PoF[:-abs(length_difference),:]
+
+if length_difference >0:
+    testing_x=testing_x[:-abs(length_difference),:]
+    testing_y=testing_y[:-abs(length_difference),:]
 
 print('testing_PoF.size()= ', testing_PoF.size(), ' testing_y.size()= ', testing_y.size())
 
@@ -396,8 +399,8 @@ for k in range(new_testing_x.size(0)):
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
 
-new_training_x=new_training_x[:,:]
-new_testing_x=new_testing_x[:,:]
+new_training_x=new_training_x[:,:96]
+new_testing_x=new_testing_x[:,:96]
 
 
 # Neural Network
@@ -631,7 +634,7 @@ plot.ylabel('x velocity', fontsize=25, color="black")
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 axes = plot.gca()
-axes.set_xlim([725, 745])
+# axes.set_xlim([725, 745])
 plot.tight_layout()
 plot.savefig(plot_path +'/'+ model_name+'_x-velocity_predict.png' )
 
