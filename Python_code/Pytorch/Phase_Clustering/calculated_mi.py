@@ -45,6 +45,8 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 # session control start
 
+channel_results_accross_sessions=np.zeros((1,96), dtype=float)
+
 for session_k in range(len(session_file_list)):
         
     session_name=str(session_file_list[session_k])
@@ -261,6 +263,10 @@ for session_k in range(len(session_file_list)):
         if not os.path.exists(CWD):
             os.mkdir(CWD)
 
+    img_path=os.path.join(CWD, 'Phase_Clustering_96_channels')
+    if not os.path.exists(img_path):
+        os.mkdir(str(img_path))
+
     csv_path=os.path.join(CWD,'csv_files')
     if not os.path.exists(csv_path):
         os.mkdir(str(csv_path))
@@ -326,7 +332,7 @@ for session_k in range(len(session_file_list)):
     new_training_x=torch.cat(( training_x_spike, training_itpc ) , 1) #TODO
     # print('new_training_x= ', new_training_x.size())
 
-    new_training_x_before_PoF=new_training_x[:,:96]
+    new_training_x_before_PoF=new_training_x[:,:96].clone()
 
     for k in range(new_training_x.size(0)):
         for i in range(96):
@@ -344,7 +350,7 @@ for session_k in range(len(session_file_list)):
             # Concatenate
             # new_training_x[k,-2]=abs(new_training_x[k,-2])*new_training_x[k,-1]
 
-    new_training_x_after_PoF=new_training_x[:,:96]
+    new_training_x_after_PoF=new_training_x[:,:96].clone()
 
 
     training_itpc_abs=training_itpc_abs.numpy()
@@ -393,18 +399,41 @@ for session_k in range(len(session_file_list)):
     mi_of_all_channels_diff=[]
     for i in range(len(mi_of_all_channels_after_PoF)):
         mi_of_all_channels_diff.append( mi_of_all_channels_after_PoF[i]- mi_of_all_channels_before_PoF[i] )
+        channel_results_accross_sessions[0][i]=channel_results_accross_sessions[0][i]+mi_of_all_channels_after_PoF[i]- mi_of_all_channels_before_PoF[i]
     print('mi_of_all_channels_diff', mi_of_all_channels_diff )
 
-    fig = plt.figure()
-    ax = fig.add_axes([0,0,1,1])
-    ind = np.arange(96)
-    ax.bar( ind-0.25,  mi_of_all_channels_before_PoF, color='b', width = 0.25)
-    ax.bar( ind+0.25, mi_of_all_channels_after_PoF, color='g', width = 0.25 )
-
-    ax.set_ylabel('GCMI score')
-    ax.set_xlabel('Channel')
-    ax.set_title(session_name)
-    plt.savefig(session_name+'_bar_plot.png')
+    plt.figure(figsize=(16,3))
+    # ax = fig.add_axes([0,0,1,1])
+    ind = np.arange(1,96+1)
+    # ax.bar( ind-0.25,  mi_of_all_channels_before_PoF, color='b', width = 0.25)
+    # ax.bar( ind+0.25, mi_of_all_channels_after_PoF, color='g', width = 0.25 )
+    plt.bar(ind, mi_of_all_channels_diff, width=0.5, color='r')
+    plt.ylabel('GCMI difference')
+    plt.xlabel('Channel')
+    plt.xlim([0,96+1])
+    plt.ylim([-0.010, 0.010])
+    plt.xticks(ind, rotation=-90)
+    plt.grid(True)
+    plt.title(session_name)
+    plt.tight_layout()
+    # plt.savefig(img_path+'/'+session_name+'_bar_plot.png')
 
     #yee=gcmi.gcmi_cc(  np.multiply( abs(training_itpc_angle) ,  training_itpc_abs), training_y )
     # print('abs(training_itpc_angle)*training_itpc_abs vs training_y = ', yee, '\n')
+
+
+plt.figure(figsize=(16,3))
+# ax = fig.add_axes([0,0,1,1])
+ind = np.arange(1,96+1)
+# ax.bar( ind-0.25,  mi_of_all_channels_before_PoF, color='b', width = 0.25)
+# ax.bar( ind+0.25, mi_of_all_channels_after_PoF, color='g', width = 0.25 )
+plt.bar(ind, list(channel_results_accross_sessions[0,:]), width=0.5, color='r')
+plt.ylabel('GCMI accumulation')
+plt.xlabel('Channel')
+plt.xlim([0,96+1])
+# plt.ylim([-0.010, 0.010])
+plt.xticks(ind, rotation=-90)
+plt.grid(True)
+plt.title('MI difference across sessions')
+plt.tight_layout()
+plt.savefig(img_path+'/'+'all_bar_plot.png')
