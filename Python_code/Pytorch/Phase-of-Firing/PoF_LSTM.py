@@ -402,7 +402,8 @@ for k in range(new_testing_x.size(0)):
 new_training_x=new_training_x[:,:]
 new_testing_x=new_testing_x[:,:]
 
-print('first testing data time: ', time_stamp_64ms[testing_data_index:-1], '\n')
+print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
+print('Real input features: ', new_training_x.size(0) )
 # Neural Network
 batch_size = 32
 learning_rate=1e-3
@@ -634,7 +635,7 @@ plot.ylabel('x velocity', fontsize=25, color="black")
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 axes = plot.gca()
-axes.set_xlim([2605, 2605+20])
+axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
 plot.tight_layout()
 plot.savefig(plot_path +'/'+ model_name+'_x-velocity_predict.png' )
 
