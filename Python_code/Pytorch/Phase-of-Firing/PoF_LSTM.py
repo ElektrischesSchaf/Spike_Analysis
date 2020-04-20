@@ -366,7 +366,7 @@ new_testing_x=torch.cat(( testing_x_spike, testing_PoF), 1)
 for k in range(new_training_x.size(0)):
 
     for i in range(96):
-        pass
+        # pass
         # new_training_x[k,-2]=abs(new_training_x[k,-2])
 
         # Phase-of-Firing
@@ -375,7 +375,7 @@ for k in range(new_training_x.size(0)):
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
         # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
         # no absolute
-        # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
+        new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,i+96]
 
         # Concatenate
         # new_training_x[k,-2]=abs(new_training_x[k,-2])
@@ -384,7 +384,7 @@ for k in range(new_training_x.size(0)):
 
 for k in range(new_testing_x.size(0)):
     for i in range(96):
-        pass
+        # pass
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
 
         # Phase-of-Firing
@@ -393,8 +393,8 @@ for k in range(new_testing_x.size(0)):
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
         # no absolute
-        # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]
-
+        new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,i+96]
+        
         # Concatenate
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
