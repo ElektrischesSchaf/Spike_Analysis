@@ -275,11 +275,17 @@ for k in range(len(session_file_list)):
                     if is_first_loop==True:
                         is_first_loop=False
                         try:
-                            os.remove(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'))
                             os.remove(os.path.join(csv_path_channel,'instance_phase_a_channel_250Hz.csv'))
                             print('\nOld file deleted\n')
                         except:
                             print('\nNo old files\n')
+
+                    if channel_number_i==0:
+                        try:
+                            os.remove(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'))
+                            print('\nOld nwb_timestamp_to_mat_timestamp deleted\n')
+                        except:
+                            print('\nNo old nwb_timestamp_to_mat_timestamp\n')
 
                     if channel_number_i==1:
                         df=pd.DataFrame(nwb_timestamp_to_mat_timestamp)
