@@ -402,11 +402,11 @@ for k in range(new_testing_x.size(0)):
 new_training_x=new_training_x[:,:96]
 new_testing_x=new_testing_x[:,:96]
 
-
+print('first testing data time: ', time_stamp_64ms[testing_data_index:-1], '\n')
 # Neural Network
 batch_size = 32
 learning_rate=1e-3
-max_epoch=200
+max_epoch=500
 
 # LSTM
 hidden_dim=100
@@ -634,7 +634,7 @@ plot.ylabel('x velocity', fontsize=25, color="black")
 plt.xticks(fontsize=20, color="black")
 plt.yticks(fontsize=20, color="black")
 axes = plot.gca()
-# axes.set_xlim([725, 745])
+axes.set_xlim([2605, 2605+20])
 plot.tight_layout()
 plot.savefig(plot_path +'/'+ model_name+'_x-velocity_predict.png' )
 
