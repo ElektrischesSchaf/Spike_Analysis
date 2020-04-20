@@ -14,10 +14,10 @@ class my_parameters():
     ALL_List_FILE = os.listdir(FILE_PATH)
     ALL_List_FILE.sort()
     # List_FILE=ALL_List_FILE[:] # 3=indy_20160630_01, 7=indy_20160927_04, 16=indy_20161014_04, 19=indy_20161025_04, 26=indy_20170123_02, 29=indy_20170131_02
-    bad_session_indices=[3, 7, 16, 19, 26, 29]
+    bad_session_indices=[7, 16, 19, 26, 29] # take 3 out temporary
     List_FILE=[]
     for i in range(0, 30): # for all ch phase test
-        if i not in bad_session_indices:
+        if i in bad_session_indices:
             List_FILE.append(ALL_List_FILE[i] )
 
     GET_FILE = []
