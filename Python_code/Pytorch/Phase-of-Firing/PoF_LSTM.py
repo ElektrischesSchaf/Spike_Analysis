@@ -403,7 +403,7 @@ new_training_x=new_training_x[:,:]
 new_testing_x=new_testing_x[:,:]
 
 print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
-print('Real input features: ', new_training_x.size(0) )
+print('Real input features: ', new_training_x.size(1) )
 # Neural Network
 batch_size = 32
 learning_rate=1e-3
