@@ -35,7 +35,7 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-
+width_two=0.2 # for bar plot
 
 FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
@@ -68,7 +68,9 @@ for session_k in range(len(session_file_list)):
         file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
         PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
         PoF_one_channel=np.array(PoF_one_channel)
+
         # PoF_one_channel=np.absolute(PoF_one_channel)
+
         # print('PoF_channel_index ', PoF_channel_index)
         # print(PoF_one_channel)
         phase_of_firing_all_channel.append( list(PoF_one_channel) )
@@ -402,20 +404,22 @@ for session_k in range(len(session_file_list)):
     mi_of_all_channels_spike=[]
     yee=0
     for i in range(96):
-        # yee=yee+gcmi.gcmi_cc(  new_training_x[i,:] , training_y )
         yee=gcmi.gcmi_cc(  new_training_x_cancade[i,:] , training_y ) # TODO
         mi_of_all_channels_spike.append(yee)
-    # print('average new_training_x vs training_y = ', yee/96, '\n')
-    # print('mi_of_all_channels before ', mi_of_all_channels_before_PoF)
+
 
     mi_of_all_channels_phase=[]
     yee=0
     for i in range(96, real_input_features ):
-        # yee=yee+gcmi.gcmi_cc(  new_training_x[i,:] , training_y )
         yee=gcmi.gcmi_cc(  new_training_x_cancade[i,:] , training_y ) # TODO
         mi_of_all_channels_phase.append(yee)
-    # print('average new_training_x vs training_y = ', yee/96, '\n')
-    # print('mi_of_all_channels after ', mi_of_all_channels_after_PoF)
+
+
+    mi_of_all_channels_abs_phase=[]
+    yee=0
+    for i in range(96, real_input_features ):
+        yee=gcmi.gcmi_cc(  np.abs(new_training_x_cancade[i,:]) , training_y ) # TODO
+        mi_of_all_channels_abs_phase.append(yee)
 
     mi_of_all_channels_couple=[]
     yee=0
@@ -433,26 +437,24 @@ for session_k in range(len(session_file_list)):
     plt.figure(figsize=(16,3))
     # ax = fig.add_axes([0,0,1,1])
     ind = np.arange(1,96+1)
-    plt.bar( ind-0.3,  mi_of_all_channels_spike, color='b', width = 0.5)
-    plt.bar( ind+0.3, mi_of_all_channels_phase, color='g', width = 0.5 )
-    plt.legend(['Spike', 'LFP (Phase)'])
-    # plt.bar(ind, mi_of_all_channels_diff, width=0.5, color='r')
+    plt.bar( ind-width_two,  mi_of_all_channels_spike, color='r', width = width_two)
+    plt.bar( ind+ 0, mi_of_all_channels_phase, color='g', width = width_two )
+    plt.bar( ind+width_two, mi_of_all_channels_abs_phase, color='c', width = width_two )
+
+    plt.legend(['Spike', 'LFP Phase', 'LFP abs(Phase)'])
     plt.ylabel('GCMI spike and phase')
     plt.xlabel('Channel')
     plt.xlim([0,96+1])
-    plt.ylim([-0.010, 0.010])
+    plt.ylim([-0.001, 0.010])
     plt.xticks(ind, rotation=-90)
     plt.grid(True)
-    plt.title(session_name +'The MI of Spike and LFP Phase with respect to x-velocity')
+    plt.title(session_name +' The MI of Spike and LFP Phase with respect to x-velocity')
     plt.tight_layout()
-    plt.savefig(img_path+'/'+session_name+'_spike_and_phase_two_bar_plot.png')
+    plt.savefig(img_path+'/'+session_name+'_spike_and_phase_three_bar_plot.png')
     plt.close()
-    #yee=gcmi.gcmi_cc(  np.multiply( abs(training_itpc_angle) ,  training_itpc_abs), training_y )
-    # print('abs(training_itpc_angle)*training_itpc_abs vs training_y = ', yee, '\n')
 
 
     plt.figure(figsize=(16,3))
-    # ax = fig.add_axes([0,0,1,1])
     ind = np.arange(1,96+1)
     plt.bar(ind, mi_of_all_channels_diff, width=0.5, color='r')
     plt.ylabel('GCMI difference')
@@ -463,7 +465,7 @@ for session_k in range(len(session_file_list)):
     plt.grid(True)
     plt.title(session_name +'The MI difference between PoF and Spike with respect to x-velocity')
     plt.tight_layout()
-    plt.savefig(img_path+'/'+session_name+'_bar_plot_after_minus_before_coupling_bar_plot.png')
+    # plt.savefig(img_path+'/'+session_name+'_bar_plot_after_minus_before_coupling_bar_plot.png')
     plt.close()
 
 
