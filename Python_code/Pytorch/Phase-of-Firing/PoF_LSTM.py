@@ -51,7 +51,7 @@ for PoF_channel_index in range(0, 96):
     file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
     PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
     PoF_one_channel=np.array(PoF_one_channel)
-    PoF_one_channel=np.absolute(PoF_one_channel)
+    # PoF_one_channel=np.absolute(PoF_one_channel)
     # print('PoF_channel_index ', PoF_channel_index)
     # print(PoF_one_channel)
     phase_of_firing_all_channel.append( list(PoF_one_channel) )
@@ -399,8 +399,8 @@ for k in range(new_testing_x.size(0)):
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
 
-new_training_x=new_training_x[:,:]
-new_testing_x=new_testing_x[:,:]
+new_training_x=new_training_x[:,96:]
+new_testing_x=new_testing_x[:,96:]
 
 print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
 print('Real input features: ', new_training_x.size(1) )
@@ -629,7 +629,7 @@ plot.figure(figsize=(30, 10))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right', fontsize=20)
-plot.title(model_name+' Model: velocity x prediction and ground truth (Spike + Phase of Firing), R sqaure= '+str( round( testing_data_r_square, 4) ), fontsize=30, color="black")
+plot.title(model_name+' Model: velocity x prediction and ground truth (Phase), R sqaure= '+str( round( testing_data_r_square, 4) ), fontsize=30, color="black")
 plot.xlabel('time (second)', fontsize=25, color="black")
 plot.ylabel('x velocity', fontsize=25, color="black")
 plt.xticks(fontsize=20, color="black")
