@@ -68,7 +68,7 @@ for session_k in range(len(session_file_list)):
         file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
         PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
         PoF_one_channel=np.array(PoF_one_channel)
-        PoF_one_channel=np.absolute(PoF_one_channel)
+        # PoF_one_channel=np.absolute(PoF_one_channel)
         # print('PoF_channel_index ', PoF_channel_index)
         # print(PoF_one_channel)
         phase_of_firing_all_channel.append( list(PoF_one_channel) )
@@ -243,6 +243,14 @@ for session_k in range(len(session_file_list)):
 
     # cross sessions control end
 
+    # PoF_testing_data_index=testing_data_index # split 80% into training
+    PoF_testing_data_index=5000
+    print('PoF_testing_data_index= ',PoF_testing_data_index) # 6142
+
+    phase_of_firing_all_channel_traing=phase_of_firing_all_channel[:PoF_testing_data_index,:] # TODO
+    phase_of_firing_all_channel_testing=phase_of_firing_all_channel[PoF_testing_data_index:,:]
+
+
     # Write featrue and label to csv files
     CWD = os.getcwd()
     if 'MI' not in CWD:
@@ -337,12 +345,13 @@ for session_k in range(len(session_file_list)):
 
     new_testing_x=torch.cat(( testing_x_spike, testing_PoF), 1)
 
-
+    new_training_x_cancade=new_training_x[:,:].clone()
+    new_testing_x_cancade=new_testing_x[:,:].clone()
 
     for k in range(new_training_x.size(0)):
 
         for i in range(96):
-            pass
+            # pass
             # new_training_x[k,-2]=abs(new_training_x[k,-2])
 
             # Phase-of-Firing
@@ -351,7 +360,7 @@ for session_k in range(len(session_file_list)):
             # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
             # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
             # no absolute
-            # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,i+96]
+            new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,i+96]
 
             # Concatenate
             # new_training_x[k,-2]=abs(new_training_x[k,-2])
@@ -360,7 +369,7 @@ for session_k in range(len(session_file_list)):
 
     for k in range(new_testing_x.size(0)):
         for i in range(96):
-            pass
+            # pass
             # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
 
             # Phase-of-Firing
@@ -369,56 +378,64 @@ for session_k in range(len(session_file_list)):
             # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
             # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
             # no absolute
-            # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,i+96]
+            new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,i+96]
 
             # Concatenate
             # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
             # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
 
-    new_training_x=new_training_x[:,:]
-    new_testing_x=new_testing_x[:,:]
-
-
+    new_training_x_couple=new_training_x[:,:96].clone()
+    new_testing_x_couple=new_testing_x[:,:96].clone()
 
     print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
-    print('Real input features: ', new_training_x.size(1) )
+    real_input_features=new_training_x.size(1)
+    print('Real input features: ', real_input_features )
 
-    new_training_x=new_training_x.numpy()
-    new_training_x=np.transpose(new_training_x)
-    
+    new_training_x_cancade=new_training_x_cancade.numpy()
+    new_training_x_cancade=np.transpose(new_training_x_cancade)
+
+    new_training_x_couple=new_training_x_couple.numpy()
+    new_training_x_couple=np.transpose(new_training_x_couple)
+
     training_y=np.transpose(training_y)
 
     mi_of_all_channels_spike=[]
     yee=0
     for i in range(96):
         # yee=yee+gcmi.gcmi_cc(  new_training_x[i,:] , training_y )
-        yee=gcmi.gcmi_cc(  new_training_x[i,:] , training_y ) # TODO
+        yee=gcmi.gcmi_cc(  new_training_x_cancade[i,:] , training_y ) # TODO
         mi_of_all_channels_spike.append(yee)
     # print('average new_training_x vs training_y = ', yee/96, '\n')
     # print('mi_of_all_channels before ', mi_of_all_channels_before_PoF)
 
     mi_of_all_channels_phase=[]
     yee=0
-    for i in range(96, new_training_x.size(0) ):
+    for i in range(96, real_input_features ):
         # yee=yee+gcmi.gcmi_cc(  new_training_x[i,:] , training_y )
-        yee=gcmi.gcmi_cc(  new_training_x[i,:] , training_y ) # TODO
+        yee=gcmi.gcmi_cc(  new_training_x_cancade[i,:] , training_y ) # TODO
         mi_of_all_channels_phase.append(yee)
     # print('average new_training_x vs training_y = ', yee/96, '\n')
     # print('mi_of_all_channels after ', mi_of_all_channels_after_PoF)
 
-    '''
+    mi_of_all_channels_couple=[]
+    yee=0
+    for i in range(0, 96 ):
+        yee=gcmi.gcmi_cc(  new_training_x_couple[i,:] , training_y ) # TODO
+        mi_of_all_channels_couple.append(yee)
+
     mi_of_all_channels_diff=[]
-    for i in range(len(mi_of_all_channels_after_PoF)):
-        mi_of_all_channels_diff.append( mi_of_all_channels_after_PoF[i]- mi_of_all_channels_before_PoF[i] )
-        channel_results_accross_sessions[0][i]=channel_results_accross_sessions[0][i]+mi_of_all_channels_after_PoF[i]- mi_of_all_channels_before_PoF[i]
+    for i in range( 96 ):
+        mi_of_all_channels_diff.append( mi_of_all_channels_couple[i]- mi_of_all_channels_spike[i] )
+        channel_results_accross_sessions[0][i]=channel_results_accross_sessions[0][i]+mi_of_all_channels_couple[i]- mi_of_all_channels_spike[i]
     print('mi_of_all_channels_diff', mi_of_all_channels_diff )
-    '''
+    
 
     plt.figure(figsize=(16,3))
     # ax = fig.add_axes([0,0,1,1])
     ind = np.arange(1,96+1)
-    ax.bar( ind-0.25,  mi_of_all_channels_spike, color='b', width = 0.25)
-    ax.bar( ind+0.25, mi_of_all_channels_phase, color='g', width = 0.25 )
+    plt.bar( ind-0.3,  mi_of_all_channels_spike, color='b', width = 0.5)
+    plt.bar( ind+0.3, mi_of_all_channels_phase, color='g', width = 0.5 )
+    plt.legend(['Spike', 'LFP (Phase)'])
     # plt.bar(ind, mi_of_all_channels_diff, width=0.5, color='r')
     plt.ylabel('GCMI spike and phase')
     plt.xlabel('Channel')
@@ -426,12 +443,28 @@ for session_k in range(len(session_file_list)):
     plt.ylim([-0.010, 0.010])
     plt.xticks(ind, rotation=-90)
     plt.grid(True)
-    plt.title(session_name)
+    plt.title(session_name +'The MI of Spike and LFP Phase with respect to x-velocity')
     plt.tight_layout()
-    plt.savefig(img_path+'/'+session_name+'_bar_plot.png')
+    plt.savefig(img_path+'/'+session_name+'_spike_and_phase_two_bar_plot.png')
     plt.close()
     #yee=gcmi.gcmi_cc(  np.multiply( abs(training_itpc_angle) ,  training_itpc_abs), training_y )
     # print('abs(training_itpc_angle)*training_itpc_abs vs training_y = ', yee, '\n')
+
+
+    plt.figure(figsize=(16,3))
+    # ax = fig.add_axes([0,0,1,1])
+    ind = np.arange(1,96+1)
+    plt.bar(ind, mi_of_all_channels_diff, width=0.5, color='r')
+    plt.ylabel('GCMI difference')
+    plt.xlabel('Channel')
+    plt.xlim([0,96+1])
+    plt.ylim([-0.010, 0.010])
+    plt.xticks(ind, rotation=-90)
+    plt.grid(True)
+    plt.title(session_name +'The MI difference between PoF and Spike with respect to x-velocity')
+    plt.tight_layout()
+    plt.savefig(img_path+'/'+session_name+'_bar_plot_after_minus_before_coupling_bar_plot.png')
+    plt.close()
 
 
 
