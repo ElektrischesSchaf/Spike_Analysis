@@ -35,7 +35,7 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-
+width_two=0.2 # for bar plot
 
 FILE_PATH = '../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
@@ -49,6 +49,7 @@ channel_results_accross_sessions=np.zeros((1,96), dtype=float)
 abs_itpc_angle_all_sessions=[]
 itpc_sync_all_sessions=[]
 itpc_angle_all_sessions=[]
+average_spike_all_sessions=[]
 for session_k in range(len(session_file_list)):
         
     session_name=str(session_file_list[session_k])
@@ -384,12 +385,14 @@ for session_k in range(len(session_file_list)):
     #print('abs(training_itpc_angle) vs training_y = ', yee, '\n')
 
     mi_of_all_channels_before_PoF=[]
-    yee=0
+    baba=0
     for i in range(96):
         # yee=yee+gcmi.gcmi_cc(  new_training_x[i,:] , training_y )
         yee=gcmi.gcmi_cc(  new_training_x_before_PoF[i,:] , training_y ) # TODO
+        baba=baba+yee
         mi_of_all_channels_before_PoF.append(yee)
     # print('average new_training_x vs training_y = ', yee/96, '\n')
+    average_spike_all_sessions.append(baba/96)
     # print('mi_of_all_channels before ', mi_of_all_channels_before_PoF)
 
     mi_of_all_channels_after_PoF=[]
@@ -410,8 +413,8 @@ for session_k in range(len(session_file_list)):
     plt.figure(figsize=(16,3))
     # ax = fig.add_axes([0,0,1,1])
     ind = np.arange(1,96+1)
-    # ax.bar( ind-0.25,  mi_of_all_channels_before_PoF, color='b', width = 0.25)
-    # ax.bar( ind+0.25, mi_of_all_channels_after_PoF, color='g', width = 0.25 )
+    # ax.bar( ind-width_two,  mi_of_all_channels_before_PoF, color='b', width = width_two)
+    # ax.bar( ind+width_two, mi_of_all_channels_after_PoF, color='g', width = width_two )
     plt.bar(ind, mi_of_all_channels_diff, width=0.5, color='r')
     plt.ylabel('GCMI difference')
     plt.xlabel('Channel')
@@ -421,17 +424,18 @@ for session_k in range(len(session_file_list)):
     plt.grid(True)
     plt.title(session_name)
     plt.tight_layout()
-    plt.savefig(img_path+'/'+session_name+'_bar_plot.png')
+    # plt.savefig(img_path+'/'+session_name+'_bar_plot.png')
     plt.close()
     #yee=gcmi.gcmi_cc(  np.multiply( abs(training_itpc_angle) ,  training_itpc_abs), training_y )
     # print('abs(training_itpc_angle)*training_itpc_abs vs training_y = ', yee, '\n')
 
 
+
 plt.figure(figsize=(16,3))
 # ax = fig.add_axes([0,0,1,1])
 ind = np.arange(1,96+1)
-# ax.bar( ind-0.25,  mi_of_all_channels_before_PoF, color='b', width = 0.25)
-# ax.bar( ind+0.25, mi_of_all_channels_after_PoF, color='g', width = 0.25 )
+# ax.bar( ind-width_two,  mi_of_all_channels_before_PoF, color='b', width = width_two)
+# ax.bar( ind+width_two, mi_of_all_channels_after_PoF, color='g', width = width_two )
 plt.bar(ind, list(channel_results_accross_sessions[0,:]), width=0.5, color='r')
 plt.ylabel('GCMI accumulation')
 plt.xlabel('Channel')
@@ -450,10 +454,11 @@ plt.close()
 plt.figure(figsize=(16,9))
 # ax = fig.add_axes([0,0,1,1])
 ind = np.arange(1,len(itpc_sync_all_sessions)+1)
-plt.bar(ind-0.25, itpc_sync_all_sessions, width=0.25, color='r')
-plt.bar(ind, itpc_angle_all_sessions, width=0.25, color='g')
-plt.bar(ind+0.25, abs_itpc_angle_all_sessions, width=0.25, color='b')
-plt.legend(['sync.', 'ave. phase', 'abs(ave. phase)'])
+plt.bar(ind-width_two-width_two, average_spike_all_sessions, width=width_two, color='m')
+plt.bar(ind-width_two, itpc_sync_all_sessions, width=width_two, color='b')
+plt.bar(ind, itpc_angle_all_sessions, width=width_two, color='g')
+plt.bar(ind+width_two, abs_itpc_angle_all_sessions, width=width_two, color='r')
+plt.legend(['ave. spike', 'sync.', 'ave. phase', 'abs(ave. phase)'])
 plt.ylabel('GCMI')
 plt.xlabel('Session')
 plt.xlim([0,len(itpc_sync_all_sessions)+1+0.5])
