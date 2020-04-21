@@ -46,7 +46,9 @@ session_file_list=List_FILE
 # session control start
 
 channel_results_accross_sessions=np.zeros((1,96), dtype=float)
-
+abs_itpc_angle_all_sessions=[]
+itpc_sync_all_sessions=[]
+itpc_angle_all_sessions=[]
 for session_k in range(len(session_file_list)):
         
     session_name=str(session_file_list[session_k])
@@ -369,14 +371,17 @@ for session_k in range(len(session_file_list)):
     new_training_x_after_PoF=np.transpose(new_training_x_after_PoF)
     # print('shape of new_training_x= ',   new_training_x.shape )
 
-    #yee=gcmi.gcmi_cc( training_itpc_abs , training_y )
-    # print('training_itpc_abs vs training_y = ', yee, '\n')
 
-    #yee=gcmi.gcmi_cc(  training_itpc_angle , training_y )
-    # print('training_itpc_angle vs training_y = ', yee, '\n')
 
-    #yee=gcmi.gcmi_cc(  abs(training_itpc_angle) , training_y )
-    # print('abs(training_itpc_angle) vs training_y = ', yee, '\n')
+    itpc_sync_this_session=gcmi.gcmi_cc( training_itpc_abs , training_y )
+    itpc_sync_all_sessions.append(itpc_sync_this_session)
+
+    itpc_angle_this_session=gcmi.gcmi_cc(  training_itpc_angle , training_y )
+    itpc_angle_all_sessions.append(itpc_angle_this_session)
+
+    abs_itpc_angle_this_session=gcmi.gcmi_cc(  abs(training_itpc_angle) , training_y )
+    abs_itpc_angle_all_sessions.append(abs_itpc_angle_this_session)
+    #print('abs(training_itpc_angle) vs training_y = ', yee, '\n')
 
     mi_of_all_channels_before_PoF=[]
     yee=0
@@ -437,4 +442,24 @@ plt.grid(True)
 plt.title('MI difference across sessions')
 plt.tight_layout()
 plt.savefig(img_path+'/'+'all_bar_plot.png')
+plt.close()
+
+
+
+plt.figure(figsize=(16,3))
+# ax = fig.add_axes([0,0,1,1])
+ind = np.arange(1,len(itpc_sync_all_sessions)+1)
+plt.bar(ind, itpc_sync_all_sessions, width=0.5, color='r')
+plt.bar(ind+0.5, itpc_angle_all_sessions, width=0.5, color='g')
+plt.bar(ind+0.5+0.5, abs_itpc_angle_all_sessions, width=0.5, color='b')
+plt.legend(['sync.', 'ave. phase', 'abs(ave. phase)'])
+plt.ylabel('GCMI')
+plt.xlabel('Session')
+plt.xlim([0,96+1+0.5+0.5])
+# plt.ylim([-0.010, 0.010])
+plt.xticks(ind, rotation=-90)
+plt.grid(True)
+plt.title('MI difference across sessions')
+plt.tight_layout()
+plt.savefig(img_path+'/'+'all_sessions_3_bar_plot.png')
 plt.close()
