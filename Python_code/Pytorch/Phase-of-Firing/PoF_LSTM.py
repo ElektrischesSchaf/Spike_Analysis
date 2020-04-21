@@ -34,7 +34,7 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-session_name='indy_20160622_01'
+session_name='indy_20160624_03'
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
@@ -394,7 +394,7 @@ for k in range(new_testing_x.size(0)):
         # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
         # no absolute
         # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,i+96]
-        
+
         # Concatenate
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
