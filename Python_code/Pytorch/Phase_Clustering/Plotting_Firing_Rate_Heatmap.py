@@ -34,20 +34,10 @@ import data_processing.load_mat_file as load_mat_file
 
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
-session_name='indy_20161007_02'
+session_name='indy_20160407_02'
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
-band_start=8
-band_cutoff=12
-if band_start==0.5:
-    bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
-else:
-    bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
-
-file_itpc_abs_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/ITPC_abs_250Hz.csv'
-file_itpc_angle_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/ITPC_angle_250Hz.csv'
-file_itpc_time_stamp_1='../../Signal_Processing/Inter-Channel_Clustering_Preprocess/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
 
 tStart=time.time()
 time_stamp_64ms=[]
@@ -109,32 +99,6 @@ y_acceleration_label_testing= np.empty([0])
 z_acceleration_label_training= np.empty([0])
 z_acceleration_label_testing= np.empty([0])
 
-
-# ITPC read file
-iptc_abs=pd.read_csv(file_itpc_abs_1, dtype=float)
-iptc_angle=pd.read_csv(file_itpc_angle_1, dtype=float)
-itpc_time_stamp=pd.read_csv(file_itpc_time_stamp_1, dtype=float)
-
-iptc_abs=np.array(iptc_abs)
-iptc_angle=np.array(iptc_angle)
-itpc_time_stamp=np.array(itpc_time_stamp)
-
-itpc_64ms_rate=my_parameters.the_sampling_rate
-iptc_abs=iptc_abs[::itpc_64ms_rate]
-iptc_angle=iptc_angle[::itpc_64ms_rate]
-itpc_time_stamp=itpc_time_stamp[::itpc_64ms_rate]
-
-print(iptc_abs.shape, ' ', iptc_abs.shape, ' ', itpc_time_stamp.shape)
-
-itpc_testing_data_index=int(int(len(itpc_time_stamp))*0.8) # split 80% into training
-print('itpc_testing_data_index= ',itpc_testing_data_index) # 6142
-
-
-iptc_abs_traing=iptc_abs[:itpc_testing_data_index,:] # TODO
-iptc_abs_testing=iptc_abs[itpc_testing_data_index:,:]
-
-iptc_angle_traing=iptc_angle[:itpc_testing_data_index,:]
-iptc_angle_testing=iptc_angle[itpc_testing_data_index:,:]
 
 # cross sessions control start
 for session_index in range(file_numbers):
@@ -304,91 +268,9 @@ testing_y = torch.from_numpy(testing_y.values)
 testing_x_spike=testing_x.float()
 testing_y=testing_y.float()
 
-# IPTC to torch
-training_itpc_abs=torch.from_numpy(iptc_abs_traing)
-training_itpc_angle=torch.from_numpy(iptc_angle_traing)
-
-training_itpc_abs=training_itpc_abs.float()
-training_itpc_angle=training_itpc_angle.float()
-
-training_itpc=np.concatenate((training_itpc_angle, training_itpc_abs ), axis=1)
-
-training_itpc=torch.from_numpy(training_itpc)
-
-testing_itpc_abs=torch.from_numpy(iptc_abs_testing)
-testing_itpc_angle=torch.from_numpy(iptc_angle_testing)
-
-testing_itpc_abs=testing_itpc_abs.float()
-testing_itpc_angle=testing_itpc_angle.float()
-
-
-
-print(training_itpc_abs.size(), ' ',training_x.size() )
-print(testing_itpc_abs.size(), ' ',testing_x.size() )
-
-length_difference=abs(testing_x.size()[0]-testing_itpc_abs.size()[0])
-print(length_difference)
-
-if length_difference !=0:
-    print(testing_itpc_abs.size(), ' ',testing_x[:,:].size() )
-
-    testing_itpc_abs=testing_itpc_abs[:-length_difference,:]
-    testing_itpc_angle=testing_itpc_angle[:-length_difference,:]
-
-testing_itpc=np.concatenate((testing_itpc_angle, testing_itpc_abs), axis=1) 
-testing_itpc=torch.from_numpy(testing_itpc)
-
-print(testing_itpc_abs.size(), ' ', testing_y.size())
-
-
-new_training_x=torch.cat(( training_x_spike,training_itpc ) , 1)
-print('new_training_x= ', new_training_x.size())
-
-new_testing_x=torch.cat(( testing_x_spike, testing_itpc), 1)
-
-
-
-
-for k in range(new_training_x.size(0)):
-
-    for i in range(96):
-        # pass
-        # new_training_x[k,-2]=abs(new_training_x[k,-2])
-
-        # Phase-of-Firing
-
-        # absolute
-        new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
-        # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
-
-        # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,-2]*new_training_x[k,-1]        
-
-        # Concatenate
-        # new_training_x[k,-2]=abs(new_training_x[k,-2])*new_training_x[k,-1]
-
-
-for k in range(new_testing_x.size(0)):
-    for i in range(96):
-        # pass
-        # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
-
-        # Phase-of-Firing
-
-        # absolute
-        new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
-        # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
-
-        # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,-2]*new_testing_x[k,-1]        
-
-        # Concatenate
-        # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
-
-new_training_x=new_training_x[:,:96]
-new_testing_x=new_testing_x[:,:96]
-
 
 # Start plotting
-reduce_time_bin=500
+reduce_time_bin=157
 my_fontsize=30
 my_plot_width=30
 my_plot_height=my_plot_width
@@ -404,35 +286,22 @@ plot_path = os.path.join(CWD, session_name )
 if not os.path.exists(plot_path):
     os.mkdir(plot_path)
 
-plot_path = os.path.join(plot_path, bandwidth_token )
-if not os.path.exists(plot_path):
-    os.mkdir(plot_path)
 
 # Figure
 plt.figure(figsize=(my_plot_width, my_plot_height/2 ))
 
-plt.subplot(211)
+# plt.subplot(211)
 plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
 # plt.title('test')
 sns.set(font_scale=3)
-ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=True, cmap='seismic')
+ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=True, yticklabels=True, cbar=True, cmap='YlGnBu_r')
 plt.xlabel('Samples', fontsize=my_fontsize, color="black")
+# plt.xticks([time_stamp_64ms[0],time_stamp_64ms[reduce_time_bin]])
 plt.ylabel('Channels', fontsize=my_fontsize, color="black")
 plt.tight_layout()
 
 
-
-plt.subplot(212)
-plt.title(  session_name + ' Phase of firing '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz', fontsize=30, color="black")
-# plt.title('test')
-sns.set(font_scale=3)
-ax = sns.heatmap( torch.transpose(new_training_x[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=True, cmap='seismic')
-plt.xlabel('Samples', fontsize=my_fontsize, color="black")
-plt.ylabel('Channels', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-
-plt.savefig(plot_path+'/' +' FR vs Phase of firing '+ str(band_start) +'Hz to '+ str(band_cutoff) + 'Hz'+'.png')
+plt.savefig(plot_path+'/' +'Firing Rate'+'.png')
 
 plt.clf()
 plt.cla()
@@ -450,117 +319,3 @@ plt.savefig(plot_path+'/' +'Label_x-velocity.png')
 plt.clf()
 plt.cla()
 plt.close()
-
-plt.figure(figsize=(my_plot_width, my_plot_height/2))
-
-plt.subplot(211)
-plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
-# plt.title('test')
-sns.set(font_scale=3)
-ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
-plt.xlabel('Samples', fontsize=my_fontsize, color="black")
-plt.ylabel('Channels', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.subplot(212)
-sns.set(font_scale=3)
-plt.scatter( time_stamp_64ms[:reduce_time_bin] , ( torch.transpose(training_itpc_angle[:reduce_time_bin,:],0,1) ), s=50, c='blue')
-plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
-plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
-plt.ylabel('Average Phase', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.savefig(plot_path+'/' 'FR vs average phase.png')
-
-
-plt.clf()
-plt.cla()
-plt.close()
-
-plt.figure(figsize=(my_plot_width, my_plot_height/2))
-
-plt.subplot(211)
-plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
-# plt.title('test')
-sns.set(font_scale=3)
-ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
-plt.xlabel('Samples', fontsize=my_fontsize, color="black")
-plt.ylabel('Channels', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.subplot(212)
-sns.set(font_scale=3)
-plt.scatter( time_stamp_64ms[:reduce_time_bin] , abs( torch.transpose(training_itpc_angle[:reduce_time_bin,:],0,1) ), s=50, c='blue')
-plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
-plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
-plt.ylabel('abs(Average Phase)', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.savefig(plot_path+'/' 'FR vs abs(average phase).png')
-
-plt.clf()
-plt.cla()
-plt.close()
-
-plt.figure(figsize=(my_plot_width, my_plot_height/2))
-
-plt.subplot(311)
-plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
-# plt.title('test')
-sns.set(font_scale=3)
-ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
-plt.xlabel('Samples', fontsize=my_fontsize, color="black")
-plt.ylabel('Channels', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.subplot(312)
-sns.set(font_scale=3)
-plt.scatter( time_stamp_64ms[:reduce_time_bin] , abs( torch.transpose(training_itpc_angle[:reduce_time_bin,:],0,1) ), s=50, c='blue')
-plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
-plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
-plt.ylabel('abs(Average Phase)', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.subplot(313)
-sns.set(font_scale=3)
-plt.scatter( time_stamp_64ms[:reduce_time_bin] , ( torch.transpose(training_itpc_abs[:reduce_time_bin,:],0,1) ), s=50, c='blue')
-plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
-plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
-plt.ylabel('Synchronicity', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.savefig(plot_path+'/' 'FR vs abs(average phase) vs sync.png')
-
-
-plt.clf()
-plt.cla()
-plt.close()
-
-plt.figure(figsize=(my_plot_width, my_plot_height/2))
-
-plt.subplot(311)
-plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
-# plt.title('test')
-sns.set(font_scale=3)
-ax = sns.heatmap( torch.transpose(training_x_spike[:reduce_time_bin,:],0,1), xticklabels=False, yticklabels=False, cbar=False, cmap='seismic')
-plt.xlabel('Samples', fontsize=my_fontsize, color="black")
-plt.ylabel('Channels', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.subplot(312)
-sns.set(font_scale=3)
-plt.scatter( time_stamp_64ms[:reduce_time_bin] , ( torch.transpose(training_itpc_angle[:reduce_time_bin,:],0,1) ), s=50, c='blue')
-plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
-plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
-plt.ylabel('Average Phase', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.subplot(313)
-sns.set(font_scale=3)
-plt.scatter( time_stamp_64ms[:reduce_time_bin] , ( torch.transpose(training_itpc_abs[:reduce_time_bin,:],0,1) ), s=50, c='blue')
-plt.xlabel('Time (S)', fontsize=my_fontsize, color="black")
-plt.xlim([time_stamp_64ms[0] , time_stamp_64ms[reduce_time_bin] ])
-plt.ylabel('Synchronicity', fontsize=my_fontsize, color="black")
-plt.tight_layout()
-
-plt.savefig(plot_path+'/' 'FR vs average phase vs sync.png')
