@@ -46,6 +46,7 @@ session_file_list=List_FILE
 # session control start
 
 channel_results_accross_sessions=np.zeros((1,96), dtype=float)
+length_difference_across_sessions=[]
 
 for session_k in range(len(session_file_list)):
         
@@ -331,6 +332,7 @@ for session_k in range(len(session_file_list)):
 
     length_difference=testing_x.size()[0]-testing_PoF.size()[0]
     print('length_difference= ', length_difference,'\n')
+    length_difference_across_sessions.append(length_difference)
 
     if length_difference <0:
         testing_PoF=testing_PoF[:-abs(length_difference),:]
@@ -441,7 +443,7 @@ for session_k in range(len(session_file_list)):
     plt.bar( ind+ 0, mi_of_all_channels_phase, color='g', width = width_two )
     plt.bar( ind+width_two, mi_of_all_channels_abs_phase, color='c', width = width_two )
 
-    plt.legend(['Spike', 'LFP Phase', 'LFP abs(Phase)'])
+    plt.legend(['Spike', 'LFP Phase', 'LFP abs(Phase)'], loc='upper right')
     plt.ylabel('GCMI spike and phase')
     plt.xlabel('Channel')
     plt.xlim([0,96+1])
@@ -451,12 +453,14 @@ for session_k in range(len(session_file_list)):
     plt.title(session_name +' The MI of Spike and LFP Phase with respect to x-velocity')
     plt.tight_layout()
     plt.savefig(img_path+'/'+session_name+'_spike_and_phase_three_bar_plot.png')
+    plt.cla()
+    plt.clf()
     plt.close()
 
 
     plt.figure(figsize=(16,3))
     ind = np.arange(1,96+1)
-    plt.bar(ind, mi_of_all_channels_diff, width=0.5, color='r')
+    plt.bar(ind, mi_of_all_channels_diff, width=width_two, color='r')
     plt.ylabel('GCMI difference')
     plt.xlabel('Channel')
     plt.xlim([0,96+1])
@@ -466,8 +470,25 @@ for session_k in range(len(session_file_list)):
     plt.title(session_name +'The MI difference between PoF and Spike with respect to x-velocity')
     plt.tight_layout()
     # plt.savefig(img_path+'/'+session_name+'_bar_plot_after_minus_before_coupling_bar_plot.png')
+    plt.cla()
+    plt.clf()
     plt.close()
 
+
+plt.figure(figsize=(16, 9))
+ind = np.arange(1,len(length_difference_across_sessions)+1)
+plt.bar(ind, length_difference_across_sessions, width=width_two, color='r')
+plt.ylabel('Testing data length difference')
+plt.xlabel('')
+plt.xlim([0,len(length_difference_across_sessions)+1+width_two])
+plt.xticks(ind, session_file_list ,rotation=-90)
+plt.grid(True)
+plt.title('The testing data lenght difference')
+plt.tight_layout()
+plt.savefig(img_path+'/'+'testing_data_length_across_sessoins.png')
+plt.cla()
+plt.clf()
+plt.close()
 
 
 '''

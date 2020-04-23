@@ -434,7 +434,7 @@ for session_k in range(len(session_file_list)):
     plt.bar(ind-width_two, [itpc_sync_this_session]*96, width=width_two, color='b') # itpc_sync_this_session
     plt.bar(ind, [itpc_angle_this_session]*96, width=width_two, color='g')
     plt.bar(ind+width_two, [abs_itpc_angle_this_session]*96 , width=width_two, color='c')
-    plt.legend(['spike', 'sync.', 'ave. phase', 'abs(ave. phase)'])
+    plt.legend(['spike', 'sync.', 'ave. phase', 'abs(ave. phase)'], loc='upper right')
     plt.ylabel('GCMI')
     plt.xlabel('Channel')
     plt.xlim([0,96+1])
@@ -474,7 +474,7 @@ plt.bar(ind-width_two-width_two, average_spike_all_sessions, width=width_two, co
 plt.bar(ind-width_two, itpc_sync_all_sessions, width=width_two, color='b')
 plt.bar(ind, itpc_angle_all_sessions, width=width_two, color='g')
 plt.bar(ind+width_two, abs_itpc_angle_all_sessions, width=width_two, color='c')
-plt.legend(['ave. spike', 'sync.', 'ave. phase', 'abs(ave. phase)'])
+plt.legend(['ave. spike', 'sync.', 'ave. phase', 'abs(ave. phase)'], loc='upper right')
 plt.ylabel('GCMI')
 plt.xlabel('Session')
 plt.xlim([0,len(itpc_sync_all_sessions)+1+0.5])
