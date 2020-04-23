@@ -427,23 +427,28 @@ for session_k in range(len(session_file_list)):
     # plt.savefig(img_path+'/'+session_name+'_bar_plot.png')
     plt.close()
 
-    plt.figure(figsize=(16,3))
+    fig=plt.figure(figsize=(16,3))
     # ax = fig.add_axes([0,0,1,1])
     ind = np.arange(1,96+1)
-    plt.bar(ind-width_two-width_two, mi_of_all_channels_before_PoF, width=width_two, color='r')
-    plt.bar(ind-width_two, [itpc_sync_this_session]*96, width=width_two, color='b') # itpc_sync_this_session
-    plt.bar(ind, [itpc_angle_this_session]*96, width=width_two, color='g')
-    plt.bar(ind+width_two, [abs_itpc_angle_this_session]*96 , width=width_two, color='c')
-    plt.legend(['spike', 'sync.', 'ave. phase', 'abs(ave. phase)'], loc='upper right')
+
+    plt.bar(ind, mi_of_all_channels_before_PoF, width=width_two, color='r', alpha=0.7)
+    # itpc_sync_this_session
+    plt.plot(ind, [itpc_sync_this_session]*96, 'b--', linewidth=2, alpha=0.5) 
+    plt.plot(ind, [itpc_angle_this_session]*96, 'gs', linewidth=2, alpha=0.6)
+    plt.plot(ind, [abs_itpc_angle_this_session]*96 , 'c^', linewidth=4, alpha=0.7)
+
+    plt.legend([ 'sync.', 'ave. phase', 'abs(ave. phase)', 'spike'], loc='upper right') # order reverse by plot type
     plt.ylabel('GCMI')
     plt.xlabel('Channel')
     plt.xlim([0,96+1])
     plt.ylim([-0.0010, 0.010])
     plt.xticks(ind, rotation=-90)
-    plt.grid(True)
+    # plt.grid(True, axis='x')
     plt.title(session_name)
     plt.tight_layout()
-    plt.savefig(img_path+'/'+session_name+'_4-bar_plot.png')
+    plt.savefig(img_path+'/'+'independent_features'+'/'+session_name+'_4-bar_plot.png')
+    plt.cla()
+    plt.clf()
     plt.close()
 
 
