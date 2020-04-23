@@ -441,7 +441,7 @@ for session_k in range(len(session_file_list)):
     plt.ylabel('GCMI')
     plt.xlabel('Channel')
     plt.xlim([0,96+1])
-    plt.ylim([-0.0010, 0.010])
+    plt.ylim([-0.001, 0.014])
     plt.xticks(ind, rotation=-90)
     # plt.grid(True, axis='x')
     plt.title(session_name)
