@@ -35,8 +35,8 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 session_name='indy_20160624_03'
-file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
-file_list=[file_name_1]
+file_path_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
+file_list=[file_path_1]
 
 band_start=0.5
 band_cutoff=4
