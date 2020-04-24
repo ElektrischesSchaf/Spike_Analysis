@@ -39,11 +39,10 @@ this_cwd= os.getcwd()
 session_file_list=my_parameters.List_FILE
 # print(session_file_list)
 
-# Cross Sessions Control Start
+# session control start
 
 for k in range(len(session_file_list)):
      ########################################################################## Raw to csv
-
 
     session_name=str(session_file_list[k])[:-4]
     print('session_name=', session_name)
@@ -170,13 +169,13 @@ for k in range(len(session_file_list)):
     delta= nwb_timestamp[1,]- nwb_timestamp[0,]
 
     # channel control start
-    for channel_number_i in range(96):
+    for channel_number_i in range(32):
 
-        instance_phase_a_channel='Tables/'+ session_name +'/'+bandwidth_token+'/24kHz/'+ str(channel_number_i) +'/instance_phase_a_channel.csv'
+        instance_phase_a_channel_1='Tables/'+ session_name +'/'+bandwidth_token+'/24kHz/'+ str(channel_number_i) +'/instance_phase_a_channel.csv'
+        instance_phase_a_channel_2='Tables/'+ session_name +'/'+bandwidth_token+'/24kHz/'+ str(channel_number_i+32) +'/instance_phase_a_channel.csv'
+        instance_phase_a_channel_3='Tables/'+ session_name +'/'+bandwidth_token+'/24kHz/'+ str(channel_number_i+64) +'/instance_phase_a_channel.csv'
         new_nwb_time_stamp='Tables/'+ session_name +'/'+bandwidth_token+'/24kHz/24kHz_nwb_time_stamp.csv'
         chunksize = 1e5
-
-
 
         is_first_loop=True # Optimize write file system
 
@@ -186,13 +185,15 @@ for k in range(len(session_file_list)):
         # https://kite.com/python/answers/how-to-skip-the-first-element-of-a-for-loop-in-python
         # https://stackoverflow.com/questions/10079216/skip-first-entry-in-for-loop-in-python
 
-        iterator=enumerate(zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(instance_phase_a_channel, chunksize=chunksize)  ))
+        iterator=enumerate(zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(instance_phase_a_channel_1, chunksize=chunksize), pd.read_csv(instance_phase_a_channel_2, chunksize=chunksize), pd.read_csv(instance_phase_a_channel_3, chunksize=chunksize)  ))
 
         skip=0
-        for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_instantaneous_phase) in iterator:
+        for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_instantaneous_phase_1) in iterator:
 
             chunk_new_nwb_time_stamp=np.array(chunk_new_nwb_time_stamp)
-            chunk_instantaneous_phase=np.array(chunk_instantaneous_phase)
+            chunk_instantaneous_phase_1=np.array(chunk_instantaneous_phase_1)
+            chunk_instantaneous_phase_2=np.array(chunk_instantaneous_phase_2)
+            chunk_instantaneous_phase_3=np.array(chunk_instantaneous_phase_3)
 
             print('nwb_loop_index = ', nwb_loop_index, '\n')
 
@@ -201,9 +202,9 @@ for k in range(len(session_file_list)):
                 target_start=time.time()
 
                 nwb_timestamp_to_mat_timestamp=[]
-                # ITPC_abs_250Hz=[]
-                # ITPC_angle_250Hz=[]
-                instance_phase_a_channel_250Hz=[]
+                instance_phase_a_chnanel_250Hz_1=[]
+                instance_phase_a_channel_250Hz_2=[]
+                instance_phase_a_channel_250Hz_3=[]
                 target=mat_timestamp[0][mat_loop_index]
                 print('-'*50, '\ntarget= ', target, '\n')
                 
@@ -235,14 +236,20 @@ for k in range(len(session_file_list)):
                     #     print(chunk_index[0])
                     #     breakpoint()
                     print('chunk_index= ', chunk_index, '\n')
-                    print('chunk_index= ', chunk_index, ' \nchunk_new_nwb_time_stamp value=', chunk_new_nwb_time_stamp[chunk_index], '\chunk_instantaneous_phase value=', chunk_instantaneous_phase[chunk_index], '\n')
+                    print('chunk_new_nwb_time_stamp value=', chunk_new_nwb_time_stamp[chunk_index], '\n')
+                    print('chunk_instantaneous_phase_1 value=', chunk_instantaneous_phase_1[chunk_index], '\n')
+                    print('chunk_instantaneous_phase_2 value=', chunk_instantaneous_phase_2[chunk_index], '\n')
+                    print('chunk_instantaneous_phase_3 value=', chunk_instantaneous_phase_3[chunk_index], '\n')
                     
                     nwb_timestamp_to_mat_timestamp.append(target)
-                    instance_phase_a_channel_250Hz.append( chunk_instantaneous_phase[chunk_index[0][0]] )
-
+                    instance_phase_a_chnanel_250Hz_1.append( chunk_instantaneous_phase_1[chunk_index[0][0]] )
+                    instance_phase_a_chnanel_250Hz_2.append( chunk_instantaneous_phase_2[chunk_index[0][0]] )
+                    instance_phase_a_chnanel_250Hz_3.append( chunk_instantaneous_phase_3[chunk_index[0][0]] )
 
                     nwb_timestamp_to_mat_timestamp=np.array(nwb_timestamp_to_mat_timestamp).transpose()
-                    instance_phase_a_channel_250Hz=np.array(instance_phase_a_channel_250Hz).transpose()
+                    instance_phase_a_chnanel_250Hz_1=np.array(instance_phase_a_chnanel_250Hz_1).transpose()
+                    instance_phase_a_chnanel_250Hz_2=np.array(instance_phase_a_chnanel_250Hz_2).transpose()
+                    instance_phase_a_chnanel_250Hz_3=np.array(instance_phase_a_chnanel_250Hz_3).transpose()
                     # Write result to csv
                     CWD = this_cwd
                     # CWD= os.path.join('..')
@@ -265,18 +272,25 @@ for k in range(len(session_file_list)):
                     csv_path=os.path.join(CWD, '250Hz')
                     if not os.path.exists(csv_path):
                         os.mkdir(str(csv_path))
-
-                    csv_path_channel=os.path.join(csv_path, str(channel_number_i) )
-                    if not os.path.exists(csv_path_channel):
-                        os.mkdir(str(csv_path_channel))
+                    csv_path_channel_1=os.path.join(csv_path, str(channel_number_i) )
+                    if not os.path.exists(csv_path_channel_1):
+                        os.mkdir(str(csv_path_channel_1))
+                    csv_path_channel_2=os.path.join(csv_path, str(channel_number_i+32) )
+                    if not os.path.exists(csv_path_channel_2):
+                        os.mkdir(str(csv_path_channel_2))
+                    csv_path_channel_3=os.path.join(csv_path, str(channel_number_i+64) )
+                    if not os.path.exists(csv_path_channel_3):
+                        os.mkdir(str(csv_path_channel_3))
 
                     # print('csv_path= ', csv_path, '\n')
 
                     if is_first_loop==True:
                         is_first_loop=False
                         try:
-                            os.remove(os.path.join(csv_path_channel,'instance_phase_a_channel_250Hz.csv'))
-                            print('\nOld file deleted\n')
+                            os.remove(os.path.join(csv_path_channel_1,'instance_phase_a_channel_250Hz.csv'))
+                            os.remove(os.path.join(csv_path_channel_2,'instance_phase_a_channel_250Hz.csv'))
+                            os.remove(os.path.join(csv_path_channel_3,'instance_phase_a_channel_250Hz.csv'))
+                            print('\nOld files deleted\n')
                         except:
                             print('\nNo old files\n')
 
@@ -291,8 +305,14 @@ for k in range(len(session_file_list)):
                         df=pd.DataFrame(nwb_timestamp_to_mat_timestamp)
                         df.to_csv(os.path.join(csv_path,'nwb_timestamp_to_mat_timestamp.csv'), mode='a', index=False, header=False)
 
-                    df=pd.DataFrame(instance_phase_a_channel_250Hz)
-                    df.to_csv(os.path.join(csv_path_channel,'instance_phase_a_channel_250Hz.csv'), mode='a', index=False, header=False)
+                    df=pd.DataFrame(instance_phase_a_chnanel_250Hz_1)
+                    df.to_csv(os.path.join(csv_path_channel_1,'instance_phase_a_channel_250Hz.csv'), mode='a', index=False, header=False)
+                    
+                    df=pd.DataFrame(instance_phase_a_chnanel_250Hz_2)
+                    df.to_csv(os.path.join(csv_path_channel_2,'instance_phase_a_channel_250Hz.csv'), mode='a', index=False, header=False)
+                    
+                    df=pd.DataFrame(instance_phase_a_chnanel_250Hz_3)
+                    df.to_csv(os.path.join(csv_path_channel_3,'instance_phase_a_channel_250Hz.csv'), mode='a', index=False, header=False)
 
                     print('end one target search\n')
                     target_end=time.time()
@@ -300,16 +320,18 @@ for k in range(len(session_file_list)):
 
 
             del chunk_new_nwb_time_stamp
-            del chunk_instantaneous_phase
+            del chunk_instantaneous_phase_1
+            del chunk_instantaneous_phase_2
+            del chunk_instantaneous_phase_3
             gc.collect()
         # chunk control end
-
-        os.remove(instance_phase_a_channel)
-    # channel control end    
-
+        os.remove(instance_phase_a_channel_1)
+        os.remove(instance_phase_a_channel_2)
+        os.remove(instance_phase_a_channel_3)
+    # channel control end
     os.remove(new_nwb_time_stamp)
 
     tEnd=time.time()
     print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
 
-# Cross Sessions Control End
+# session control end
