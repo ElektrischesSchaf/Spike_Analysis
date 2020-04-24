@@ -161,8 +161,10 @@ for k in range(len(session_file_list)):
             if not os.path.exists(csv_path_channel_3):
                 os.mkdir(str(csv_path_channel_3))
 
-            print('csv_path= ', csv_path, '\n')
-            print('csv_path_channel= ', csv_path_channel, '\n')
+            print('csv_path= ', csv_path, ' ')
+            print(' csv_path_channel_1= ', csv_path_channel_1)
+            print(' csv_path_channel_2= ', csv_path_channel_2)
+            print(' csv_path_channel_3= ', csv_path_channel_3)
 
             if is_first_loop==True:
                 is_first_loop=False
