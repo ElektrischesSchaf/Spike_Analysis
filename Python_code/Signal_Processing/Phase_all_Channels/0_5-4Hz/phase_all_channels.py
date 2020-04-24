@@ -92,20 +92,39 @@ for k in range(len(session_file_list)):
 
        
         # channel control start
-        for channel_number_i in range(96):
-            instance_phase_a_channel=[]
+        for channel_number_i in range(32):
+
+            instance_phase_a_channel_1=[]
+            instance_phase_a_channel_2=[]
+            instance_phase_a_channel_3=[]
 
             channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_i]
-            filtered_data_1=buttersworth_filter.butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=2)
-            analytic_signal_1 = hilbert(filtered_data_1)
-            instantaneous_phase = np.angle(analytic_signal_1)
-            instance_phase_a_channel.append(instantaneous_phase)
+            channel_2=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_i+32]
+            channel_3=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_i+64]
 
-            instance_phase_a_channel=np.array(instance_phase_a_channel).transpose()
+            filtered_data_1=buttersworth_filter.butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=2)
+            filtered_data_2=buttersworth_filter.butter_bandpass_filter(channel_2, band_start, band_cutoff, sampling_rate, order=2)
+            filtered_data_3=buttersworth_filter.butter_bandpass_filter(channel_3, band_start, band_cutoff, sampling_rate, order=2)
+
+            analytic_signal_1 = hilbert(filtered_data_1)
+            analytic_signal_2 = hilbert(filtered_data_2)
+            analytic_signal_3 = hilbert(filtered_data_3)
+
+            instantaneous_phase_1 = np.angle(analytic_signal_1)
+            instantaneous_phase_2 = np.angle(analytic_signal_2)
+            instantaneous_phase_3 = np.angle(analytic_signal_3)
+
+            instance_phase_a_channel_1.append(instantaneous_phase_1)
+            instance_phase_a_channel_2.append(instantaneous_phase_2)
+            instance_phase_a_channel_3.append(instantaneous_phase_3)
+
+            instance_phase_a_channel_1=np.array(instance_phase_a_channel_1).transpose()
+            instance_phase_a_channel_2=np.array(instance_phase_a_channel_2).transpose()
+            instance_phase_a_channel_3=np.array(instance_phase_a_channel_3).transpose()
 
             print('---'*30)
             print('len of new_nwb_time_stamp= ', len(new_nwb_time_stamp), '\n')
-            print('instance_phase_a_channel shape= ', instance_phase_a_channel.shape, '\n')
+            print('instance_phase_a_channel shape= ', instance_phase_a_channel_1.shape, '\n')
 
             # Write result to csv
             CWD = this_cwd
@@ -130,9 +149,17 @@ for k in range(len(session_file_list)):
             if not os.path.exists(csv_path):
                 os.mkdir(str(csv_path))
 
-            csv_path_channel=os.path.join(csv_path, str(channel_number_i))
-            if not os.path.exists(csv_path_channel):
-                os.mkdir(str(csv_path_channel))
+            csv_path_channel_1=os.path.join(csv_path, str(channel_number_i))
+            if not os.path.exists(csv_path_channel_1):
+                os.mkdir(str(csv_path_channel_1))
+
+            csv_path_channel_2=os.path.join(csv_path, str(channel_number_i+32))
+            if not os.path.exists(csv_path_channel_2):
+                os.mkdir(str(csv_path_channel_2))
+
+            csv_path_channel_3=os.path.join(csv_path, str(channel_number_i+64))
+            if not os.path.exists(csv_path_channel_3):
+                os.mkdir(str(csv_path_channel_3))
 
             print('csv_path= ', csv_path, '\n')
             print('csv_path_channel= ', csv_path_channel, '\n')
@@ -140,15 +167,23 @@ for k in range(len(session_file_list)):
             if is_first_loop==True:
                 is_first_loop=False
                 try:
-                    os.remove(os.path.join(csv_path_channel,'instance_phase_a_channel' +'.csv'))
+                    os.remove(os.path.join(csv_path_channel_1,'instance_phase_a_channel' +'.csv'))
+                    os.remove(os.path.join(csv_path_channel_2,'instance_phase_a_channel' +'.csv'))
+                    os.remove(os.path.join(csv_path_channel_3,'instance_phase_a_channel' +'.csv'))
                     os.remove(os.path.join(csv_path,'24kHz_nwb_time_stamp.csv'))
                     print('\n Old files deleted \n')
                 except:
                     print('\n No old files \n')
             # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file
 
-            df = pd.DataFrame(instance_phase_a_channel)
-            df.to_csv(os.path.join(csv_path_channel,'instance_phase_a_channel'+ '.csv'), mode='a', index=False, header=False)
+            df = pd.DataFrame(instance_phase_a_channel_1)
+            df.to_csv(os.path.join(csv_path_channel_1,'instance_phase_a_channel'+ '.csv'), mode='a', index=False, header=False)
+
+            df = pd.DataFrame(instance_phase_a_channel_2)
+            df.to_csv(os.path.join(csv_path_channel_2,'instance_phase_a_channel'+ '.csv'), mode='a', index=False, header=False)
+
+            df = pd.DataFrame(instance_phase_a_channel_3)
+            df.to_csv(os.path.join(csv_path_channel_3,'instance_phase_a_channel'+ '.csv'), mode='a', index=False, header=False)
 
             if channel_number_i==1:
                 df = pd.DataFrame(new_nwb_time_stamp)
@@ -188,7 +223,7 @@ for k in range(len(session_file_list)):
         iterator=enumerate(zip( pd.read_csv(new_nwb_time_stamp, chunksize=chunksize), pd.read_csv(instance_phase_a_channel_1, chunksize=chunksize), pd.read_csv(instance_phase_a_channel_2, chunksize=chunksize), pd.read_csv(instance_phase_a_channel_3, chunksize=chunksize)  ))
 
         skip=0
-        for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_instantaneous_phase_1) in iterator:
+        for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_instantaneous_phase_1, chunk_instantaneous_phase_2, chunk_instantaneous_phase_3) in iterator:
 
             chunk_new_nwb_time_stamp=np.array(chunk_new_nwb_time_stamp)
             chunk_instantaneous_phase_1=np.array(chunk_instantaneous_phase_1)
@@ -331,7 +366,7 @@ for k in range(len(session_file_list)):
     # channel control end
     os.remove(new_nwb_time_stamp)
 
-    tEnd=time.time()
-    print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
+tEnd=time.time()
+print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
 
 # session control end
