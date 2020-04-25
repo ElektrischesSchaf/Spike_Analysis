@@ -558,6 +558,9 @@ plt.title('R square of x-velocity prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'R_square_across_sessions.png')
 
+df = pd.DataFrame(R_square_across_all_sessions)
+df.to_csv(os.path.join(bar_plot_path, 'R_square_across_all_sessions.csv'), index=False)
+
 plt.cla()
 plt.clf()
 plt.close()

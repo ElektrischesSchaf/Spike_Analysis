@@ -66,139 +66,7 @@ for k in range(len(session_file_list)):
     mat_timestamp=mat_file.get('t')
     mat_timestamp=np.array(mat_timestamp)
     print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
-    
-
-    start_second=math.floor(mat_timestamp[0][0])
-    last_mat_timestep=mat_timestamp[0][-1]
-    end_second=start_second+plot_time_duration
-
-    is_first_loop=True # Optimize write file system
-    is_last_loop=False
-
-    while(is_last_loop==False):
-
-        if end_second>last_mat_timestep:
-            is_last_loop=True
-
-        # Extract time interval from nwb file
-        nwb_time_interval=np.where(np.logical_and(nwb_timestamp[:,]>start_second, nwb_timestamp[:,]<end_second ) )
-        # print('nwb_timestamp np.where result = ', end='')    
-        # print('type of nwb_time_interval = ', type(nwb_time_interval),'\n')
-        # print('nwb_time_interval start time index = ', nwb_time_interval[0][0],'\n')
-        # print('nwb_time_interval end time index = ', nwb_time_interval[0][-1],'\n')
-        new_nwb_time_stamp= nwb_timestamp[nwb_time_interval[0][0]:nwb_time_interval[0][-1],]
-        print('new_nwb_time_stamp = ', new_nwb_time_stamp, '\n')
-        sampling_rate=1/( nwb_timestamp[1,]- nwb_timestamp[0,])
-
-       
-        # channel control start
-        for channel_number_i in range(32):
-
-            instance_phase_a_channel_1=[]
-            instance_phase_a_channel_2=[]
-            instance_phase_a_channel_3=[]
-
-            channel_1=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_i]
-            channel_2=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_i+32]
-            channel_3=data[ nwb_time_interval[0][0]:nwb_time_interval[0][-1], channel_number_i+64]
-
-            filtered_data_1=buttersworth_filter.butter_bandpass_filter(channel_1, band_start, band_cutoff, sampling_rate, order=2)
-            filtered_data_2=buttersworth_filter.butter_bandpass_filter(channel_2, band_start, band_cutoff, sampling_rate, order=2)
-            filtered_data_3=buttersworth_filter.butter_bandpass_filter(channel_3, band_start, band_cutoff, sampling_rate, order=2)
-
-            analytic_signal_1 = hilbert(filtered_data_1)
-            analytic_signal_2 = hilbert(filtered_data_2)
-            analytic_signal_3 = hilbert(filtered_data_3)
-
-            instantaneous_phase_1 = np.angle(analytic_signal_1)
-            instantaneous_phase_2 = np.angle(analytic_signal_2)
-            instantaneous_phase_3 = np.angle(analytic_signal_3)
-
-            instance_phase_a_channel_1.append(instantaneous_phase_1)
-            instance_phase_a_channel_2.append(instantaneous_phase_2)
-            instance_phase_a_channel_3.append(instantaneous_phase_3)
-
-            instance_phase_a_channel_1=np.array(instance_phase_a_channel_1).transpose()
-            instance_phase_a_channel_2=np.array(instance_phase_a_channel_2).transpose()
-            instance_phase_a_channel_3=np.array(instance_phase_a_channel_3).transpose()
-
-            print('---'*30)
-            print('len of new_nwb_time_stamp= ', len(new_nwb_time_stamp), '\n')
-            print('instance_phase_a_channel shape= ', instance_phase_a_channel_1.shape, '\n')
-
-            # Write result to csv
-            CWD = this_cwd
-            # CWD= os.path.join('..')
-            if 'Tables' not in CWD:
-                CWD=os.path.join(CWD, 'Tables')
-                if not os.path.exists(CWD):
-                        os.mkdir(CWD)
-
-            if session_name not in CWD:
-                CWD=os.path.join(CWD, session_name)
-                if not os.path.exists(CWD):
-                    os.mkdir(CWD)
-
-
-            if bandwidth_token not in CWD:
-                CWD=os.path.join(CWD, bandwidth_token)
-                if not os.path.exists(CWD):
-                        os.mkdir(CWD)
-
-            csv_path=os.path.join(CWD, '24kHz')
-            if not os.path.exists(csv_path):
-                os.mkdir(str(csv_path))
-
-            csv_path_channel_1=os.path.join(csv_path, str(channel_number_i))
-            if not os.path.exists(csv_path_channel_1):
-                os.mkdir(str(csv_path_channel_1))
-
-            csv_path_channel_2=os.path.join(csv_path, str(channel_number_i+32))
-            if not os.path.exists(csv_path_channel_2):
-                os.mkdir(str(csv_path_channel_2))
-
-            csv_path_channel_3=os.path.join(csv_path, str(channel_number_i+64))
-            if not os.path.exists(csv_path_channel_3):
-                os.mkdir(str(csv_path_channel_3))
-
-            print('csv_path= ', csv_path, ' ')
-            print(' csv_path_channel_1= ', csv_path_channel_1)
-            print(' csv_path_channel_2= ', csv_path_channel_2)
-            print(' csv_path_channel_3= ', csv_path_channel_3)
-
-            if is_first_loop==True:
-                is_first_loop=False
-                try:
-                    os.remove(os.path.join(csv_path_channel_1,'instance_phase_a_channel' +'.csv'))
-                    os.remove(os.path.join(csv_path_channel_2,'instance_phase_a_channel' +'.csv'))
-                    os.remove(os.path.join(csv_path_channel_3,'instance_phase_a_channel' +'.csv'))
-                    os.remove(os.path.join(csv_path,'24kHz_nwb_time_stamp.csv'))
-                    print('\n Old files deleted \n')
-                except:
-                    print('\n No old files \n')
-            # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file
-
-            df = pd.DataFrame(instance_phase_a_channel_1)
-            df.to_csv(os.path.join(csv_path_channel_1,'instance_phase_a_channel'+ '.csv'), mode='a', index=False, header=False)
-
-            df = pd.DataFrame(instance_phase_a_channel_2)
-            df.to_csv(os.path.join(csv_path_channel_2,'instance_phase_a_channel'+ '.csv'), mode='a', index=False, header=False)
-
-            df = pd.DataFrame(instance_phase_a_channel_3)
-            df.to_csv(os.path.join(csv_path_channel_3,'instance_phase_a_channel'+ '.csv'), mode='a', index=False, header=False)
-
-            if channel_number_i==1:
-                df = pd.DataFrame(new_nwb_time_stamp)
-                df.to_csv(os.path.join(csv_path,'24kHz_nwb_time_stamp.csv'), mode='a', index=False, header=False)
-
-        # channel control end
-
-        start_second+=plot_time_duration
-        end_second+=plot_time_duration        
-
-    tEnd=time.time()
-    print('Raw to csv processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
-    
+ 
 
     ########################################################################## csv to mat csv
 
@@ -250,6 +118,7 @@ for k in range(len(session_file_list)):
                 # for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:  
 
                 print('enumerate number= ', nwb_loop_index, '\n')
+                print('chunk_new_nwb_time_stamp[:,0]=', chunk_new_nwb_time_stamp[:,0], '\n')
                 print('first= ', chunk_new_nwb_time_stamp[0], '\n')
                 print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
 
@@ -264,7 +133,7 @@ for k in range(len(session_file_list)):
                 chunk_index=np.where( np.logical_and(target>chunk_new_nwb_time_stamp[:,0], target-delta<chunk_new_nwb_time_stamp[:,0] ))
                 # print(type(chunk_index[0]))
                 if chunk_index[0].size==0:
-                    # chunk_index=np.where( target<chunk_new_nwb_time_stamp[:,0] ) # wrong
+                    # chunk_index=np.where( target<chunk_new_nwb_time_stamp[:,0] )
                     pass
 
                 if chunk_index[0].size>0:                    
