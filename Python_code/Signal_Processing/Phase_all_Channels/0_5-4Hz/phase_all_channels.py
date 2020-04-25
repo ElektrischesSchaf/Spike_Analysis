@@ -65,7 +65,7 @@ for k in range(len(session_file_list)):
     mat_file=h5py.File(mat_file_name_1, 'r')
     mat_timestamp=mat_file.get('t')
     mat_timestamp=np.array(mat_timestamp)
-    print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
+    # print('YEEE shape of mat_timestamp', mat_timestamp.shape, '\n')
     
 
     start_second=math.floor(mat_timestamp[0][0])
@@ -87,7 +87,7 @@ for k in range(len(session_file_list)):
         # print('nwb_time_interval start time index = ', nwb_time_interval[0][0],'\n')
         # print('nwb_time_interval end time index = ', nwb_time_interval[0][-1],'\n')
         new_nwb_time_stamp= nwb_timestamp[nwb_time_interval[0][0]:nwb_time_interval[0][-1],]
-        print('new_nwb_time_stamp = ', new_nwb_time_stamp, '\n')
+        # print('new_nwb_time_stamp = ', new_nwb_time_stamp, '\n')
         sampling_rate=1/( nwb_timestamp[1,]- nwb_timestamp[0,])
 
        
@@ -122,9 +122,9 @@ for k in range(len(session_file_list)):
             instance_phase_a_channel_2=np.array(instance_phase_a_channel_2).transpose()
             instance_phase_a_channel_3=np.array(instance_phase_a_channel_3).transpose()
 
-            print('---'*30)
-            print('len of new_nwb_time_stamp= ', len(new_nwb_time_stamp), '\n')
-            print('instance_phase_a_channel shape= ', instance_phase_a_channel_1.shape, '\n')
+            # print('---'*30)
+            # print('len of new_nwb_time_stamp= ', len(new_nwb_time_stamp), '\n')
+            # print('instance_phase_a_channel shape= ', instance_phase_a_channel_1.shape, '\n')
 
             # Write result to csv
             CWD = this_cwd
@@ -161,10 +161,10 @@ for k in range(len(session_file_list)):
             if not os.path.exists(csv_path_channel_3):
                 os.mkdir(str(csv_path_channel_3))
 
-            print('csv_path= ', csv_path, ' ')
-            print(' csv_path_channel_1= ', csv_path_channel_1)
-            print(' csv_path_channel_2= ', csv_path_channel_2)
-            print(' csv_path_channel_3= ', csv_path_channel_3)
+            # print('csv_path= ', csv_path, ' ')
+            # print(' csv_path_channel_1= ', csv_path_channel_1)
+            # print(' csv_path_channel_2= ', csv_path_channel_2)
+            # print(' csv_path_channel_3= ', csv_path_channel_3)
 
             if is_first_loop==True:
                 is_first_loop=False
@@ -197,7 +197,7 @@ for k in range(len(session_file_list)):
         end_second+=plot_time_duration        
 
     tEnd=time.time()
-    print('Raw to csv processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
+    # print('Raw to csv processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
     
 
     ########################################################################## csv to mat csv
@@ -232,7 +232,7 @@ for k in range(len(session_file_list)):
             chunk_instantaneous_phase_2=np.array(chunk_instantaneous_phase_2)
             chunk_instantaneous_phase_3=np.array(chunk_instantaneous_phase_3)
 
-            print('nwb_loop_index = ', nwb_loop_index, '\n')
+            # print('nwb_loop_index = ', nwb_loop_index, '\n')
 
             for mat_loop_index in range(skip, mat_timestamp.shape[1]):
 
@@ -249,9 +249,9 @@ for k in range(len(session_file_list)):
                     # next(iterator, None)
                 # for nwb_loop_index, (chunk_new_nwb_time_stamp, chunk_High_angle, chunk_High_abs) in iterator:  
 
-                print('enumerate number= ', nwb_loop_index, '\n')
-                print('first= ', chunk_new_nwb_time_stamp[0], '\n')
-                print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
+                # print('enumerate number= ', nwb_loop_index, '\n')
+                # print('first= ', chunk_new_nwb_time_stamp[0], '\n')
+                # print('last= ', chunk_new_nwb_time_stamp[-1], '\n')
 
                 if chunk_new_nwb_time_stamp[-1]<target:
                     skip=mat_loop_index
@@ -272,11 +272,11 @@ for k in range(len(session_file_list)):
                     # if chunk_index[0].size>1:
                     #     print(chunk_index[0])
                     #     breakpoint()
-                    print('chunk_index= ', chunk_index, '\n')
-                    print('chunk_new_nwb_time_stamp value=', chunk_new_nwb_time_stamp[chunk_index], '\n')
-                    print('chunk_instantaneous_phase_1 value=', chunk_instantaneous_phase_1[chunk_index], '\n')
-                    print('chunk_instantaneous_phase_2 value=', chunk_instantaneous_phase_2[chunk_index], '\n')
-                    print('chunk_instantaneous_phase_3 value=', chunk_instantaneous_phase_3[chunk_index], '\n')
+                    # print('chunk_index= ', chunk_index, '\n')
+                    # print('chunk_new_nwb_time_stamp value=', chunk_new_nwb_time_stamp[chunk_index], '\n')
+                    # print('chunk_instantaneous_phase_1 value=', chunk_instantaneous_phase_1[chunk_index], '\n')
+                    # print('chunk_instantaneous_phase_2 value=', chunk_instantaneous_phase_2[chunk_index], '\n')
+                    # print('chunk_instantaneous_phase_3 value=', chunk_instantaneous_phase_3[chunk_index], '\n')
                     
                     nwb_timestamp_to_mat_timestamp.append(target)
                     instance_phase_a_channel_250Hz_1.append( chunk_instantaneous_phase_1[chunk_index[0][0]] )
@@ -351,9 +351,9 @@ for k in range(len(session_file_list)):
                     df=pd.DataFrame(instance_phase_a_channel_250Hz_3)
                     df.to_csv(os.path.join(csv_path_channel_3,'instance_phase_a_channel_250Hz.csv'), mode='a', index=False, header=False)
 
-                    print('end one target search\n')
+                    # print('end one target search\n')
                     target_end=time.time()
-                    print('target processing time: '+ str ( round( (target_end-target_start) , 7) )+' seconds' )
+                    # print('target processing time: '+ str ( round( (target_end-target_start) , 7) )+' seconds' )
 
 
             del chunk_new_nwb_time_stamp
