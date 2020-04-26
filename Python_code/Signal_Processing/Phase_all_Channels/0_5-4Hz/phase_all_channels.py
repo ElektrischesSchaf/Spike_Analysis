@@ -243,7 +243,7 @@ for k in range(len(session_file_list)):
                 instance_phase_a_channel_250Hz_2=[]
                 instance_phase_a_channel_250Hz_3=[]
                 target=mat_timestamp[0][mat_loop_index]
-                print('-'*50, '\ntarget= ', target, '\n')
+                # print('-'*50, '\ntarget= ', target, '\n')
                 
                 # for _ in range(skip):
                     # next(iterator, None)
@@ -264,8 +264,8 @@ for k in range(len(session_file_list)):
                 chunk_index=np.where( np.logical_and(target>chunk_new_nwb_time_stamp[:,0], target-delta<chunk_new_nwb_time_stamp[:,0] ))
                 # print(type(chunk_index[0]))
                 if chunk_index[0].size==0:
-                    # chunk_index=np.where( target<chunk_new_nwb_time_stamp[:,0] ) # wrong
-                    pass
+                    chunk_index=np.where( target<chunk_new_nwb_time_stamp[:,0] ) # correct
+                    # pass # wrong
 
                 if chunk_index[0].size>0:                    
 

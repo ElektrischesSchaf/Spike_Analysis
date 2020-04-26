@@ -234,8 +234,8 @@ for k in range(len(session_file_list)):
             # print(type(chunk_index[0]))
             if chunk_index[0].size==0:
                 # breakpoint() # TODO explain this
-                # chunk_index=np.where( target<chunk_new_nwb_time_stamp[:,0] ) # wrong
-                pass
+                chunk_index=np.where( target<chunk_new_nwb_time_stamp[:,0] ) # correct
+                # pass # wrong
 
             if chunk_index[0].size>0:
                 
