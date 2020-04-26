@@ -330,7 +330,7 @@ for session_k in range(len(session_file_list)):
     print('training_PoF.size()= ', training_PoF.size(), ' training_x.size()= ',training_x.size() , '\n')
     print('testing_PoF.size()= ', testing_PoF.size(), ' testing_x.size()= ',testing_x.size() )
 
-    length_difference=testing_x.size()[0]-testing_PoF.size()[0]
+    length_difference=testing_x_spike.size()[0]-testing_PoF.size()[0]
     print('length_difference= ', length_difference,'\n')
     length_difference_across_sessions.append(length_difference)
 
@@ -338,7 +338,7 @@ for session_k in range(len(session_file_list)):
         testing_PoF=testing_PoF[:-abs(length_difference),:]
 
     if length_difference >0:
-        testing_x=testing_x[:-abs(length_difference),:]
+        testing_x_spike=testing_x_spike[:-abs(length_difference),:]
         testing_y=testing_y[:-abs(length_difference),:]
 
     print('testing_PoF.size()= ', testing_PoF.size(), ' testing_y.size()= ', testing_y.size())
