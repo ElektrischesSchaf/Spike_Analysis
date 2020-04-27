@@ -23,7 +23,7 @@ from tqdm import tqdm_notebook as tqdm
 from tqdm import trange
 from sklearn import datasets, svm, metrics
 from sklearn.metrics import mean_squared_error, r2_score
-
+from scipy.stats import pearsonr
 # My module
 import sys
 sys.path.append("../..") # Adds higher directory to python modules path.
@@ -406,7 +406,7 @@ new_testing_x=new_testing_x[:,:]
 print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
 print('Real input features: ', new_training_x.size(1) )
 # Neural Network
-batch_size = 32
+batch_size = 64
 learning_rate=1e-5
 max_epoch=MAX_epoch
 
@@ -443,7 +443,9 @@ class LSTMModel(torch.nn.Module):
         # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
     def forward(self, x):
 
-        x=x.unsqueeze(0)
+        # x torch.Size([64, 96])
+
+        x=x.unsqueeze(0)       
 
         # Initialize hidden state with zeros
         h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
@@ -454,6 +456,8 @@ class LSTMModel(torch.nn.Module):
         c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
         # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
         c0=c0.to(device)
+
+        # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
 
         # time steps
         out, (hn, cn) = self.lstm(x, (h0,c0))
@@ -619,22 +623,23 @@ for i, (x, testing_y) in trange:
     o_labels = net(x.to(device))
     real_y=testing_y.cpu().data.numpy()
     for ele in o_labels.cpu().data.numpy():
-        my_prediction.append(ele)
+        my_prediction.append( float(ele) )
 
     for ele in real_y:
-        real_y_all.append(ele)
+        real_y_all.append( float(ele) )
 
 testing_data_r_square=r2_score( real_y_all, my_prediction)
 testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
-print('\n* model_x_velocity score in order ', order_index, ': ', testing_data_r_square, ' RMSE: ', testing_data_RMSE)
+PCC=pearsonr(real_y_all,my_prediction)
+print('\n* model_x_velocity score in order ', order_index, ': ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
 
 
 x_velocity_predict=my_prediction
 plot.figure(figsize=(30, 10))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
-plot.legend(loc='upper right', fontsize=20)
-plot.title(model_name+' Model: velocity x prediction and ground truth, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3)), fontsize=30, color="black")
+plot.legend(loc='upper right', fontsize=25)
+plot.title(model_name+' Model: x-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+', PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
 plot.xlabel('time (second)', fontsize=25, color="black")
 plot.ylabel('x velocity', fontsize=25, color="black")
 plt.xticks(fontsize=20, color="black")
