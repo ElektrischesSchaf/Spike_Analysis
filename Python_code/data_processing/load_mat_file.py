@@ -224,16 +224,16 @@ class mat_file_processing():
                 #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
                 
                 if ( i<duration-1 ):
-                    #velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
-                    velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( 1 )
+                    velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )*10 # unit of velocity is mm/s
+                    # velocity=( finger_z_pos_64ms[i+1] - finger_z_pos_64ms[i] ) / ( 1 )
                     finger_z_velocity.append(velocity)
 
-                    #velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
-                    velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( 1 )
+                    velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )*10 # unit of velocity is mm/s
+                    # velocity=( finger_x_pos_64ms[i+1] - finger_x_pos_64ms[i] ) / ( 1 )
                     finger_x_velocity.append(velocity)
 
-                    #velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )
-                    velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( 1 )
+                    velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( time_stamp_64ms[i+1]-time_stamp_64ms[i] )*10 # unit of velocity is mm/s
+                    # velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( 1 )
                     finger_y_velocity.append(velocity)
 
                     velocity_time_coor.append( numpy_time_stamp[0][i] )
@@ -263,16 +263,16 @@ class mat_file_processing():
                 #print('Aceeleration computing progress '+ str( round( (i/duration)*100, 3) )+' %')
 
                 if(i<duration-1):
-                    #acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ (velocity_time_coor[i+1]-velocity_time_coor[i] )
-                    acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ ( 1 )
+                    acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ (velocity_time_coor[i+1]-velocity_time_coor[i] )
+                    # acceleration=(finger_x_velocity[i+1]-finger_x_velocity[i])/ ( 1 )
                     finger_x_acceleration.append(acceleration)
 
-                    #acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
-                    acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/( 1 )
+                    acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+                    # acceleration=(finger_y_velocity[i+1]-finger_y_velocity[i])/( 1 )
                     finger_y_acceleration.append(acceleration)
 
-                    #acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
-                    acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/( 1 )
+                    acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/(velocity_time_coor[i+1]-velocity_time_coor[i])
+                    # acceleration=(finger_z_velocity[i+1]-finger_z_velocity[i])/( 1 )
                     finger_z_acceleration.append(acceleration)
 
                     acceleration_time_coor.append(velocity_time_coor[i])

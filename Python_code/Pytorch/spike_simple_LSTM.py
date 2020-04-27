@@ -39,10 +39,11 @@ CWD_origin=os.getcwd()
 FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:]
+List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
-MAX_epoch=200
+MAX_epoch=300
 R_square_across_all_sessions=[]
+RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
 
 # session control start
@@ -519,11 +520,14 @@ for session_k in range(len(session_file_list)):
 
         for ele in real_y:
             real_y_all.append(ele)
-
-    testing_data_r_square=r2_score( real_y_all, my_prediction)
-    print('\n* model_x_velocity score in order ', order_index, ': ',testing_data_r_square)
     shutil.rmtree(save_epoch_path)
+
+    testing_data_r_square=r2_score( real_y_all, my_prediction)    
+    testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
+    print('\n* model_x_velocity R square in order ', order_index, ': ',testing_data_r_square, ' RMSE: ', testing_data_RMSE)
+
     R_square_across_all_sessions.append(testing_data_r_square)
+    RMSE_across_all_sessions.append(testing_data_RMSE)
 
     x_velocity_predict=my_prediction
     plot.figure(figsize=(30,10))
@@ -557,9 +561,29 @@ plt.grid(True)
 plt.title('R square of x-velocity prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'R_square_across_sessions.png')
+# https://www.geeksforgeeks.org/create-a-pandas-dataframe-from-lists/
+df = pd.DataFrame( list(zip( session_file_list, R_square_across_all_sessions)))
+df.to_csv(os.path.join(bar_plot_path, 'R_square_across_all_sessions.csv'), index=False, header=False)
 
-df = pd.DataFrame(R_square_across_all_sessions)
-df.to_csv(os.path.join(bar_plot_path, 'R_square_across_all_sessions.csv'), index=False)
+plt.cla()
+plt.clf()
+plt.close()
+
+
+plt.figure(figsize=(16, 9))
+ind = np.arange(1,len(RMSE_across_all_sessions)+1)
+plt.bar(ind, RMSE_across_all_sessions, width=width_two, color='r')
+plt.ylabel('RMSE (mm/s)')
+plt.xlabel('')
+plt.xlim([0,len(RMSE_across_all_sessions)+1+width_two])
+plt.xticks(ind, session_file_list ,rotation=-90)
+plt.grid(True)
+plt.title('RMSE of x-velocity prediction')
+plt.tight_layout()
+plt.savefig(bar_plot_path+'/'+'RMSE_across_sessions.png')
+
+df = pd.DataFrame( list(zip( session_file_list, RMSE_across_all_sessions)))
+df.to_csv(os.path.join(bar_plot_path, 'RMSE_across_all_sessions.csv'), index=False, header=False)
 
 plt.cla()
 plt.clf()
