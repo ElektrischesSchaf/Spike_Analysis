@@ -400,8 +400,8 @@ for k in range(new_testing_x.size(0)):
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
         # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
 
-new_training_x=new_training_x[:,96:]
-new_testing_x=new_testing_x[:,96:]
+new_training_x=new_training_x[:,:]
+new_testing_x=new_testing_x[:,:]
 
 print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
 print('Real input features: ', new_training_x.size(1) )
