@@ -34,6 +34,8 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
+CWD_origin=os.getcwd()
+
 session_name='indy_20170127_03' # 2019 Dataset 1: indy_20170124_01, Dataset 2: indy_20170127_03
 file_path_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_path_1]
@@ -259,7 +261,7 @@ phase_of_firing_all_channel_traing=phase_of_firing_all_channel[:PoF_testing_data
 phase_of_firing_all_channel_testing=phase_of_firing_all_channel[PoF_testing_data_index:,:]
 
 # Write featrue and label to csv files
-CWD = os.getcwd()
+CWD = CWD_origin
 model_name='LSTM'
 
 if model_name not in CWD:
@@ -274,6 +276,10 @@ if not os.path.exists(CWD):
 CWD = os.path.join(CWD, bandwidth_token )
 if not os.path.exists(CWD):
     os.mkdir(CWD)
+
+save_epoch_path=os.path.join(CWD,'save')
+if not os.path.exists(save_epoch_path):
+    os.makedirs(save_epoch_path)
 
 csv_path=os.path.join(CWD,'csv_files')
 if not os.path.exists(csv_path):
@@ -548,10 +554,8 @@ def _run_iter(x,y):
     return o_labels, l_loss
 
 def save(epoch):
-    if not os.path.exists(os.path.join(CWD,'save')):
-        os.makedirs(os.path.join(CWD,'save'))
-    torch.save(net.state_dict(), os.path.join( CWD,'save/model.pkl.'+str(epoch) ))
-    with open( os.path.join( CWD,'save/history.json'), 'w') as f:
+    torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
+    with open( os.path.join( save_epoch_path, 'history.json'), 'w') as f:
         json.dump(history, f, indent=4)
 
 for epoch in range(max_epoch):
@@ -561,7 +565,7 @@ for epoch in range(max_epoch):
     save(epoch)
 
 # Plot the training results 
-with open(os.path.join(CWD,'save/history.json'), 'r') as f:
+with open(os.path.join(save_epoch_path, 'history.json'), 'r') as f:
     history = json.loads(f.read())
     
 train_loss = [l['loss'] for l in history['train']]
@@ -601,7 +605,7 @@ print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(histo
 
 # Testing
 best_model=best_epoch # TODO
-net.load_state_dict(state_dict=torch.load(os.path.join(CWD,'save/model.pkl.{}'.format(best_model))))
+net.load_state_dict(state_dict=torch.load(os.path.join(save_epoch_path, 'model.pkl.{}'.format(best_model))))
 net.train(False)
 # start testing
 dataloader = DataLoader(dataset=testing_dataset,
@@ -627,6 +631,8 @@ for i, (x, testing_y) in trange:
 
     for ele in real_y:
         real_y_all.append( float(ele) )
+
+shutil.rmtree(save_epoch_path)
 
 testing_data_r_square=r2_score( real_y_all, my_prediction)
 testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))

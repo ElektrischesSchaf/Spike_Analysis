@@ -24,7 +24,7 @@ from tqdm import tqdm_notebook as tqdm
 from tqdm import trange
 from sklearn import datasets, svm, metrics
 from sklearn.metrics import mean_squared_error, r2_score
-
+from scipy.stats import pearsonr
 # My module
 import sys
 sys.path.append("..") # Adds higher directory to python modules path.
@@ -41,10 +41,11 @@ ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
-MAX_epoch=300
+MAX_epoch=200
 R_square_across_all_sessions=[]
 RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
+person_correlation_coefficient_across_all_sessions=[]
 
 # session control start
 for session_k in range(len(session_file_list)):
@@ -298,14 +299,14 @@ for session_k in range(len(session_file_list)):
     testing_y=testing_y.float()
 
     # Neural Network
-    batch_size = 32
-    learning_rate=1e-3
+    batch_size = 64
+    learning_rate=1e-5
 
     max_epoch=MAX_epoch
 
     # LSTM
     hidden_dim=100
-    layer_dim=2
+    layer_dim=1
     output_dim=1
 
     training_dataset=AbstractDataset(training_x,training_y)
@@ -333,25 +334,32 @@ for session_k in range(len(session_file_list)):
             # Building your LSTM
             # batch_first=True causes input/output tensors to be of shape
             # (batch_dim, seq_dim, feature_dim)
-            self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=True)
+            self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
             
             # Readout layer
-            # self.fc = torch.nn.Linear(hidden_dim, output_dim) # one-directional
-            self.fc = torch.nn.Linear(hidden_dim*2, output_dim) # bidirectional
+            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
+            self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
+
+            # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
+            # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
         
         def forward(self, x):
 
-            x=x.unsqueeze(0)
+            # x torch.Size([64, 96])
+
+            x=x.unsqueeze(0)       
 
             # Initialize hidden state with zeros
-            # h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-            h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
+            h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
+            # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
             h0=h0.to(device)
 
             # Initialize cell state
-            # c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-            c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
+            c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
+            # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
             c0=c0.to(device)
+
+            # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
 
             # time steps
             out, (hn, cn) = self.lstm(x, (h0,c0))
@@ -363,8 +371,8 @@ for session_k in range(len(session_file_list)):
             out = self.fc(out[:, -1, :]) 
             out.size() --> 100, 10
             '''
-            out = self.fc(out)
-
+            out = self.fc1(out)
+            out = self.fc2(out)
             out=out.squeeze(0)
 
             return out
@@ -516,25 +524,28 @@ for session_k in range(len(session_file_list)):
         o_labels = net(x.to(device))
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
-            my_prediction.append(ele)
+            my_prediction.append( float(ele) )
 
         for ele in real_y:
-            real_y_all.append(ele)
+            real_y_all.append( float(ele) )
     shutil.rmtree(save_epoch_path)
 
     testing_data_r_square=r2_score( real_y_all, my_prediction)    
     testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
-    print('\n* model_x_velocity R square in order ', order_index, ': ',testing_data_r_square, ' RMSE: ', testing_data_RMSE)
+    PCC=pearsonr(real_y_all,my_prediction)
+
+    print('\n* model_x_velocity score in order ', order_index, ': ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
 
     R_square_across_all_sessions.append(testing_data_r_square)
     RMSE_across_all_sessions.append(testing_data_RMSE)
+    person_correlation_coefficient_across_all_sessions.append(PCC[0])
 
     x_velocity_predict=my_prediction
     plot.figure(figsize=(30,10))
     plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
     plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
     plot.legend(loc='upper right', fontsize=20)
-    plot.title(model_name+' Model: x-velocity Prediction and Ground Truth (Spike Firing Rate), R sqaure= '+str( round( testing_data_r_square, 4) ),fontsize=30)
+    plot.title(model_name+' Model: x-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+', PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
     plot.xlabel('Time (second)', fontsize=25)
     plot.ylabel('x velocity', fontsize=25)
     plt.xticks(fontsize=20, color="black")
@@ -588,6 +599,26 @@ df.to_csv(os.path.join(bar_plot_path, 'RMSE_across_all_sessions.csv'), index=Fal
 plt.cla()
 plt.clf()
 plt.close()
+
+plt.figure(figsize=(16, 9))
+ind = np.arange(1,len(person_correlation_coefficient_across_all_sessions)+1)
+plt.bar(ind, person_correlation_coefficient_across_all_sessions, width=width_two, color='r')
+plt.ylabel('')
+plt.xlabel('')
+plt.xlim([0,len(person_correlation_coefficient_across_all_sessions)+1+width_two])
+plt.xticks(ind, session_file_list ,rotation=-90)
+plt.grid(True)
+plt.title('Pearson\'s correlation coefficient of x-velocity prediction')
+plt.tight_layout()
+plt.savefig(bar_plot_path+'/'+'PCC_across_sessions.png')
+
+df = pd.DataFrame( list(zip( session_file_list, person_correlation_coefficient_across_all_sessions)))
+df.to_csv(os.path.join(bar_plot_path, 'person_correlation_coefficient_across_all_sessions.csv'), index=False, header=False)
+
+plt.cla()
+plt.clf()
+plt.close()
+
 
 plt.figure(figsize=(16, 9))
 ind = np.arange(1,len(best_epoch_arcoss_all_sessions)+1)
