@@ -34,10 +34,10 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-session_name='indy_20170124_01' # 2019 Dataset 1: indy_20170124_01, Dataset 2: indy_20170127_03
+session_name='indy_20170127_03' # 2019 Dataset 1: indy_20170124_01, Dataset 2: indy_20170127_03
 file_path_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_path_1]
-MAX_epoch=500
+MAX_epoch=200
 
 band_start=0.5
 band_cutoff=4
@@ -52,7 +52,7 @@ for PoF_channel_index in range(0, 96):
     file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
     PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
     PoF_one_channel=np.array(PoF_one_channel)
-    # PoF_one_channel=np.absolute(PoF_one_channel)
+    PoF_one_channel=np.absolute(PoF_one_channel)
     # print('PoF_channel_index ', PoF_channel_index)
     # print(PoF_one_channel)
     phase_of_firing_all_channel.append( list(PoF_one_channel) )
@@ -406,13 +406,13 @@ new_testing_x=new_testing_x[:,:]
 print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
 print('Real input features: ', new_training_x.size(1) )
 # Neural Network
-batch_size = 32
-learning_rate=1e-3
+batch_size = 16
+learning_rate=1e-5
 max_epoch=MAX_epoch
 
 # LSTM
 hidden_dim=100
-layer_dim=2
+layer_dim=1
 output_dim=1
 
 
@@ -433,24 +433,26 @@ class LSTMModel(torch.nn.Module):
         # Building your LSTM
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=True)
+        self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
         
         # Readout layer
-        # self.fc = torch.nn.Linear(hidden_dim, output_dim) # one-directional
-        self.fc = torch.nn.Linear(hidden_dim*2, output_dim) # bidirectional
-    
+        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
+        self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
+
+        # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
+        # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
     def forward(self, x):
 
         x=x.unsqueeze(0)
 
         # Initialize hidden state with zeros
-        # h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-        h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
+        h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
         h0=h0.to(device)
 
         # Initialize cell state
-        # c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-        c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
+        c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
         c0=c0.to(device)
 
         # time steps
@@ -463,8 +465,8 @@ class LSTMModel(torch.nn.Module):
         out = self.fc(out[:, -1, :]) 
         out.size() --> 100, 10
         '''
-        out = self.fc(out)
-
+        out = self.fc1(out)
+        out = self.fc2(out)
         out=out.squeeze(0)
 
         return out
@@ -632,7 +634,7 @@ plot.figure(figsize=(30, 10))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right', fontsize=20)
-plot.title(model_name+' Model: velocity x prediction and ground truth (Phase), R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3)), fontsize=30, color="black")
+plot.title(model_name+' Model: velocity x prediction and ground truth, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3)), fontsize=30, color="black")
 plot.xlabel('time (second)', fontsize=25, color="black")
 plot.ylabel('x velocity', fontsize=25, color="black")
 plt.xticks(fontsize=20, color="black")
