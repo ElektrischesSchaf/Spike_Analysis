@@ -34,9 +34,10 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-session_name='indy_20160624_03'
+session_name='indy_20170124_01' # 2019 Dataset 1: indy_20170124_01, Dataset 2: indy_20170127_03
 file_path_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_path_1]
+MAX_epoch=500
 
 band_start=0.5
 band_cutoff=4
@@ -407,7 +408,7 @@ print('Real input features: ', new_training_x.size(1) )
 # Neural Network
 batch_size = 32
 learning_rate=1e-3
-max_epoch=500
+max_epoch=MAX_epoch
 
 # LSTM
 hidden_dim=100
@@ -621,15 +622,17 @@ for i, (x, testing_y) in trange:
     for ele in real_y:
         real_y_all.append(ele)
 
-print('\n* model_x_velocity score in order ', order_index, ': ', r2_score( real_y_all, my_prediction))
 testing_data_r_square=r2_score( real_y_all, my_prediction)
+testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
+print('\n* model_x_velocity score in order ', order_index, ': ', testing_data_r_square, ' RMSE: ', testing_data_RMSE)
+
 
 x_velocity_predict=my_prediction
 plot.figure(figsize=(30, 10))
 plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
 plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
 plot.legend(loc='upper right', fontsize=20)
-plot.title(model_name+' Model: velocity x prediction and ground truth (Phase), R sqaure= '+str( round( testing_data_r_square, 4) ), fontsize=30, color="black")
+plot.title(model_name+' Model: velocity x prediction and ground truth (Phase), R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3)), fontsize=30, color="black")
 plot.xlabel('time (second)', fontsize=25, color="black")
 plot.ylabel('x velocity', fontsize=25, color="black")
 plt.xticks(fontsize=20, color="black")
