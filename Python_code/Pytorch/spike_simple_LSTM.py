@@ -35,7 +35,7 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 CWD_origin=os.getcwd()
-
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -224,6 +224,10 @@ for session_k in range(len(session_file_list)):
         CWD = os.path.join(CWD, model_name)
         if not os.path.exists(CWD):
             os.mkdir(CWD)
+
+    CWD=os.path.join(CWD, kinematic_variable_type)
+    if not os.path.exists(CWD):
+        os.mkdir(CWD)
     
     bar_plot_path=os.path.join(CWD, 'bar_plot_across_sessions')
     if not os.path.exists(bar_plot_path):
@@ -250,15 +254,22 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame(X_for_training)
     df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
 
-    df=pd.DataFrame(x_velocity_label_training)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
-
-
     df = pd.DataFrame(X_for_prediction)
     df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
+    
+    if kinematic_variable_type=='x_vel':
+        df=pd.DataFrame(x_velocity_label_training)
+        df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
 
-    df=pd.DataFrame(x_velocity_label_testing)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+        df=pd.DataFrame(x_velocity_label_testing)
+        df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+
+    if kinematic_variable_type=='y_vel':
+        df=pd.DataFrame(x_velocity_label_training)
+        df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
+
+        df=pd.DataFrame(x_velocity_label_testing)
+        df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
 
     class AbstractDataset(Dataset):
         def __init__(self, feature_matrix, label_matrix):
@@ -281,22 +292,30 @@ for session_k in range(len(session_file_list)):
 
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
-    training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)
-
     training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
-    training_y = torch.from_numpy(training_y.values)
-
     training_x=training_x.float()
-    training_y=training_y.float()
 
     testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
-    testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)
-
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
-    testing_y = torch.from_numpy(testing_y.values)
-
     testing_x=testing_x.float()
-    testing_y=testing_y.float()
+
+    if kinematic_variable_type=='x_vel':
+        training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
+        training_y = torch.from_numpy(training_y.values)    
+        training_y=training_y.float()
+
+        testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
+        testing_y = torch.from_numpy(testing_y.values)    
+        testing_y=testing_y.float()
+
+    if kinematic_variable_type=='y_vel':
+        training_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
+        training_y = torch.from_numpy(training_y.values)    
+        training_y=training_y.float()
+
+        testing_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
+        testing_y = torch.from_numpy(testing_y.values)    
+        testing_y=testing_y.float()
 
     # Neural Network
     batch_size = 64
