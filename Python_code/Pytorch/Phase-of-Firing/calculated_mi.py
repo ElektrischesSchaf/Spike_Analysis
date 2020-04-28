@@ -35,6 +35,9 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
+CWD_origin=os.getcwd()
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+
 width_two=0.2 # for bar plot
 
 FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
@@ -255,13 +258,17 @@ for session_k in range(len(session_file_list)):
 
 
     # Write featrue and label to csv files
-    CWD = os.getcwd()
+    CWD = CWD_origin
     if 'MI' not in CWD:
         CWD = os.path.join(CWD, 'MI')
         if not os.path.exists(CWD):
             os.mkdir(CWD)
 
     img_path=os.path.join(CWD, 'Phase-of-Firing_all_channels')
+    if not os.path.exists(img_path):
+        os.mkdir(str(img_path))
+
+    img_path=os.path.join(img_path, kinematic_variable_type)
     if not os.path.exists(img_path):
         os.mkdir(str(img_path))
 
@@ -272,15 +279,22 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame(X_for_training)
     df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
 
-    df=pd.DataFrame(x_velocity_label_training)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
-
-
     df = pd.DataFrame(X_for_prediction)
     df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
+    
+    if kinematic_variable_type=='x_vel':
+        df=pd.DataFrame(x_velocity_label_training)
+        df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
 
-    df=pd.DataFrame(x_velocity_label_testing)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+        df=pd.DataFrame(x_velocity_label_testing)
+        df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+
+    if kinematic_variable_type=='y_vel':
+        df=pd.DataFrame(y_velocity_label_training)
+        df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
+
+        df=pd.DataFrame(y_velocity_label_testing)
+        df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
 
 
     class AbstractDataset(Dataset):
@@ -303,22 +317,30 @@ for session_k in range(len(session_file_list)):
 
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
-    training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)
-
     training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
-    training_y = torch.from_numpy(training_y.values)
-
     training_x_spike=training_x.float()
-    training_y=training_y.float()
 
     testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
-    testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)
-
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
-    testing_y = torch.from_numpy(testing_y.values)
-
     testing_x_spike=testing_x.float()
-    testing_y=testing_y.float()
+
+    if kinematic_variable_type=='x_vel':
+        training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
+        training_y = torch.from_numpy(training_y.values)    
+        training_y=training_y.float()
+
+        testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
+        testing_y = torch.from_numpy(testing_y.values)    
+        testing_y=testing_y.float()
+
+    if kinematic_variable_type=='y_vel':
+        training_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
+        training_y = torch.from_numpy(training_y.values)    
+        training_y=training_y.float()
+
+        testing_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
+        testing_y = torch.from_numpy(testing_y.values)    
+        testing_y=testing_y.float()
 
     # PoF to torch
     training_PoF=torch.from_numpy(phase_of_firing_all_channel_traing)
@@ -450,7 +472,10 @@ for session_k in range(len(session_file_list)):
     plt.ylim([-0.001, 0.010])
     plt.xticks(ind, rotation=-90)
     plt.grid(True)
-    plt.title(session_name +' The MI of Spike and LFP Phase with respect to x-velocity')
+    if kinematic_variable_type=='x_vel':
+        plt.title(session_name +' The MI of Spike and LFP Phase with respect to x-velocity')
+    if kinematic_variable_type=='y_vel':
+        plt.title(session_name +' The MI of Spike and LFP Phase with respect to y-velocity')
     plt.tight_layout()
     plt.savefig(img_path+'/'+session_name+'_spike_and_phase_three_bar_plot.png')
     plt.cla()
@@ -467,7 +492,10 @@ for session_k in range(len(session_file_list)):
     plt.ylim([-0.010, 0.010])
     plt.xticks(ind, rotation=-90)
     plt.grid(True)
-    plt.title(session_name +'The MI difference between PoF and Spike with respect to x-velocity')
+    if kinematic_variable_type=='x_vel':
+        plt.title(session_name +'The MI difference between PoF and Spike with respect to x-velocity')
+    if kinematic_variable_type=='y_vel':
+        plt.title(session_name +'The MI difference between PoF and Spike with respect to y-velocity')
     plt.tight_layout()
     # plt.savefig(img_path+'/'+session_name+'_bar_plot_after_minus_before_coupling_bar_plot.png')
     plt.cla()

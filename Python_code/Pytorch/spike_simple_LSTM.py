@@ -53,7 +53,6 @@ for session_k in range(len(session_file_list)):
     session_name=str(session_file_list[session_k])[:-4]
     file_name_1='../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
     # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
-    tStart=time.time()
     time_stamp_64ms=[]
     ###################################### Auto-assigned parameters
     #testing_data_index=5000
@@ -265,10 +264,10 @@ for session_k in range(len(session_file_list)):
         df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
 
     if kinematic_variable_type=='y_vel':
-        df=pd.DataFrame(x_velocity_label_training)
+        df=pd.DataFrame(y_velocity_label_training)
         df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
 
-        df=pd.DataFrame(x_velocity_label_testing)
+        df=pd.DataFrame(y_velocity_label_testing)
         df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
 
     class AbstractDataset(Dataset):
@@ -559,12 +558,18 @@ for session_k in range(len(session_file_list)):
     RMSE_across_all_sessions.append(testing_data_RMSE)
     person_correlation_coefficient_across_all_sessions.append(PCC[0])
 
-    x_velocity_predict=my_prediction
     plot.figure(figsize=(30,10))
-    plot.plot(time_stamp_64ms[testing_data_index:-1], x_velocity_predict, 'b--',label='Prediction' )
-    plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
+
+    if kinematic_variable_type=='x_vel':
+        plot.plot(time_stamp_64ms[testing_data_index:-1], my_prediction, 'b--',label='Prediction' )
+        plot.plot(time_stamp_64ms[testing_data_index:-2], real_y_all[testing_data_index:-1], 'r--', label='True value')
+        plot.title(model_name+' Model: x-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+' (mm/s), PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
+    if kinematic_variable_type=='y_vel':
+        plot.plot(time_stamp_64ms[testing_data_index:-1], my_prediction, 'b--',label='Prediction' )
+        plot.plot(time_stamp_64ms[testing_data_index:-2], real_y_all[testing_data_index:-1], 'r--', label='True value')
+        plot.title(model_name+' Model: y-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+' (mm/s), PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
+    
     plot.legend(loc='upper right', fontsize=20)
-    plot.title(model_name+' Model: x-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+', PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
     plot.xlabel('Time (second)', fontsize=25)
     plot.ylabel('x velocity', fontsize=25)
     plt.xticks(fontsize=20, color="black")
@@ -572,7 +577,10 @@ for session_k in range(len(session_file_list)):
     axes = plot.gca()
     axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
     plot.tight_layout()
-    plot.savefig( plot_path + '/' +model_name+'_x-velocity_predict.png' )
+    if kinematic_variable_type=='x_vel':
+        plot.savefig( plot_path + '/' +model_name+'_x-velocity_predict.png' )
+    if kinematic_variable_type=='y_vel':
+        plot.savefig( plot_path + '/' +model_name+'_y-velocity_predict.png' )
 
     plot.cla()
     plot.clf()
@@ -588,7 +596,10 @@ plt.xlabel('')
 plt.xlim([0,len(R_square_across_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
 plt.grid(True)
-plt.title('R square of x-velocity prediction')
+if kinematic_variable_type=='x_vel':
+    plt.title('R square of x-velocity prediction')
+if kinematic_variable_type=='y_vel':
+    plt.title('R square of y-velocity prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'R_square_across_sessions.png')
 # https://www.geeksforgeeks.org/create-a-pandas-dataframe-from-lists/
@@ -608,7 +619,10 @@ plt.xlabel('')
 plt.xlim([0,len(RMSE_across_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
 plt.grid(True)
-plt.title('RMSE of x-velocity prediction')
+if kinematic_variable_type=='x_vel':
+    plt.title('RMSE of x-velocity prediction')
+if kinematic_variable_type=='y_vel':
+    plt.title('RMSE of y-velocity prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'RMSE_across_sessions.png')
 
@@ -627,7 +641,10 @@ plt.xlabel('')
 plt.xlim([0,len(person_correlation_coefficient_across_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
 plt.grid(True)
-plt.title('Pearson\'s correlation coefficient of x-velocity prediction')
+if kinematic_variable_type=='x_vel':
+    plt.title('Pearson\'s correlation coefficient of x-velocity prediction')
+if kinematic_variable_type=='y_vel':
+    plt.title('Pearson\'s correlation coefficient of y-velocity prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'PCC_across_sessions.png')
 
@@ -647,7 +664,10 @@ plt.xlabel('')
 plt.xlim([0,len(best_epoch_arcoss_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
 plt.grid(True)
-plt.title('Best Epoch of x-velocity prediction')
+if kinematic_variable_type=='x_vel':
+    plt.title('Best Epoch of x-velocity prediction')
+if kinematic_variable_type=='y_vel':
+    plt.title('Best Epoch of y-velocity prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'best_epoch_across_sessions.png')
 
