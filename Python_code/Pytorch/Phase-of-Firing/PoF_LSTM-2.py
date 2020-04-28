@@ -38,7 +38,7 @@ width_two=0.2
 CWD_origin=os.getcwd()
 
 # session_name='indy_20170127_03' # 2019 Dataset 1: indy_20170124_01, Dataset 2: indy_20170127_03
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
