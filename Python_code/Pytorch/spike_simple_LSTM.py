@@ -562,11 +562,11 @@ for session_k in range(len(session_file_list)):
 
     if kinematic_variable_type=='x_vel':
         plot.plot(time_stamp_64ms[testing_data_index:-1], my_prediction, 'b--',label='Prediction' )
-        plot.plot(time_stamp_64ms[testing_data_index:-2], real_y_all[testing_data_index:-1], 'r--', label='True value')
+        plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
         plot.title(model_name+' Model: x-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+' (mm/s), PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
     if kinematic_variable_type=='y_vel':
         plot.plot(time_stamp_64ms[testing_data_index:-1], my_prediction, 'b--',label='Prediction' )
-        plot.plot(time_stamp_64ms[testing_data_index:-2], real_y_all[testing_data_index:-1], 'r--', label='True value')
+        plot.plot(time_stamp_64ms[testing_data_index:-2], y_velocity_label[testing_data_index:-1], 'r--', label='True value')
         plot.title(model_name+' Model: y-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+' (mm/s), PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
     
     plot.legend(loc='upper right', fontsize=20)
