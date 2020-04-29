@@ -481,8 +481,8 @@ for session_k in range(len(session_file_list)):
             self.lstm_phase = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
             
             # Readout layer
-            self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # one-directional
-            self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # one-directional
+            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) ) # one-directional
+            self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
             # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
             # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
@@ -496,17 +496,18 @@ for session_k in range(len(session_file_list)):
             h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
             # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
             h0=h0.to(device)
+            h1=h0.clone()
 
             # Initialize cell state
             c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
             # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
             c0=c0.to(device)
-
+            c1=c0.clone()
             # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
 
             # time steps
             out_spike, (hn, cn) = self.lstm_spike(x[:,:,:96], (h0,c0))
-            out_phase, (hn, cn) = self.lstm_phase(x[:,:,96:], (h0,c0))
+            out_phase, (hn, cn) = self.lstm_phase(x[:,:,96:], (h1,c1))
 
             '''
             Index hidden state of last time step
@@ -515,6 +516,10 @@ for session_k in range(len(session_file_list)):
             out = self.fc(out[:, -1, :]) 
             out.size() --> 100, 10
             '''
+
+            out_spike=self.fc1(out_spike)
+            out_phase=self.fc1(out_phase)
+    
             out = self.fc1(torch.cat((out_spike,out_phase), 2) )
             out = self.fc2(out)
             out=out.squeeze(0)
