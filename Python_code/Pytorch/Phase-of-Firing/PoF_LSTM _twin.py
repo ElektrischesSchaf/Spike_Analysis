@@ -27,21 +27,25 @@ from sklearn.metrics import mean_squared_error, r2_score
 from scipy.stats import pearsonr
 # My module
 import sys
-sys.path.append("..") # Adds higher directory to python modules path.
+sys.path.append("../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
+
 
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 width_two=0.2
 CWD_origin=os.getcwd()
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
+
+# session_name='indy_20170127_03' # 2019 Dataset 1: indy_20170124_01, Dataset 2: indy_20170127_03
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:] 
+List_FILE=ALL_List_FILE[:]
+# print(List_FILE)
 session_file_list=List_FILE
-MAX_epoch=200
+MAX_epoch=300
 R_square_across_all_sessions=[]
 RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
@@ -50,9 +54,39 @@ person_correlation_coefficient_across_all_sessions=[]
 # session control start
 for session_k in range(len(session_file_list)):
 
-    session_name=str(session_file_list[session_k])[:-4]
-    file_name_1='../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
-    # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
+    session_name=str(session_file_list[session_k])
+    file_path_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
+    file_list=[file_path_1]
+
+    
+
+    band_start=0.5
+    band_cutoff=4
+    if band_start==0.5:
+        bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
+    else:
+        bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
+
+    phase_of_firing_all_channel=[]
+    for PoF_channel_index in range(0, 96):
+        # phase_of_firing_all_channel.append([])
+        file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
+        PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
+        PoF_one_channel=np.array(PoF_one_channel)
+        PoF_one_channel=np.absolute(PoF_one_channel)
+        # print('PoF_channel_index ', PoF_channel_index)
+        # print(PoF_one_channel)
+        phase_of_firing_all_channel.append( list(PoF_one_channel) )
+
+    phase_of_firing_all_channel=np.array(phase_of_firing_all_channel)
+    print( 'important= ', phase_of_firing_all_channel.shape)
+    phase_of_firing_all_channel=np.squeeze(phase_of_firing_all_channel).transpose()
+    phase_of_firing_all_channel=phase_of_firing_all_channel[::16,:]
+    # phase_of_firing_all_channel=np.reshape(96,-1)
+    print( 'important= ', phase_of_firing_all_channel.shape)
+    # TODO
+    # file_phase_of_firing_time_stamp='../../Signal_Processing/Phase_Clustering/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
+
     time_stamp_64ms=[]
     ###################################### Auto-assigned parameters
     #testing_data_index=5000
@@ -69,6 +103,7 @@ for session_k in range(len(session_file_list)):
     order=my_parameters.order
     with_sorted_spikes=my_parameters.with_sorted_spikes
     include_hash_unit=my_parameters.include_hash_unit
+
 
     # Must know these two numbers beforehand
     channel_numbers_in_this_dataset=96
@@ -111,12 +146,31 @@ for session_k in range(len(session_file_list)):
     z_acceleration_label_training= np.empty([0])
     z_acceleration_label_testing= np.empty([0])
 
+
+    # ITPC read file
+    # iptc_abs=pd.read_csv(file_itpc_abs_1, dtype=float)
+    # iptc_angle=pd.read_csv(file_itpc_angle_1, dtype=float)
+    # itpc_time_stamp=pd.read_csv(file_itpc_time_stamp_1, dtype=float)
+
+    # iptc_abs=np.array(iptc_abs)
+    # iptc_angle=np.array(iptc_angle)
+    # itpc_time_stamp=np.array(itpc_time_stamp)
+
+    # itpc_64ms_rate=my_parameters.the_sampling_rate
+    # iptc_abs=iptc_abs[::itpc_64ms_rate]
+    # iptc_angle=iptc_angle[::itpc_64ms_rate]
+    # itpc_time_stamp=itpc_time_stamp[::itpc_64ms_rate]
+
+    # print(iptc_abs.shape, ' ', iptc_abs.shape, ' ', itpc_time_stamp.shape)
+
+
+
     # cross sessions control start
     for session_index in range(file_numbers):
         print('In session '+ str(session_index+1) + ': ' + '\n' )
 
-        [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
-        [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
+        [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_list[session_index], the_sampling_rate, time_stamp_64ms, include_hash_unit)
+        [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_list[session_index], the_sampling_rate, time_stamp_64ms)
 
         # Extract firing_rate_cell with rows have length bigger than zero
         firing_rate_final=[] # not[[]]
@@ -215,10 +269,17 @@ for session_k in range(len(session_file_list)):
 
     # cross sessions control end
 
+    # PoF_testing_data_index=testing_data_index # split 80% into training
+    PoF_testing_data_index=5000
+    print('PoF_testing_data_index= ',PoF_testing_data_index) # 6142
+
+    phase_of_firing_all_channel_traing=phase_of_firing_all_channel[:PoF_testing_data_index,:] # TODO
+    phase_of_firing_all_channel_testing=phase_of_firing_all_channel[PoF_testing_data_index:,:]
 
     # Write featrue and label to csv files
     CWD = CWD_origin
-    model_name='LSTM_with_Spike'
+    model_name='LSTM_with_Phase'
+
     if model_name not in CWD:
         CWD = os.path.join(CWD, model_name)
         if not os.path.exists(CWD):
@@ -227,15 +288,18 @@ for session_k in range(len(session_file_list)):
     CWD=os.path.join(CWD, kinematic_variable_type)
     if not os.path.exists(CWD):
         os.mkdir(CWD)
-    
+
     bar_plot_path=os.path.join(CWD, 'bar_plot_across_sessions')
     if not os.path.exists(bar_plot_path):
         os.mkdir(bar_plot_path)
 
-    if session_name not in CWD:
-        CWD = os.path.join(CWD, session_name)
-        if not os.path.exists(CWD):
-            os.mkdir(CWD)
+    CWD = os.path.join(CWD, session_name )
+    if not os.path.exists(CWD):
+        os.mkdir(CWD)
+
+    CWD = os.path.join(CWD, bandwidth_token )
+    if not os.path.exists(CWD):
+        os.mkdir(CWD)
 
     save_epoch_path=os.path.join(CWD,'save')
     if not os.path.exists(save_epoch_path):
@@ -248,7 +312,6 @@ for session_k in range(len(session_file_list)):
     plot_path = os.path.join(CWD, 'plots')
     if not os.path.exists(plot_path):
         os.mkdir(plot_path)
-
 
     df = pd.DataFrame(X_for_training)
     df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
@@ -270,6 +333,7 @@ for session_k in range(len(session_file_list)):
         df=pd.DataFrame(y_velocity_label_testing)
         df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
 
+
     class AbstractDataset(Dataset):
         def __init__(self, feature_matrix, label_matrix):
             self.data=feature_matrix
@@ -288,15 +352,14 @@ for session_k in range(len(session_file_list)):
             print('\ndatas: ', datas)
             # return self.data, self.label
 
-
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
     training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
-    training_x=training_x.float()
+    training_x_spike=training_x.float()
 
     testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
-    testing_x=testing_x.float()
+    testing_x_spike=testing_x.float()
 
     if kinematic_variable_type=='x_vel':
         training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
@@ -316,10 +379,79 @@ for session_k in range(len(session_file_list)):
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
 
+    # PoF to torch
+    training_PoF=torch.from_numpy(phase_of_firing_all_channel_traing)
+    training_PoF=training_PoF.float()
+
+    testing_PoF=torch.from_numpy(phase_of_firing_all_channel_testing)
+    testing_PoF=testing_PoF.float()
+
+    print('training_PoF.size()= ', training_PoF.size(), ' training_x.size()= ',training_x.size() , '\n')
+    print('testing_PoF.size()= ', testing_PoF.size(), ' testing_x.size()= ',testing_x.size() )
+
+    length_difference=testing_x.size()[0]-testing_PoF.size()[0]
+    print('length_difference= ', length_difference,'\n')
+
+    if length_difference <0:
+        testing_PoF=testing_PoF[:-abs(length_difference),:]
+
+    if length_difference >0:
+        testing_x=testing_x[:-abs(length_difference),:]
+        testing_y=testing_y[:-abs(length_difference),:]
+
+    print('testing_PoF.size()= ', testing_PoF.size(), ' testing_y.size()= ', testing_y.size())
+
+
+    new_training_x=torch.cat(( training_x_spike, training_PoF ) , 1)
+    print('new_training_x= ', new_training_x.size())
+
+    new_testing_x=torch.cat(( testing_x_spike, testing_PoF), 1)
+
+
+    for k in range(new_training_x.size(0)):
+
+        for i in range(96):
+            pass
+            # new_training_x[k,-2]=abs(new_training_x[k,-2])
+
+            # Phase-of-Firing
+
+            # absolute
+            # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
+            # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
+            # no absolute
+            # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,i+96]
+
+            # Concatenate
+            # new_training_x[k,-2]=abs(new_training_x[k,-2])
+            # new_training_x[k,-2]=abs(new_training_x[k,-2])*new_training_x[k,-1]
+
+
+    for k in range(new_testing_x.size(0)):
+        for i in range(96):
+            pass
+            # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
+
+            # Phase-of-Firing
+
+            # absolute
+            # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+            # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
+            # no absolute
+            # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,i+96]
+
+            # Concatenate
+            # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
+            # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
+
+    new_training_x=new_training_x[:,:]
+    new_testing_x=new_testing_x[:,:]
+
+    print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
+    print('Real input features: ', new_training_x.size(1) )
     # Neural Network
     batch_size = 64
     learning_rate=1e-5
-
     max_epoch=MAX_epoch
 
     # LSTM
@@ -327,19 +459,12 @@ for session_k in range(len(session_file_list)):
     layer_dim=1
     output_dim=1
 
-    training_dataset=AbstractDataset(training_x,training_y)
-    testing_dataset=AbstractDataset(testing_x, testing_y)
 
-    # TODO collate_fn
-    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
-    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
-    # test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)
+    training_dataset=AbstractDataset(new_training_x, training_y)
+    testing_dataset=AbstractDataset(new_testing_x, testing_y)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    # All models fit and predict, show R2 score
-
-    # this is one way to define a network
     class LSTMModel(torch.nn.Module):
         def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
             super(LSTMModel, self).__init__()
@@ -360,7 +485,6 @@ for session_k in range(len(session_file_list)):
 
             # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
             # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
-        
         def forward(self, x):
 
             # x torch.Size([64, 96])
@@ -395,12 +519,12 @@ for session_k in range(len(session_file_list)):
 
             return out
 
-    net = LSTMModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    net = LSTMModel(input_dim=new_training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
     net.to(device)
-    history = {'train':[],'test':[]}
+    history = {'train':[],'valid':[]}
 
 
     def _run_epoch(epoch, mode):
@@ -454,8 +578,8 @@ for session_k in range(len(session_file_list)):
             history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
             # writer.add_scalar('Loss/train', loss/len(trange), epoch)
         else:
-            history['test'].append({'loss':loss/len(trange), 'R^2': R_square })
-            # writer.add_scalar('Loss/test', loss/len(trange), epoch)
+            history['valid'].append({'loss':loss/len(trange), 'R^2': R_square })
+            # writer.add_scalar('Loss/valid', loss/len(trange), epoch)
         trange.close()
 
     def _run_iter(x,y):
@@ -475,7 +599,7 @@ for session_k in range(len(session_file_list)):
     for epoch in range(max_epoch):
         print('Epoch: {}'.format(epoch))
         _run_epoch(epoch, 'train')
-        _run_epoch(epoch, 'test')
+        _run_epoch(epoch, 'valid')
         save(epoch)
 
     # Plot the training results 
@@ -483,39 +607,39 @@ for session_k in range(len(session_file_list)):
         history = json.loads(f.read())
         
     train_loss = [l['loss'] for l in history['train']]
-    valid_loss = [l['loss'] for l in history['test']]
+    valid_loss = [l['loss'] for l in history['valid']]
 
     train_R_square = [l['R^2'] for l in history['train']]
-    valid_R_square = [l['R^2'] for l in history['test']]
+    valid_R_square = [l['R^2'] for l in history['valid']]
 
 
     plt.figure(figsize=(7,5))
     plt.title(model_name+' Loss')
     plt.plot(train_loss, label='train')
-    plt.plot(valid_loss, label='test')
+    plt.plot(valid_loss, label='valid')
     plt.xlabel('Epoch')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(plot_path + '/' + model_name+"_Loss.png")
+    plt.savefig( plot_path +'/'+model_name+'_Loss.png')
 
     plt.figure(figsize=(7,5))
-    plt.title(model_name+' performance')
+    plt.title( model_name+ ' performance')
     plt.plot(train_R_square, label='train')
-    plt.plot(valid_R_square, label='test')
+    plt.plot(valid_R_square, label='valid')
     plt.xlabel('Epoch')
     plt.ylabel('R square')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(plot_path + '/' +model_name+"_R-square.png")
+    plt.savefig( plot_path+'/'+ model_name +'_R-square.png')
 
     #global my_prediction
     #global real_y_all
 
 
-    best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['test'])])
+    best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['valid'])])
     print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')
     best_epoch_arcoss_all_sessions.append(best_epoch)
-    print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['test'])]))
+    print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['valid'])]))
 
 
     # Testing
@@ -546,46 +670,48 @@ for session_k in range(len(session_file_list)):
 
         for ele in real_y:
             real_y_all.append( float(ele) )
+
     shutil.rmtree(save_epoch_path)
 
-    testing_data_r_square=r2_score( real_y_all, my_prediction)    
+    testing_data_r_square=r2_score( real_y_all, my_prediction)
     testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
     PCC=pearsonr(real_y_all,my_prediction)
-
-    print('\n* model_x_velocity score in order ', order_index, ': ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
+    print('\n* prediction score in order ', order_index, ': ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
 
     R_square_across_all_sessions.append(testing_data_r_square)
     RMSE_across_all_sessions.append(testing_data_RMSE)
     person_correlation_coefficient_across_all_sessions.append(PCC[0])
 
-    plot.figure(figsize=(30,10))
+
+    plot.figure(figsize=(30, 10))
+    plot.plot(time_stamp_64ms[testing_data_index:-1], my_prediction, 'b--',label='Prediction' )
 
     if kinematic_variable_type=='x_vel':
-        plot.plot(time_stamp_64ms[testing_data_index:-1], my_prediction, 'b--',label='Prediction' )
         plot.plot(time_stamp_64ms[testing_data_index:-2], x_velocity_label[testing_data_index:-1], 'r--', label='True value')
         plot.title(model_name+' Model: x-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+' (mm/s), PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
+        plot.ylabel('x-velocity (mm/s)', fontsize=25, color="black")
     if kinematic_variable_type=='y_vel':
-        plot.plot(time_stamp_64ms[testing_data_index:-1], my_prediction, 'b--',label='Prediction' )
         plot.plot(time_stamp_64ms[testing_data_index:-2], y_velocity_label[testing_data_index:-1], 'r--', label='True value')
         plot.title(model_name+' Model: y-velocity prediction, R sqaure= '+str( round( testing_data_r_square, 3) )+', RMSE= '+str(round(testing_data_RMSE, 3))+' (mm/s), PCC= '+ str(round(PCC[0], 3)), fontsize=30, color="black")
+        plot.ylabel('y-velocity (mm/s)', fontsize=25, color="black")
+    plot.legend(loc='upper right', fontsize=25)
+    plot.xlabel('time (second)', fontsize=25, color="black")
     
-    plot.legend(loc='upper right', fontsize=20)
-    plot.xlabel('Time (second)', fontsize=25)
-    plot.ylabel('x velocity', fontsize=25)
     plt.xticks(fontsize=20, color="black")
     plt.yticks(fontsize=20, color="black")
     axes = plot.gca()
     axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
     plot.tight_layout()
-    if kinematic_variable_type=='x_vel':
-        plot.savefig( plot_path + '/' +model_name+'_x-velocity_predict.png' )
-    if kinematic_variable_type=='y_vel':
-        plot.savefig( plot_path + '/' +model_name+'_y-velocity_predict.png' )
 
+    if kinematic_variable_type=='x_vel':
+        plot.savefig(plot_path +'/'+ model_name+'_x-velocity_predict.png' )
+    if kinematic_variable_type=='y_vel':
+        plot.savefig(plot_path +'/'+ model_name+'_y-velocity_predict.png' )
     plot.cla()
     plot.clf()
     plot.close()
 
+# session control end
 
 
 plt.figure(figsize=(16, 9))
