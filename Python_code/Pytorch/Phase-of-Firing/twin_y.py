@@ -38,7 +38,7 @@ width_two=0.2
 CWD_origin=os.getcwd()
 
 # session_name='indy_20170127_03' # 2019 Dataset 1: indy_20170124_01, Dataset 2: indy_20170127_03
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -446,16 +446,16 @@ for session_k in range(len(session_file_list)):
 
     new_training_x=new_training_x[:,:]
     new_testing_x=new_testing_x[:,:]
-
+    real_input_features=int( new_training_x.size(1) )
     print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
-    print('Real input features: ', new_training_x.size(1) )
+    print('Real input features: ', real_input_features)
     # Neural Network
     batch_size = 64
     learning_rate=1e-5
     max_epoch=MAX_epoch
 
     # LSTM
-    hidden_dim=100
+    hidden_dim=96
     layer_dim=1
     output_dim=1
 
@@ -481,11 +481,13 @@ for session_k in range(len(session_file_list)):
             self.lstm_phase = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
             
             # Readout layer
-            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
-            self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
+            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) )
+            self.fc2 = torch.nn.Linear(int(hidden_dim/2), int(hidden_dim/4))
+            self.fc3 = torch.nn.Linear(int(hidden_dim/4), int(hidden_dim/8))
+            self.fc4 = torch.nn.Linear(int(hidden_dim/8), int(hidden_dim/16))
+            self.fc5 = torch.nn.Linear(int(hidden_dim/16), int(hidden_dim/32))
 
-            # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
-            # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
+            self.fc_final =torch.nn.Linear(  int(hidden_dim/32)+int(hidden_dim/32),output_dim)
         def forward(self, x):
 
             # x torch.Size([64, 96])
@@ -496,17 +498,18 @@ for session_k in range(len(session_file_list)):
             h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
             # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
             h0=h0.to(device)
+            h1=h0.clone()
 
             # Initialize cell state
             c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
             # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
             c0=c0.to(device)
-
+            c1=c0.clone()
             # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
 
             # time steps
             out_spike, (hn, cn) = self.lstm_spike(x[:,:,:96], (h0,c0))
-            out_phase, (hn, cn) = self.lstm_phase(x[:,:,96:], (h0,c0))
+            out_phase, (hn, cn) = self.lstm_phase(x[:,:,96:], (h1,c1))
 
             '''
             Index hidden state of last time step
@@ -515,13 +518,29 @@ for session_k in range(len(session_file_list)):
             out = self.fc(out[:, -1, :]) 
             out.size() --> 100, 10
             '''
-            out = self.fc1(torch.cat(out_spike,out_phase), 1)
-            out = self.fc2(out)
+
+            out_spike=self.fc1(out_spike)
+            out_phase=self.fc1(out_phase)
+
+            out_spike=self.fc2(out_spike)
+            out_phase=self.fc2(out_phase)
+
+            out_spike=self.fc3(out_spike)
+            out_phase=self.fc3(out_phase)
+
+            out_spike=self.fc4(out_spike)
+            out_phase=self.fc4(out_phase)
+
+            out_spike=self.fc5(out_spike)
+            out_phase=self.fc5(out_phase)
+
+            out = self.fc_final(torch.cat((out_spike,out_phase), 2) )
+
             out=out.squeeze(0)
 
             return out
-
-    net = LSTMModel(input_dim=new_training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    real_input_features=int(real_input_features /2) # because twin LSTM
+    net = LSTMModel(input_dim=real_input_features, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
