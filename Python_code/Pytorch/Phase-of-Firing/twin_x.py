@@ -456,7 +456,7 @@ for session_k in range(len(session_file_list)):
 
     # LSTM
     hidden_dim=100
-    layer_dim=1
+    layer_dim=2
     output_dim=1
 
 
