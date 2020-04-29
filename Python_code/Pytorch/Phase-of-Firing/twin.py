@@ -481,8 +481,8 @@ for session_k in range(len(session_file_list)):
             self.lstm_phase = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
             
             # Readout layer
-            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
-            self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
+            self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # one-directional
+            self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # one-directional
 
             # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
             # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
@@ -515,13 +515,13 @@ for session_k in range(len(session_file_list)):
             out = self.fc(out[:, -1, :]) 
             out.size() --> 100, 10
             '''
-            out = self.fc1(torch.cat(out_spike,out_phase), 1)
+            out = self.fc1(torch.cat((out_spike,out_phase), 2) )
             out = self.fc2(out)
             out=out.squeeze(0)
 
             return out
 
-    net = LSTMModel(input_dim=new_training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    net = LSTMModel(input_dim=96, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
