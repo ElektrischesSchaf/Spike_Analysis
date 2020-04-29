@@ -455,7 +455,7 @@ for session_k in range(len(session_file_list)):
     max_epoch=MAX_epoch
 
     # LSTM
-    hidden_dim=96
+    hidden_dim=100
     layer_dim=1
     output_dim=1
 
@@ -481,13 +481,11 @@ for session_k in range(len(session_file_list)):
             self.lstm_phase = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
             
             # Readout layer
-            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) )
-            self.fc2 = torch.nn.Linear(int(hidden_dim/2), int(hidden_dim/4))
-            self.fc3 = torch.nn.Linear(int(hidden_dim/4), int(hidden_dim/8))
-            self.fc4 = torch.nn.Linear(int(hidden_dim/8), int(hidden_dim/16))
-            self.fc5 = torch.nn.Linear(int(hidden_dim/16), int(hidden_dim/32))
+            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) ) # one-directional
+            self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-            self.fc_final =torch.nn.Linear(  int(hidden_dim/32)+int(hidden_dim/32),output_dim)
+            # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
+            # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
         def forward(self, x):
 
             # x torch.Size([64, 96])
@@ -521,24 +519,13 @@ for session_k in range(len(session_file_list)):
 
             out_spike=self.fc1(out_spike)
             out_phase=self.fc1(out_phase)
-
-            out_spike=self.fc2(out_spike)
-            out_phase=self.fc2(out_phase)
-
-            out_spike=self.fc3(out_spike)
-            out_phase=self.fc3(out_phase)
-
-            out_spike=self.fc4(out_spike)
-            out_phase=self.fc4(out_phase)
-
-            out_spike=self.fc5(out_spike)
-            out_phase=self.fc5(out_phase)
-
-            out = self.fc_final(torch.cat((out_spike,out_phase), 2) )
-
+    
+            out = self.fc1(torch.cat((out_spike,out_phase), 2) )
+            out = self.fc2(out)
             out=out.squeeze(0)
 
             return out
+
     real_input_features=int(real_input_features /2) # because twin LSTM
     net = LSTMModel(input_dim=real_input_features, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
