@@ -42,10 +42,10 @@ kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[1:3]
+List_FILE=ALL_List_FILE[:]
 # print(List_FILE)
 session_file_list=List_FILE
-MAX_epoch=2
+MAX_epoch=300
 R_square_across_all_sessions=[]
 RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
@@ -638,6 +638,7 @@ for session_k in range(len(session_file_list)):
 
     best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['valid'])])
     print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')
+    best_epoch_arcoss_all_sessions.append(best_epoch)
     print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['valid'])]))
 
 
