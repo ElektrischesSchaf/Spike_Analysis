@@ -451,7 +451,7 @@ for session_k in range(len(session_file_list)):
     print('Real input features: ', real_input_features)
     # Neural Network
     batch_size = 64
-    learning_rate=1e-6
+    learning_rate=1e-5
     max_epoch=MAX_epoch
 
     # LSTM
