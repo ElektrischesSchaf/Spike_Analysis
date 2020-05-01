@@ -12,7 +12,7 @@ import shutil
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import matplotlib.pyplot as plt
-
+import math
 import numpy as np
 import imageio
 import time
@@ -47,6 +47,7 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 MAX_epoch=300
 R_square_across_all_sessions=[]
+SNR_across_all_sessions=[]
 RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
@@ -682,11 +683,13 @@ for session_k in range(len(session_file_list)):
     shutil.rmtree(save_epoch_path)
 
     testing_data_r_square=r2_score( real_y_all, my_prediction)
+    testing_data_SNR=-10*math.log10(1-testing_data_r_square)
     testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
     PCC=pearsonr(real_y_all,my_prediction)
     print('\n* prediction score in order ', order_index, ': ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
 
     R_square_across_all_sessions.append(testing_data_r_square)
+    SNR_across_all_sessions.append(testing_data_SNR)
     RMSE_across_all_sessions.append(testing_data_RMSE)
     person_correlation_coefficient_across_all_sessions.append(PCC[0])
 

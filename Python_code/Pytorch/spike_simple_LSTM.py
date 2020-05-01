@@ -12,7 +12,7 @@ import shutil
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import matplotlib.pyplot as plt
-
+import math
 import numpy as np
 import imageio
 import time
@@ -35,7 +35,7 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 width_two=0.2
 CWD_origin=os.getcwd()
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -43,6 +43,7 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 MAX_epoch=200
 R_square_across_all_sessions=[]
+SNR_across_all_sessions=[]
 RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
@@ -548,15 +549,18 @@ for session_k in range(len(session_file_list)):
             real_y_all.append( float(ele) )
     shutil.rmtree(save_epoch_path)
 
-    testing_data_r_square=r2_score( real_y_all, my_prediction)    
+    testing_data_r_square=r2_score( real_y_all, my_prediction)
+    testing_data_SNR=-10*math.log10(1-testing_data_r_square)
     testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
     PCC=pearsonr(real_y_all,my_prediction)
 
     print('\n* model_x_velocity score in order ', order_index, ': ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
 
     R_square_across_all_sessions.append(testing_data_r_square)
+    SNR_across_all_sessions.append(testing_data_SNR)
     RMSE_across_all_sessions.append(testing_data_RMSE)
     person_correlation_coefficient_across_all_sessions.append(PCC[0])
+
 
     plot.figure(figsize=(30,10))
 
