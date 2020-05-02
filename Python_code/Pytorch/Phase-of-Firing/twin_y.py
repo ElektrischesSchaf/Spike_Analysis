@@ -45,7 +45,7 @@ ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:]
 # print(List_FILE)
 session_file_list=List_FILE
-MAX_epoch=300
+MAX_epoch=500
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
 RMSE_across_all_sessions=[]
@@ -451,8 +451,8 @@ for session_k in range(len(session_file_list)):
     print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
     print('Real input features: ', real_input_features)
     # Neural Network
-    batch_size = 64
-    learning_rate=1e-5
+    batch_size = 32
+    learning_rate=1e-6
     max_epoch=MAX_epoch
 
     # LSTM
