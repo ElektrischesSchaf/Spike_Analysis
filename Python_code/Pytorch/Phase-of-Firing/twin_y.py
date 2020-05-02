@@ -518,10 +518,10 @@ for session_k in range(len(session_file_list)):
             out.size() --> 100, 10
             '''
 
-            out_spike=self.fc1(out_spike)
-            out_phase=self.fc1(out_phase)
+            out_spike=torch.relu( self.fc1(out_spike) )
+            out_phase=torch.relu( self.fc1(out_phase) )
     
-            out = self.fc1(torch.cat((out_spike,out_phase), 2) )
+            out =torch.relu( self.fc1(torch.cat((out_spike,out_phase), 2) ) )
             out = self.fc2(out)
             out=out.squeeze(0)
 

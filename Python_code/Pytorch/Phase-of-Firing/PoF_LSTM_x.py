@@ -514,7 +514,7 @@ for session_k in range(len(session_file_list)):
             out = self.fc(out[:, -1, :]) 
             out.size() --> 100, 10
             '''
-            out = self.fc1(out)
+            out = torch.relu(self.fc1(out))
             out = self.fc2(out)
             out=out.squeeze(0)
 

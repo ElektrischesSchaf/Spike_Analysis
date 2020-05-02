@@ -366,7 +366,9 @@ for session_k in range(len(session_file_list)):
 
             # x torch.Size([64, 96])
 
-            x=x.unsqueeze(0)       
+            x=x.unsqueeze(0)
+            # m=torch.nn.LayerNorm( x.size()[:], elementwise_affine=False )
+            # x=m(x)
 
             # Initialize hidden state with zeros
             h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
@@ -390,7 +392,7 @@ for session_k in range(len(session_file_list)):
             out = self.fc(out[:, -1, :]) 
             out.size() --> 100, 10
             '''
-            out = self.fc1(out)
+            out = torch.relu(self.fc1(out))
             out = self.fc2(out)
             out=out.squeeze(0)
 
