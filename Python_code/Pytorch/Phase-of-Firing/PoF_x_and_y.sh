@@ -1,3 +1,3 @@
 #! /bin/bash
-python PoF_LSTM.py &&
-python PoF_LSTM-2.py
+python PoF_LSTM_x.py &&
+python PoF_LSTM_y.py
