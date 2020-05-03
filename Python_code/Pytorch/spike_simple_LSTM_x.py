@@ -503,7 +503,7 @@ for session_k in range(len(session_file_list)):
     RMSE_across_all_sessions.append(testing_data_RMSE)
     person_correlation_coefficient_across_all_sessions.append(PCC[0])
 
-    plt.figure(figsize=(16, 4.5))
+    plt.figure(figsize=(32, 9))
 
     time_elapsed=time_stamp_64ms[testing_data_index:-1]
     Ground_Truth_x_vel=x_velocity_label[testing_data_index:]
@@ -550,16 +550,16 @@ for session_k in range(len(session_file_list)):
     plt.close()
 
     df = pd.DataFrame( ((session_name, testing_data_r_square )) )
-    df.to_csv(os.path.join(csv_path, 'R_square_across_all_sessions.csv'), index=False, header=False)
+    df.to_csv(os.path.join(csv_path, 'R_square_this_session.csv'), index=False, header=False)
 
     df = pd.DataFrame( ((session_name, testing_data_RMSE )) )
-    df.to_csv(os.path.join(csv_path, 'RMSE_across_all_sessions.csv'), index=False, header=False)
+    df.to_csv(os.path.join(csv_path, 'RMSE_this_session.csv'), index=False, header=False)
 
     df = pd.DataFrame( ((session_name, PCC[0] )) )
-    df.to_csv(os.path.join(csv_path, 'person_correlation_coefficient_across_all_sessions.csv'), index=False, header=False)
+    df.to_csv(os.path.join(csv_path, 'person_correlation_coefficient__this_session.csv'), index=False, header=False)
 
     df = pd.DataFrame( ((session_name, testing_data_SNR )) )
-    df.to_csv(os.path.join(csv_path, 'SNR_across_all_sessions.csv'), index=False, header=False)
+    df.to_csv(os.path.join(csv_path, 'SNR_this_session.csv'), index=False, header=False)
 
 # session control end
 
