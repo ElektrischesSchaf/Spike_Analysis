@@ -451,8 +451,8 @@ for session_k in range(len(session_file_list)):
     print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
     print('Real input features: ', real_input_features)
     # Neural Network
-    batch_size = 32
-    learning_rate=1e-6
+    batch_size = 16
+    learning_rate=1e-5
     max_epoch=MAX_epoch
 
     # LSTM
