@@ -503,7 +503,7 @@ for session_k in range(len(session_file_list)):
     RMSE_across_all_sessions.append(testing_data_RMSE)
     person_correlation_coefficient_across_all_sessions.append(PCC[0])
 
-    plt.figure(figsize=(30,10))
+    plt.figure(figsize=(16, 4.5))
 
     time_elapsed=time_stamp_64ms[testing_data_index:-1]
     Ground_Truth_x_vel=x_velocity_label[testing_data_index:]
@@ -640,7 +640,7 @@ plt.close()
 plt.figure(figsize=(16, 9))
 ind = np.arange(1,len(best_epoch_arcoss_all_sessions)+1)
 plt.bar(ind, best_epoch_arcoss_all_sessions, width=width_two, color='r')
-plt.ylabel('Best Epoch out of '+str(MAX_epoch))
+plt.ylabel('Best Epoch out of '+str(MAX_EPOCH))
 plt.xlabel('')
 plt.xlim([0,len(best_epoch_arcoss_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
