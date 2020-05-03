@@ -14,7 +14,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import sys
 sys.path.append("..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
-import data_processing.load_mat_file as load_mat_file
+import data_processing.load_mat_file_with_lag_and_order as load_mat_file
 
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()

@@ -6,6 +6,44 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 class mat_file_processing():
 
+    def create_empty_traing_and_testing_label(self, feature_numbers):
+
+        X_for_training = np.empty([0, feature_numbers])
+        X_for_prediction = np.empty([0, feature_numbers])
+        
+        x_position_label_training= np.empty([0])
+        x_position_label_testing= np.empty([0])
+
+        y_position_label_training= np.empty([0])
+        y_position_label_testing= np.empty([0])
+
+        z_position_label_training= np.empty([0])
+        z_position_label_testing= np.empty([0])
+
+        x_velocity_label_training= np.empty([0])
+        x_velocity_label_testing= np.empty([0])
+
+        y_velocity_label_training= np.empty([0])
+        y_velocity_label_testing= np.empty([0])
+
+        z_velocity_label_training= np.empty([0])
+        z_velocity_label_testing= np.empty([0])
+
+        x_acceleration_label_training= np.empty([0])
+        x_acceleration_label_testing= np.empty([0])
+
+        y_acceleration_label_training= np.empty([0])
+        y_acceleration_label_testing= np.empty([0])
+
+        z_acceleration_label_training= np.empty([0])
+        z_acceleration_label_testing= np.empty([0]) 
+
+        return [X_for_training, X_for_prediction, 
+        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
+        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]
+
+
     def histc(self, X, bins):
         map_to_bins = np.digitize(X,bins)
         r = np.zeros(bins.shape)
@@ -126,42 +164,6 @@ class mat_file_processing():
                 '''
         return [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms]
 
-    def create_empty_traing_and_testing_label(self):
-
-        X_for_training = np.empty([0, 96])
-        X_for_prediction = np.empty([0, 96])
-        
-        x_position_label_training= np.empty([0])
-        x_position_label_testing= np.empty([0])
-
-        y_position_label_training= np.empty([0])
-        y_position_label_testing= np.empty([0])
-
-        z_position_label_training= np.empty([0])
-        z_position_label_testing= np.empty([0])
-
-        x_velocity_label_training= np.empty([0])
-        x_velocity_label_testing= np.empty([0])
-
-        y_velocity_label_training= np.empty([0])
-        y_velocity_label_testing= np.empty([0])
-
-        z_velocity_label_training= np.empty([0])
-        z_velocity_label_testing= np.empty([0])
-
-        x_acceleration_label_training= np.empty([0])
-        x_acceleration_label_testing= np.empty([0])
-
-        y_acceleration_label_training= np.empty([0])
-        y_acceleration_label_testing= np.empty([0])
-
-        z_acceleration_label_training= np.empty([0])
-        z_acceleration_label_testing= np.empty([0]) 
-
-        return [X_for_training, X_for_prediction, 
-        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]
 
     def get_labels(self, the_file_name, the_sampling_rate, time_stamp_64ms):
         with h5py.File(the_file_name, 'r') as mat_file:
@@ -289,43 +291,43 @@ class mat_file_processing():
 
         return [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]
 
-    def cross_session_data_concatenation(self, order_index, X, testing_data_index, , X_for_training, X_for_prediction,
+    def cross_session_data_concatenation(self, feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
     x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing):       
       
-        if order_index==0:
+        print('feature_numbers_of_firing_rate= ', feature_numbers_of_firing_rate, '\n')
 
-            X_for_training = np.concatenate(( X_for_training, X[:testing_data_index, :] ), axis=0 )
-            X_for_prediction = np.concatenate(( X_for_prediction , X[testing_data_index:] ), axis=0)
+        X_for_training = np.concatenate(( X_for_training, X[:testing_data_index, :] ), axis=0 )
+        X_for_prediction = np.concatenate(( X_for_prediction , X[testing_data_index:] ), axis=0)
 
-            x_position_label_training = np.concatenate((x_position_label_training, x_position_label[:testing_data_index]), axis=0)
-            x_position_label_testing = np.concatenate((x_position_label_testing, x_position_label[testing_data_index:]), axis=0)
+        x_position_label_training = np.concatenate((x_position_label_training, x_position_label[:testing_data_index]), axis=0)
+        x_position_label_testing = np.concatenate((x_position_label_testing, x_position_label[testing_data_index:]), axis=0)
 
-            y_position_label_training =  np.concatenate((y_position_label_training, y_position_label[:testing_data_index ]), axis=0)
-            y_position_label_testing = np.concatenate((y_position_label_testing, y_position_label[testing_data_index:]), axis=0)
+        y_position_label_training =  np.concatenate((y_position_label_training, y_position_label[:testing_data_index ]), axis=0)
+        y_position_label_testing = np.concatenate((y_position_label_testing, y_position_label[testing_data_index:]), axis=0)
 
-            z_position_label_training = np.concatenate((z_position_label_training, z_position_label[:testing_data_index ]), axis=0)
-            z_position_label_testing = np.concatenate((z_position_label_testing, z_position_label[testing_data_index:]), axis=0)
+        z_position_label_training = np.concatenate((z_position_label_training, z_position_label[:testing_data_index ]), axis=0)
+        z_position_label_testing = np.concatenate((z_position_label_testing, z_position_label[testing_data_index:]), axis=0)
+    
+        x_velocity_label_training = np.concatenate((x_velocity_label_training, x_velocity_label[:testing_data_index ]), axis=0)
+        x_velocity_label_testing = np.concatenate((x_velocity_label_testing, x_velocity_label[testing_data_index:]), axis=0)
         
-            x_velocity_label_training = np.concatenate((x_velocity_label_training, x_velocity_label[:testing_data_index ]), axis=0)
-            x_velocity_label_testing = np.concatenate((x_velocity_label_testing, x_velocity_label[testing_data_index:]), axis=0)
-            
-            y_velocity_label_training = np.concatenate((y_velocity_label_training, y_velocity_label[:testing_data_index ] ), axis=0)
-            y_velocity_label_testing = np.concatenate((y_velocity_label_testing, y_velocity_label[testing_data_index:]), axis=0)
+        y_velocity_label_training = np.concatenate((y_velocity_label_training, y_velocity_label[:testing_data_index ] ), axis=0)
+        y_velocity_label_testing = np.concatenate((y_velocity_label_testing, y_velocity_label[testing_data_index:]), axis=0)
 
-            z_velocity_label_training = np.concatenate((z_velocity_label_training, z_velocity_label[:testing_data_index ]), axis=0)
-            z_velocity_label_testing = np.concatenate((z_velocity_label_testing, z_velocity_label[testing_data_index:]), axis=0)
+        z_velocity_label_training = np.concatenate((z_velocity_label_training, z_velocity_label[:testing_data_index ]), axis=0)
+        z_velocity_label_testing = np.concatenate((z_velocity_label_testing, z_velocity_label[testing_data_index:]), axis=0)
 
-            x_acceleration_label_training = np.concatenate((x_acceleration_label_training, x_acceleration_label[:testing_data_index ]), axis=0)
-            x_acceleration_label_testing = np.concatenate((x_acceleration_label_testing, x_acceleration_label[testing_data_index:]), axis=0)
+        x_acceleration_label_training = np.concatenate((x_acceleration_label_training, x_acceleration_label[:testing_data_index ]), axis=0)
+        x_acceleration_label_testing = np.concatenate((x_acceleration_label_testing, x_acceleration_label[testing_data_index:]), axis=0)
 
-            y_acceleration_label_training = np.concatenate((y_acceleration_label_training, y_acceleration_label[:testing_data_index ]), axis=0)
-            y_acceleration_label_testing = np.concatenate((y_acceleration_label_testing, y_acceleration_label[testing_data_index:]), axis=0)
+        y_acceleration_label_training = np.concatenate((y_acceleration_label_training, y_acceleration_label[:testing_data_index ]), axis=0)
+        y_acceleration_label_testing = np.concatenate((y_acceleration_label_testing, y_acceleration_label[testing_data_index:]), axis=0)
 
-            z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[:testing_data_index ]), axis=0)
-            z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index:]), axis=0)
+        z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[:testing_data_index ]), axis=0)
+        z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index:]), axis=0)
 
         return [X_for_training, X_for_prediction, \
         x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,\
