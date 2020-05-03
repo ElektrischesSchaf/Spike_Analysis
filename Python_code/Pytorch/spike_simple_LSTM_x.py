@@ -1,47 +1,58 @@
-# https://medium.com/@benjamin.phillips22/simple-regression-with-neural-networks-in-pytorch-313f06910379
+# Pytorch Deep Learning Package
 import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
-import pandas as pd
+# Figures
+import imageio
 import matplotlib.pyplot as plot
-import json
-import os
-import shutil
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-
 import matplotlib.pyplot as plt
+width_two=0.2
+# Data Processing
+import pandas as pd
+import json
 import math
 import numpy as np
-import imageio
-import time
-tStart=time.time()
 import h5py
-torch.manual_seed(1)    # reproducible
 from tqdm import tqdm_notebook as tqdm
-#from tqdm import tqdm
 from tqdm import trange
 from sklearn import datasets, svm, metrics
+# Regression Problem Evaluation Methods
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy.stats import pearsonr
+# Read/Write file
+import os
+CWD_origin=os.getcwd()
+import shutil
+
+import time
+tStart=time.time()
+
 # My module
 import sys
 sys.path.append("..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
-
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
-width_two=0.2
-CWD_origin=os.getcwd()
+
+# Make file list
 kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
-MAX_epoch=200
+
+# Neural Network Hyperparameters
+MAX_EPOCH=200
+LEARNING_RATE=1e-5
+NUMBER_OF_LAYERS=1
+BATCH_SIZE=64
+HIDDEN_DIMENSION=100
+
+# Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
 RMSE_across_all_sessions=[]
@@ -54,16 +65,15 @@ for session_k in range(len(session_file_list)):
     session_name=str(session_file_list[session_k])[:-4]
     file_name_1='../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
     # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
+
     time_stamp_64ms=[]
-    ###################################### Auto-assigned parameters
-    #testing_data_index=5000
-    #testing_data_index=10222
-    testing_data_index=0 # Should be 10222 in indy_20160407_02
+
+    # Auto-assigned parameters
+    testing_data_index=0
     channel_number=0
-    units_have_value=0 # unit numbers that is not empty
+    units_have_value=0
 
-
-    ###################################### Parameters should be assigned
+    # Parameters should be assigned
     the_sampling_rate=my_parameters.the_sampling_rate
     file_numbers=my_parameters.file_numbers
     time_lag=my_parameters.time_lag
@@ -80,44 +90,17 @@ for session_k in range(len(session_file_list)):
     else:
         feature_numbers=channel_numbers_in_this_dataset
 
-    X_for_training = np.empty([0, feature_numbers*(order+1)])
-    X_for_prediction = np.empty([0, feature_numbers*(order+1)])
-    X_for_prediction_with_time_lag = np.empty([0, feature_numbers*(order+1)])
-    X_for_prediction_with_time_lag_2 = np.empty([0, feature_numbers*(order+1)])
-
-    x_position_label_training= np.empty([0])
-    x_position_label_testing= np.empty([0])
-
-    y_position_label_training= np.empty([0])
-    y_position_label_testing= np.empty([0])
-
-    z_position_label_training= np.empty([0])
-    z_position_label_testing= np.empty([0])
-
-    x_velocity_label_training= np.empty([0])
-    x_velocity_label_testing= np.empty([0])
-
-    y_velocity_label_training= np.empty([0])
-    y_velocity_label_testing= np.empty([0])
-
-    z_velocity_label_training= np.empty([0])
-    z_velocity_label_testing= np.empty([0])
-
-    x_acceleration_label_training= np.empty([0])
-    x_acceleration_label_testing= np.empty([0])
-
-    y_acceleration_label_training= np.empty([0])
-    y_acceleration_label_testing= np.empty([0])
-
-    z_acceleration_label_training= np.empty([0])
-    z_acceleration_label_testing= np.empty([0])
+    [X_for_training, X_for_prediction, 
+    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
+    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]=mat_file_processing.create_empty_traing_and_testing_label()
 
     # cross sessions control start
     for session_index in range(file_numbers):
         print('In session '+ str(session_index+1) + ': ' + '\n' )
 
-        [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, x_position_label, y_position_label, z_position_label]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
-        [time_stamp_64ms, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
+        [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
+        [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
 
         # Extract firing_rate_cell with rows have length bigger than zero
         firing_rate_final=[] # not[[]]
@@ -168,54 +151,24 @@ for session_k in range(len(session_file_list)):
         else:
             pass
 
-
-        # Eliminate hash unit
-        no_hash_unit_firing_rate=firing_rate_matrix.copy()
-
-        # Making label data
-        x_position_label=np.array(x_position_label)
-        x_position_label=x_position_label.astype(np.float32)
-        print('position x_position_label  list shape: ',end='') 
-        print( x_position_label.shape ) # x is the label array should be feed into the model, (12777,)
-        print('\n')
-
-        y_position_label=np.array(y_position_label)
-        y_position_label=y_position_label.astype(np.float32)
-        print('position y_position_label list shape: ',end='')
-        print( y_position_label.shape ) # y is the label array should be feed into the model, (12777,)
-        print('\n')
-
-        z_position_label=np.array(z_position_label)
-        z_position_label=z_position_label.astype(np.float32)
-        print('position z_position_label list shape: ',end='')
-        print( z_position_label.shape ) # z is the label array should be feed into the model, (12777,)
-        print('\n')
-
-        firing_rate_matrix=np.transpose(firing_rate_matrix)
-        print('transposed firing_rate_matrix shape: ', firing_rate_matrix.shape) # (12777, 288) in indy_20160407_02
-        print('\n')
-        feature_numbers= firing_rate_matrix.shape[1]
-
         X=firing_rate_matrix.astype(np.float32)
         print('features list shape: ',end='')
         print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
         print('\n')
 
-        # Order Control Start
+        # Cross Session Data Concatenation
         order_index=order
-        [X_for_training, X_for_prediction, X_for_prediction_with_time_lag, X_for_prediction_with_time_lag_2,
+        [X_for_training, X_for_prediction,
         x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
         x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.order_and_timelag_processing(
-        order_index, X, testing_data_index, time_lag, X_for_training, X_for_prediction, X_for_prediction_with_time_lag, X_for_prediction_with_time_lag_2,
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.cross_session_data_concatenation(
+        order_index, X, testing_data_index, time_lag, X_for_training, X_for_prediction,
         x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label,
         x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
         x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
         x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
-        # Order Control End
 
     # cross sessions control end
-
 
     # Write featrue and label to csv files
     CWD = CWD_origin
@@ -318,17 +271,17 @@ for session_k in range(len(session_file_list)):
         testing_y=testing_y.float()
 
     # Neural Network
-    batch_size = 64
-    learning_rate=1e-5
+    batch_size = BATCH_SIZE
+    learning_rate = LEARNING_RATE
 
-    max_epoch=MAX_epoch
+    max_epoch=MAX_EPOCH
 
     # LSTM
-    hidden_dim=100
-    layer_dim=1
-    output_dim=1
+    hidden_dim = HIDDEN_DIMENSION
+    layer_dim = NUMBER_OF_LAYERS
+    output_dim = 1
 
-    training_dataset=AbstractDataset(training_x,training_y)
+    training_dataset=AbstractDataset(training_x, training_y)
     testing_dataset=AbstractDataset(testing_x, testing_y)
 
     # TODO collate_fn
