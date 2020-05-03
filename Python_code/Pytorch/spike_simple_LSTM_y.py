@@ -46,7 +46,7 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
-MAX_EPOCH=5
+MAX_EPOCH=200
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
 BATCH_SIZE=64
