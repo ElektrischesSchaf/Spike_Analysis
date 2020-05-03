@@ -45,7 +45,7 @@ ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:]
 # print(List_FILE)
 session_file_list=List_FILE
-MAX_epoch=500
+MAX_epoch = 200
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
 RMSE_across_all_sessions=[]
