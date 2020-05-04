@@ -29,14 +29,14 @@ import gcmi
 import sys
 sys.path.append("../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
-import data_processing.load_mat_file as load_mat_file
+import data_processing.load_mat_file_with_lag_and_order as load_mat_file
 
 
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 CWD_origin=os.getcwd()
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 
 width_two=0.2 # for bar plot
 
