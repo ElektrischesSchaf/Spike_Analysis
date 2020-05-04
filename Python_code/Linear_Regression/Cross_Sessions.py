@@ -56,7 +56,7 @@ if with_sorted_spikes==True:
 else:
     feature_numbers=channel_numbers_in_this_dataset
 
-
+# Create empty X and y matrices before actural read the data in the loop
 X_for_training = np.empty([0, feature_numbers*(order+1)])
 X_for_prediction = np.empty([0, feature_numbers*(order+1)])
 X_for_prediction_with_time_lag = np.empty([0, feature_numbers*(order+1)])

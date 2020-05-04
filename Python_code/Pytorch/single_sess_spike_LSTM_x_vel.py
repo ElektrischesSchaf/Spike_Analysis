@@ -165,7 +165,7 @@ for session_k in range(len(session_file_list)):
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
-    model_name='LSTM_with_Spike'
+    model_name='LSTM_with_Spike_Single_Session'
     if model_name not in CWD:
         CWD = os.path.join(CWD, model_name)
         if not os.path.exists(CWD):
