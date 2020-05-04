@@ -566,16 +566,16 @@ for session_k in range(len(session_file_list)):
 # Write all performances to csv files
 # https://www.geeksforgeeks.org/create-a-pandas-dataframe-from-lists/
 df = pd.DataFrame( list(zip( session_file_list, R_square_across_all_sessions)))
-df.to_csv(os.path.join(bar_plot_path, 'R_square_across_all_sessions.csv'), mode='a', index=False, header=False)
+df.to_csv(os.path.join(bar_plot_path, 'R_square_across_all_sessions.csv'), index=False, header=False)
 
 df = pd.DataFrame( list(zip( session_file_list, RMSE_across_all_sessions)))
-df.to_csv(os.path.join(bar_plot_path, 'RMSE_across_all_sessions.csv'), mode='a', index=False, header=False)
+df.to_csv(os.path.join(bar_plot_path, 'RMSE_across_all_sessions.csv'), index=False, header=False)
 
 df = pd.DataFrame( list(zip( session_file_list, person_correlation_coefficient_across_all_sessions)))
-df.to_csv(os.path.join(bar_plot_path, 'person_correlation_coefficient_across_all_sessions.csv'), mode='a', index=False, header=False)
+df.to_csv(os.path.join(bar_plot_path, 'person_correlation_coefficient_across_all_sessions.csv'), index=False, header=False)
 
 df = pd.DataFrame( list(zip( session_file_list, SNR_across_all_sessions)))
-df.to_csv(os.path.join(bar_plot_path, 'SNR_across_all_sessions.csv'), mode='a', index=False, header=False)
+df.to_csv(os.path.join(bar_plot_path, 'SNR_across_all_sessions.csv'), index=False, header=False)
 
 
 # Plot all performances as bar charts
