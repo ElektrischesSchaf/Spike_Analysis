@@ -46,6 +46,7 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
+model_name='LSTM_with_Spike_Single_Session'
 MAX_EPOCH=200
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
@@ -165,7 +166,6 @@ for session_k in range(len(session_file_list)):
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
-    model_name='LSTM_with_Spike_Single_Session'
     if model_name not in CWD:
         CWD = os.path.join(CWD, model_name)
         if not os.path.exists(CWD):
@@ -503,8 +503,8 @@ for session_k in range(len(session_file_list)):
     RMSE_across_all_sessions.append(testing_data_RMSE)
     person_correlation_coefficient_across_all_sessions.append(PCC[0])
 
+    # Plotting the kinematic variable reconstructure figure
     plt.figure(figsize=(32, 9))
-
     plotting_time_elapsed=time_stamp_64ms[testing_data_index:-1]
 
     # Ground_Truth_x_vel and Ground_Truth_y_vel may copy form testing_y in line 256 # TODO
@@ -551,6 +551,7 @@ for session_k in range(len(session_file_list)):
     plt.clf()
     plt.close()
 
+    # Save the result of kinematic variable reconstruction of each session
     df = pd.DataFrame( ((session_name, testing_data_r_square )) )
     df.to_csv(os.path.join(csv_path, 'R_square_this_session.csv'), index=False, header=False)
 

@@ -555,9 +555,9 @@ for session_k in range(total_sess_num):
 
     plt.figure(figsize=(32, 9))
 
-    plotting_time_elapsed=time_stamp_64ms_testing[:-1]
+    plotting_time_elapsed=time_stamp_64ms_testing[:-1] # Because of discrete differential
     # Ground_Truth_x_vel=x_velocity_label[:]
-    # Ground_Truth_y_vel=y_velocity_label[:]  
+    # Ground_Truth_y_vel=y_velocity_label[:]
     
 
     df = pd.DataFrame( plotting_time_elapsed )
