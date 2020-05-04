@@ -34,8 +34,10 @@ import sys
 sys.path.append("..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
-my_parameters=my_parameters.my_parameters()
-mat_file_processing=load_mat_file.mat_file_processing()
+import data_processing.cancatenate_features_cross_sess as cancatenate_features_cross_sess
+my_parameters = my_parameters.my_parameters()
+mat_file_processing = load_mat_file.mat_file_processing()
+cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_file_processing()
 
 # Make file list
 kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
@@ -44,9 +46,11 @@ ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
+total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
-MAX_EPOCH=200
+model_name='LSTM_with_Spike_Cross_Sessions'
+MAX_EPOCH=250
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
 BATCH_SIZE=64
@@ -59,45 +63,44 @@ RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
 
+# Auto-assigned parameters
+time_stamp_64ms=[]
+testing_data_index=0
+channel_number=0
+units_have_value=0
+
+# Parameters should be assigned
+the_sampling_rate=my_parameters.the_sampling_rate
+file_numbers=my_parameters.file_numbers
+time_lag=my_parameters.time_lag
+order=my_parameters.order
+with_sorted_spikes=my_parameters.with_sorted_spikes
+include_hash_unit=my_parameters.include_hash_unit   
+
+# Must know these two numbers beforehand
+channel_numbers_in_this_dataset=96
+units_numbers_in_this_dataset=3
+
+if with_sorted_spikes==True:
+    feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
+else:
+    feature_numbers=channel_numbers_in_this_dataset
+
+[X_for_training, X_for_prediction, 
+x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
+x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
+x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]=mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
+
 # session control start
-for session_k in range(len(session_file_list)):
+for session_k in range(total_sess_num):
 
     session_name=str(session_file_list[session_k])[:-4]
     file_name_1='../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
-    # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
-
-    time_stamp_64ms=[]
-
-    # Auto-assigned parameters
-    testing_data_index=0
-    channel_number=0
-    units_have_value=0
-
-    # Parameters should be assigned
-    the_sampling_rate=my_parameters.the_sampling_rate
-    file_numbers=my_parameters.file_numbers
-    time_lag=my_parameters.time_lag
-    order=my_parameters.order
-    with_sorted_spikes=my_parameters.with_sorted_spikes
-    include_hash_unit=my_parameters.include_hash_unit
-
-    # Must know these two numbers beforehand
-    channel_numbers_in_this_dataset=96
-    units_numbers_in_this_dataset=3
-
-    if with_sorted_spikes==True:
-        feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
-    else:
-        feature_numbers=channel_numbers_in_this_dataset
-
-    [X_for_training, X_for_prediction, 
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]=mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
+    # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]    
 
     # cross sessions control start
     for session_index in range(file_numbers):
-        print('In session '+ str(session_index+1) + ': ' + '\n' )
+        print('In session '+ session_name + ': ' + '\n' )
 
         [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
         [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
@@ -151,318 +154,363 @@ for session_k in range(len(session_file_list)):
         print('\n')
 
         # Cross Session Data Concatenation
-        [X_for_training, X_for_prediction,
-        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.cross_session_data_concatenation(
-        feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
+        [X_for_training,
+        x_position_label_training,  y_position_label_training,  z_position_label_training, 
+        x_velocity_label_training,  y_velocity_label_training,  z_velocity_label_training, 
+        x_acceleration_label_training,  y_acceleration_label_training,  z_acceleration_label_training] = cross_sess_mat_file_processing.cross_session_training_data_concatenation(
+        feature_numbers_of_firing_rate, X, testing_data_index, X_for_training,
         x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label,
-        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
+        x_position_label_training,  y_position_label_training,  z_position_label_training, 
+        x_velocity_label_training,  y_velocity_label_training,  z_velocity_label_training, 
+        x_acceleration_label_training,  y_acceleration_label_training,  z_acceleration_label_training)
+
+        save_testing_data_path=CWD_origin
+
+        save_testing_data_path=os.path.join(save_testing_data_path, model_name)
+        if not os.path.exists(save_testing_data_path):
+            os.mkdir(save_testing_data_path)
+
+        save_testing_data_path=os.path.join(save_testing_data_path, kinematic_variable_type)
+        if not os.path.exists(save_testing_data_path):
+            os.mkdir(save_testing_data_path)
+
+        Testing_Datasets_Folder_path=cross_sess_mat_file_processing.cross_session_testing_data_seperation(session_name, kinematic_variable_type, save_testing_data_path, X, testing_data_index, time_stamp_64ms,
+        x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label)
 
     # cross sessions control end
 
-    # Write features and label from each session to csv files
-    CWD = CWD_origin
-    model_name='LSTM_with_Spike_Single_Session'
-    if model_name not in CWD:
-        CWD = os.path.join(CWD, model_name)
-        if not os.path.exists(CWD):
-            os.mkdir(CWD)
+# Write training datasets from from all session combined to a csv file
+CWD = CWD_origin
 
-    CWD=os.path.join(CWD, kinematic_variable_type)
+if model_name not in CWD:
+    CWD = os.path.join(CWD, model_name)
     if not os.path.exists(CWD):
         os.mkdir(CWD)
+
+CWD=os.path.join(CWD, kinematic_variable_type)
+if not os.path.exists(CWD):
+    os.mkdir(CWD)
+
+bar_plot_path=os.path.join(CWD, 'bar_plot_across_sessions')
+if not os.path.exists(bar_plot_path):
+    os.mkdir(bar_plot_path)
+
+if str(total_sess_num) not in CWD:
+    CWD = os.path.join(CWD, str(total_sess_num) )
+    if not os.path.exists(CWD):
+        os.mkdir(CWD)
+
+save_epoch_path=os.path.join(CWD,'save')
+if not os.path.exists(save_epoch_path):
+    os.makedirs(save_epoch_path)
+
+csv_path=os.path.join(CWD,'csv_files')
+if not os.path.exists(csv_path):
+    os.mkdir(str(csv_path))
+
+plot_path = os.path.join(CWD, 'plots')
+if not os.path.exists(plot_path):
+    os.mkdir(plot_path)
+
+df = pd.DataFrame(X_for_training)
+df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
+
+if kinematic_variable_type=='x_vel':
+    df=pd.DataFrame(x_velocity_label_training)
+    df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
+
+if kinematic_variable_type=='y_vel':
+    df=pd.DataFrame(y_velocity_label_training)
+    df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
+
+
+
+# Define AbstractDataset for Neural Networks
+class AbstractDataset(Dataset):
+    def __init__(self, feature_matrix, label_matrix):
+        self.data=feature_matrix
+        self.label=label_matrix
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        # print('\nYee:', self.data[index], ', ' ,self.label[index])
+        return self.data[index], self.label[index]
     
-    bar_plot_path=os.path.join(CWD, 'bar_plot_across_sessions')
-    if not os.path.exists(bar_plot_path):
-        os.mkdir(bar_plot_path)
+    def collate_fn(self, datas):
+        # datas = [ batch_size X ( data + label ) ]
+        print('\ncollate_fn！')
+        print('\ndatas: ', datas)
+        # return self.data, self.label
 
-    if session_name not in CWD:
-        CWD = os.path.join(CWD, session_name)
-        if not os.path.exists(CWD):
-            os.mkdir(CWD)
+# Training Phase
 
-    save_epoch_path=os.path.join(CWD,'save')
-    if not os.path.exists(save_epoch_path):
-        os.makedirs(save_epoch_path)
+# read from csv file
+training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
+training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
+training_x=training_x.float()
 
-    csv_path=os.path.join(CWD,'csv_files')
-    if not os.path.exists(csv_path):
-        os.mkdir(str(csv_path))
+# Omit
+# testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
+# testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
+# testing_x=testing_x.float()
 
-    plot_path = os.path.join(CWD, 'plots')
-    if not os.path.exists(plot_path):
-        os.mkdir(plot_path)
+if kinematic_variable_type=='x_vel':
+    training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
+    training_y = torch.from_numpy(training_y.values)    
+    training_y=training_y.float()
 
+    # testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
+    # testing_y = torch.from_numpy(testing_y.values)    
+    # testing_y=testing_y.float()
 
-    df = pd.DataFrame(X_for_training)
-    df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
+if kinematic_variable_type=='y_vel':
+    training_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
+    training_y = torch.from_numpy(training_y.values)
+    training_y=training_y.float()
 
-    df = pd.DataFrame(X_for_prediction)
-    df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
-    
-    if kinematic_variable_type=='x_vel':
-        df=pd.DataFrame(x_velocity_label_training)
-        df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
+    # testing_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
+    # testing_y = torch.from_numpy(testing_y.values)  
+    # testing_y=testing_y.float()
 
-        df=pd.DataFrame(x_velocity_label_testing)
-        df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+# General Neural Network Hyperparameters
+batch_size = BATCH_SIZE
+learning_rate = LEARNING_RATE
+max_epoch=MAX_EPOCH
 
-    if kinematic_variable_type=='y_vel':
-        df=pd.DataFrame(y_velocity_label_training)
-        df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
+# LSTM Hyperparameters
+hidden_dim = HIDDEN_DIMENSION
+layer_dim = NUMBER_OF_LAYERS
+output_dim = 1
 
-        df=pd.DataFrame(y_velocity_label_testing)
-        df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
+# Training  AbstractDataset
+training_dataset=AbstractDataset(training_x, training_y)
 
-    # Define AbstractDataset for Neural Networks
+# Omit Testing
+# testing_dataset=AbstractDataset(testing_x, testing_y)
 
-    class AbstractDataset(Dataset):
-        def __init__(self, feature_matrix, label_matrix):
-            self.data=feature_matrix
-            self.label=label_matrix
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        def __len__(self):
-            return len(self.data)
-
-        def __getitem__(self, index):
-            # print('\nYee:', self.data[index], ', ' ,self.label[index])
-            return self.data[index], self.label[index]
+# All models fit and predict, show R2 score
+class LSTMModel(torch.nn.Module):
+    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
+        super(LSTMModel, self).__init__()
+        # Hidden dimensions
+        self.hidden_dim = hidden_dim
         
-        def collate_fn(self, datas):
-            # datas = [ batch_size X ( data + label ) ]
-            print('\ncollate_fn！')
-            print('\ndatas: ', datas)
-            # return self.data, self.label
+        # Number of hidden layers
+        self.layer_dim = layer_dim
+        
+        # Building your LSTM
+        # batch_first=True causes input/output tensors to be of shape
+        # (batch_dim, seq_dim, feature_dim)
+        self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
+        
+        # Readout layer
+        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
+        self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-    # read from csv file
-    training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
-    training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
-    training_x=training_x.float()
+        # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
+        # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
+    
+    def forward(self, x):
 
-    testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
+        # x torch.Size([64, 96])
+
+        x=x.unsqueeze(0)       
+        # m=torch.nn.LayerNorm( x.size()[:], elementwise_affine=False )
+        # x=m(x)
+
+        # Initialize hidden state with zeros
+        h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
+        h0=h0.to(device)
+
+        # Initialize cell state
+        c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
+        c0=c0.to(device)
+
+        # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
+
+        # time steps
+        out, (hn, cn) = self.lstm(x, (h0,c0))
+
+        out = torch.relu(self.fc1(out))
+        out = self.fc2(out)
+        out=out.squeeze(0)
+
+        return out
+
+net = LSTMModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+# print(net)  # net architecture
+optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
+loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
+net.to(device)
+# history = {'train':[],'test':[]}
+history = {'train':[]}
+def _run_epoch(epoch, mode):
+    net.train(True)
+    if mode=='train':
+        descrpition='Train'
+        dataset=training_dataset
+        schuffle=False
+    # else:
+    #     descrpition='Test'
+    #     dataset=testing_dataset
+    #     shuffle=False
+    dataloader=torch.utils.data.DataLoader(dataset=dataset,
+                                            batch_size=batch_size,
+                                            shuffle=False
+                                            #collate_fn=dataset.collate_fn,
+                                            )
+    trange=tqdm(enumerate(dataloader), total=len(dataloader), desc=descrpition)
+    loss=0
+
+    my_prediction = []
+    real_y_all=[]
+
+    for i, (x, y) in trange:
+
+        # LSTM batch
+        # if(x.size()[0] is not batch_size):
+        #     continue
+
+        o_labels, batch_loss = _run_iter(x,y)
+
+        if mode=='train':
+            optimizer.zero_grad()   # clear gradients for next train
+            batch_loss.backward()         # backpropagation, compute gradients
+            optimizer.step()        # apply gradients
+
+        loss+=batch_loss.item()
+
+        real_y=y.cpu().data.numpy()
+        for ele in o_labels.cpu().data.numpy():
+            my_prediction.append(ele)
+
+        for ele in real_y:
+            real_y_all.append(ele)
+        
+        R_square=r2_score( real_y_all, my_prediction)
+
+        trange.set_postfix(loss=loss/(i+1), R_square=R_square)
+
+    if mode=='train':
+        history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
+
+    # else:
+    #     history['test'].append({'loss':loss/len(trange), 'R^2': R_square })
+
+    trange.close()
+
+def _run_iter(x,y):
+    feature = x.to(device)
+    labels = y.to(device)
+    #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
+    o_labels = net(feature)
+    #print('The output shape: ', o_labels.shape, ' The label shape: ', labels.shape, '\n')
+    l_loss = loss_func(o_labels, labels)
+    return o_labels, l_loss
+
+def save(epoch):
+    torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
+    with open( os.path.join( save_epoch_path, 'history.json'), 'w') as f:
+        json.dump(history, f, indent=4)
+
+for epoch in range(max_epoch):
+    print('Epoch: {}'.format(epoch))
+    _run_epoch(epoch, 'train')
+
+    # Omit
+    # _run_epoch(epoch, 'test')
+
+    save(epoch)
+
+# Plot the training results 
+with open(os.path.join(save_epoch_path, 'history.json'), 'r') as f:
+    history = json.loads(f.read())
+    
+train_loss = [l['loss'] for l in history['train']]
+# valid_loss = [l['loss'] for l in history['test']]
+
+train_R_square = [l['R^2'] for l in history['train']]
+# valid_R_square = [l['R^2'] for l in history['test']]
+
+
+plt.figure(figsize=(7,5))
+plt.title(model_name+' Loss')
+plt.plot(train_loss, label='train')
+# plt.plot(valid_loss, label='test')
+plt.xlabel('Epoch')
+plt.legend()
+plt.tight_layout()
+plt.savefig(plot_path + '/' + model_name+"_Loss.png")
+
+plt.figure(figsize=(7,5))
+plt.title(model_name+' performance')
+plt.plot(train_R_square, label='train')
+# plt.plot(valid_R_square, label='test')
+plt.xlabel('Epoch')
+plt.ylabel('R square')
+plt.legend()
+plt.tight_layout()
+plt.savefig(plot_path + '/' +model_name+"_R-square.png")
+
+# Omit
+# best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['test'])])
+# print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')    
+# best_epoch_arcoss_all_sessions.append(best_epoch)
+# print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['test'])]))
+
+
+
+# Testing Phase
+
+FILE_PATH = Testing_Datasets_Folder_path
+ALL_List_FILE = os.listdir(FILE_PATH)
+ALL_List_FILE.sort()
+List_FILE=ALL_List_FILE[:] 
+session_file_list=List_FILE
+total_sess_num = len(session_file_list)
+print(session_file_list)
+
+for session_k in range(total_sess_num):
+    Testing_Datasets_Folder_path_temp=Testing_Datasets_Folder_path
+    time_stamp_64ms=[]
+    session_name=str(session_file_list[session_k])
+    # Testing dataloader
+
+    Testing_Datasets_Folder_path_temp=os.path.join(Testing_Datasets_Folder_path_temp, session_name)
+    if not os.path.exists(Testing_Datasets_Folder_path_temp):
+        os.mkdir(Testing_Datasets_Folder_path_temp)
+
+    testing_x=pd.read_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'X_for_prediction.csv'), dtype=float)
+    # os.remove(os.path.join(Testing_Datasets_Folder_path_temp, 'X_for_prediction.csv')) # If you need to remove X for prediction ofter 
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
     testing_x=testing_x.float()
 
+    time_stamp_64ms_testing=pd.read_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'time_stamp_64ms_testing.csv'), dtype=float)
+    time_stamp_64ms_testing = torch.from_numpy(time_stamp_64ms_testing.values) # .values can turn pandas dataframe to numpy array
+    time_stamp_64ms_testing=time_stamp_64ms_testing.float()
+    
     if kinematic_variable_type=='x_vel':
-        training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
-        training_y = torch.from_numpy(training_y.values)    
-        training_y=training_y.float()
-
-        testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
+        testing_y = pd.read_csv(os.path.join(Testing_Datasets_Folder_path_temp,'x_velocity_label_testing.csv'), dtype=float)
         testing_y = torch.from_numpy(testing_y.values)    
-        testing_y=testing_y.float()
+        testing_y = testing_y.float()
+        Ground_Truth_x_vel=testing_y
 
     if kinematic_variable_type=='y_vel':
-        training_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
-        training_y = torch.from_numpy(training_y.values)    
-        training_y=training_y.float()
+        testing_y = pd.read_csv(os.path.join(Testing_Datasets_Folder_path_temp,'y_velocity_label_testing.csv'), dtype=float)    
+        testing_y = torch.from_numpy(testing_y.values)  
+        testing_y = testing_y.float()
+        Ground_Truth_y_vel=testing_y
 
-        testing_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
-        testing_y = torch.from_numpy(testing_y.values)    
-        testing_y=testing_y.float()
-
-    # General Neural Network Hyperparameters
-    batch_size = BATCH_SIZE
-    learning_rate = LEARNING_RATE
-    max_epoch=MAX_EPOCH
-
-    # LSTM Hyperparameters
-    hidden_dim = HIDDEN_DIMENSION
-    layer_dim = NUMBER_OF_LAYERS
-    output_dim = 1
-
-    # Training / Testing AbstractDataset
-    training_dataset=AbstractDataset(training_x, training_y)
     testing_dataset=AbstractDataset(testing_x, testing_y)
 
-    # TODO collate_fn
-    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
-    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
-    # test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)
-    
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    # All models fit and predict, show R2 score
-    class LSTMModel(torch.nn.Module):
-        def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
-            super(LSTMModel, self).__init__()
-            # Hidden dimensions
-            self.hidden_dim = hidden_dim
-            
-            # Number of hidden layers
-            self.layer_dim = layer_dim
-            
-            # Building your LSTM
-            # batch_first=True causes input/output tensors to be of shape
-            # (batch_dim, seq_dim, feature_dim)
-            self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
-            
-            # Readout layer
-            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
-            self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
-
-            # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
-            # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
-        
-        def forward(self, x):
-
-            # x torch.Size([64, 96])
-
-            x=x.unsqueeze(0)       
-            # m=torch.nn.LayerNorm( x.size()[:], elementwise_affine=False )
-            # x=m(x)
-
-            # Initialize hidden state with zeros
-            h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-            # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
-            h0=h0.to(device)
-
-            # Initialize cell state
-            c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-            # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
-            c0=c0.to(device)
-
-            # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
-
-            # time steps
-            out, (hn, cn) = self.lstm(x, (h0,c0))
-
-            '''
-            Index hidden state of last time step
-            out.size() --> 100, 28, 100
-            out[:, -1, :] --> 100, 100 --> just want last time step hidden states! 
-            out = self.fc(out[:, -1, :]) 
-            out.size() --> 100, 10
-            '''
-            out = torch.relu(self.fc1(out))
-            out = self.fc2(out)
-            out=out.squeeze(0)
-
-            return out
-
-    net = LSTMModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
-    # print(net)  # net architecture
-    optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
-    loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
-    net.to(device)
-    history = {'train':[],'test':[]}
-
-    def _run_epoch(epoch, mode):
-        net.train(True)
-        if mode=='train':
-            descrpition='Train'
-            dataset=training_dataset
-            schuffle=False
-        else:
-            descrpition='Test'
-            dataset=testing_dataset
-            shuffle=False
-        dataloader=torch.utils.data.DataLoader(dataset=dataset,
-                                                batch_size=batch_size,
-                                                shuffle=False
-                                                #collate_fn=dataset.collate_fn,
-                                                )
-        trange=tqdm(enumerate(dataloader), total=len(dataloader), desc=descrpition)
-        loss=0
-
-        my_prediction = []
-        real_y_all=[]
-
-        for i, (x, y) in trange:
-
-            # LSTM batch
-            # if(x.size()[0] is not batch_size):
-            #     continue
-
-            o_labels, batch_loss = _run_iter(x,y)
-
-            if mode=='train':
-                optimizer.zero_grad()   # clear gradients for next train
-                batch_loss.backward()         # backpropagation, compute gradients
-                optimizer.step()        # apply gradients
-
-            loss+=batch_loss.item()
-
-            real_y=y.cpu().data.numpy()
-            for ele in o_labels.cpu().data.numpy():
-                my_prediction.append(ele)
-
-            for ele in real_y:
-                real_y_all.append(ele)
-            
-            R_square=r2_score( real_y_all, my_prediction)
-
-            trange.set_postfix(loss=loss/(i+1), R_square=R_square)
-
-        if mode=='train':
-            history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
-            # writer.add_scalar('Loss/train', loss/len(trange), epoch)
-        else:
-            history['test'].append({'loss':loss/len(trange), 'R^2': R_square })
-            # writer.add_scalar('Loss/test', loss/len(trange), epoch)
-        trange.close()
-
-    def _run_iter(x,y):
-        feature = x.to(device)
-        labels = y.to(device)
-        #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
-        o_labels = net(feature)
-        #print('The output shape: ', o_labels.shape, ' The label shape: ', labels.shape, '\n')
-        l_loss = loss_func(o_labels, labels)
-        return o_labels, l_loss
-
-    def save(epoch):
-        torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
-        with open( os.path.join( save_epoch_path, 'history.json'), 'w') as f:
-            json.dump(history, f, indent=4)
-
-    for epoch in range(max_epoch):
-        print('Epoch: {}'.format(epoch))
-        _run_epoch(epoch, 'train')
-        _run_epoch(epoch, 'test')
-        save(epoch)
-
-    # Plot the training results 
-    with open(os.path.join(save_epoch_path, 'history.json'), 'r') as f:
-        history = json.loads(f.read())
-        
-    train_loss = [l['loss'] for l in history['train']]
-    valid_loss = [l['loss'] for l in history['test']]
-
-    train_R_square = [l['R^2'] for l in history['train']]
-    valid_R_square = [l['R^2'] for l in history['test']]
-
-
-    plt.figure(figsize=(7,5))
-    plt.title(model_name+' Loss')
-    plt.plot(train_loss, label='train')
-    plt.plot(valid_loss, label='test')
-    plt.xlabel('Epoch')
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(plot_path + '/' + model_name+"_Loss.png")
-
-    plt.figure(figsize=(7,5))
-    plt.title(model_name+' performance')
-    plt.plot(train_R_square, label='train')
-    plt.plot(valid_R_square, label='test')
-    plt.xlabel('Epoch')
-    plt.ylabel('R square')
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(plot_path + '/' +model_name+"_R-square.png")
-
-    best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['test'])])
-    print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')    
-    best_epoch_arcoss_all_sessions.append(best_epoch)
-    print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['test'])]))
-
-    # Testing
-    best_model=best_epoch # TODO
+    best_model=MAX_EPOCH-1 # Omit performance of valid set
     net.load_state_dict(state_dict=torch.load(os.path.join(save_epoch_path, 'model.pkl.{}'.format(best_model))))
     net.train(False)
     # start testing
@@ -489,7 +537,9 @@ for session_k in range(len(session_file_list)):
 
         for ele in real_y:
             real_y_all.append( float(ele) )
-    shutil.rmtree(save_epoch_path)
+
+    # Omit
+    # shutil.rmtree(save_epoch_path)
 
     testing_data_r_square=r2_score( real_y_all, my_prediction)
     testing_data_SNR=-10*math.log10(1-testing_data_r_square)
@@ -505,31 +555,32 @@ for session_k in range(len(session_file_list)):
 
     plt.figure(figsize=(32, 9))
 
-    time_elapsed=time_stamp_64ms[testing_data_index:-1]
-    Ground_Truth_x_vel=x_velocity_label[testing_data_index:]
-    Ground_Truth_y_vel=y_velocity_label[testing_data_index:]
+    plotting_time_elapsed=time_stamp_64ms_testing[:-1]
+    # Ground_Truth_x_vel=x_velocity_label[:]
+    # Ground_Truth_y_vel=y_velocity_label[:]  
+    
 
-    df = pd.DataFrame( time_elapsed )
-    df.to_csv(os.path.join(csv_path, 'time_elapsed.csv'), index=False, header=False)
+    df = pd.DataFrame( plotting_time_elapsed )
+    df.to_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'plotting_time_elapsed.csv'), index=False, header=False)
 
     df = pd.DataFrame( my_prediction )
-    df.to_csv(os.path.join(csv_path, 'my_prediction.csv'), index=False, header=False)
+    df.to_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'my_prediction.csv'), index=False, header=False)
 
     if kinematic_variable_type=='x_vel':
-        plt.plot( time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( time_elapsed, Ground_Truth_x_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
+        plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
+        plt.plot( plotting_time_elapsed, Ground_Truth_x_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
         plt.title( model_name+' Model on session: '+ session_name + ', x-velocity prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth_x_vel )
-        df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_vel.csv'), index=False, header=False) 
+        df.to_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'Ground_Truth_x_vel.csv'), index=False, header=False) 
 
     if kinematic_variable_type=='y_vel':
-        plt.plot( time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( time_elapsed, Ground_Truth_y_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
+        plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
+        plt.plot( plotting_time_elapsed, Ground_Truth_y_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
         plt.title( model_name+' Model on session: ' + session_name + ', y-velocity prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth_y_vel )
-        df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_vel.csv'), index=False, header=False)
+        df.to_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'Ground_Truth_y_vel.csv'), index=False, header=False)
 
     
     plt.legend(loc='upper right', fontsize=30)
@@ -538,30 +589,31 @@ for session_k in range(len(session_file_list)):
     plt.xticks(fontsize=25, color="black")
     plt.yticks(fontsize=25, color="black")
     axes = plt.gca()
-    axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
+    axes.set_xlim( plotting_time_elapsed[0]+5, plotting_time_elapsed[0]+20)
     plt.tight_layout()
     if kinematic_variable_type=='x_vel':
-        plt.savefig( plot_path + '/' +model_name+'_x-velocity_predict.png' )
+        plt.savefig( Testing_Datasets_Folder_path_temp + '/' +model_name+'_x-velocity_predict.png' )
     if kinematic_variable_type=='y_vel':
-        plt.savefig( plot_path + '/' +model_name+'_y-velocity_predict.png' )
+        plt.savefig( Testing_Datasets_Folder_path_temp + '/' +model_name+'_y-velocity_predict.png' )
 
     plt.cla()
     plt.clf()
     plt.close()
 
     df = pd.DataFrame( ((session_name, testing_data_r_square )) )
-    df.to_csv(os.path.join(csv_path, 'R_square_this_session.csv'), index=False, header=False)
+    df.to_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'R_square_this_session.csv'), index=False, header=False)
 
     df = pd.DataFrame( ((session_name, testing_data_RMSE )) )
-    df.to_csv(os.path.join(csv_path, 'RMSE_this_session.csv'), index=False, header=False)
+    df.to_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'RMSE_this_session.csv'), index=False, header=False)
 
     df = pd.DataFrame( ((session_name, PCC[0] )) )
-    df.to_csv(os.path.join(csv_path, 'person_correlation_coefficient__this_session.csv'), index=False, header=False)
+    df.to_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'person_correlation_coefficient__this_session.csv'), index=False, header=False)
 
     df = pd.DataFrame( ((session_name, testing_data_SNR )) )
-    df.to_csv(os.path.join(csv_path, 'SNR_this_session.csv'), index=False, header=False)
+    df.to_csv(os.path.join(Testing_Datasets_Folder_path_temp, 'SNR_this_session.csv'), index=False, header=False)
 
 # session control end
+
 
 # Write all performances to csv files
 # https://www.geeksforgeeks.org/create-a-pandas-dataframe-from-lists/
@@ -636,7 +688,7 @@ plt.cla()
 plt.clf()
 plt.close()
 
-
+'''
 plt.figure(figsize=(16, 9))
 ind = np.arange(1,len(best_epoch_arcoss_all_sessions)+1)
 plt.bar(ind, best_epoch_arcoss_all_sessions, width=width_two, color='r')
@@ -658,3 +710,5 @@ plt.close()
 
 tEnd=time.time()
 print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
+
+'''

@@ -505,27 +505,29 @@ for session_k in range(len(session_file_list)):
 
     plt.figure(figsize=(32, 9))
 
-    time_elapsed=time_stamp_64ms[testing_data_index:-1]
+    plotting_time_elapsed=time_stamp_64ms[testing_data_index:-1]
+
+    # Ground_Truth_x_vel and Ground_Truth_y_vel may copy form testing_y in line 256 # TODO
     Ground_Truth_x_vel=x_velocity_label[testing_data_index:]
     Ground_Truth_y_vel=y_velocity_label[testing_data_index:]
 
-    df = pd.DataFrame( time_elapsed )
-    df.to_csv(os.path.join(csv_path, 'time_elapsed.csv'), index=False, header=False)
+    df = pd.DataFrame( plotting_time_elapsed )
+    df.to_csv(os.path.join(csv_path, 'plotting_time_elapsed.csv'), index=False, header=False)
 
     df = pd.DataFrame( my_prediction )
     df.to_csv(os.path.join(csv_path, 'my_prediction.csv'), index=False, header=False)
 
     if kinematic_variable_type=='x_vel':
-        plt.plot( time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( time_elapsed, Ground_Truth_x_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
+        plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
+        plt.plot( plotting_time_elapsed, Ground_Truth_x_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
         plt.title( model_name+' Model on session: '+ session_name + ', x-velocity prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth_x_vel )
         df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_vel.csv'), index=False, header=False) 
 
     if kinematic_variable_type=='y_vel':
-        plt.plot( time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( time_elapsed, Ground_Truth_y_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
+        plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
+        plt.plot( plotting_time_elapsed, Ground_Truth_y_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
         plt.title( model_name+' Model on session: ' + session_name + ', y-velocity prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth_y_vel )
