@@ -36,7 +36,7 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 CWD_origin=os.getcwd()
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 
 width_two=0.2 # for bar plot
 
@@ -50,6 +50,12 @@ session_file_list=List_FILE
 
 channel_results_accross_sessions=np.zeros((1,96), dtype=float)
 length_difference_across_sessions=[]
+
+Firing_Rate_MI_all_channels_all_sessions = np.empty(shape=[0, 96])
+Absolute_LFP_Phase_all_channels_all_sessions = np.empty(shape=[0, 96])
+
+# Firing_Rate_MI_all_channels_all_sessions = np.empty([0])
+# Absolute_LFP_Phase_all_channels_all_sessions = np.empty([0])
 
 for session_k in range(len(session_file_list)):
         
@@ -89,8 +95,7 @@ for session_k in range(len(session_file_list)):
     tStart=time.time()
     time_stamp_64ms=[]
     ###################################### Auto-assigned parameters
-    #testing_data_index=5000
-    #testing_data_index=10222
+
     testing_data_index=0 # Should be 10222 in indy_20160407_02
     channel_number=0
     units_have_value=0 # unit numbers that is not empty
@@ -431,6 +436,11 @@ for session_k in range(len(session_file_list)):
         yee=gcmi.gcmi_cc(  new_training_x_cancade[i,:] , training_y ) # TODO
         mi_of_all_channels_spike.append(yee)
 
+    # New
+    mi_of_all_channels_spike_new=np.array(mi_of_all_channels_spike.copy() )
+    mi_of_all_channels_spike_new=np.reshape( mi_of_all_channels_spike_new, (1, -1))
+    Firing_Rate_MI_all_channels_all_sessions=np.concatenate(( Firing_Rate_MI_all_channels_all_sessions, mi_of_all_channels_spike_new ), axis= 0)
+
 
     mi_of_all_channels_phase=[]
     yee=0
@@ -445,6 +455,12 @@ for session_k in range(len(session_file_list)):
         yee=gcmi.gcmi_cc(  np.abs(new_training_x_cancade[i,:]) , training_y ) # TODO
         mi_of_all_channels_abs_phase.append(yee)
 
+    # New
+    mi_of_all_channels_abs_phase_new=np.array(mi_of_all_channels_abs_phase.copy() )
+    mi_of_all_channels_abs_phase_new=np.reshape(mi_of_all_channels_abs_phase_new , (1, -1))
+    print('shape of mi_of_all_channels_abs_phase_new= ', mi_of_all_channels_abs_phase_new.shape, '\n')
+    Absolute_LFP_Phase_all_channels_all_sessions=np.concatenate(( Absolute_LFP_Phase_all_channels_all_sessions, mi_of_all_channels_abs_phase_new), axis= 0)
+
     mi_of_all_channels_couple=[]
     yee=0
     for i in range(0, 96 ):
@@ -455,7 +471,7 @@ for session_k in range(len(session_file_list)):
     for i in range( 96 ):
         mi_of_all_channels_diff.append( mi_of_all_channels_couple[i]- mi_of_all_channels_spike[i] )
         channel_results_accross_sessions[0][i]=channel_results_accross_sessions[0][i]+mi_of_all_channels_couple[i]- mi_of_all_channels_spike[i]
-    print('mi_of_all_channels_diff', mi_of_all_channels_diff )
+    # print('mi_of_all_channels_diff', mi_of_all_channels_diff )
     
 
     plt.figure(figsize=(16,3))
@@ -518,6 +534,15 @@ plt.cla()
 plt.clf()
 plt.close()
 
+
+print('size of Firing_Rate_MI_all_channels_all_sessions: ', Firing_Rate_MI_all_channels_all_sessions.shape, '\n')
+print('size of Absolute_LFP_Phase_all_channels_all_sessions: ', Absolute_LFP_Phase_all_channels_all_sessions.shape, '\n')
+
+df = pd.DataFrame(Firing_Rate_MI_all_channels_all_sessions)
+df.to_csv(os.path.join(csv_path, 'Firing_Rate_MI_all_channels_all_sessions.csv'), index=False)
+
+df = pd.DataFrame(Absolute_LFP_Phase_all_channels_all_sessions)
+df.to_csv(os.path.join(csv_path, 'Absolute_LFP_Phase_all_channels_all_sessions.csv'), index=False)
 
 '''
 plt.figure(figsize=(16,3))

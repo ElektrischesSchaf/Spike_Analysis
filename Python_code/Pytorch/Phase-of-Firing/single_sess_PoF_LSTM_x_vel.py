@@ -77,7 +77,7 @@ for session_k in range(len(session_file_list)):
         bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
     phase_of_firing_all_channel=[]
     for PoF_channel_index in range(0, 96):
-        # phase_of_firing_all_channel.append([])
+        # TODO use np.concatenate instead
         file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
         PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
         PoF_one_channel=np.array(PoF_one_channel)
