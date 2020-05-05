@@ -36,7 +36,7 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 CWD_origin=os.getcwd()
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 
 width_two=0.2 # for bar plot
 
@@ -539,10 +539,10 @@ print('size of Firing_Rate_MI_all_channels_all_sessions: ', Firing_Rate_MI_all_c
 print('size of Absolute_LFP_Phase_all_channels_all_sessions: ', Absolute_LFP_Phase_all_channels_all_sessions.shape, '\n')
 
 df = pd.DataFrame(Firing_Rate_MI_all_channels_all_sessions)
-df.to_csv(os.path.join(csv_path, 'Firing_Rate_MI_all_channels_all_sessions.csv'), index=False)
+df.to_csv(os.path.join(csv_path, kinematic_variable_type+'_Firing_Rate_MI_all_channels_all_sessions.csv'), index=False)
 
 df = pd.DataFrame(Absolute_LFP_Phase_all_channels_all_sessions)
-df.to_csv(os.path.join(csv_path, 'Absolute_LFP_Phase_all_channels_all_sessions.csv'), index=False)
+df.to_csv(os.path.join(csv_path, kinematic_variable_type+'_Absolute_LFP_Phase_all_channels_all_sessions.csv'), index=False)
 
 '''
 plt.figure(figsize=(16,3))
