@@ -94,7 +94,7 @@ x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_labe
 # session control start
 for session_k in range(total_sess_num):
 
-    session_name=str(session_file_list[session_k])[:-4]
+    session_name=str(session_file_list[session_k])
     file_name_1='../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
     # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]    
 
