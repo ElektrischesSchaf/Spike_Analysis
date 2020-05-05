@@ -244,6 +244,7 @@ class AbstractDataset(Dataset):
         print('\ndatas: ', datas)
         # return self.data, self.label
 
+
 # Training Phase
 
 # read from csv file
@@ -688,6 +689,9 @@ plt.cla()
 plt.clf()
 plt.close()
 
+tEnd=time.time()
+print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
+
 '''
 plt.figure(figsize=(16, 9))
 ind = np.arange(1,len(best_epoch_arcoss_all_sessions)+1)
@@ -708,7 +712,6 @@ plt.cla()
 plt.clf()
 plt.close()
 
-tEnd=time.time()
-print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
+
 
 '''
