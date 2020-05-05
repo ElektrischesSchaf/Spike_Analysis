@@ -93,7 +93,7 @@ class cross_sess_mat_file_processing():
             # df.to_csv(os.path.join(save_testing_data_path, 'y_velocity_label_training.csv'), index=False)
 
             y_velocity_label_testing = y_velocity_label[testing_data_index:]
-            df = pd.Dataframe( y_velocity_label_testing )
+            df = pd.DataFrame( y_velocity_label_testing )
             df.to_csv(os.path.join(save_testing_data_path, 'y_velocity_label_testing.csv'), index=False)
 
         return Testing_Datasets_Folder_path
