@@ -38,7 +38,7 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Make file list
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -46,6 +46,7 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
+model_name='LSTM_with_Spike_Single_37_Session'
 MAX_EPOCH=200
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
@@ -97,7 +98,7 @@ for session_k in range(len(session_file_list)):
 
     # cross sessions control start
     for session_index in range(file_numbers):
-        print('In session '+ str(session_index+1) + ': ' + '\n' )
+        print('In session '+ session_name + ': ' + '\n' )
 
         [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
         [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
@@ -165,7 +166,6 @@ for session_k in range(len(session_file_list)):
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
-    model_name='LSTM_with_Spike_Single_Session'
     if model_name not in CWD:
         CWD = os.path.join(CWD, model_name)
         if not os.path.exists(CWD):
@@ -503,8 +503,8 @@ for session_k in range(len(session_file_list)):
     RMSE_across_all_sessions.append(testing_data_RMSE)
     person_correlation_coefficient_across_all_sessions.append(PCC[0])
 
+    # Plotting the kinematic variable reconstructure figure
     plt.figure(figsize=(32, 9))
-
     plotting_time_elapsed=time_stamp_64ms[testing_data_index:-1]
 
     # Ground_Truth_x_vel and Ground_Truth_y_vel may copy form testing_y in line 256 # TODO
@@ -551,6 +551,7 @@ for session_k in range(len(session_file_list)):
     plt.clf()
     plt.close()
 
+    # Save the result of kinematic variable reconstruction of each session
     df = pd.DataFrame( ((session_name, testing_data_r_square )) )
     df.to_csv(os.path.join(csv_path, 'R_square_this_session.csv'), index=False, header=False)
 

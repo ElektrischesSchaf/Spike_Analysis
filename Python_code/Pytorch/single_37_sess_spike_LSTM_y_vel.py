@@ -38,7 +38,7 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Make file list
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -46,7 +46,7 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
-model_name='LSTM_with_Spike_Single_Session'
+model_name='LSTM_with_Spike_Single_37_Session'
 MAX_EPOCH=200
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
@@ -98,7 +98,7 @@ for session_k in range(len(session_file_list)):
 
     # cross sessions control start
     for session_index in range(file_numbers):
-        print('In session '+ str(session_index+1) + ': ' + '\n' )
+        print('In session '+ session_name + ': ' + '\n' )
 
         [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
         [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
