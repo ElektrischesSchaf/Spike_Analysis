@@ -50,10 +50,10 @@ total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
 model_name='Two_Stream_LSTM_with_PoF_Cross_29_Session'
-MAX_EPOCH=200
+MAX_EPOCH=100
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
-BATCH_SIZE=16
+BATCH_SIZE=32
 HIDDEN_DIMENSION=100
 
 # Model Performance Lists
