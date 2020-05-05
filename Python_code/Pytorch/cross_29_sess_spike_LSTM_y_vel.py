@@ -41,7 +41,7 @@ cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_
 
 # Make file list
 kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
+FILE_PATH = '../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
@@ -49,7 +49,7 @@ session_file_list=List_FILE
 total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
-model_name='LSTM_with_Spike_Cross_Sessions'
+model_name='LSTM_with_Spike_Cross_29_Sessions'
 MAX_EPOCH=250
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1

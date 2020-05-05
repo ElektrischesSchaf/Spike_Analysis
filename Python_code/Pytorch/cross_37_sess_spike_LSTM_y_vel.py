@@ -40,7 +40,7 @@ mat_file_processing = load_mat_file.mat_file_processing()
 cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_file_processing()
 
 # Make file list
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -49,7 +49,7 @@ session_file_list=List_FILE
 total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
-model_name='LSTM_with_Spike_Cross_Sessions'
+model_name='LSTM_with_Spike_Cross_37_Sessions'
 MAX_EPOCH=250
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
@@ -555,9 +555,9 @@ for session_k in range(total_sess_num):
 
     plt.figure(figsize=(32, 9))
 
-    plotting_time_elapsed=time_stamp_64ms_testing[:-1] # Because of discrete differential
+    plotting_time_elapsed=time_stamp_64ms_testing[:-1]
     # Ground_Truth_x_vel=x_velocity_label[:]
-    # Ground_Truth_y_vel=y_velocity_label[:]
+    # Ground_Truth_y_vel=y_velocity_label[:]  
     
 
     df = pd.DataFrame( plotting_time_elapsed )
