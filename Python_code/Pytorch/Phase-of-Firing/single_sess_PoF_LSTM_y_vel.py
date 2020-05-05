@@ -77,7 +77,7 @@ for session_k in range(len(session_file_list)):
         bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
     phase_of_firing_all_channel=[]
     for PoF_channel_index in range(0, 96):
-        # phase_of_firing_all_channel.append([])
+        # TODO use np.concatenate instead
         file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
         PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
         PoF_one_channel=np.array(PoF_one_channel)
@@ -119,6 +119,9 @@ for session_k in range(len(session_file_list)):
         feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
     else:
         feature_numbers=channel_numbers_in_this_dataset
+    
+    # If need to concatenate Spike Firing Rate and LFP Phase, must specify the exact feature dimension here
+    feature_numbers=feature_numbers*2
 
     [X_for_training, X_for_prediction, 
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
@@ -182,7 +185,6 @@ for session_k in range(len(session_file_list)):
         else:
             pass
 
-
         firing_rate_matrix=np.transpose(firing_rate_matrix)        
         feature_numbers_of_firing_rate = firing_rate_matrix.shape[1]
 
@@ -190,6 +192,50 @@ for session_k in range(len(session_file_list)):
         print('features list shape: ',end='')
         print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
         print('\n')
+
+        # Adding the LFP Phase to the feature matrix
+
+        # PoF feature matrix train / test split
+        # PoF_testing_data_index=testing_data_index
+        # print('PoF_testing_data_index= ',PoF_testing_data_index)
+        # phase_of_firing_all_channel_traing=phase_of_firing_all_channel[:PoF_testing_data_index,:]
+        # phase_of_firing_all_channel_testing=phase_of_firing_all_channel[PoF_testing_data_index:,:]
+
+        # LFP Phase to torch
+        # training_PoF=torch.from_numpy(phase_of_firing_all_channel_traing)
+        # training_PoF=training_PoF.float()
+
+
+        # testing_PoF=torch.from_numpy(phase_of_firing_all_channel_testing)
+        # testing_PoF=testing_PoF.float()
+
+        # Comparing the lenght of Phase-of-Firing testing dataset and Firing Rate testing dataset
+        # print('phase_of_firing_all_channel_traing.size()= ', training_PoF.size(), ' training_x.size()= ',training_x.size() , '\n')
+        # print('testing_PoF.size()= ', testing_PoF.size(), ' testing_x.size()= ',testing_x.size() )
+
+        print('phase_of_firing_all_channel length = ', phase_of_firing_all_channel.shape, ' X matrix = ', X.shape)
+        length_difference=phase_of_firing_all_channel.shape[0]-X.shape[0]
+        print('length_difference= ', length_difference,'\n')
+
+
+        # Making the lenght between Phase-of-Firing testing dataset and Firing Rate testing dataset the same
+        if length_difference > 0:
+            phase_of_firing_all_channel=phase_of_firing_all_channel[:-abs(length_difference),:]
+        if length_difference < 0:
+            print("Error in lenght of the Phase Feature")
+            breakpoint()
+
+        print('phase_of_firing_all_channel length = ', phase_of_firing_all_channel.shape, ' X matrix = ', X.shape)
+
+        X=np.concatenate((X, phase_of_firing_all_channel) , axis=1)
+        # Cancatenating Firing Rate feature matrix and Phase-of-Firing feature matrix
+        # new_training_x=torch.cat(( training_x_spike, training_PoF ) , 1)
+        # print('new_training_x= ', new_training_x.size())
+
+        # new_testing_x=torch.cat(( testing_x_spike, testing_PoF), 1)
+
+        # Above
+
 
         # Cross Session Data Concatenation
         [X_for_training, X_for_prediction,
@@ -203,13 +249,6 @@ for session_k in range(len(session_file_list)):
         x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
 
     # cross sessions control end
-
-
-    # PoF feature matrix train / test split
-    PoF_testing_data_index=5000
-    print('PoF_testing_data_index= ',PoF_testing_data_index)
-    phase_of_firing_all_channel_traing=phase_of_firing_all_channel[:PoF_testing_data_index,:]
-    phase_of_firing_all_channel_testing=phase_of_firing_all_channel[PoF_testing_data_index:,:]
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
@@ -284,15 +323,15 @@ for session_k in range(len(session_file_list)):
             # return self.data, self.label
 
     # read from csv file
-    training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
+    training_x = pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
     training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
-    training_x=training_x.float()
-    training_x_spike=training_x.clone()
+    training_x = training_x.float()
+    # training_x_spike=training_x.clone() # No need to use clone here
 
     testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
-    testing_x=testing_x.float()
-    testing_x_spike=testing_x.clone()
+    testing_x = testing_x.float()
+    # testing_x_spike=testing_x.clone() # No need to use clone here
 
     if kinematic_variable_type=='x_vel':
         training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
@@ -311,34 +350,6 @@ for session_k in range(len(session_file_list)):
         testing_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
-
-    # PoF to torch
-    training_PoF=torch.from_numpy(phase_of_firing_all_channel_traing)
-    training_PoF=training_PoF.float()
-
-    testing_PoF=torch.from_numpy(phase_of_firing_all_channel_testing)
-    testing_PoF=testing_PoF.float()
-
-    # Comparing the lenght of Phase-of-Firing testing dataset and Firing Rate testing dataset
-    print('training_PoF.size()= ', training_PoF.size(), ' training_x.size()= ',training_x.size() , '\n')
-    print('testing_PoF.size()= ', testing_PoF.size(), ' testing_x.size()= ',testing_x.size() )
-
-    length_difference=testing_x.size()[0]-testing_PoF.size()[0]
-    print('length_difference= ', length_difference,'\n')
-
-    # Making the lenght between Phase-of-Firing testing dataset and Firing Rate testing dataset the same
-    if length_difference <0:
-        testing_PoF=testing_PoF[:-abs(length_difference),:]
-    if length_difference >0:
-        testing_x=testing_x[:-abs(length_difference),:]
-        testing_y=testing_y[:-abs(length_difference),:]
-    print('testing_PoF.size()= ', testing_PoF.size(), ' testing_y.size()= ', testing_y.size())
-
-    # Cancatenating Firing Rate feature matrix and Phase-of-Firing feature matrix
-    new_training_x=torch.cat(( training_x_spike, training_PoF ) , 1)
-    print('new_training_x= ', new_training_x.size())
-
-    new_testing_x=torch.cat(( testing_x_spike, testing_PoF), 1)
 
     '''
     for k in range(new_training_x.size(0)):
@@ -378,8 +389,9 @@ for session_k in range(len(session_file_list)):
     new_testing_x=new_testing_x[:,:]
     '''
 
+    real_input_features = int(training_x.size(1))
     print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
-    print('Real input features: ', new_training_x.size(1) )
+    print('Real input features: ', real_input_features )
 
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
@@ -392,8 +404,8 @@ for session_k in range(len(session_file_list)):
     output_dim = 1
 
     # Training / Testing AbstractDataset
-    training_dataset=AbstractDataset(new_training_x, training_y)
-    testing_dataset=AbstractDataset(new_testing_x, testing_y)
+    training_dataset=AbstractDataset(training_x, training_y)
+    testing_dataset=AbstractDataset(testing_x, testing_y)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -444,7 +456,7 @@ for session_k in range(len(session_file_list)):
 
             return out
 
-    net = LSTMModel(input_dim=new_training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    net = LSTMModel(input_dim=real_input_features, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
