@@ -39,6 +39,11 @@ my_parameters = my_parameters.my_parameters()
 mat_file_processing = load_mat_file.mat_file_processing()
 cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_file_processing()
 
+# Deep leaning module
+from Deep_Learning_Models.LSTM_two_stream import LSTMModel
+from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
+
+
 # Make file list
 kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
@@ -291,25 +296,6 @@ if kinematic_variable_type=='y_vel':
     df=pd.DataFrame(y_velocity_label_testing)
     df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
 
-# Define AbstractDataset for Neural Networks
-
-class AbstractDataset(Dataset):
-    def __init__(self, feature_matrix, label_matrix):
-        self.data=feature_matrix
-        self.label=label_matrix
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, index):
-        # print('\nYee:', self.data[index], ', ' ,self.label[index])
-        return self.data[index], self.label[index]
-    
-    def collate_fn(self, datas):
-        # datas = [ batch_size X ( data + label ) ]
-        print('\ncollate_fn！')
-        print('\ndatas: ', datas)
-        # return self.data, self.label
 # Training Phase
 
 # read from csv file
@@ -361,66 +347,6 @@ training_dataset=AbstractDataset(training_x, training_y)
 # testing_dataset=AbstractDataset(testing_x, testing_y)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-class LSTMModel(torch.nn.Module):
-    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
-        super(LSTMModel, self).__init__()
-        # Hidden dimensions
-        self.hidden_dim = hidden_dim
-        
-        # Number of hidden layers
-        self.layer_dim = layer_dim
-        
-        # Building your LSTM
-        # batch_first=True causes input/output tensors to be of shape
-        # (batch_dim, seq_dim, feature_dim)
-        self.lstm_spike = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
-        self.lstm_phase = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
-        
-        # Readout layer
-        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) ) # one-directional
-        self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
-
-        # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
-        # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
-    def forward(self, x):
-
-        # x torch.Size([64, 96])
-
-        x=x.unsqueeze(0)       
-
-        # Initialize hidden state with zeros
-        h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-        # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
-        h0=h0.to(device)
-        h1=h0.clone()
-
-        # Initialize cell state
-        c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-        # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
-        c0=c0.to(device)
-        c1=c0.clone()
-        # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
-
-        # time steps
-        out_spike, (hn, cn) = self.lstm_spike(x[:,:,:96], (h0,c0))
-        out_phase, (hn, cn) = self.lstm_phase(x[:,:,96:], (h1,c1))
-
-        '''
-        Index hidden state of last time step
-        out.size() --> 100, 28, 100
-        out[:, -1, :] --> 100, 100 --> just want last time step hidden states! 
-        out = self.fc(out[:, -1, :]) 
-        out.size() --> 100, 10
-        '''
-
-        out_spike=torch.relu( self.fc1(out_spike) )
-        out_phase=torch.relu( self.fc1(out_phase) )
-
-        out =torch.relu( self.fc1(torch.cat((out_spike,out_phase), 2) ) )
-        out = self.fc2(out)
-        out=out.squeeze(0)
-
-        return out
 
 real_input_features=int(real_input_features /2) # Because of Two Stream LSTM
 

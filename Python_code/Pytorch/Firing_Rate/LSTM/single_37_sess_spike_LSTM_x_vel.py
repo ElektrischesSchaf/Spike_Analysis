@@ -37,6 +37,10 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
+# Deep leaning module
+from  Deep_Learning_Models.LSTM_one_stream import LSTMModel
+from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
+
 # Make file list
 kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
@@ -217,26 +221,6 @@ for session_k in range(len(session_file_list)):
         df=pd.DataFrame(y_velocity_label_testing)
         df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
 
-    # Define AbstractDataset for Neural Networks
-
-    class AbstractDataset(Dataset):
-        def __init__(self, feature_matrix, label_matrix):
-            self.data=feature_matrix
-            self.label=label_matrix
-
-        def __len__(self):
-            return len(self.data)
-
-        def __getitem__(self, index):
-            # print('\nYee:', self.data[index], ', ' ,self.label[index])
-            return self.data[index], self.label[index]
-        
-        def collate_fn(self, datas):
-            # datas = [ batch_size X ( data + label ) ]
-            print('\ncollate_fn！')
-            print('\ndatas: ', datas)
-            # return self.data, self.label
-
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
     training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
@@ -281,68 +265,9 @@ for session_k in range(len(session_file_list)):
     # TODO collate_fn
     # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
     # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
-    # test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)
-    
+    # test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)    
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    # All models fit and predict, show R2 score
-    class LSTMModel(torch.nn.Module):
-        def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
-            super(LSTMModel, self).__init__()
-            # Hidden dimensions
-            self.hidden_dim = hidden_dim
-            
-            # Number of hidden layers
-            self.layer_dim = layer_dim
-            
-            # Building your LSTM
-            # batch_first=True causes input/output tensors to be of shape
-            # (batch_dim, seq_dim, feature_dim)
-            self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
-            
-            # Readout layer
-            self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
-            self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
-
-            # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
-            # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
-        
-        def forward(self, x):
-
-            # x torch.Size([64, 96])
-
-            x=x.unsqueeze(0)       
-            # m=torch.nn.LayerNorm( x.size()[:], elementwise_affine=False )
-            # x=m(x)
-
-            # Initialize hidden state with zeros
-            h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-            # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
-            h0=h0.to(device)
-
-            # Initialize cell state
-            c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
-            # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
-            c0=c0.to(device)
-
-            # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
-
-            # time steps
-            out, (hn, cn) = self.lstm(x, (h0,c0))
-
-            '''
-            Index hidden state of last time step
-            out.size() --> 100, 28, 100
-            out[:, -1, :] --> 100, 100 --> just want last time step hidden states! 
-            out = self.fc(out[:, -1, :]) 
-            out.size() --> 100, 10
-            '''
-            out = torch.relu(self.fc1(out))
-            out = self.fc2(out)
-            out=out.squeeze(0)
-
-            return out
 
     net = LSTMModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
