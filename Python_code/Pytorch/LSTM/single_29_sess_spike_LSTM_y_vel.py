@@ -26,20 +26,20 @@ import os
 CWD_origin=os.getcwd()
 import shutil
 
-import time
+import time.
 tStart=time.time()
 
 # My module
 import sys
-sys.path.append("..") # Adds higher directory to python modules path.
+sys.path.append("../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Make file list
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../Signal_Processing/Phase_all_Channels/Tables/'
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
