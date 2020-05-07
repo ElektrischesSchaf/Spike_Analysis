@@ -43,6 +43,9 @@ class  GRUModel(torch.nn.Module):
         out_spike, _ = self.GRU_spike(x[:,:,:96])
         out_phase, _ = self.GRU_phase(x[:,:,96:])
 
+        out_spike=torch.relu( self.fc1(out_spike) )
+        out_phase=torch.relu( self.fc1(out_phase) )
+
         out =torch.relu( self.fc1(torch.cat((out_spike,out_phase), 2) ) )
         out = self.fc2(out)
         out=out.squeeze(0)
