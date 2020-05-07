@@ -31,7 +31,7 @@ tStart=time.time()
 
 # My module
 import sys
-sys.path.append("../..") # Adds higher directory to python modules path.
+sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 import data_processing.cancatenate_features_cross_sess as cancatenate_features_cross_sess
@@ -40,8 +40,8 @@ mat_file_processing = load_mat_file.mat_file_processing()
 cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_file_processing()
 
 # Make file list
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
@@ -49,7 +49,7 @@ session_file_list=List_FILE
 total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
-model_name='LSTM_with_Spike_Cross_29_Sessions'
+model_name='LSTM_with_Spike_Cross_37_Sessions'
 MAX_EPOCH=250
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
@@ -94,8 +94,8 @@ x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_labe
 # session control start
 for session_k in range(total_sess_num):
 
-    session_name=str(session_file_list[session_k])
-    file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
+    session_name=str(session_file_list[session_k])[:-4]
+    file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
     # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]    
 
     # cross sessions control start
@@ -688,9 +688,6 @@ plt.cla()
 plt.clf()
 plt.close()
 
-tEnd=time.time()
-print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
-
 '''
 plt.figure(figsize=(16, 9))
 ind = np.arange(1,len(best_epoch_arcoss_all_sessions)+1)
@@ -711,6 +708,7 @@ plt.cla()
 plt.clf()
 plt.close()
 
-
+tEnd=time.time()
+print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
 
 '''

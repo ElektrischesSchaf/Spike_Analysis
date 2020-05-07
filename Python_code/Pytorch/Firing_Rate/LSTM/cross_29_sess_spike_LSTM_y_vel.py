@@ -31,7 +31,7 @@ tStart=time.time()
 
 # My module
 import sys
-sys.path.append("../..") # Adds higher directory to python modules path.
+sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 import data_processing.cancatenate_features_cross_sess as cancatenate_features_cross_sess
@@ -40,8 +40,8 @@ mat_file_processing = load_mat_file.mat_file_processing()
 cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_file_processing()
 
 # Make file list
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
@@ -95,7 +95,7 @@ x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_labe
 for session_k in range(total_sess_num):
 
     session_name=str(session_file_list[session_k])
-    file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
+    file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
     # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]    
 
     # cross sessions control start
@@ -243,7 +243,6 @@ class AbstractDataset(Dataset):
         print('\ncollate_fn！')
         print('\ndatas: ', datas)
         # return self.data, self.label
-
 
 # Training Phase
 

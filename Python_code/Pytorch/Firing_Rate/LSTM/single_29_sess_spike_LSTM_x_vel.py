@@ -31,22 +31,22 @@ tStart=time.time()
 
 # My module
 import sys
-sys.path.append("../..") # Adds higher directory to python modules path.
+sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Make file list
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../../Dataset/Sorted_Spike_Dataset/'
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
-model_name='LSTM_with_Spike_Single_37_Session'
+model_name='LSTM_with_Spike_Single_29_Session'
 MAX_EPOCH=200
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
@@ -63,8 +63,8 @@ person_correlation_coefficient_across_all_sessions=[]
 # session control start
 for session_k in range(len(session_file_list)):
 
-    session_name=str(session_file_list[session_k])[:-4]
-    file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
+    session_name=str(session_file_list[session_k])
+    file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
     # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
 
     time_stamp_64ms=[]

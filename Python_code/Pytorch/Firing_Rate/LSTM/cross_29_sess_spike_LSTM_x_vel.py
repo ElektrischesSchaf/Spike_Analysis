@@ -31,7 +31,7 @@ tStart=time.time()
 
 # My module
 import sys
-sys.path.append("../..") # Adds higher directory to python modules path.
+sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 import data_processing.cancatenate_features_cross_sess as cancatenate_features_cross_sess
@@ -41,18 +41,18 @@ cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_
 
 # Make file list
 kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
+FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:]
+List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
 total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
-model_name='Two_Stream_LSTM_with_PoF_Cross_29_Session'
-MAX_EPOCH=150
+model_name='LSTM_with_Spike_Cross_29_Sessions'
+MAX_EPOCH=250
 LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=2
+NUMBER_OF_LAYERS=1
 BATCH_SIZE=64
 HIDDEN_DIMENSION=100
 
@@ -64,6 +64,7 @@ best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
 
 # Auto-assigned parameters
+time_stamp_64ms=[]
 testing_data_index=0
 channel_number=0
 units_have_value=0
@@ -74,7 +75,7 @@ file_numbers=my_parameters.file_numbers
 time_lag=my_parameters.time_lag
 order=my_parameters.order
 with_sorted_spikes=my_parameters.with_sorted_spikes
-include_hash_unit=my_parameters.include_hash_unit
+include_hash_unit=my_parameters.include_hash_unit   
 
 # Must know these two numbers beforehand
 channel_numbers_in_this_dataset=96
@@ -85,9 +86,6 @@ if with_sorted_spikes==True:
 else:
     feature_numbers=channel_numbers_in_this_dataset
 
-# If need to concatenate Spike Firing Rate and LFP Phase, must specify the exact feature dimension here
-feature_numbers=feature_numbers*2
-
 [X_for_training, X_for_prediction, 
 x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
 x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
@@ -95,41 +93,10 @@ x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_labe
 
 # session control start
 for session_k in range(total_sess_num):
-    
+
     session_name=str(session_file_list[session_k])
-    file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
-
-    time_stamp_64ms=[]
-
-    # import LFP Phase Data from all 96 channels start
-    band_start=0.5
-    band_cutoff=4
-    if band_start==0.5:
-        bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
-    else:
-        bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
-    phase_of_firing_all_channel=[]
-    for PoF_channel_index in range(0, 96):
-        # TODO use np.concatenate instead
-        file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
-        PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
-        PoF_one_channel=np.array(PoF_one_channel)
-        PoF_one_channel=np.absolute(PoF_one_channel)
-        # print('PoF_channel_index ', PoF_channel_index)
-        # print(PoF_one_channel)
-        phase_of_firing_all_channel.append( list(PoF_one_channel) )
-
-    phase_of_firing_all_channel=np.array(phase_of_firing_all_channel)
-    print( 'important= ', phase_of_firing_all_channel.shape)
-    phase_of_firing_all_channel=np.squeeze(phase_of_firing_all_channel).transpose()
-
-    # Downsampling from 250Hz to 64ms
-    phase_of_firing_all_channel=phase_of_firing_all_channel[::16,:]
-    # phase_of_firing_all_channel=np.reshape(96,-1)
-    print( 'important= ', phase_of_firing_all_channel.shape)
-    file_phase_of_firing_time_stamp='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
-    # import LFP Phase Data from all 96 channels end
-
+    file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
+    # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]    
 
     # cross sessions control start
     for session_index in range(file_numbers):
@@ -169,18 +136,9 @@ for session_k in range(total_sess_num):
                 index=0
                 k=0
                 while index < channel_number:
-                #for k in range(channel_number-(units_numbers_in_this_dataset-1)): # Maximum 3 units in this session, indy_20160407_02.
-                    #print('index: ',index,end='')
                     firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
-
-                    # Test another way to exclude hash unit, but this only works in 96 features.
-                    #firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
-
-                    #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
                     index = index + 1
                     k = k+ units_numbers_in_this_dataset
-                    #print('index: ', index, 'k: ', k)
-
             print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
             print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
             print('\n')
@@ -194,21 +152,6 @@ for session_k in range(total_sess_num):
         print('features list shape: ',end='')
         print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
         print('\n')
-
-        print('phase_of_firing_all_channel length = ', phase_of_firing_all_channel.shape, ' X matrix = ', X.shape)
-        length_difference=phase_of_firing_all_channel.shape[0]-X.shape[0]
-        print('length_difference= ', length_difference,'\n')
-
-        # Making the lenght between Phase-of-Firing testing dataset and Firing Rate testing dataset the same
-        if length_difference > 0:
-            phase_of_firing_all_channel=phase_of_firing_all_channel[:-abs(length_difference),:]
-        if length_difference < 0:
-            print("Error in lenght of the Phase Feature")
-            breakpoint()
-
-        print('phase_of_firing_all_channel length = ', phase_of_firing_all_channel.shape, ' X matrix = ', X.shape)
-
-        X=np.concatenate((X, phase_of_firing_all_channel) , axis=1)
 
         # Cross Session Data Concatenation
         [X_for_training,
@@ -235,8 +178,6 @@ for session_k in range(total_sess_num):
         x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label)
 
     # cross sessions control end
-
-# Training Phase
 
 # Write training datasets from from all session combined to a csv file
 CWD = CWD_origin
@@ -274,25 +215,17 @@ if not os.path.exists(plot_path):
 df = pd.DataFrame(X_for_training)
 df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
 
-df = pd.DataFrame(X_for_prediction)
-df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
-
 if kinematic_variable_type=='x_vel':
     df=pd.DataFrame(x_velocity_label_training)
     df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
-
-    df=pd.DataFrame(x_velocity_label_testing)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
 
 if kinematic_variable_type=='y_vel':
     df=pd.DataFrame(y_velocity_label_training)
     df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
 
-    df=pd.DataFrame(y_velocity_label_testing)
-    df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
+
 
 # Define AbstractDataset for Neural Networks
-
 class AbstractDataset(Dataset):
     def __init__(self, feature_matrix, label_matrix):
         self.data=feature_matrix
@@ -310,6 +243,8 @@ class AbstractDataset(Dataset):
         print('\ncollate_fn！')
         print('\ndatas: ', datas)
         # return self.data, self.label
+
+
 # Training Phase
 
 # read from csv file
@@ -340,10 +275,6 @@ if kinematic_variable_type=='y_vel':
     # testing_y = torch.from_numpy(testing_y.values)  
     # testing_y=testing_y.float()
 
-real_input_features = int(training_x.size(1))
-print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
-print('Real input features: ', real_input_features )
-
 # General Neural Network Hyperparameters
 batch_size = BATCH_SIZE
 learning_rate = LEARNING_RATE
@@ -361,6 +292,8 @@ training_dataset=AbstractDataset(training_x, training_y)
 # testing_dataset=AbstractDataset(testing_x, testing_y)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# All models fit and predict, show R2 score
 class LSTMModel(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
         super(LSTMModel, self).__init__()
@@ -373,58 +306,45 @@ class LSTMModel(torch.nn.Module):
         # Building your LSTM
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.lstm_spike = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
-        self.lstm_phase = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
+        self.lstm = torch.nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
         
         # Readout layer
-        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) ) # one-directional
+        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
         # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
         # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
+    
     def forward(self, x):
 
         # x torch.Size([64, 96])
 
         x=x.unsqueeze(0)       
+        # m=torch.nn.LayerNorm( x.size()[:], elementwise_affine=False )
+        # x=m(x)
 
         # Initialize hidden state with zeros
         h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
         # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
         h0=h0.to(device)
-        h1=h0.clone()
 
         # Initialize cell state
         c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_() # one-directional
         # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
         c0=c0.to(device)
-        c1=c0.clone()
+
         # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
 
         # time steps
-        out_spike, (hn, cn) = self.lstm_spike(x[:,:,:96], (h0,c0))
-        out_phase, (hn, cn) = self.lstm_phase(x[:,:,96:], (h1,c1))
+        out, (hn, cn) = self.lstm(x, (h0,c0))
 
-        '''
-        Index hidden state of last time step
-        out.size() --> 100, 28, 100
-        out[:, -1, :] --> 100, 100 --> just want last time step hidden states! 
-        out = self.fc(out[:, -1, :]) 
-        out.size() --> 100, 10
-        '''
-
-        out_spike=torch.relu( self.fc1(out_spike) )
-        out_phase=torch.relu( self.fc1(out_phase) )
-
-        out =torch.relu( self.fc1(torch.cat((out_spike,out_phase), 2) ) )
+        out = torch.relu(self.fc1(out))
         out = self.fc2(out)
         out=out.squeeze(0)
 
         return out
 
-real_input_features=int(real_input_features /2) # Because of Two Stream LSTM
-
-net = LSTMModel(input_dim=real_input_features, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+net = LSTMModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
 # print(net)  # net architecture
 optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -544,6 +464,8 @@ plt.savefig(plot_path + '/' +model_name+"_R-square.png")
 # print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')    
 # best_epoch_arcoss_all_sessions.append(best_epoch)
 # print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['test'])]))
+
+
 
 # Testing Phase
 
@@ -790,7 +712,6 @@ plt.cla()
 plt.clf()
 plt.close()
 
-tEnd=time.time()
-print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
+
 
 '''

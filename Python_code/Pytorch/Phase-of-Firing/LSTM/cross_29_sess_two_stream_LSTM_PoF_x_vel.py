@@ -31,7 +31,7 @@ tStart=time.time()
 
 # My module
 import sys
-sys.path.append("../..") # Adds higher directory to python modules path.
+sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 import data_processing.cancatenate_features_cross_sess as cancatenate_features_cross_sess
@@ -40,8 +40,8 @@ mat_file_processing = load_mat_file.mat_file_processing()
 cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_file_processing()
 
 # Make file list
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../Signal_Processing/Phase_all_Channels/Tables/'
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:]
@@ -97,7 +97,7 @@ x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_labe
 for session_k in range(total_sess_num):
     
     session_name=str(session_file_list[session_k])
-    file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
+    file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
 
     time_stamp_64ms=[]
 
@@ -111,7 +111,7 @@ for session_k in range(total_sess_num):
     phase_of_firing_all_channel=[]
     for PoF_channel_index in range(0, 96):
         # TODO use np.concatenate instead
-        file_phase_of_firing='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
+        file_phase_of_firing='../../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
         PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
         PoF_one_channel=np.array(PoF_one_channel)
         PoF_one_channel=np.absolute(PoF_one_channel)
@@ -127,7 +127,7 @@ for session_k in range(total_sess_num):
     phase_of_firing_all_channel=phase_of_firing_all_channel[::16,:]
     # phase_of_firing_all_channel=np.reshape(96,-1)
     print( 'important= ', phase_of_firing_all_channel.shape)
-    file_phase_of_firing_time_stamp='../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
+    file_phase_of_firing_time_stamp='../../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
     # import LFP Phase Data from all 96 channels end
 
 

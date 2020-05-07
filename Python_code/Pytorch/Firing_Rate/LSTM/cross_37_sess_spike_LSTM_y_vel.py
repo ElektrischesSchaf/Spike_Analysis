@@ -31,7 +31,7 @@ tStart=time.time()
 
 # My module
 import sys
-sys.path.append("../..") # Adds higher directory to python modules path.
+sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 import data_processing.cancatenate_features_cross_sess as cancatenate_features_cross_sess
@@ -40,8 +40,8 @@ mat_file_processing = load_mat_file.mat_file_processing()
 cross_sess_mat_file_processing = cancatenate_features_cross_sess.cross_sess_mat_file_processing()
 
 # Make file list
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../../Dataset/Sorted_Spike_Dataset/'
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:] 
@@ -95,7 +95,7 @@ x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_labe
 for session_k in range(total_sess_num):
 
     session_name=str(session_file_list[session_k])[:-4]
-    file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
+    file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
     # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]    
 
     # cross sessions control start
@@ -555,9 +555,9 @@ for session_k in range(total_sess_num):
 
     plt.figure(figsize=(32, 9))
 
-    plotting_time_elapsed=time_stamp_64ms_testing[:-1] # Because of discrete differential
+    plotting_time_elapsed=time_stamp_64ms_testing[:-1]
     # Ground_Truth_x_vel=x_velocity_label[:]
-    # Ground_Truth_y_vel=y_velocity_label[:]
+    # Ground_Truth_y_vel=y_velocity_label[:]  
     
 
     df = pd.DataFrame( plotting_time_elapsed )
