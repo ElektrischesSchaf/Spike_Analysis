@@ -51,7 +51,7 @@ session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name='Two_Stream_GRU_with_PoF_Single_Session'
-MAX_EPOCH=200
+MAX_EPOCH=150
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
 BATCH_SIZE=64
