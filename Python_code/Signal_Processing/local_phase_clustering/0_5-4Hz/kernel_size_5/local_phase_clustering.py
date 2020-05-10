@@ -92,14 +92,6 @@ for k in range(len(session_file_list)):
 
     print('csv_path= ', csv_path, '\n')
 
-    if is_first_loop==True:
-        is_first_loop=False
-        try:
-            os.remove(os.path.join(csv_path,'phase_conv_angle' + '.csv'))
-            os.remove(os.path.join(csv_path,'phase_conv_abs' +'.csv'))
-            print('\nOld file deleted\n')
-        except:
-            print('\nNo old files\n')
     # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file
     df = pd.DataFrame(ITPC_angle)
     df.to_csv(os.path.join(csv_path,'phase_conv_angle'+ '.csv'), mode='w', index=False, header=False)
