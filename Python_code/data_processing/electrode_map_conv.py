@@ -50,10 +50,10 @@ class map_conv_2D():
                 ITPC_angle=np.array(ITPC_angle).transpose()
                 ITPC_abs=np.array(ITPC_abs).transpose()
 
-                print('\nITPC_angle_output= ', ITPC_angle_output.shape)
+                print('\nphase_conv_angle_output= ', ITPC_angle_output.shape)
                 ITPC_angle=np.reshape(ITPC_angle, (ITPC_angle.shape[0],-1) )
                 # print('\nITPC_angle= ', ITPC_angle.shape)
-                print('\nITPC_abs_output= ', ITPC_abs_output.shape)
+                print('\nphase_conv_abs_output= ', ITPC_abs_output.shape)
                 ITPC_abs=np.reshape(ITPC_abs, (ITPC_abs.shape[0],-1) )
                 # print('\nITPC_abs= ', ITPC_abs.shape)
             
