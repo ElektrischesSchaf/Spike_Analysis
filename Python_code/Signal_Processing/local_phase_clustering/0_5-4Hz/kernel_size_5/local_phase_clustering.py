@@ -86,11 +86,9 @@ for k in range(len(session_file_list)):
         if not os.path.exists(CWD):
             os.mkdir(CWD)
 
-
-    if bandwidth_token not in CWD:
-        CWD=os.path.join(CWD, bandwidth_token)
-        if not os.path.exists(CWD):
-                os.mkdir(CWD)
+    csv_path=os.path.join(CWD, bandwidth_token)
+    if not os.path.exists(csv_path):
+        os.mkdir(str(csv_path))
 
     print('csv_path= ', csv_path, '\n')
 
