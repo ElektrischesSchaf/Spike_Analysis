@@ -350,8 +350,6 @@ training_dataset=AbstractDataset(training_x, training_y)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-real_input_features=int(real_input_features /2) # Because of Two Stream GRU
-
 net = GRUModel(firing_rate_input_dim=96, result_conv_input_dim=result_conv_shape, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)
 
 

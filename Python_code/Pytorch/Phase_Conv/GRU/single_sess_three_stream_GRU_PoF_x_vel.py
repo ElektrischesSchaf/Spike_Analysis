@@ -38,19 +38,22 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Deep leaning module
-from Deep_Learning_Models.GRU_two_stream import GRUModel
+from Deep_Learning_Models.GRU_three_stream import GRUModel
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # Make file list
 kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
+kernel_size=3
+result_conv_shape = (10- kernel_size + 1)*(10- kernel_size + 1)
+FILE_PATH = '../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
+total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
-model_name='Two_Stream_GRU_with_PoF_Single_Session'
+model_name='Three_Stream_GRU_with_Conv_Phase_Clustering_Single_29_Session_kernel_size_'+str(kernel_size)
 MAX_EPOCH=150
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
@@ -72,34 +75,32 @@ for session_k in range(len(session_file_list)):
 
     time_stamp_64ms=[]
 
-    # import LFP Phase Data from all 96 channels start
+    # import LFP Convoluted Phase Clustering : Average Phase from all
     band_start=0.5
     band_cutoff=4
     if band_start==0.5:
         bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
     else:
         bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
-    phase_of_firing_all_channel=[]
-    for PoF_channel_index in range(0, 96):
-        # TODO use np.concatenate instead
-        file_phase_of_firing='../../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/'+str(PoF_channel_index) +'/instance_phase_a_channel_250Hz.csv'
-        PoF_one_channel=pd.read_csv(file_phase_of_firing, dtype=float)
-        PoF_one_channel=np.array(PoF_one_channel)
-        PoF_one_channel=np.absolute(PoF_one_channel)
-        # print('PoF_channel_index ', PoF_channel_index)
-        # print(PoF_one_channel)
-        phase_of_firing_all_channel.append( list(PoF_one_channel) )
 
-    phase_of_firing_all_channel=np.array(phase_of_firing_all_channel)
-    print( 'important= ', phase_of_firing_all_channel.shape)
-    phase_of_firing_all_channel=np.squeeze(phase_of_firing_all_channel).transpose()
+    file_conv_average_phase='../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'+session_name+'/'+bandwidth_token + '/phase_conv_angle.csv'
+    conv_average_phase=pd.read_csv(file_conv_average_phase, dtype=float)
+    conv_average_phase=np.array(conv_average_phase)
+    conv_average_phase=np.absolute(conv_average_phase)
 
     # Downsampling from 250Hz to 64ms
-    phase_of_firing_all_channel=phase_of_firing_all_channel[::16,:]
-    # phase_of_firing_all_channel=np.reshape(96,-1)
-    print( 'important= ', phase_of_firing_all_channel.shape)
-    file_phase_of_firing_time_stamp='../../../Signal_Processing/Phase_all_Channels/Tables/'+session_name+'/'+bandwidth_token+'/250Hz/nwb_timestamp_to_mat_timestamp.csv'
-    # import LFP Phase Data from all 96 channels end
+    conv_average_phase=conv_average_phase[::16,:]
+    print( 'conv_average_phase shape = ', conv_average_phase.shape)
+    # import LFP Convoluted Phase Clustering : Synchronicity from all
+
+    # import LFP Convoluted Phase Clustering : Synchronicity from all
+    file_conv_average_sync='../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'+session_name+'/'+bandwidth_token + '/phase_conv_abs.csv'
+    conv_average_sync=pd.read_csv(file_conv_average_sync, dtype=float)
+    conv_average_sync=np.array(conv_average_sync)
+
+    # Downsampling from 250Hz to 64ms
+    conv_average_sync=conv_average_sync[::16,:]
+    print( 'conv_average_sync shape = ', conv_average_sync.shape)
 
 
     # Auto-assigned parameters
@@ -125,7 +126,7 @@ for session_k in range(len(session_file_list)):
         feature_numbers=channel_numbers_in_this_dataset
     
     # If need to concatenate Spike Firing Rate and LFP Phase, must specify the exact feature dimension here
-    feature_numbers=feature_numbers*2
+    feature_numbers = feature_numbers + result_conv_shape +result_conv_shape
 
     [X_for_training, X_for_prediction, 
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
@@ -202,8 +203,8 @@ for session_k in range(len(session_file_list)):
         # PoF feature matrix train / test split
         # PoF_testing_data_index=testing_data_index
         # print('PoF_testing_data_index= ',PoF_testing_data_index)
-        # phase_of_firing_all_channel_traing=phase_of_firing_all_channel[:PoF_testing_data_index,:]
-        # phase_of_firing_all_channel_testing=phase_of_firing_all_channel[PoF_testing_data_index:,:]
+        # phase_of_firing_all_channel_traing=conv_average_phase[:PoF_testing_data_index,:]
+        # phase_of_firing_all_channel_testing=conv_average_phase[PoF_testing_data_index:,:]
 
         # LFP Phase to torch
         # training_PoF=torch.from_numpy(phase_of_firing_all_channel_traing)
@@ -217,21 +218,23 @@ for session_k in range(len(session_file_list)):
         # print('phase_of_firing_all_channel_traing.size()= ', training_PoF.size(), ' training_x.size()= ',training_x.size() , '\n')
         # print('testing_PoF.size()= ', testing_PoF.size(), ' testing_x.size()= ',testing_x.size() )
 
-        print('phase_of_firing_all_channel length = ', phase_of_firing_all_channel.shape, ' X matrix = ', X.shape)
-        length_difference=phase_of_firing_all_channel.shape[0]-X.shape[0]
+        print('conv_average_phase length = ', conv_average_phase.shape, ' X matrix = ', X.shape)
+        length_difference=conv_average_phase.shape[0]-X.shape[0]
         print('length_difference= ', length_difference,'\n')
 
 
         # Making the lenght between Phase-of-Firing testing dataset and Firing Rate testing dataset the same
         if length_difference > 0:
-            phase_of_firing_all_channel=phase_of_firing_all_channel[:-abs(length_difference),:]
+            conv_average_phase=conv_average_phase[:-abs(length_difference),:]
+            conv_average_sync=conv_average_sync[:-abs(length_difference),:]
         if length_difference < 0:
             print("Error in lenght of the Phase Feature")
             breakpoint()
 
-        print('phase_of_firing_all_channel length = ', phase_of_firing_all_channel.shape, ' X matrix = ', X.shape)
+        print('conv_average_phase length = ', conv_average_phase.shape, ' X matrix = ', X.shape)
 
-        X=np.concatenate((X, phase_of_firing_all_channel) , axis=1)
+        X=np.concatenate((X, conv_average_phase, conv_average_sync) , axis=1)
+
         # Cancatenating Firing Rate feature matrix and Phase-of-Firing feature matrix
         # new_training_x=torch.cat(( training_x_spike, training_PoF ) , 1)
         # print('new_training_x= ', new_training_x.size())
@@ -392,11 +395,8 @@ for session_k in range(len(session_file_list)):
     testing_dataset=AbstractDataset(testing_x, testing_y)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-
-    real_input_features=int(real_input_features /2) # Because of Two Stream GRU
-
-    net = GRUModel(input_dim=real_input_features, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    
+    net = GRUModel(firing_rate_input_dim=96, result_conv_input_dim=result_conv_shape, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
