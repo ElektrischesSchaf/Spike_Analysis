@@ -51,7 +51,7 @@ result_conv_shape = (10- kernel_size + 1)*(10- kernel_size + 1)
 FILE_PATH = '../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:2]
+List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 total_sess_num = len(session_file_list)
 
