@@ -43,7 +43,7 @@ from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # Make file list
 kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-kernel_size=5
+kernel_size=3
 result_conv_shape = (10- kernel_size + 1)*(10- kernel_size + 1)
 FILE_PATH = '../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'
 ALL_List_FILE = os.listdir(FILE_PATH)
