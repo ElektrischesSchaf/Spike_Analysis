@@ -52,11 +52,11 @@ class  GRUModel(torch.nn.Module):
         out_conv_average_phase, _ = self.GRU_conv_average_phase(x[ : , : , self.firing_rate_input_dim : self.firing_rate_input_dim+self.result_conv_input_dim ])
         out_conv_average_sync, _ = self.GRU_conv_average_sync(x[ : , : , self.firing_rate_input_dim+self.result_conv_input_dim : self.firing_rate_input_dim+self.result_conv_input_dim+self.result_conv_input_dim ])
 
-        out_spike=torch.tanh( self.fc1(out_spike) )
+        out_spike=torch.relu( self.fc1(out_spike) )
         out_conv_average_phase=torch.tanh( self.fc1(out_conv_average_phase) )
         out_conv_average_sync=torch.tanh( self.fc1(out_conv_average_sync) )
 
-        out_spike=torch.tanh( self.fc2(out_spike) )
+        out_spike=torch.relu( self.fc2(out_spike) )
         out_conv_average_phase=torch.tanh( self.fc2(out_conv_average_phase) )
         out_conv_average_sync=torch.tanh( self.fc2(out_conv_average_sync) )
 

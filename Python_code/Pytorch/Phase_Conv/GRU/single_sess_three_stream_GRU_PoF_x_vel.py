@@ -57,7 +57,7 @@ model_name='Three_Stream_GRU_with_Conv_Phase_Clustering_Single_29_Session_kernel
 MAX_EPOCH=250
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
-BATCH_SIZE=16
+BATCH_SIZE=64
 HIDDEN_DIMENSION=100
 
 # Model Performance Lists
