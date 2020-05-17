@@ -54,7 +54,7 @@ total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
 model_name='Three_Stream_GRU_with_Conv_Phase_Clustering_Single_29_Session_kernel_size_'+str(kernel_size)
-MAX_EPOCH=250
+MAX_EPOCH=350
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
 BATCH_SIZE=64
