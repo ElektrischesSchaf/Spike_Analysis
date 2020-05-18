@@ -42,7 +42,7 @@ from Deep_Learning_Models.LSTMCELL_one_stream import LSTMCELLModel
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # Make file list
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -297,6 +297,7 @@ for session_k in range(len(session_file_list)):
 
         my_prediction = []
         real_y_all=[]
+        is_hidden_state_saved=False
 
         for i, (x, y) in trange:
 
@@ -304,13 +305,25 @@ for session_k in range(len(session_file_list)):
             # if(x.size()[0] is not batch_size):
             #     continue
 
-            o_labels, batch_loss = _run_iter(x,y)
+            o_labels, batch_loss, hidden_state, cell_state = _run_iter(x,y)            
 
             if mode=='train':
                 optimizer.zero_grad()   # clear gradients for next train
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
 
+                # Save hidden state and cell state in the last training epoch
+                
+                if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
+                    hidden_state=hidden_state.cpu().data.numpy()
+                    hidden_state=np.transpose(hidden_state)
+                    df=pd.DataFrame(hidden_state)
+                    df.to_csv(os.path.join(csv_path,'hidden_state.csv'), index=False)
+                    cell_state=cell_state.cpu().data.numpy()
+                    cell_state=np.transpose(cell_state)
+                    df=pd.DataFrame(cell_state)
+                    df.to_csv(os.path.join(csv_path,'cell_state.csv'), index=False)
+                    is_hidden_state_saved=True
             loss+=batch_loss.item()
 
             real_y=y.cpu().data.numpy()
@@ -335,10 +348,11 @@ for session_k in range(len(session_file_list)):
         feature = x.to(device)
         labels = y.to(device)
         #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
-        o_labels = net(feature)
-        #print('The output shape: ', o_labels.shape, ' The label shape: ', labels.shape, '\n')
+        o_labels, hidden_state, cell_state = net(feature)
+        # print('The hidden_state size: ', hidden_state.size(), ' The cell_state size: ', cell_state.size(), '\n')
+
         l_loss = loss_func(o_labels, labels)
-        return o_labels, l_loss
+        return o_labels, l_loss, hidden_state, cell_state
 
     def save(epoch):
         torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
@@ -407,7 +421,7 @@ for session_k in range(len(session_file_list)):
         # if(x.size()[0] is not batch_size):
         #     continue
 
-        o_labels = net(x.to(device))
+        o_labels, hidden_state, cell_state = net(x.to(device)) # new
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
             my_prediction.append( float(ele) )
