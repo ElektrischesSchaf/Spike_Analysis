@@ -308,9 +308,9 @@ for session_k in range(len(session_file_list)):
 
         for i, (x, y) in trange:
 
-            # LSTMCELL batch
-            # if(x.size()[0] is not batch_size):
-            #     continue
+            # LSTMCell batch for gates and states heatmap
+            if(x.size(0) is not batch_size):
+                continue
 
             o_labels, batch_loss, hidden_state, cell_state = _run_iter(x,y)            
 

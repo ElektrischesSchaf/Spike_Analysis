@@ -77,7 +77,7 @@ class  LSTMCell(torch.nn.Module):
         for i , input_t in enumerate( x.chunk( x.size(1), dim=1 )):
             input_t=input_t.squeeze(1)
             # input_t size = (1, 224) if kernel size = 3
-            
+
             # No. 1 layer
             h_spike_1, c_spike_1 = self.lstm_spike_1(input_t[ : , : self.firing_rate_input_dim ], (h_spike_1, c_spike_1))
             h_conv_average_phase_1, c_conv_average_phase_1 = self.lstm_conv_average_phase_1(input_t[ : , self.firing_rate_input_dim : self.firing_rate_input_dim+self.result_conv_input_dim ], (h_conv_average_phase_1, c_conv_average_phase_1))
@@ -117,4 +117,5 @@ class  LSTMCell(torch.nn.Module):
         out_spike_hidden=out_spike_hidden.squeeze(1)
         out_conv_average_phase_hidden=out_conv_average_phase_hidden.squeeze(1)
         out_conv_average_sync_hidden=out_conv_average_sync_hidden.squeeze(1)
+        # print('size= ', out.size(), ' ', out_spike_hidden.size(), ' ', out_conv_average_phase_hidden.size(), ' ', out_conv_average_sync_hidden.size())
         return out, out_spike_hidden, out_conv_average_phase_hidden, out_conv_average_sync_hidden
