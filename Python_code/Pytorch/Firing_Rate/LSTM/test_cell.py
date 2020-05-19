@@ -196,6 +196,10 @@ for session_k in range(len(session_file_list)):
     if not os.path.exists(csv_path):
         os.mkdir(str(csv_path))
 
+    info_path=os.path.join(CWD,'gates_and_states')
+    if not os.path.exists(info_path):
+        os.mkdir(str(info_path))
+
     plot_path = os.path.join(CWD, 'plots')
     if not os.path.exists(plot_path):
         os.mkdir(plot_path)
@@ -317,11 +321,11 @@ for session_k in range(len(session_file_list)):
                     hidden_state=hidden_state.cpu().data.numpy()
                     hidden_state=np.transpose(hidden_state)
                     df=pd.DataFrame(hidden_state)
-                    df.to_csv(os.path.join(csv_path,'hidden_state.csv'), index=False, header=False)
+                    df.to_csv(os.path.join(info_path,'hidden_state.csv'), index=False, header=False)
                     cell_state=cell_state.cpu().data.numpy()
                     cell_state=np.transpose(cell_state)
                     df=pd.DataFrame(cell_state)
-                    df.to_csv(os.path.join(csv_path,'cell_state.csv'), index=False, header=False)
+                    df.to_csv(os.path.join(info_path,'cell_state.csv'), index=False, header=False)
 
                     w_ii, w_if, w_ic, w_io = net.lstmcell.weight_ih.chunk(4, 0)
                     w_hi, w_hf, w_hc, w_ho = net.lstmcell.weight_hh.chunk(4, 0)
@@ -341,7 +345,7 @@ for session_k in range(len(session_file_list)):
                         forget_gate+=[   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
                     forget_gate=np.transpose(forget_gate)
                     df=pd.DataFrame(forget_gate)
-                    df.to_csv(os.path.join(csv_path,'forget_gate.csv'), index=False, header=False)
+                    df.to_csv(os.path.join(info_path,'forget_gate.csv'), index=False, header=False)
 
                     input_gate=[]                    
                     for index_seq in range( yee ):
@@ -351,7 +355,7 @@ for session_k in range(len(session_file_list)):
                         input_gate+=[   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
                     input_gate=np.transpose(input_gate)
                     df=pd.DataFrame(input_gate)
-                    df.to_csv(os.path.join(csv_path,'input_gate.csv'), index=False, header=False)
+                    df.to_csv(os.path.join(info_path,'input_gate.csv'), index=False, header=False)
 
                     output_gate=[]                    
                     for index_seq in range( yee ):
@@ -361,7 +365,7 @@ for session_k in range(len(session_file_list)):
                         output_gate+=[   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
                     output_gate=np.transpose(output_gate)
                     df=pd.DataFrame(output_gate)
-                    df.to_csv(os.path.join(csv_path,'output_gate.csv'), index=False, header=False)
+                    df.to_csv(os.path.join(info_path,'output_gate.csv'), index=False, header=False)
 
                     cell_gate=[]                    
                     for index_seq in range( yee ):
@@ -371,9 +375,10 @@ for session_k in range(len(session_file_list)):
                         cell_gate+=[   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
                     cell_gate=np.transpose(cell_gate)
                     df=pd.DataFrame(cell_gate)
-                    df.to_csv(os.path.join(csv_path,'cell_gate.csv'), index=False, header=False)
+                    df.to_csv(os.path.join(info_path,'cell_gate.csv'), index=False, header=False)
                     
                     is_hidden_state_saved=True
+
 
             loss+=batch_loss.item()
 
@@ -398,7 +403,8 @@ for session_k in range(len(session_file_list)):
     def _run_iter(x,y):
         feature = x.to(device)
         labels = y.to(device)
-        #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
+
+        # receive hidden state and cell state from the network
         o_labels, hidden_state, cell_state = net(feature)
         # print('The hidden_state size: ', hidden_state.size(), ' The cell_state size: ', cell_state.size(), '\n')
 
@@ -468,11 +474,9 @@ for session_k in range(len(session_file_list)):
 
     for i, (x, testing_y) in trange:
 
-        # LSTMCELL batch
-        # if(x.size()[0] is not batch_size):
-        #     continue
+        # receive hidden state and cell state from the network
+        o_labels, hidden_state, cell_state = net(x.to(device))
 
-        o_labels, hidden_state, cell_state = net(x.to(device)) # new
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
             my_prediction.append( float(ele) )
