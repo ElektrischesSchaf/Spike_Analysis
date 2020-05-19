@@ -34,26 +34,32 @@ import sys
 sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
+
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Deep leaning module
-from Deep_Learning_Models.LSTMCELL_one_stream import LSTMCELLModel
+from Deep_Learning_Models.LSTMCell_three_stream import LSTMCell
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
+import Deep_Learning_Models.gates_and_states as gates_and_states
+gates_and_states=gates_and_states.compute()
 
 # Make file list
-kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
-FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
+kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kernel_size=3
+result_conv_shape = (10- kernel_size + 1)*(10- kernel_size + 1)
+FILE_PATH = '../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[12:13] 
+List_FILE=ALL_List_FILE[12:13]
 session_file_list=List_FILE
+total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
-model_name='LSTMCELL_with_Spike_Single_29_Session'
-MAX_EPOCH=200
+model_name='Three_Stream_LSTMCell_with_Conv_Phase_Clustering_Single_29_Session_kernel_size_'+str(kernel_size)
+MAX_EPOCH=3
 LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=1
+NUMBER_OF_LAYERS=2
 BATCH_SIZE=64
 HIDDEN_DIMENSION=100
 
@@ -66,12 +72,39 @@ person_correlation_coefficient_across_all_sessions=[]
 
 # session control start
 for session_k in range(len(session_file_list)):
-
+    
     session_name=str(session_file_list[session_k])
     file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
-    # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
 
     time_stamp_64ms=[]
+
+    # import LFP Convoluted Phase Clustering : Average Phase from all
+    band_start=0.5
+    band_cutoff=4
+    if band_start==0.5:
+        bandwidth_token='0_5' +'-'+str(band_cutoff) +'Hz'
+    else:
+        bandwidth_token=str(band_start)+'-'+str(band_cutoff)+'Hz'
+
+    file_conv_average_phase='../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'+session_name+'/'+bandwidth_token + '/phase_conv_angle.csv'
+    conv_average_phase=pd.read_csv(file_conv_average_phase, dtype=float)
+    conv_average_phase=np.array(conv_average_phase)
+    conv_average_phase=np.absolute(conv_average_phase)
+
+    # Downsampling from 250Hz to 64ms
+    conv_average_phase=conv_average_phase[::16,:]
+    print( 'conv_average_phase shape = ', conv_average_phase.shape)
+    # import LFP Convoluted Phase Clustering : Synchronicity from all
+
+    # import LFP Convoluted Phase Clustering : Synchronicity from all
+    file_conv_average_sync='../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'+session_name+'/'+bandwidth_token + '/phase_conv_abs.csv'
+    conv_average_sync=pd.read_csv(file_conv_average_sync, dtype=float)
+    conv_average_sync=np.array(conv_average_sync)
+
+    # Downsampling from 250Hz to 64ms
+    conv_average_sync=conv_average_sync[::16,:]
+    print( 'conv_average_sync shape = ', conv_average_sync.shape)
+
 
     # Auto-assigned parameters
     testing_data_index=0
@@ -94,11 +127,15 @@ for session_k in range(len(session_file_list)):
         feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
     else:
         feature_numbers=channel_numbers_in_this_dataset
+    
+    # If need to concatenate Spike Firing Rate and LFP Phase, must specify the exact feature dimension here
+    feature_numbers = feature_numbers + result_conv_shape +result_conv_shape
 
     [X_for_training, X_for_prediction, 
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]=mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
+
 
     # cross sessions control start
     for session_index in range(file_numbers):
@@ -138,9 +175,18 @@ for session_k in range(len(session_file_list)):
                 index=0
                 k=0
                 while index < channel_number:
+                #for k in range(channel_number-(units_numbers_in_this_dataset-1)): # Maximum 3 units in this session, indy_20160407_02.
+                    #print('index: ',index,end='')
                     firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
+
+                    # Test another way to exclude hash unit, but this only works in 96 features.
+                    #firing_rate_matrix[index][i]=no_sorting_firing_rate[k][i]+no_sorting_firing_rate[k+1][i]+no_sorting_firing_rate[k+2][i]
+
+                    #print('     firing_rate_matrix[index][i]: ',firing_rate_matrix[index][i] )
                     index = index + 1
                     k = k+ units_numbers_in_this_dataset
+                    #print('index: ', index, 'k: ', k)
+
             print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
             print('no_sorting_firing_rate shape: ', no_sorting_firing_rate.shape) # (288, 12777)
             print('\n')
@@ -154,6 +200,52 @@ for session_k in range(len(session_file_list)):
         print('features list shape: ',end='')
         print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
         print('\n')
+
+        # Adding the LFP Phase to the feature matrix
+
+        # PoF feature matrix train / test split
+        # PoF_testing_data_index=testing_data_index
+        # print('PoF_testing_data_index= ',PoF_testing_data_index)
+        # phase_of_firing_all_channel_traing=conv_average_phase[:PoF_testing_data_index,:]
+        # phase_of_firing_all_channel_testing=conv_average_phase[PoF_testing_data_index:,:]
+
+        # LFP Phase to torch
+        # training_PoF=torch.from_numpy(phase_of_firing_all_channel_traing)
+        # training_PoF=training_PoF.float()
+
+
+        # testing_PoF=torch.from_numpy(phase_of_firing_all_channel_testing)
+        # testing_PoF=testing_PoF.float()
+
+        # Comparing the lenght of Phase-of-Firing testing dataset and Firing Rate testing dataset
+        # print('phase_of_firing_all_channel_traing.size()= ', training_PoF.size(), ' training_x.size()= ',training_x.size() , '\n')
+        # print('testing_PoF.size()= ', testing_PoF.size(), ' testing_x.size()= ',testing_x.size() )
+
+        print('conv_average_phase length = ', conv_average_phase.shape, ' X matrix = ', X.shape)
+        length_difference=conv_average_phase.shape[0]-X.shape[0]
+        print('length_difference= ', length_difference,'\n')
+
+
+        # Making the lenght between Phase-of-Firing testing dataset and Firing Rate testing dataset the same
+        if length_difference > 0:
+            conv_average_phase=conv_average_phase[:-abs(length_difference),:]
+            conv_average_sync=conv_average_sync[:-abs(length_difference),:]
+        if length_difference < 0:
+            print("Error in lenght of the Phase Feature")
+            breakpoint()
+
+        print('conv_average_phase length = ', conv_average_phase.shape, ' X matrix = ', X.shape)
+
+        X=np.concatenate((X, conv_average_phase, conv_average_sync) , axis=1)
+
+        # Cancatenating Firing Rate feature matrix and Phase-of-Firing feature matrix
+        # new_training_x=torch.cat(( training_x_spike, training_PoF ) , 1)
+        # print('new_training_x= ', new_training_x.size())
+
+        # new_testing_x=torch.cat(( testing_x_spike, testing_PoF), 1)
+
+        # Above
+
 
         # Cross Session Data Concatenation
         [X_for_training, X_for_prediction,
@@ -196,6 +288,7 @@ for session_k in range(len(session_file_list)):
     if not os.path.exists(csv_path):
         os.mkdir(str(csv_path))
 
+    # for visualize gates and states
     info_path=os.path.join(CWD,'gates_and_states')
     if not os.path.exists(info_path):
         os.mkdir(str(info_path))
@@ -203,7 +296,6 @@ for session_k in range(len(session_file_list)):
     plot_path = os.path.join(CWD, 'plots')
     if not os.path.exists(plot_path):
         os.mkdir(plot_path)
-
 
     df = pd.DataFrame(X_for_training)
     df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
@@ -226,13 +318,15 @@ for session_k in range(len(session_file_list)):
         df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
 
     # read from csv file
-    training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
+    training_x = pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
     training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
-    training_x=training_x.float()
+    training_x = training_x.float()
+    # training_x_spike=training_x.clone() # No need to use clone here
 
     testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
-    testing_x=testing_x.float()
+    testing_x = testing_x.float()
+    # testing_x_spike=testing_x.clone() # No need to use clone here
 
     if kinematic_variable_type=='x_vel':
         training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
@@ -250,14 +344,18 @@ for session_k in range(len(session_file_list)):
 
         testing_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
         testing_y = torch.from_numpy(testing_y.values)    
-        testing_y=testing_y.float()
+        testing_y=testing_y.float()    
+
+    real_input_features = int(training_x.size(1))
+    print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
+    print('Real input features: ', real_input_features )
 
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
     max_epoch=MAX_EPOCH
 
-    # LSTMCELL Hyperparameters
+    # LSTMCell Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
     layer_dim = NUMBER_OF_LAYERS
     output_dim = 1
@@ -266,15 +364,9 @@ for session_k in range(len(session_file_list)):
     training_dataset=AbstractDataset(training_x, training_y)
     testing_dataset=AbstractDataset(testing_x, testing_y)
 
-    # TODO collate_fn
-    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
-    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
-    # test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)
-    
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    net = LSTMCELLModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    
+    net = LSTMCell(firing_rate_input_dim=96, result_conv_input_dim=result_conv_shape, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -305,80 +397,16 @@ for session_k in range(len(session_file_list)):
 
         for i, (x, y) in trange:
 
-            # LSTMCELL batch
+            # LSTMCell batch
             # if(x.size()[0] is not batch_size):
             #     continue
 
-            o_labels, batch_loss, hidden_state, cell_state = _run_iter(x,y)            
+            o_labels, batch_loss, out_spike_hidden, out_conv_average_phase_hidden, out_conv_average_sync_hidden = _run_iter(x,y)
 
             if mode=='train':
                 optimizer.zero_grad()   # clear gradients for next train
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
-
-                # Save hidden state and cell state in the last training epoch               
-                if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
-                    hidden_state=hidden_state.cpu().data.numpy()
-                    hidden_state=np.transpose(hidden_state)
-                    df=pd.DataFrame(hidden_state)
-                    df.to_csv(os.path.join(info_path,'hidden_state.csv'), index=False, header=False)
-                    cell_state=cell_state.cpu().data.numpy()
-                    cell_state=np.transpose(cell_state)
-                    df=pd.DataFrame(cell_state)
-                    df.to_csv(os.path.join(info_path,'cell_state.csv'), index=False, header=False)
-
-                    w_ii, w_if, w_ic, w_io = net.lstmcell.weight_ih.chunk(4, 0)
-                    w_hi, w_hf, w_hc, w_ho = net.lstmcell.weight_hh.chunk(4, 0)
-
-                    b_ii, b_if, b_ic, b_io = net.lstmcell.bias_ih.chunk(4, 0)
-                    b_hi, b_hf, b_hc, b_ho = net.lstmcell.bias_hh.chunk(4, 0)
-
-                    
-                    yee=int(hidden_state.shape[1])
-                    x=x.cpu().data.numpy()
-
-                    forget_gate=[]                    
-                    for index_seq in range( yee ):
-                        yee_hidden=np.matmul(w_hf.cpu().data.numpy(), hidden_state[:,index_seq]) + b_hf.cpu().data.numpy()
-                        x_temp=np.transpose( x[index_seq,:] )
-                        yee_input=np.matmul( w_if.cpu().data.numpy(), x_temp) + b_if.cpu().data.numpy()
-                        forget_gate+=[   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
-                    forget_gate=np.transpose(forget_gate)
-                    df=pd.DataFrame(forget_gate)
-                    df.to_csv(os.path.join(info_path,'forget_gate.csv'), index=False, header=False)
-
-                    input_gate=[]                    
-                    for index_seq in range( yee ):
-                        yee_hidden=np.matmul(w_hi.cpu().data.numpy(), hidden_state[:,index_seq]) + b_hi.cpu().data.numpy()
-                        x_temp=np.transpose( x[index_seq,:] )
-                        yee_input=np.matmul( w_ii.cpu().data.numpy(), x_temp) + b_ii.cpu().data.numpy()
-                        input_gate+=[   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
-                    input_gate=np.transpose(input_gate)
-                    df=pd.DataFrame(input_gate)
-                    df.to_csv(os.path.join(info_path,'input_gate.csv'), index=False, header=False)
-
-                    output_gate=[]                    
-                    for index_seq in range( yee ):
-                        yee_hidden=np.matmul(w_ho.cpu().data.numpy(), hidden_state[:,index_seq]) + b_ho.cpu().data.numpy()
-                        x_temp=np.transpose( x[index_seq,:] )
-                        yee_input=np.matmul( w_io.cpu().data.numpy(), x_temp) + b_io.cpu().data.numpy()
-                        output_gate+=[   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
-                    output_gate=np.transpose(output_gate)
-                    df=pd.DataFrame(output_gate)
-                    df.to_csv(os.path.join(info_path,'output_gate.csv'), index=False, header=False)
-
-                    cell_gate=[]                    
-                    for index_seq in range( yee ):
-                        yee_hidden=np.matmul(w_hc.cpu().data.numpy(), hidden_state[:,index_seq]) + b_hc.cpu().data.numpy()
-                        x_temp=np.transpose( x[index_seq,:] )
-                        yee_input=np.matmul( w_ic.cpu().data.numpy(), x_temp) + b_ic.cpu().data.numpy()
-                        cell_gate+=[   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
-                    cell_gate=np.transpose(cell_gate)
-                    df=pd.DataFrame(cell_gate)
-                    df.to_csv(os.path.join(info_path,'cell_gate.csv'), index=False, header=False)
-                    
-                    is_hidden_state_saved=True
-
 
             loss+=batch_loss.item()
 
@@ -388,28 +416,50 @@ for session_k in range(len(session_file_list)):
 
             for ele in real_y:
                 real_y_all.append(ele)
+            
             R_square=r2_score( real_y_all, my_prediction)
 
             trange.set_postfix(loss=loss/(i+1), R_square=R_square)
 
         if mode=='train':
             history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
-            # writer.add_scalar('Loss/train', loss/len(trange), epoch)
+
+            # Save hidden state and cell state in the last training epoch               
+            if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:                
+                x=x.cpu().data.numpy()
+                yee=int(x.shape[0]) # how many time steps in a iteration
+
+                w_ii, w_if, w_ic, w_io = net.lstm_spike_1.weight_ih.chunk(4, 0)
+                w_hi, w_hf, w_hc, w_ho = net.lstm_spike_1.weight_hh.chunk(4, 0)
+                b_ii, b_if, b_ic, b_io = net.lstm_spike_1.bias_ih.chunk(4, 0)
+                b_hi, b_hf, b_hc, b_ho = net.lstm_spike_1.bias_hh.chunk(4, 0)
+                gates_and_states.comp_and_save(x[:,:96], out_spike_hidden, None, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+
+                w_ii, w_if, w_ic, w_io = net.lstm_conv_average_phase_1.weight_ih.chunk(4, 0)
+                w_hi, w_hf, w_hc, w_ho = net.lstm_conv_average_phase_1.weight_hh.chunk(4, 0)
+                b_ii, b_if, b_ic, b_io = net.lstm_conv_average_phase_1.bias_ih.chunk(4, 0)
+                b_hi, b_hf, b_hc, b_ho = net.lstm_conv_average_phase_1.bias_hh.chunk(4, 0)
+                gates_and_states.comp_and_save(x[:,96:96+result_conv_shape], out_spike_hidden, None, 'ave_phase', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+
+                w_ii, w_if, w_ic, w_io = net.lstm_conv_average_sync_1.weight_ih.chunk(4, 0)
+                w_hi, w_hf, w_hc, w_ho = net.lstm_conv_average_sync_1.weight_hh.chunk(4, 0)
+                b_ii, b_if, b_ic, b_io = net.lstm_conv_average_sync_1.bias_ih.chunk(4, 0)
+                b_hi, b_hf, b_hc, b_ho = net.lstm_conv_average_sync_1.bias_hh.chunk(4, 0)
+                gates_and_states.comp_and_save(x[:,96+result_conv_shape:96+result_conv_shape+result_conv_shape], out_spike_hidden, None, 'sync', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+
+                is_hidden_state_saved=True
         else:
             history['test'].append({'loss':loss/len(trange), 'R^2': R_square })
-            # writer.add_scalar('Loss/test', loss/len(trange), epoch)
         trange.close()
 
     def _run_iter(x,y):
         feature = x.to(device)
         labels = y.to(device)
-
-        # receive hidden state and cell state from the network
-        o_labels, hidden_state, cell_state = net(feature)
-        # print('The hidden_state size: ', hidden_state.size(), ' The cell_state size: ', cell_state.size(), '\n')
-
+        #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
+        o_labels, out_spike_hidden, out_conv_average_phase_hidden, out_conv_average_sync_hidden = net(feature)
+        #print('The output shape: ', o_labels.shape, ' The label shape: ', labels.shape, '\n')
         l_loss = loss_func(o_labels, labels)
-        return o_labels, l_loss, hidden_state, cell_state
+        return o_labels, l_loss, out_spike_hidden, out_conv_average_phase_hidden, out_conv_average_sync_hidden
 
     def save(epoch):
         torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
@@ -440,20 +490,24 @@ for session_k in range(len(session_file_list)):
     plt.xlabel('Epoch')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(plot_path + '/' + model_name+"_Loss.png")
+    plt.savefig( plot_path +'/'+model_name+'_Loss.png')
 
     plt.figure(figsize=(7,5))
-    plt.title(model_name+' performance')
+    plt.title( model_name+ ' performance')
     plt.plot(train_R_square, label='train')
     plt.plot(valid_R_square, label='test')
     plt.xlabel('Epoch')
     plt.ylabel('R square')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(plot_path + '/' +model_name+"_R-square.png")
+    plt.savefig( plot_path+'/'+ model_name +'_R-square.png')
+
+    #global my_prediction
+    #global real_y_all
+
 
     best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['test'])])
-    print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')    
+    print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')
     best_epoch_arcoss_all_sessions.append(best_epoch)
     print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['test'])]))
 
@@ -474,22 +528,20 @@ for session_k in range(len(session_file_list)):
 
     for i, (x, testing_y) in trange:
 
-        # receive hidden state and cell state from the network
-        o_labels, hidden_state, cell_state = net(x.to(device))
-
+        o_labels, out_spike_hidden, out_conv_average_phase_hidden, out_conv_average_sync_hidden = net(x.to(device))
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
             my_prediction.append( float(ele) )
 
         for ele in real_y:
             real_y_all.append( float(ele) )
+
     shutil.rmtree(save_epoch_path)
 
     testing_data_r_square=r2_score( real_y_all, my_prediction)
     testing_data_SNR=-10*math.log10(1-testing_data_r_square)
     testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
     PCC=pearsonr(real_y_all,my_prediction)
-
     print('\n* model_x_velocity score: ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
 
     R_square_across_all_sessions.append(testing_data_r_square)
@@ -573,7 +625,6 @@ df.to_csv(os.path.join(bar_plot_path, 'person_correlation_coefficient_across_all
 
 df = pd.DataFrame( list(zip( session_file_list, SNR_across_all_sessions)))
 df.to_csv(os.path.join(bar_plot_path, 'SNR_across_all_sessions.csv'), index=False, header=False)
-
 
 # Plot all performances as bar charts
 plt.figure(figsize=(16, 9))

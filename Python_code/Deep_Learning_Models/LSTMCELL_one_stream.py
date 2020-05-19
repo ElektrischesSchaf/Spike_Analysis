@@ -46,6 +46,8 @@ class  LSTMCELLModel(torch.nn.Module):
         # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
         c0=c0.to(device)
 
+        hidden_state_list=[]
+        cell_state_list=[]
         out_list=[]
         # time steps
         for i , input_t in enumerate( x.chunk( x.size(1), dim=1 )):
@@ -56,10 +58,16 @@ class  LSTMCELLModel(torch.nn.Module):
             out=self.fc2(out)
             # print('out size= ', out.size(), '\n')
             out_list+=[out]
+            hidden_state_list+=[h0]
+            cell_state_list+=[c0]
 
         out_list = torch.stack(out_list, 0)
+        hidden_state_list = torch.stack(hidden_state_list, 0)
+        cell_state_list = torch.stack(cell_state_list, 0)
         # print('out_list size= ', out_list.size(), '\n')
 
         out=out_list.squeeze(1)
+        hidden_state_list=hidden_state_list.squeeze(1)
+        cell_state_list=cell_state_list.squeeze(1)
 
-        return out
+        return out, hidden_state_list, cell_state_list
