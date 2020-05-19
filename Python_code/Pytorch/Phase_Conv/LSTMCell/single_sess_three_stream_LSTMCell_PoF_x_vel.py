@@ -57,7 +57,7 @@ total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
 model_name='Three_Stream_LSTMCell_with_Conv_Phase_Clustering_Single_29_Session_kernel_size_'+str(kernel_size)
-MAX_EPOCH=3
+MAX_EPOCH=250
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
 BATCH_SIZE=64
@@ -434,18 +434,21 @@ for session_k in range(len(session_file_list)):
                 b_ii, b_if, b_ic, b_io = net.lstm_spike_1.bias_ih.chunk(4, 0)
                 b_hi, b_hf, b_hc, b_ho = net.lstm_spike_1.bias_hh.chunk(4, 0)
                 gates_and_states.comp_and_save(x[:,:96], out_spike_hidden, None, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+                gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
 
                 w_ii, w_if, w_ic, w_io = net.lstm_conv_average_phase_1.weight_ih.chunk(4, 0)
                 w_hi, w_hf, w_hc, w_ho = net.lstm_conv_average_phase_1.weight_hh.chunk(4, 0)
                 b_ii, b_if, b_ic, b_io = net.lstm_conv_average_phase_1.bias_ih.chunk(4, 0)
                 b_hi, b_hf, b_hc, b_ho = net.lstm_conv_average_phase_1.bias_hh.chunk(4, 0)
-                gates_and_states.comp_and_save(x[:,96:96+result_conv_shape], out_spike_hidden, None, 'ave_phase', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+                gates_and_states.comp_and_save(x[:,96:96+result_conv_shape], out_conv_average_phase_hidden, None, 'ave_phase', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+                gates_and_states.plot_heatmap(info_path, 'ave_phase' , plot_path)
 
                 w_ii, w_if, w_ic, w_io = net.lstm_conv_average_sync_1.weight_ih.chunk(4, 0)
                 w_hi, w_hf, w_hc, w_ho = net.lstm_conv_average_sync_1.weight_hh.chunk(4, 0)
                 b_ii, b_if, b_ic, b_io = net.lstm_conv_average_sync_1.bias_ih.chunk(4, 0)
                 b_hi, b_hf, b_hc, b_ho = net.lstm_conv_average_sync_1.bias_hh.chunk(4, 0)
-                gates_and_states.comp_and_save(x[:,96+result_conv_shape:96+result_conv_shape+result_conv_shape], out_spike_hidden, None, 'sync', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+                gates_and_states.comp_and_save(x[:,96+result_conv_shape:96+result_conv_shape+result_conv_shape], out_conv_average_sync_hidden, None, 'sync', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+                gates_and_states.plot_heatmap(info_path, 'sync' , plot_path)
 
                 is_hidden_state_saved=True
         else:
