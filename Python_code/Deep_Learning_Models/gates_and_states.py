@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import os
+import seaborn as sns
+import matplotlib.pyplot as plt
 import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
@@ -20,13 +22,13 @@ class compute():
         hidden_state=hidden_State.cpu().data.numpy()
         hidden_state=np.transpose(hidden_state)
         df=pd.DataFrame(hidden_state)
-        df.to_csv(os.path.join(info_path, feature_name+'_hidden.csv'), index=False, header=False)
+        df.to_csv(os.path.join(info_path, feature_name+'_hidden_state.csv'), index=False, header=False)
 
-        if cell_state:
+        if cell_state!=None:
             cell_state=cell_state.cpu().data.numpy()
             cell_state=np.transpose(cell_state)
             df=pd.DataFrame(cell_state)
-            df.to_csv(os.path.join(info_path, feature_name+'cell_state.csv'), index=False, header=False)
+            df.to_csv(os.path.join(info_path, feature_name+'_cell_state.csv'), index=False, header=False)
 
         forget_gate=[]                    
         for index_seq in range( yee ):
@@ -69,3 +71,39 @@ class compute():
         df.to_csv(os.path.join(info_path, feature_name+'_cell_gate.csv'), index=False, header=False)
 
         return 
+
+    def plot_heatmap(self, file_path, feature_name, plot_path):
+        # file_path= os.path.join(file_path)
+        file_list= os.listdir(file_path)
+        plot_path=plot_path
+        print(file_list)
+        print('len(file_list)= ', len(file_list))
+        for i in range(len(file_list)):
+            print(i, ' ')
+            file_name=str(file_list[i])[:-4]
+            print(file_name, ' ')
+            df=pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
+            rows=df.values
+            print(rows.shape)
+            # plt.figure(1, figsize=(16, 9) )
+            # ax = sns.heatmap(rows, vmin=0, vmax=1)
+            sns.set(font_scale=1.4)
+            plt.rcParams["figure.figsize"] = (16,9)
+
+            grid_kws = {"height_ratios": (.9, .02), "hspace": 0.3}
+
+            f, (ax, cbar_ax) = plt.subplots(2, gridspec_kw=grid_kws)
+            plt.title(file_name, fontsize=25)
+            ax = sns.heatmap(rows, ax=ax,
+                cbar_ax=cbar_ax,
+                cmap="YlGnBu",
+                yticklabels=False,
+                cbar_kws={"orientation": "horizontal"})
+
+            # plt.tight_layout()
+            # plt.show()
+            plt.savefig( plot_path+'/'+file_name+'.png' )
+            plt.close()
+            plt.cla()
+            plt.clf()
+        return
