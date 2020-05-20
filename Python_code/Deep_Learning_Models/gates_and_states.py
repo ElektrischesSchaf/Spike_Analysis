@@ -77,7 +77,7 @@ class compute():
         file_list= os.listdir(file_path)
         plot_path=plot_path
         print(file_list)
-        print('len(file_list)= ', len(file_list))
+        # print('len(file_list)= ', len(file_list))
         for i in range(len(file_list)):
             print(i, ' ')
             file_name=str(file_list[i])[:-4]
@@ -103,7 +103,9 @@ class compute():
             # plt.tight_layout()
             # plt.show()
             plt.savefig( plot_path+'/'+file_name+'.png' )
-            plt.close()
+
             plt.cla()
             plt.clf()
+            plt.close()
+
         return

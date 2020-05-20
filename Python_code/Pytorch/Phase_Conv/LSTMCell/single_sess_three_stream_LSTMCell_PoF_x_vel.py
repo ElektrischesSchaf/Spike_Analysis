@@ -57,7 +57,7 @@ total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
 model_name='Three_Stream_LSTMCell_with_Conv_Phase_Clustering_Single_29_Session_kernel_size_'+str(kernel_size)
-MAX_EPOCH = 250
+MAX_EPOCH = 500
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
 BATCH_SIZE=64
@@ -388,21 +388,7 @@ for session_k in range(len(session_file_list)):
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
 
-            loss+=batch_loss.item()
-
-            real_y=y.cpu().data.numpy()
-            for ele in o_labels.cpu().data.numpy():
-                my_prediction.append(ele)
-
-            for ele in real_y:
-                real_y_all.append(ele)
-            
-            R_square=r2_score( real_y_all, my_prediction)
-
-            trange.set_postfix(loss=loss/(i+1), R_square=R_square)
-
-            # Save hidden state and cell state in the last training epoch
-            if x.shape[0] == batch_size:
+                # Save hidden state and cell state in the last training epoch
                 if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
                     print('x.shape[0]=', x.shape[0])
                     x=x.cpu().data.numpy()
@@ -430,6 +416,21 @@ for session_k in range(len(session_file_list)):
                     gates_and_states.plot_heatmap(info_path, 'sync' , plot_path)
 
                     is_hidden_state_saved=True
+
+            loss+=batch_loss.item()
+
+            real_y=y.cpu().data.numpy()
+            for ele in o_labels.cpu().data.numpy():
+                my_prediction.append(ele)
+
+            for ele in real_y:
+                real_y_all.append(ele)
+            
+            R_square=r2_score( real_y_all, my_prediction)
+
+            trange.set_postfix(loss=loss/(i+1), R_square=R_square)
+
+
 
         if mode=='train':
             history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
@@ -468,6 +469,9 @@ for session_k in range(len(session_file_list)):
     train_R_square = [l['R^2'] for l in history['train']]
     valid_R_square = [l['R^2'] for l in history['test']]
 
+    plt.cla()
+    plt.clf()
+    plt.close()
 
     plt.figure(figsize=(7,5))
     plt.title(model_name+' Loss')
@@ -612,6 +616,9 @@ df.to_csv(os.path.join(bar_plot_path, 'person_correlation_coefficient_across_all
 df = pd.DataFrame( list(zip( session_file_list, SNR_across_all_sessions)))
 df.to_csv(os.path.join(bar_plot_path, 'SNR_across_all_sessions.csv'), index=False, header=False)
 
+plt.cla()
+plt.clf()
+plt.close()
 # Plot all performances as bar charts
 plt.figure(figsize=(16, 9))
 ind = np.arange(1,len(R_square_across_all_sessions)+1)
