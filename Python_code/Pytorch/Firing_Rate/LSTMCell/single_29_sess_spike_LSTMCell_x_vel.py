@@ -48,7 +48,7 @@ kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[12:13] 
+List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
