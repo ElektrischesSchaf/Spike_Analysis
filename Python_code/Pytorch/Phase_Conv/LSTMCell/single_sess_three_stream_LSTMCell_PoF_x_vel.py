@@ -57,7 +57,7 @@ total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
 model_name='Three_Stream_LSTMCell_with_Conv_Phase_Clustering_Single_29_Session_kernel_size_'+str(kernel_size)
-MAX_EPOCH = 250
+MAX_EPOCH = 300
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
 BATCH_SIZE=64
@@ -474,7 +474,7 @@ for session_k in range(len(session_file_list)):
     plt.close()
 
     plt.figure(figsize=(7,5))
-    plt.title(model_name+' Loss')
+    plt.title(' Loss')
     plt.plot(train_loss, label='train')
     plt.plot(valid_loss, label='test')
     plt.xlabel('Epoch')
@@ -483,7 +483,7 @@ for session_k in range(len(session_file_list)):
     plt.savefig( plot_path +'/'+model_name+'_Loss.png')
 
     plt.figure(figsize=(7,5))
-    plt.title( model_name+ ' performance')
+    plt.title( ' performance')
     plt.plot(train_R_square, label='train')
     plt.plot(valid_R_square, label='test')
     plt.xlabel('Epoch')
