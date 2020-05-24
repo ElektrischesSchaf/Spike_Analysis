@@ -51,7 +51,7 @@ result_conv_shape = (10- kernel_size + 1)*(10- kernel_size + 1)
 FILE_PATH = '../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:]
+List_FILE=ALL_List_FILE[12:13]
 session_file_list=List_FILE
 total_sess_num = len(session_file_list)
 
@@ -388,7 +388,21 @@ for session_k in range(len(session_file_list)):
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
 
-                # Save hidden state and cell state in the last training epoch
+            loss+=batch_loss.item()
+
+            real_y=y.cpu().data.numpy()
+            for ele in o_labels.cpu().data.numpy():
+                my_prediction.append(ele)
+
+            for ele in real_y:
+                real_y_all.append(ele)
+            
+            R_square=r2_score( real_y_all, my_prediction)
+
+            trange.set_postfix(loss=loss/(i+1), R_square=R_square)
+
+            # Save hidden state and cell state in the last training epoch
+            if x.shape[0] == batch_size:
                 if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
                     print('x.shape[0]=', x.shape[0])
                     x=x.cpu().data.numpy()
@@ -416,21 +430,6 @@ for session_k in range(len(session_file_list)):
                     gates_and_states.plot_heatmap(info_path, 'sync' , plot_path)
 
                     is_hidden_state_saved=True
-
-            loss+=batch_loss.item()
-
-            real_y=y.cpu().data.numpy()
-            for ele in o_labels.cpu().data.numpy():
-                my_prediction.append(ele)
-
-            for ele in real_y:
-                real_y_all.append(ele)
-            
-            R_square=r2_score( real_y_all, my_prediction)
-
-            trange.set_postfix(loss=loss/(i+1), R_square=R_square)
-
-
 
         if mode=='train':
             history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
