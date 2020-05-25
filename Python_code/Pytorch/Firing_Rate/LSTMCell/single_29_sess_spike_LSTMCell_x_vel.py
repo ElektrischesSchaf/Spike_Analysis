@@ -333,13 +333,13 @@ for session_k in range(len(session_file_list)):
                     b_ii, b_if, b_ic, b_io = net.lstmcell.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstmcell.bias_hh.chunk(4, 0)
                     gates_and_states.comp_and_save(x[:,:], hidden_state, cell_state, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    # gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
+                    # gates_and_states.plot_heatmap(info_path, plot_path)
                     # is_hidden_state_saved=True
 
                     if not os.path.exists(plot_path+'/'+str(plot_loop)):
                         os.mkdir(plot_path+'/'+str(plot_loop))
                     my_real_y=y.cpu().data.numpy()
-                    gates_and_states.feature_visualization( info_path,   plot_path+'/'+str(plot_loop) , x, my_real_y)
+                    gates_and_states.feature_visualization( info_path, 'firing_rate', plot_path+'/'+str(plot_loop) , x, my_real_y)
                     print('finished\n')
                     plot_loop+=1
                     if plot_loop>9:
@@ -371,13 +371,12 @@ for session_k in range(len(session_file_list)):
                     b_ii, b_if, b_ic, b_io = net.lstmcell.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstmcell.bias_hh.chunk(4, 0)
                     gates_and_states.comp_and_save(x[:,:], hidden_state, cell_state, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    # gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
+                    # gates_and_states.plot_heatmap(info_path, plot_path)
                     # is_hidden_state_saved=True
 
                     if not os.path.exists(plot_path+'/'+str(plot_loop)):
                         os.mkdir(plot_path+'/'+str(plot_loop))
-                    gates_and_states.feature_visualization( info_path,   plot_path+'/'+str(plot_loop) , x, real_y)
-                    print('finished\n')
+                    gates_and_states.feature_visualization( info_path, 'firing_rate', plot_path+'/'+str(plot_loop) , x, my_real_y)
                     plot_loop+=1
                     if plot_loop>5:
                          is_hidden_state_saved=True

@@ -72,7 +72,7 @@ class compute():
 
         return 
 
-    def plot_heatmap(self, file_path, feature_name, plot_path):
+    def plot_heatmap(self, file_path, plot_path):
         # file_path= os.path.join(file_path)
         file_list= os.listdir(file_path)
         plot_path=plot_path
@@ -110,7 +110,7 @@ class compute():
 
         return
 
-    def feature_visualization(self, file_path, plot_path, x, y):
+    def feature_visualization(self, file_path, feature_name, plot_path, x, y):
         file_list= os.listdir(file_path)
         plot_path=plot_path
         x=x
@@ -118,41 +118,44 @@ class compute():
 
         for i in range(len(file_list)):
             file_name=str(file_list[i])[:-4]
-            df=pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
-            rows=df.values
 
-            sns.set(font_scale=1.5)
-            plt.rcParams["figure.figsize"] = (16,9)
+            if file_name.startswith(feature_name):
 
-            # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
+                df=pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
+                rows=df.values
 
-            f, (ax, ax3, ax4) = plt.subplots(3)
-            # f.suptitle(file_name, fontsize=25)
-            
-            ax = sns.heatmap(rows, ax=ax,
-                cbar=False,
-                cmap="YlGnBu",
-                yticklabels=False,
-                # cbar_kws={"orientation": "horizontal"}
-                )
-            ax.set_title( file_name )
-            
-            ax3 = sns.heatmap(x.transpose(), ax=ax3, cbar=False, cmap='YlGnBu', yticklabels=False)
-            ax3.set_title('Input Data')
+                sns.set(font_scale=1.5)
+                plt.rcParams["figure.figsize"] = (16,9)
 
-            time=[]
-            for i in range(y.shape[0]):
-                time+=[i]
+                # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
 
-            ax4=plt.plot(time,y)
-            # print('shape of y=', y.shape)
-            plt.xlim([ time[0], time[-1] ])
-            plt.ylabel('Velocity (mm/s)')
-            plt.xlabel('Samples')
+                f, (ax, ax3, ax4) = plt.subplots(3)
+                # f.suptitle(file_name, fontsize=25)
+                
+                ax = sns.heatmap(rows, ax=ax,
+                    cbar=False,
+                    cmap="YlGnBu",
+                    yticklabels=False,
+                    # cbar_kws={"orientation": "horizontal"}
+                    )
+                ax.set_title( file_name )
+                
+                ax3 = sns.heatmap(x.transpose(), ax=ax3, cbar=False, cmap='YlGnBu', yticklabels=False)
+                ax3.set_title('Input Data')
 
-            plt.tight_layout()
-            plt.savefig( plot_path+'/'+file_name+'.png' )
-            plt.cla()
-            plt.clf()
-            plt.close()
+                time=[]
+                for i in range(y.shape[0]):
+                    time+=[i]
+
+                ax4=plt.plot(time,y)
+                # print('shape of y=', y.shape)
+                plt.xlim([ time[0], time[-1] ])
+                plt.ylabel('Velocity (mm/s)')
+                plt.xlabel('Samples')
+
+                plt.tight_layout()
+                plt.savefig( plot_path+'/'+file_name+'.png' )
+                plt.cla()
+                plt.clf()
+                plt.close()
         return

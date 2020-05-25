@@ -51,7 +51,7 @@ result_conv_shape = (10- kernel_size + 1)*(10- kernel_size + 1)
 FILE_PATH = '../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[12:13]
+List_FILE=ALL_List_FILE[12:]
 session_file_list=List_FILE
 total_sess_num = len(session_file_list)
 
@@ -374,6 +374,7 @@ for session_k in range(len(session_file_list)):
         my_prediction = []
         real_y_all=[]
         is_hidden_state_saved=False
+        plot_loop=0
 
         for i, (x, y) in trange:
 
@@ -388,7 +389,7 @@ for session_k in range(len(session_file_list)):
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
 
-                '''
+                
                 # type 1
                 # Save hidden state and cell state in the last training epoch
                 if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
@@ -400,25 +401,39 @@ for session_k in range(len(session_file_list)):
                     w_hi, w_hf, w_hc, w_ho = net.lstm_spike_1.weight_hh.chunk(4, 0)
                     b_ii, b_if, b_ic, b_io = net.lstm_spike_1.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstm_spike_1.bias_hh.chunk(4, 0)
-                    gates_and_states.comp_and_save(x[:,:96], out_spike_hidden, None, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
+                    gates_and_states.comp_and_save( x[:,:96], out_spike_hidden, None, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+
 
                     w_ii, w_if, w_ic, w_io = net.lstm_conv_average_phase_1.weight_ih.chunk(4, 0)
                     w_hi, w_hf, w_hc, w_ho = net.lstm_conv_average_phase_1.weight_hh.chunk(4, 0)
                     b_ii, b_if, b_ic, b_io = net.lstm_conv_average_phase_1.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstm_conv_average_phase_1.bias_hh.chunk(4, 0)
-                    gates_and_states.comp_and_save(x[:,96:96+result_conv_shape], out_conv_average_phase_hidden, None, 'ave_phase', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    gates_and_states.plot_heatmap(info_path, 'ave_phase' , plot_path)
+                    gates_and_states.comp_and_save( x[:,96:96+result_conv_shape], out_conv_average_phase_hidden, None, 'ave_phase', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
+
 
                     w_ii, w_if, w_ic, w_io = net.lstm_conv_average_sync_1.weight_ih.chunk(4, 0)
                     w_hi, w_hf, w_hc, w_ho = net.lstm_conv_average_sync_1.weight_hh.chunk(4, 0)
                     b_ii, b_if, b_ic, b_io = net.lstm_conv_average_sync_1.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstm_conv_average_sync_1.bias_hh.chunk(4, 0)
-                    gates_and_states.comp_and_save(x[:,96+result_conv_shape:96+result_conv_shape+result_conv_shape], out_conv_average_sync_hidden, None, 'sync', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    gates_and_states.plot_heatmap(info_path, 'sync' , plot_path)
+                    gates_and_states.comp_and_save( x[:,96+result_conv_shape:96+result_conv_shape+result_conv_shape], out_conv_average_sync_hidden, None, 'sync', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
 
-                    is_hidden_state_saved=True
-                '''
+                    # gates_and_states.plot_heatmap(info_path, plot_path)
+                    # is_hidden_state_saved=True
+
+                    if not os.path.exists(plot_path+'/'+str(plot_loop)):
+                        os.mkdir(plot_path+'/'+str(plot_loop))
+                    my_real_y=y.cpu().data.numpy()
+                    # Firing Rate
+                    gates_and_states.feature_visualization( info_path, 'firing_rate',  plot_path+'/'+str(plot_loop) , x[:,:96], my_real_y)
+                    # Conv Phase
+                    gates_and_states.feature_visualization( info_path, 'ave_phase',  plot_path+'/'+str(plot_loop) , x[:,96:96+result_conv_shape], my_real_y)
+                    # Conv Sync
+                    gates_and_states.feature_visualization( info_path, 'sync',  plot_path+'/'+str(plot_loop) , x[:,96+result_conv_shape:96+result_conv_shape+result_conv_shape], my_real_y)
+
+                    print('finished\n')
+                    plot_loop+=1
+                    if plot_loop>9:
+                         is_hidden_state_saved=True
 
             loss+=batch_loss.item()
 
@@ -435,6 +450,7 @@ for session_k in range(len(session_file_list)):
 
             # type 2
             # Save hidden state and cell state in the last training epoch
+            '''
             if x.shape[0] == batch_size:
                 if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
                     print('x.shape[0]=', x.shape[0])
@@ -446,23 +462,23 @@ for session_k in range(len(session_file_list)):
                     b_ii, b_if, b_ic, b_io = net.lstm_spike_1.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstm_spike_1.bias_hh.chunk(4, 0)
                     gates_and_states.comp_and_save(x[:,:96], out_spike_hidden, None, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
 
                     w_ii, w_if, w_ic, w_io = net.lstm_conv_average_phase_1.weight_ih.chunk(4, 0)
                     w_hi, w_hf, w_hc, w_ho = net.lstm_conv_average_phase_1.weight_hh.chunk(4, 0)
                     b_ii, b_if, b_ic, b_io = net.lstm_conv_average_phase_1.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstm_conv_average_phase_1.bias_hh.chunk(4, 0)
                     gates_and_states.comp_and_save(x[:,96:96+result_conv_shape], out_conv_average_phase_hidden, None, 'ave_phase', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    gates_and_states.plot_heatmap(info_path, 'ave_phase' , plot_path)
 
                     w_ii, w_if, w_ic, w_io = net.lstm_conv_average_sync_1.weight_ih.chunk(4, 0)
                     w_hi, w_hf, w_hc, w_ho = net.lstm_conv_average_sync_1.weight_hh.chunk(4, 0)
                     b_ii, b_if, b_ic, b_io = net.lstm_conv_average_sync_1.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstm_conv_average_sync_1.bias_hh.chunk(4, 0)
                     gates_and_states.comp_and_save(x[:,96+result_conv_shape:96+result_conv_shape+result_conv_shape], out_conv_average_sync_hidden, None, 'sync', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    gates_and_states.plot_heatmap(info_path, 'sync' , plot_path)
+
+                    gates_and_states.plot_heatmap(info_path,  plot_path)
 
                     is_hidden_state_saved=True
+            '''
 
         if mode=='train':
             history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
