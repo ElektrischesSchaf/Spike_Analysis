@@ -48,7 +48,7 @@ kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[12:13] 
+List_FILE=ALL_List_FILE[12:] 
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
@@ -305,6 +305,7 @@ for session_k in range(len(session_file_list)):
         my_prediction = []
         real_y_all=[]
         is_hidden_state_saved=False
+        plot_loop=0
 
         for i, (x, y) in trange:
 
@@ -319,11 +320,12 @@ for session_k in range(len(session_file_list)):
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
 
-                '''
+                
                 # type 1
                 # Save hidden state and cell state in the last training epoch               
                 if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
                     x=x.cpu().data.numpy()
+                    print('x.shape[0]=', x.shape[0])
                     yee=int(x.shape[0]) # how many time steps in a iteration
 
                     w_ii, w_if, w_ic, w_io = net.lstmcell.weight_ih.chunk(4, 0)
@@ -331,10 +333,18 @@ for session_k in range(len(session_file_list)):
                     b_ii, b_if, b_ic, b_io = net.lstmcell.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstmcell.bias_hh.chunk(4, 0)
                     gates_and_states.comp_and_save(x[:,:], hidden_state, cell_state, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
+                    # gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
+                    # is_hidden_state_saved=True
 
-                    is_hidden_state_saved=True
-                '''
+                    if not os.path.exists(plot_path+'/'+str(plot_loop)):
+                        os.mkdir(plot_path+'/'+str(plot_loop))
+                    my_real_y=y.cpu().data.numpy()
+                    gates_and_states.feature_visualization( info_path,   plot_path+'/'+str(plot_loop) , x, my_real_y)
+                    print('finished\n')
+                    plot_loop+=1
+                    if plot_loop>9:
+                         is_hidden_state_saved=True
+
             loss+=batch_loss.item()
 
             real_y=y.cpu().data.numpy()
@@ -349,6 +359,7 @@ for session_k in range(len(session_file_list)):
 
             # type 2
             # Save hidden state and cell state in the last training epoch
+            '''
             if x.shape[0] == batch_size:
                 if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
                     print('x.shape[0]=', x.shape[0])
@@ -360,10 +371,17 @@ for session_k in range(len(session_file_list)):
                     b_ii, b_if, b_ic, b_io = net.lstmcell.bias_ih.chunk(4, 0)
                     b_hi, b_hf, b_hc, b_ho = net.lstmcell.bias_hh.chunk(4, 0)
                     gates_and_states.comp_and_save(x[:,:], hidden_state, cell_state, 'firing_rate', yee, info_path, w_ii, w_if, w_ic, w_io, w_hi, w_hf, w_hc, w_ho, b_ii, b_if, b_ic, b_io, b_hi, b_hf, b_hc, b_ho )
-                    gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
+                    # gates_and_states.plot_heatmap(info_path, 'firig_rate' , plot_path)
+                    # is_hidden_state_saved=True
 
-                    is_hidden_state_saved=True
-
+                    if not os.path.exists(plot_path+'/'+str(plot_loop)):
+                        os.mkdir(plot_path+'/'+str(plot_loop))
+                    gates_and_states.feature_visualization( info_path,   plot_path+'/'+str(plot_loop) , x, real_y)
+                    print('finished\n')
+                    plot_loop+=1
+                    if plot_loop>5:
+                         is_hidden_state_saved=True
+            '''
         if mode=='train':
             history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
             # writer.add_scalar('Loss/train', loss/len(trange), epoch)
