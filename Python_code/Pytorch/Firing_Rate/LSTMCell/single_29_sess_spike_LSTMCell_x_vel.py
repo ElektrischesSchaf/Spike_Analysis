@@ -48,7 +48,7 @@ kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../Signal_Processing/Phase_all_Channels/Tables/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[12:] 
+List_FILE=ALL_List_FILE[12:13] 
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
@@ -255,6 +255,14 @@ for session_k in range(len(session_file_list)):
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
 
+    # normalize input firing rate
+    training_x_mean=torch.mean(training_x)
+    training_x_std=torch.std(training_x)
+    training_x=(training_x-training_x_mean)/training_x_std
+    testing_x=(testing_x-training_x_mean)/training_x_std
+    training_y_mean=torch.mean(training_y)
+    training_y_std=torch.std(training_y)
+
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
@@ -310,8 +318,8 @@ for session_k in range(len(session_file_list)):
         for i, (x, y) in trange:
 
             # LSTMCell batch for gates and states heatmap
-            if(x.size(0) is not batch_size):
-                continue
+            # if(x.size(0) is not batch_size):
+            #     continue
 
             o_labels, batch_loss, hidden_state, cell_state = _run_iter(x,y)            
 
@@ -319,7 +327,6 @@ for session_k in range(len(session_file_list)):
                 optimizer.zero_grad()   # clear gradients for next train
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
-
                 
                 # type 1
                 # Save hidden state and cell state in the last training epoch               
@@ -395,7 +402,7 @@ for session_k in range(len(session_file_list)):
 
         # receive hidden state and cell state from the network
         o_labels, hidden_state, cell_state = net(feature)
-        # print('The hidden_state size: ', hidden_state.size(), ' The cell_state size: ', cell_state.size(), '\n')
+        o_labels=o_labels*training_y_std+training_y_mean
 
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss, hidden_state, cell_state
@@ -465,6 +472,7 @@ for session_k in range(len(session_file_list)):
 
         # receive hidden state and cell state from the network
         o_labels, hidden_state, cell_state = net(x.to(device))
+        o_labels=o_labels*training_y_std+training_y_mean
 
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
