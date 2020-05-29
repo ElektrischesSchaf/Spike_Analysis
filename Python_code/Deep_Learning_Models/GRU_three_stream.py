@@ -28,14 +28,14 @@ class  GRUModel(torch.nn.Module):
         self.GRU_conv_average_sync = torch.nn.GRU(result_conv_input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
 
         # Readout layer
-        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) ) # one-directional
-        self.fc2 = torch.nn.Linear(int(hidden_dim/2), int(hidden_dim/4) ) # one-directional
+        # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) ) # one-directional
+        # self.fc2 = torch.nn.Linear(int(hidden_dim/2), int(hidden_dim/4) ) # one-directional
+        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/4) )
 
         # After concatenation
-        self.fc3 = torch.nn.Linear(int(int(hidden_dim/4)*3), int((int(hidden_dim/4)*3)/2)  ) # one-directional
-        self.fc4 = torch.nn.Linear(int((int(hidden_dim/4)*3)/2), output_dim) # one-directional
-        # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
-        # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
+        # self.fc3 = torch.nn.Linear(int(int(hidden_dim/4)*3), int((int(hidden_dim/4)*3)/2)  ) # one-directional
+        # self.fc4 = torch.nn.Linear(int((int(hidden_dim/4)*3)/2), output_dim) # one-directional
+        self.fc3 = torch.nn.Linear(int(int(hidden_dim/4)*3), output_dim  ) # one-directional
     
     def forward(self, x):
 
@@ -56,9 +56,9 @@ class  GRUModel(torch.nn.Module):
         out_conv_average_phase=torch.tanh( self.fc1(out_conv_average_phase) )
         out_conv_average_sync=torch.tanh( self.fc1(out_conv_average_sync) )
 
-        out_spike=torch.relu( self.fc2(out_spike) )
-        out_conv_average_phase=torch.tanh( self.fc2(out_conv_average_phase) )
-        out_conv_average_sync=torch.tanh( self.fc2(out_conv_average_sync) )
+        # out_spike=torch.relu( self.fc2(out_spike) )
+        # out_conv_average_phase=torch.tanh( self.fc2(out_conv_average_phase) )
+        # out_conv_average_sync=torch.tanh( self.fc2(out_conv_average_sync) )
 
         out = ( self.fc3(torch.cat((out_spike, out_conv_average_phase, out_conv_average_sync), 2) ) )
         out = self.fc4(out)
