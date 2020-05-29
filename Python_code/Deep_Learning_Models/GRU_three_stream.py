@@ -61,7 +61,7 @@ class  GRUModel(torch.nn.Module):
         # out_conv_average_sync=torch.tanh( self.fc2(out_conv_average_sync) )
 
         out = ( self.fc3(torch.cat((out_spike, out_conv_average_phase, out_conv_average_sync), 2) ) )
-        out = self.fc4(out)
+        out = self.fc3(out)
         out=out.squeeze(0)
 
         return out
