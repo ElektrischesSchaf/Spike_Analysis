@@ -339,43 +339,14 @@ for session_k in range(len(session_file_list)):
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
 
-    '''
-    for k in range(new_training_x.size(0)):
-        for i in range(96):
-            pass
-            # new_training_x[k,-2]=abs(new_training_x[k,-2])
+    # normalize input firing rate
+    training_x_mean=torch.mean(training_x)
+    training_x_std=torch.std(training_x)
+    training_x=(training_x-training_x_mean)/training_x_std
+    testing_x=(testing_x-training_x_mean)/training_x_std
+    training_y_mean=torch.mean(training_y)
+    training_y_std=torch.std(training_y)
 
-            # Phase-of-Firing
-
-            # absolute
-            # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])*new_training_x[k,-1]
-            # new_training_x[k,i]=new_training_x[k,i]*abs(new_training_x[k,-2])
-            # no absolute
-            # new_training_x[k,i]=new_training_x[k,i]*new_training_x[k,i+96]
-
-            # Concatenate
-            # new_training_x[k,-2]=abs(new_training_x[k,-2])
-            # new_training_x[k,-2]=abs(new_training_x[k,-2])*new_training_x[k,-1]
-    for k in range(new_testing_x.size(0)):
-        for i in range(96):
-            pass
-            # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
-
-            # Phase-of-Firing
-
-            # absolute
-            # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])*new_testing_x[k,-1]
-            # new_testing_x[k,i]=new_testing_x[k,i]*abs(new_testing_x[k,-2])
-            # no absolute
-            # new_testing_x[k,i]=new_testing_x[k,i]*new_testing_x[k,i+96]
-
-            # Concatenate
-            # new_testing_x[k,-2]=abs(new_testing_x[k,-2])
-            # new_testing_x[k,-2]=abs(new_testing_x[k,-2])*new_testing_x[k,-1]
-
-    new_training_x=new_training_x[:,:]
-    new_testing_x=new_testing_x[:,:]
-    '''
 
     real_input_features = int(training_x.size(1))
     print('first testing data time: ', time_stamp_64ms[testing_data_index], '\n')
@@ -465,6 +436,7 @@ for session_k in range(len(session_file_list)):
         labels = y.to(device)
         #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
         o_labels = net(feature)
+        o_labels=o_labels*training_y_std+training_y_mean
         #print('The output shape: ', o_labels.shape, ' The label shape: ', labels.shape, '\n')
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss
@@ -541,6 +513,7 @@ for session_k in range(len(session_file_list)):
         #     continue
 
         o_labels = net(x.to(device))
+        o_labels=o_labels*training_y_std+training_y_mean
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
             my_prediction.append( float(ele) )
