@@ -139,9 +139,11 @@ class compute():
                     # cbar_kws={"orientation": "horizontal"}
                     )
                 ax.set_title( file_name )
-                
+                ax.set_ylabel('hidden units')
+
                 ax3 = sns.heatmap(x.transpose(), ax=ax3, cbar=False, cmap='YlGnBu', yticklabels=False)
                 ax3.set_title('Input Data')
+                ax3.set_ylabel('Features')
 
                 time=[]
                 for i in range(y.shape[0]):

@@ -66,103 +66,39 @@ class mat_file_processing():
             firing_rate_cell=[[]]            
 
             print('spikes shape: ', spikes.shape) #  (3, 192) in indy_20160407_02
+            unit_number=spikes.shape[0]
             channel_number=96
+
+            time_stamp_64ms=np.asarray(time_stamp_64ms)
+            time_stamp_64ms=time_stamp_64ms.flatten()
 
             # Making spike counts matrix
             for channel_index in range(channel_number):
                 #print('Channel progress: ' + str( round( (channel_index/channel_number)*100, 3) )+' %' ) # 96 channels in this dataset
                 
-                temp_spike_cell_1=[]
-                temp_spike_cell_2=[]
-                temp_spike_cell_3=[]
+                # New below
+                for unit_index in range( spikes.shape[0] ):
+                    temp_spike_cell=[]
+                    temp_spike_cell=mat_file[( spikes[unit_index][channel_index] )][()]
+                    temp_spike_cell=np.asarray(temp_spike_cell)
+                    temp_spike_cell=temp_spike_cell.flatten()
 
-                temp_spike_cell_1=mat_file[ ( spikes[0][channel_index] ) ][()]
-                temp_spike_cell_2=mat_file[ ( spikes[1][channel_index] ) ][()]
-                temp_spike_cell_3=mat_file[ ( spikes[2][channel_index] ) ][()]
+                    if temp_spike_cell.shape[0] != 2 and include_hash_unit==True:
 
-                temp_spike_cell_1=np.asarray(temp_spike_cell_1)
-                temp_spike_cell_2=np.asarray(temp_spike_cell_2)
-                temp_spike_cell_3=np.asarray(temp_spike_cell_3)
+                        yee=self.histc(temp_spike_cell, time_stamp_64ms)
+                        #print('shape of yee:  ',yee.shape)
+                        firing_rate_cell.append(yee[:-1])
+                        #print('yee: ',yee)
 
-                time_stamp_64ms=np.asarray(time_stamp_64ms)
+                    else:
+                        r = np.zeros( len(time_stamp_64ms)-1 )
+                        firing_rate_cell.append(r)
 
-            
-                temp_spike_cell_1=temp_spike_cell_1.flatten()
-                temp_spike_cell_2=temp_spike_cell_2.flatten()
-                temp_spike_cell_3=temp_spike_cell_3.flatten()
-                time_stamp_64ms=time_stamp_64ms.flatten()
-                
-                '''
-                print('shape of temp_spike_cell_1: ',temp_spike_cell_1.shape) # (5595,) in channel 1, indy_20160407_02
-                print('shape of temp_spike_cell_2: ',temp_spike_cell_2.shape) # (2,) in channel 1, indy_20160407_02
-                print('shape of temp_spike_cell_3: ',temp_spike_cell_3.shape) # (2,) in channel 1, indy_20160407_02
-                print('shape of time_stamp_64ms: ',time_stamp_64ms.shape)
-                '''
+                    firing_rate_cell.append([])
 
-                if temp_spike_cell_1.shape[0] != 2 and include_hash_unit==True:
+                # New above
 
-                    yee=self.histc(temp_spike_cell_1, time_stamp_64ms)
-                    #print('shape of yee:  ',yee.shape)
-                    firing_rate_cell.append(yee[:-1])
-                    #print('yee: ',yee)
-
-                else:
-                    r = np.zeros( len(time_stamp_64ms)-1 )
-                    firing_rate_cell.append(r)
-                '''
-                print('length of firing_rate in cell 1: ',end='')
-                print(len(firing_rate_cell[:-1]))
-                '''
-
-                firing_rate_cell.append([])  
-
-                if temp_spike_cell_2.shape[0] != 2:
-
-                    # firing rate
-                    yee=self.histc(temp_spike_cell_2, time_stamp_64ms)
-                    #print('shape of yee:  ',yee.shape)
-                    firing_rate_cell.append(yee[:-1])
-
-                else:
-                    r = np.zeros( len(time_stamp_64ms)-1 )
-                    firing_rate_cell.append(r)
-
-                '''
-                print('length of firing_rate in cell 2: ',end='')
-                print(len(firing_rate_cell[-1]))
-                '''
-                firing_rate_cell.append([])
-
-                if temp_spike_cell_3.shape[0] != 2:
-                    
-                    # firing rate
-                    yee=self.histc(temp_spike_cell_3, time_stamp_64ms)
-                    #print('shape of yee:  ',yee.shape)
-                    firing_rate_cell.append(yee[:-1])
-
-                else:
-                    r = np.zeros( len(time_stamp_64ms)-1 )
-                    firing_rate_cell.append(r)
-                '''
-                print('length of firing_rate in cell 3: ',end='')
-                print(len(firing_rate_cell[-1]))
-                print('\n\n')
-                '''
-                firing_rate_cell.append([])
-
-                '''
-                print('row numbers of firing_rate_cell: ',end='')
-                print( len( firing_rate_cell) )
-                print('\n')
-                '''
-                '''
-                for row_index in range( len( firing_rate_cell) ):            
-                    print('length of firing_rate_cell['+ str(row_index) +']: ',end='')
-                    print(len(firing_rate_cell[row_index]))
-                print('\n')
-                print('End of one channel '+ str(channel_index+1) +'\n') 
-                '''
-        return [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms]
+        return [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number]
 
 
     def get_labels(self, the_file_name, the_sampling_rate, time_stamp_64ms):
