@@ -402,7 +402,7 @@ for session_k in range(len(session_file_list)):
             #     continue
 
             o_labels, batch_loss = _run_iter(x,y)
-            o_labels=o_labels*training_y_std+training_y_mean
+
 
             if mode=='train':
                 optimizer.zero_grad()   # clear gradients for next train
@@ -434,6 +434,7 @@ for session_k in range(len(session_file_list)):
         #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
         o_labels = net(feature)
         #print('The output shape: ', o_labels.shape, ' The label shape: ', labels.shape, '\n')
+        o_labels=o_labels*training_y_std+training_y_mean
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss
 
