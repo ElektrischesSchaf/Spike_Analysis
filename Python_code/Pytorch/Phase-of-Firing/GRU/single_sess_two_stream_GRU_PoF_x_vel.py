@@ -369,9 +369,9 @@ for session_k in range(len(session_file_list)):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-    real_input_features=int(real_input_features /2) # Because of Two Stream GRU
+    # real_input_features=int(real_input_features /2) # Because of Two Stream GRU
 
-    net = GRUModel(input_dim=real_input_features, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    net = GRUModel(firing_rate_input_dim= channel_numbers_in_this_dataset*units_numbers_in_this_dataset, phase_of_firing_input_dim= phase_of_firing_all_channel.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
