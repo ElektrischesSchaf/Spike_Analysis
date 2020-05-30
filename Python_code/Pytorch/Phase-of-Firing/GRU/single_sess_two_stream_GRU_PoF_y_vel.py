@@ -138,7 +138,7 @@ for session_k in range(len(session_file_list)):
         feature_numbers=channel_numbers_in_this_dataset
 
     # If need to concatenate Spike Firing Rate and LFP Phase, must specify the exact feature dimension here
-    feature_numbers=feature_numbers*2
+    feature_numbers=feature_numbers + phase_of_firing_all_channel.shape[1]
 
     # Create empty arrrays from data
     [X_for_training, X_for_prediction, 
