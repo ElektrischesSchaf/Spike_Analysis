@@ -9,18 +9,21 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class  GRUModel(torch.nn.Module):
 
-    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
+    def __init__(self, firing_rate_input_dim, phase_of_firing_input_dim, hidden_dim, layer_dim, output_dim):
         super(GRUModel, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
         
+        self.firing_rate_input_dim=firing_rate_input_dim
+        self.phase_of_firing_input_dim=phase_of_firing_input_dim
+
         # Number of hidden layers
         self.layer_dim = layer_dim
 
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.GRU_spike = torch.nn.GRU(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
-        self.GRU_phase = torch.nn.GRU(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
+        self.GRU_spike = torch.nn.GRU(self.firing_rate_input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
+        self.GRU_phase = torch.nn.GRU( self.phase_of_firing_input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
     
         # Readout layer
         self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2) ) # one-directional
@@ -40,8 +43,8 @@ class  GRUModel(torch.nn.Module):
         # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
 
         # time steps
-        out_spike, _ = self.GRU_spike(x[:,:,:96])
-        out_phase, _ = self.GRU_phase(x[:,:,96:])
+        out_spike, _ = self.GRU_spike(x[:,:,:self.firing_rate_input_dim])
+        out_phase, _ = self.GRU_phase(x[:,:,self.firing_rate_input_dim:])
 
         out_spike=torch.relu( self.fc1(out_spike) )
         out_phase=torch.tanh( self.fc1(out_phase) )
