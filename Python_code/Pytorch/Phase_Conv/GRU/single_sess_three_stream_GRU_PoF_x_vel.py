@@ -48,13 +48,13 @@ result_conv_shape = (10- kernel_size + 1)*(10- kernel_size + 1)
 FILE_PATH = '../../../Signal_Processing/local_phase_clustering'+'/'+'Tables_'+ str(kernel_size)+'_kernel_size/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[12:13]
+List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
 model_name='Three_Stream_GRU_with_Conv_Phase_Clustering_Single_29_Session_kernel_size_'+str(kernel_size)
-MAX_EPOCH=250
+MAX_EPOCH=300
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
 BATCH_SIZE=64

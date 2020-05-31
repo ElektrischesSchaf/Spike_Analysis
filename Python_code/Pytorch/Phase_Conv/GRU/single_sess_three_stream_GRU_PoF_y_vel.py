@@ -54,7 +54,7 @@ total_sess_num = len(session_file_list)
 
 # Neural Network Hyperparameters
 model_name='Three_Stream_GRU_with_Conv_Phase_Clustering_Single_29_Session_kernel_size_'+str(kernel_size)
-MAX_EPOCH=500
+MAX_EPOCH=300
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
 BATCH_SIZE=64
@@ -334,10 +334,10 @@ for session_k in range(len(session_file_list)):
 
 
     # normalize input firing rate
-    training_x_mean=torch.mean(training_x)
-    training_x_std=torch.std(training_x)
-    training_x=(training_x-training_x_mean)/training_x_std
-    testing_x=(testing_x-training_x_mean)/training_x_std
+    training_x_mean=torch.mean(training_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset])
+    training_x_std=torch.std(training_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset])
+    training_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset]=(training_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset]-training_x_mean)/training_x_std
+    testing_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset]=(testing_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset]-training_x_mean)/training_x_std
     training_y_mean=torch.mean(training_y)
     training_y_std=torch.std(training_y)
 
@@ -361,7 +361,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
-    net = GRUModel(firing_rate_input_dim=96, result_conv_input_dim=result_conv_shape, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)
+    net = GRUModel(firing_rate_input_dim=channel_numbers_in_this_dataset*units_numbers_in_this_dataset, result_conv_input_dim=result_conv_shape, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
