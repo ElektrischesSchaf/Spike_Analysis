@@ -340,10 +340,10 @@ for session_k in range(len(session_file_list)):
         testing_y=testing_y.float()
 
     # normalize input firing rate
-    training_x_mean=torch.mean(training_x)
-    training_x_std=torch.std(training_x)
-    training_x=(training_x-training_x_mean)/training_x_std
-    testing_x=(testing_x-training_x_mean)/training_x_std
+    training_x_mean=torch.mean(training_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset])
+    training_x_std=torch.std(training_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset])
+    training_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset]=(training_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset]-training_x_mean)/training_x_std
+    testing_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset]=(testing_x[:channel_numbers_in_this_dataset*units_numbers_in_this_dataset]-training_x_mean)/training_x_std
     training_y_mean=torch.mean(training_y)
     training_y_std=torch.std(training_y)
 
