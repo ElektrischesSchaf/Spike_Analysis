@@ -53,7 +53,7 @@ session_file_list=List_FILE
 model_name='GRU_with_Spike_Single_37_Session'
 MAX_EPOCH=250
 LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=1
+NUMBER_OF_LAYERS=2
 BATCH_SIZE=64
 HIDDEN_DIMENSION=100
 
