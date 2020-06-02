@@ -320,12 +320,15 @@ for session_k in range(len(session_file_list)):
             # if(x.size()[0] is not batch_size):
             #     continue
 
-            o_labels, batch_loss = _run_iter(x,y)
 
             if mode=='train':
+                o_labels, batch_loss = _run_iter_train(x,y)
                 optimizer.zero_grad()   # clear gradients for next train
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
+            else:
+                o_labels, batch_loss = _run_iter_test(x,y)
+
 
             loss+=batch_loss.item()
 
@@ -348,13 +351,17 @@ for session_k in range(len(session_file_list)):
             # writer.add_scalar('Loss/test', loss/len(trange), epoch)
         trange.close()
 
-    def _run_iter(x,y):
+    def _run_iter_train(x,y):
         feature = x.to(device)
         labels = y.to(device)
-        #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
         o_labels = net(feature, labels)
-        # o_labels=o_labels*training_y_std+training_y_mean
+        l_loss = loss_func(o_labels, labels)
+        return o_labels, l_loss
 
+    def _run_iter_test(x,y):
+        feature = x.to(device)
+        labels = y.to(device)
+        o_labels = net(feature, labels, 0)
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss
 
