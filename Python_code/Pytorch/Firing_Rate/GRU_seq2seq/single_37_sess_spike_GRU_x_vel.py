@@ -54,7 +54,7 @@ model_name='GRU_seq2seq_with_Spike_Single_37_Session'
 MAX_EPOCH=50
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=1
-BATCH_SIZE=16
+BATCH_SIZE=4
 HIDDEN_DIMENSION=100
 
 # Model Performance Lists
