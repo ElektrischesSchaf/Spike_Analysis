@@ -4,7 +4,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
-
+import random
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class Encoder(torch.nn.Module):
@@ -19,7 +19,7 @@ class Encoder(torch.nn.Module):
     def forward(self, x):
 
         x=x.unsqueeze(0)
-        outputs, (hidden) = self.rnn(x)
+        outputs, hidden = self.rnn(x)
 
         return hidden
 
@@ -30,7 +30,7 @@ class Decoder(torch.nn.Module):
         self.output_dim = output_dim
         self.hidden_dim = hidden_dim
         self.n_layers = n_layers
-        self.rnn = torch.nn.GRU(input_dim, hidden_dim, n_layers, batch_first=True, bidirectional=False)
+        self.rnn = torch.nn.GRU(output_dim, hidden_dim, n_layers, batch_first=True, bidirectional=False)
         self.dropput = torch.nn.Dropout(dropput)
 
         self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
@@ -41,9 +41,10 @@ class Decoder(torch.nn.Module):
         input=input.unsqueeze(0)
         input=input.unsqueeze(0)
 
-        print('yee= ', input.size() )
+        # print('yee= ', input.size() )
         # input=self.dropput(input)
-        output, (hidden) = self.rnn( input , (hidden) )
+        # print('type of input= ', type(input))
+        output, hidden = self.rnn( input , hidden )
 
         out = torch.relu(self.fc1(output))
         out = self.fc2(out)
@@ -74,14 +75,28 @@ class Seq2Seq(torch.nn.Module):
         hidden=self.encoder(input_signal)
 
         input=target[0,:]
+        # print('yee2 = ', input.size(), '\n\n\n\n')
         for t in range( target_len ):
 
             output, hidden = self.decoder( input , hidden)
 
             outputs[t,:] = output
             teacher_force = random.random() < teacher_forcing_ratio
-            top1=output.argmax(1)
-            input=target[t,:] if teacher_force else top1
+            top1=output
+
+            # print('top1= ', top1.size(),'  ')
+            # print('target[t,:]= ', target[t,:].size(), '\n')
+
+            # if teacher_force:
+            #     input=target[t,:].float()   
+            # else:
+            #     input=top1.float()
+
+
+            if teacher_forcing_ratio==0:
+                input=top1
+            else:
+                input=target[t,:].float()
 
         return outputs
 

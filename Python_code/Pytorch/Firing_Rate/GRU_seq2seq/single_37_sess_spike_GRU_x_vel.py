@@ -46,15 +46,15 @@ kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:] 
+List_FILE=ALL_List_FILE[:1]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name='GRU_seq2seq_with_Spike_Single_37_Session'
-MAX_EPOCH=250
+MAX_EPOCH=50
 LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=2
-BATCH_SIZE=64
+NUMBER_OF_LAYERS=1
+BATCH_SIZE=16
 HIDDEN_DIMENSION=100
 
 # Model Performance Lists
@@ -353,7 +353,7 @@ for session_k in range(len(session_file_list)):
         labels = y.to(device)
         #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
         o_labels = net(feature, labels)
-        o_labels=o_labels*training_y_std+training_y_mean
+        # o_labels=o_labels*training_y_std+training_y_mean
 
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss
@@ -426,7 +426,7 @@ for session_k in range(len(session_file_list)):
         #     continue
 
         o_labels = net(x.to(device), testing_y.to(device), 0)
-        o_labels=o_labels*training_y_std+training_y_mean
+        # o_labels=o_labels*training_y_std+training_y_mean
 
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
