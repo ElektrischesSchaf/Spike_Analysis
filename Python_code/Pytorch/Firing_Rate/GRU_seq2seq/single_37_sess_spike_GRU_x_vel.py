@@ -329,9 +329,7 @@ for session_k in range(len(session_file_list)):
             else:
                 o_labels, batch_loss = _run_iter_test(x,y)
 
-
             loss+=batch_loss.item()
-            print('loss= ', loss/len(trange))
 
             real_y=y.cpu().data.numpy()
             for ele in o_labels.cpu().data.numpy():
@@ -349,6 +347,7 @@ for session_k in range(len(session_file_list)):
             # writer.add_scalar('Loss/train', loss/len(trange), epoch)
         else:
             history['test'].append({'loss':loss/len(trange), 'R^2': R_square })
+            print('R-square: ', R_square )
             # writer.add_scalar('Loss/test', loss/len(trange), epoch)
         trange.close()
 
