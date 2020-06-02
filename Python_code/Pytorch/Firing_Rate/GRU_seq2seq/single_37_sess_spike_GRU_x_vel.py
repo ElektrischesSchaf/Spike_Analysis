@@ -331,6 +331,7 @@ for session_k in range(len(session_file_list)):
 
 
             loss+=batch_loss.item()
+            print('loss= ', loss/len(trange))
 
             real_y=y.cpu().data.numpy()
             for ele in o_labels.cpu().data.numpy():
