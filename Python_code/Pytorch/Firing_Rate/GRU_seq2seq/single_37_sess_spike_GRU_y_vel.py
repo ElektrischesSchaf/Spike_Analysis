@@ -38,7 +38,7 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Deep leaning module
-from  Deep_Learning_Models.GRU_one_stream import GRUModel
+from  Deep_Learning_Models.GRU_seq2seq_one_stream import Seq2Seq, Encoder,Decoder
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # Make file list
@@ -46,15 +46,15 @@ kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:] 
+List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
-model_name='GRU_with_Spike_Single_37_Session'
-MAX_EPOCH=250
+model_name='GRU_seq2seq_with_Spike_Single_37_Session'
+MAX_EPOCH=50
 LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=2
-BATCH_SIZE=64
+NUMBER_OF_LAYERS=1
+BATCH_SIZE=4
 HIDDEN_DIMENSION=100
 
 # Model Performance Lists
@@ -283,7 +283,10 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = GRUModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    enc = Encoder( training_x.size(1),  hidden_dim, layer_dim, 0.2)
+    dec = Decoder( training_x.size(1), output_dim,  hidden_dim, layer_dim, 0.2)
+
+    net = Seq2Seq(enc, dec, device)     # define the network
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -317,12 +320,14 @@ for session_k in range(len(session_file_list)):
             # if(x.size()[0] is not batch_size):
             #     continue
 
-            o_labels, batch_loss = _run_iter(x,y)
 
             if mode=='train':
+                o_labels, batch_loss = _run_iter_train(x,y)
                 optimizer.zero_grad()   # clear gradients for next train
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
+            else:
+                o_labels, batch_loss = _run_iter_test(x,y)
 
             loss+=batch_loss.item()
 
@@ -342,16 +347,21 @@ for session_k in range(len(session_file_list)):
             # writer.add_scalar('Loss/train', loss/len(trange), epoch)
         else:
             history['test'].append({'loss':loss/len(trange), 'R^2': R_square })
+            print('R-square: ', R_square )
             # writer.add_scalar('Loss/test', loss/len(trange), epoch)
         trange.close()
 
-    def _run_iter(x,y):
+    def _run_iter_train(x,y):
         feature = x.to(device)
         labels = y.to(device)
-        #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
-        o_labels = net(feature)
-        o_labels=o_labels*training_y_std+training_y_mean
+        o_labels = net(feature, labels)
+        l_loss = loss_func(o_labels, labels)
+        return o_labels, l_loss
 
+    def _run_iter_test(x,y):
+        feature = x.to(device)
+        labels = y.to(device)
+        o_labels = net(feature, labels, 0)
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss
 
@@ -422,8 +432,8 @@ for session_k in range(len(session_file_list)):
         # if(x.size()[0] is not batch_size):
         #     continue
 
-        o_labels = net(x.to(device))
-        o_labels=o_labels*training_y_std+training_y_mean
+        o_labels = net(x.to(device), testing_y.to(device), 0)
+        # o_labels=o_labels*training_y_std+training_y_mean
 
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
