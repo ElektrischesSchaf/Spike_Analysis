@@ -82,7 +82,7 @@ class Seq2Seq(torch.nn.Module):
 
             outputs[t,:] = output
             teacher_force = random.random() < teacher_forcing_ratio
-            top1=output
+            top1=output.squeeze(0)
 
             # print('top1= ', top1.size(),'  ')
             # print('target[t,:]= ', target[t,:].size(), '\n')
