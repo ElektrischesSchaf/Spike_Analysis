@@ -13,7 +13,7 @@ class  GRUModel(torch.nn.Module):
         super(GRUModel, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
-        self.input_dim=input_dim
+        
         # Number of hidden layers
         self.layer_dim = layer_dim
 
@@ -30,21 +30,19 @@ class  GRUModel(torch.nn.Module):
     
     def forward(self, x):
 
-        # x torch.Size([batch size, feature num * orders])
+        # x torch.Size([64, 96])
 
-        x=x.view(x.size(0), -1, self.input_dim)
+        x=x.unsqueeze(0)       
         # m=torch.nn.LayerNorm( x.size()[:], elementwise_affine=False )
         # x=m(x)
 
         # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
-        # print('yee shape of x= ', x.size())
-        # time steps
-        # print('real input shape= ', x.size(), '\n')
-        out, _ = self.GRU(x)
-        # print('out size 1 = ', out.size())
-        out = torch.relu(self.fc1(out[:,-1,:] ))
-        out = self.fc2(out)
-        # print('out size 2= ', out.size())
 
+        # time steps
+        out, _ = self.GRU(x)
+
+        out = torch.relu(self.fc1(out))
+        out = self.fc2(out)
+        out=out.squeeze(0)
 
         return out

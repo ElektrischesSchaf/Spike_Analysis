@@ -42,21 +42,21 @@ from  Deep_Learning_Models.GRU_one_stream import GRUModel
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # Make file list
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[20:21] 
+List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name='GRU_with_Spike_Single_37_Session'
-MAX_EPOCH= 50
+MAX_EPOCH=250
 LEARNING_RATE=1e-5
 NUMBER_OF_LAYERS=2
-BATCH_SIZE=4
+BATCH_SIZE=64
 HIDDEN_DIMENSION=100
-max_timestep=10
+
 # Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
@@ -82,7 +82,7 @@ for session_k in range(len(session_file_list)):
     the_sampling_rate=my_parameters.the_sampling_rate
     file_numbers=my_parameters.file_numbers
     time_lag=my_parameters.time_lag
-
+    order=my_parameters.order
     with_sorted_spikes=True
     include_hash_unit=my_parameters.include_hash_unit
 
@@ -173,23 +173,6 @@ for session_k in range(len(session_file_list)):
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
 
-    print('shape of X_for_training before', X_for_training.shape)
-    # Processing max orders
-    order_num=max_timestep+1
-    [X_for_training, X_for_prediction,
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.max_order_preparation(
-    order_num, feature_numbers, X_for_training, X_for_prediction,
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
-    
-    print('shape of X_for_training after', X_for_training.shape)
-    print('shape of x_velocity_label_training after', x_velocity_label_training.shape)
-
-    print('\nshape of X_for_prediction after', X_for_prediction.shape)
-    print('shape of x_velocity_label_testing after', x_velocity_label_testing.shape)
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
@@ -300,7 +283,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = GRUModel(input_dim=feature_numbers, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    net = GRUModel(input_dim=training_x.shape[1], hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -359,7 +342,6 @@ for session_k in range(len(session_file_list)):
             # writer.add_scalar('Loss/train', loss/len(trange), epoch)
         else:
             history['test'].append({'loss':loss/len(trange), 'R^2': R_square })
-            print('R-square: ', R_square, '\n')
             # writer.add_scalar('Loss/test', loss/len(trange), epoch)
         trange.close()
 
@@ -455,7 +437,7 @@ for session_k in range(len(session_file_list)):
     testing_data_SNR=-10*math.log10(1-testing_data_r_square)
     testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
     PCC=pearsonr(real_y_all,my_prediction)
-    Ground_Truth=real_y_all
+
     print('\n* model_x_velocity score: ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
 
     R_square_across_all_sessions.append(testing_data_r_square)
@@ -468,8 +450,8 @@ for session_k in range(len(session_file_list)):
     plotting_time_elapsed=time_stamp_64ms[testing_data_index:-1]
 
     # Ground_Truth_x_vel and Ground_Truth_y_vel may copy form testing_y in line 256 # TODO
-    # Ground_Truth_x_vel=x_velocity_label[testing_data_index:]
-    # Ground_Truth_y_vel=y_velocity_label[testing_data_index:]
+    Ground_Truth_x_vel=x_velocity_label[testing_data_index:]
+    Ground_Truth_y_vel=y_velocity_label[testing_data_index:]
 
     df = pd.DataFrame( plotting_time_elapsed )
     df.to_csv(os.path.join(csv_path, 'plotting_time_elapsed.csv'), index=False, header=False)
@@ -479,18 +461,18 @@ for session_k in range(len(session_file_list)):
 
     if kinematic_variable_type=='x_vel':
         plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
+        plt.plot( plotting_time_elapsed, Ground_Truth_x_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
         plt.title( model_name+' Model on session: '+ session_name + ', x-velocity prediction' , fontsize=30, color="black")
 
-        df = pd.DataFrame( Ground_Truth )
+        df = pd.DataFrame( Ground_Truth_x_vel )
         df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_vel.csv'), index=False, header=False) 
 
     if kinematic_variable_type=='y_vel':
         plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
+        plt.plot( plotting_time_elapsed, Ground_Truth_y_vel, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
         plt.title( model_name+' Model on session: ' + session_name + ', y-velocity prediction' , fontsize=30, color="black")
 
-        df = pd.DataFrame( Ground_Truth )
+        df = pd.DataFrame( Ground_Truth_y_vel )
         df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_vel.csv'), index=False, header=False)
 
     
