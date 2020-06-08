@@ -46,7 +46,7 @@ kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[20:21] 
+List_FILE=ALL_List_FILE[:] 
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
@@ -175,7 +175,7 @@ for session_k in range(len(session_file_list)):
 
     print('shape of X_for_training before', X_for_training.shape)
     # Processing max orders
-    order_num=max_timestep+1
+    order_num=max_timestep-1
     [X_for_training, X_for_prediction,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
@@ -272,12 +272,14 @@ for session_k in range(len(session_file_list)):
         testing_y=testing_y.float()
 
     # normalize input firing rate
+    '''
     training_x_mean=torch.mean(training_x)
     training_x_std=torch.std(training_x)
     training_x=(training_x-training_x_mean)/training_x_std
     testing_x=(testing_x-training_x_mean)/training_x_std
     training_y_mean=torch.mean(training_y)
     training_y_std=torch.std(training_y)
+    '''
 
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
@@ -366,9 +368,9 @@ for session_k in range(len(session_file_list)):
     def _run_iter(x,y):
         feature = x.to(device)
         labels = y.to(device)
-        #print('\n\n In _run_iter, ', 'shape of x', x.shape, ' ', 'shape of y', y.shape)
+
         o_labels = net(feature)
-        o_labels=o_labels*training_y_std+training_y_mean
+        # o_labels=o_labels*training_y_std+training_y_mean
 
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss
@@ -441,7 +443,7 @@ for session_k in range(len(session_file_list)):
         #     continue
 
         o_labels = net(x.to(device))
-        o_labels=o_labels*training_y_std+training_y_mean
+        # o_labels=o_labels*training_y_std+training_y_mean
 
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
@@ -465,8 +467,8 @@ for session_k in range(len(session_file_list)):
 
     # Plotting the kinematic variable reconstructure figure
     plt.figure(figsize=(32, 9))
-    plotting_time_elapsed=time_stamp_64ms[testing_data_index:-1]
-
+    plotting_time_elapsed=time_stamp_64ms[testing_data_index:]
+    plotting_time_elapsed=plotting_time_elapsed[max_timestep:]
     # Ground_Truth_x_vel and Ground_Truth_y_vel may copy form testing_y in line 256 # TODO
     # Ground_Truth_x_vel=x_velocity_label[testing_data_index:]
     # Ground_Truth_y_vel=y_velocity_label[testing_data_index:]

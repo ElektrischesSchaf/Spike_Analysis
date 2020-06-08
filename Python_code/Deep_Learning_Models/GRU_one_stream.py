@@ -31,8 +31,9 @@ class  GRUModel(torch.nn.Module):
     def forward(self, x):
 
         # x torch.Size([batch size, feature num * orders])
-
+        # print('x size 1= ', x.size())
         x=x.view(x.size(0), -1, self.input_dim)
+        # print('x size 2= ', x.size())
         # m=torch.nn.LayerNorm( x.size()[:], elementwise_affine=False )
         # x=m(x)
 
@@ -41,10 +42,11 @@ class  GRUModel(torch.nn.Module):
         # time steps
         # print('real input shape= ', x.size(), '\n')
         out, _ = self.GRU(x)
-        # print('out size 1 = ', out.size())
+        # print('out size 1= ', out.size())
         out = torch.relu(self.fc1(out[:,-1,:] ))
-        out = self.fc2(out)
         # print('out size 2= ', out.size())
+        out = self.fc2(out)
+        # print('out size 3= ', out.size())
 
 
         return out
