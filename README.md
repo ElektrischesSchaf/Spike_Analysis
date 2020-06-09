@@ -3,7 +3,7 @@
     - [Electrodes](#Electrodes) <br>
 	- [Makin et al 2018 results time bin 64 ms](#Makin-et-al-2018-results-time-bin-64-ms) <br>
 		- [indy](#indy) <br>
-			- [R-squar](#R-square) <br>
+			- [R-square](#R-square) <br>
 			- [SNR](#SNR) <br>
     - [Plots](#plots)<br>
         - [Spike Train](#Spike-Train)<br> 
