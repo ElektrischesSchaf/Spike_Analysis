@@ -213,9 +213,9 @@ class mat_file_processing():
 
             acceleration_time_coor=np.array(acceleration_time_coor)
 
-            x_position_label = finger_x_pos_64ms
-            y_position_label = finger_y_pos_64ms
-            z_position_label = finger_z_pos_64ms
+            x_position_label = finger_x_pos_64ms[:-1]
+            y_position_label = finger_y_pos_64ms[:-1]
+            z_position_label = finger_z_pos_64ms[:-1]
 
             x_velocity_label = finger_x_velocity
             y_velocity_label = finger_y_velocity
