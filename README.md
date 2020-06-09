@@ -2,7 +2,7 @@
     - [Test](#Test-123-456)  <br>
     - [Electrodes](#Electrodes) <br>
 	- [Makin et al 2018 results time bin 64 ms](#Makin-et-al-2018-results-time-bin-64-ms) <br>
-		-[time bin 64 ms](#time-bin-64-ms)<br>
+		-[time bin 64 ms](#time-bin-64-ms) <br>
 		- [indy](#indy) <br>
 			- [R-square](#R-square) <br>
 			- [SNR](#SNR) <br>
