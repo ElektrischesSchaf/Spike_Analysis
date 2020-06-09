@@ -2,6 +2,7 @@
     - [Test](#Test-123-456)  <br>
     - [Electrodes](#Electrodes) <br>
 	- [Makin et al 2018 results time bin 64 ms](#Makin-et-al-2018-results-time-bin-64-ms) <br>
+		-[time bin 64 ms](#time-bin-64-ms)<br>
 		- [indy](#indy) <br>
 			- [R-square](#R-square) <br>
 			- [SNR](#SNR) <br>
@@ -52,9 +53,10 @@
 	10    12    90    92    61    65    69    71    56    60 <br>
 	NaN    51    49    53    55    59    63    67    52   NaN <br>
 
-## Makin et al 2018 results time bin 64 ms
-### indy
-#### R-square
+## Makin et al 2018 results
+### time bin 64 ms
+#### indy
+##### R-square
 | Sessions | x pos | y pos | x vel | y vel | x acc | y acc |
 | -------- | ----- | ----- | ----- | ----- | ----- | ----- |
 |	indy_20160407_02	|	0.721931408	|	0.777293148	|	0.762777642	|	0.778829658	|	0.388751422	|	0.385790641	|
@@ -95,7 +97,7 @@
 |	indy_20170127_03	|	0.709138657	|	0.709907583	|	0.723720207	|	0.711341005	|	0.510454501	|	0.5035804	|
 |	indy_20170131_02	|	0.59516855	|	0.648422427	|	0.63100909	|	0.701856915	|	0.377432825	|	0.419055428	|
 
-#### SNR
+##### SNR
 | Sessions | x pos | y pos | x vel | y vel | x acc | y acc |
 | -------- | ----- | ----- | ----- | ----- | ----- | ----- |
 |	indy_20160407_02	|	5.558480618	|	6.522664214	|	6.248443817	|	6.552731098	|	2.13782138	|	2.116835706	|
