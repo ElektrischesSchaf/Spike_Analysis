@@ -25,7 +25,7 @@ class  GRUModel(torch.nn.Module):
         self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-        r = 3
+        r = 1
         da= 50
 
         self.W_s1 = torch.nn.Linear(hidden_dim, da)
@@ -65,7 +65,7 @@ class  GRUModel(torch.nn.Module):
 
         hidden_matrix = torch.bmm(attn_weight_matrix, out)
         # print('shape of hidden_matrix= ', hidden_matrix.size())
-        out = torch.relu(self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) ) )
+        out = (self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) ) )
 
         out = self.label(out)
 

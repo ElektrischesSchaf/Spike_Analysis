@@ -52,12 +52,12 @@ session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name='GRU_with_Spike_Single_37_Session'
-MAX_EPOCH= 50
+MAX_EPOCH= 100
 LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=1
+NUMBER_OF_LAYERS=4
 BATCH_SIZE=4
 HIDDEN_DIMENSION=100
-max_timestep=10
+max_timestep=20
 # Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
@@ -175,6 +175,14 @@ for session_k in range(len(session_file_list)):
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
 
     print('shape of X_for_training before', X_for_training.shape)
+
+
+    # Normalize Firing rate
+    the_mean=np.mean(X_for_training)
+    the_std=np.std(X_for_training)
+    X_for_training = (X_for_training - the_mean )/ the_std
+    X_for_prediction = (X_for_prediction - the_mean )/ the_std
+
     # Processing max orders
     order_num=max_timestep-1
     [X_for_training, X_for_prediction,
@@ -271,16 +279,6 @@ for session_k in range(len(session_file_list)):
         testing_y=pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)    
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
-
-    # normalize input firing rate
-    '''
-    training_x_mean=torch.mean(training_x)
-    training_x_std=torch.std(training_x)
-    training_x=(training_x-training_x_mean)/training_x_std
-    testing_x=(testing_x-training_x_mean)/training_x_std
-    training_y_mean=torch.mean(training_y)
-    training_y_std=torch.std(training_y)
-    '''
 
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
