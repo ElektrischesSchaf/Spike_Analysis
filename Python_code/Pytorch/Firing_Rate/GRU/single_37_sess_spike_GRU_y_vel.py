@@ -38,7 +38,8 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Deep leaning module
-from  Deep_Learning_Models.GRU_one_stream import GRUModel
+# from  Deep_Learning_Models.GRU_one_stream import GRUModel
+from  Deep_Learning_Models.GRU_one_stream_self_Atten import GRUModel
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # Make file list

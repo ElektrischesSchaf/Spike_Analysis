@@ -38,7 +38,8 @@ my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
 # Deep leaning module
-from  Deep_Learning_Models.GRU_one_stream import GRUModel
+# from  Deep_Learning_Models.GRU_one_stream import GRUModel
+from  Deep_Learning_Models.GRU_one_stream_self_Atten import GRUModel
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # Make file list
@@ -46,14 +47,14 @@ kinematic_variable_type='y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:] 
+List_FILE=ALL_List_FILE[20:21] 
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name='GRU_with_Spike_Single_37_Session'
 MAX_EPOCH= 50
 LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=2
+NUMBER_OF_LAYERS=1
 BATCH_SIZE=4
 HIDDEN_DIMENSION=100
 max_timestep=10
