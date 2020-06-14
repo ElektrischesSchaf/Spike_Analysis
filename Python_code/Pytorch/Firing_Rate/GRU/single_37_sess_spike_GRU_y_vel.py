@@ -47,14 +47,14 @@ kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:] 
+List_FILE=ALL_List_FILE[20:21] 
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name='GRU_with_Spike_Single_37_Session'
 MAX_EPOCH= 50
 LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=2
+NUMBER_OF_LAYERS=4
 BATCH_SIZE=4
 HIDDEN_DIMENSION=100
 max_timestep=10
@@ -175,6 +175,13 @@ for session_k in range(len(session_file_list)):
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
 
     print('shape of X_for_training before', X_for_training.shape)
+
+    # Normalize Firing rate
+    the_mean=np.mean(X_for_training)
+    the_std=np.std(X_for_training)
+    X_for_training = (X_for_training - the_mean )/ the_std
+    X_for_prediction = (X_for_prediction - the_mean )/ the_std
+
     # Processing max orders
     order_num=max_timestep-1
     [X_for_training, X_for_prediction,
@@ -272,15 +279,11 @@ for session_k in range(len(session_file_list)):
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
 
-    # normalize input firing rate
-    '''
-    training_x_mean=torch.mean(training_x)
-    training_x_std=torch.std(training_x)
-    training_x=(training_x-training_x_mean)/training_x_std
-    testing_x=(testing_x-training_x_mean)/training_x_std
+    # Normalize label
     training_y_mean=torch.mean(training_y)
+    training_y_mean=training_y_mean.float()
     training_y_std=torch.std(training_y)
-    '''
+    training_y_std=training_y_std.float()
 
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
@@ -296,15 +299,11 @@ for session_k in range(len(session_file_list)):
     training_dataset=AbstractDataset(training_x, training_y)
     testing_dataset=AbstractDataset(testing_x, testing_y)
 
-    # TODO collate_fn
-    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
-    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
-    # test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)    
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     net = GRUModel(input_dim=feature_numbers, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
+
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
     net.to(device)
@@ -399,7 +398,7 @@ for session_k in range(len(session_file_list)):
 
 
     plt.figure(figsize=(7,5))
-    plt.title(model_name+' Loss')
+    plt.title('Loss')
     plt.plot(train_loss, label='train')
     plt.plot(valid_loss, label='test')
     plt.xlabel('Epoch')
@@ -408,7 +407,7 @@ for session_k in range(len(session_file_list)):
     plt.savefig(plot_path + '/' + model_name+"_Loss.png")
 
     plt.figure(figsize=(7,5))
-    plt.title(model_name+' performance')
+    plt.title('performance')
     plt.plot(train_R_square, label='train')
     plt.plot(valid_R_square, label='test')
     plt.xlabel('Epoch')
@@ -481,17 +480,17 @@ for session_k in range(len(session_file_list)):
     df.to_csv(os.path.join(csv_path, 'my_prediction.csv'), index=False, header=False)
 
     if kinematic_variable_type=='x_vel':
-        plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
-        plt.title( model_name+' Model on session: '+ session_name + ', x-velocity prediction' , fontsize=30, color="black")
+        plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
+        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Ground Truth', alpha=0.5)
+        plt.title( session_name + ', x-velocity prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
         df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_vel.csv'), index=False, header=False) 
 
     if kinematic_variable_type=='y_vel':
-        plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
-        plt.title( model_name+' Model on session: ' + session_name + ', y-velocity prediction' , fontsize=30, color="black")
+        plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
+        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Ground Truth', alpha=0.5)
+        plt.title( session_name + ', y-velocity prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
         df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_vel.csv'), index=False, header=False)
