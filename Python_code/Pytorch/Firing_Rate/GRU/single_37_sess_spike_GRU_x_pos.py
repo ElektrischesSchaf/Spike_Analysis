@@ -280,6 +280,10 @@ for session_k in range(len(session_file_list)):
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
 
+    # Normalize label
+    training_y_mean=torch.mean(training_y)
+    training_y_std=torch.std(training_y)
+
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
@@ -369,7 +373,7 @@ for session_k in range(len(session_file_list)):
         labels = y.to(device)
 
         o_labels = net(feature)
-        # o_labels=o_labels*training_y_std+training_y_mean
+        o_labels=o_labels*training_y_std+training_y_mean
 
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss
@@ -397,7 +401,7 @@ for session_k in range(len(session_file_list)):
 
 
     plt.figure(figsize=(7,5))
-    plt.title(model_name+' Loss')
+    plt.title( 'Loss' )
     plt.plot(train_loss, label='train')
     plt.plot(valid_loss, label='test')
     plt.xlabel('Epoch')
@@ -406,7 +410,7 @@ for session_k in range(len(session_file_list)):
     plt.savefig(plot_path + '/' + model_name+"_Loss.png")
 
     plt.figure(figsize=(7,5))
-    plt.title(model_name+' performance')
+    plt.title( 'performance' )
     plt.plot(train_R_square, label='train')
     plt.plot(valid_R_square, label='test')
     plt.xlabel('Epoch')
@@ -442,7 +446,7 @@ for session_k in range(len(session_file_list)):
         #     continue
 
         o_labels = net(x.to(device))
-        # o_labels=o_labels*training_y_std+training_y_mean
+        o_labels=o_labels*training_y_std+training_y_mean
 
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
@@ -476,17 +480,17 @@ for session_k in range(len(session_file_list)):
     df.to_csv(os.path.join(csv_path, 'my_prediction.csv'), index=False, header=False)
 
     if kinematic_variable_type=='x_pos':
-        plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
-        plt.title( model_name+' Model on session: '+ session_name + ', x-position prediction' , fontsize=30, color="black")
+        plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
+        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.5)
+        plt.title( session_name + ' x-position prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
         df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_pos.csv'), index=False, header=False) 
 
     if kinematic_variable_type=='y_pos':
-        plt.plot( plotting_time_elapsed, my_prediction, 'b--', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r--', linewidth=5, label='Ground Truth', alpha=0.7)
-        plt.title( model_name+' Model on session: ' + session_name + ', y-position prediction' , fontsize=30, color="black")
+        plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
+        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.5)
+        plt.title( session_name + ' y-position prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
         df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_pos.csv'), index=False, header=False)
