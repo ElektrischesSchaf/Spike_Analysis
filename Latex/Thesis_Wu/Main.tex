@@ -1,0 +1,174 @@
+\documentclass[12pt, a4paper, oneside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{minitoc}
+%% Figure settings
+% -----------------------------------------
+\ifx\pdfoutput\undefined
+%Use old Latex if PDFLatex does not work
+\usepackage[dvips]{graphicx}% To get graphics working
+\DeclareGraphicsExtensions{.eps} % Encapsulated PostScript
+\else
+%Use PDFLatex
+\usepackage[pdftex]{graphicx}% To get graphics working
+\DeclareGraphicsExtensions{.pdf,.jpg,.png,.mps} % Portable Document Format, Joint Photographic Experts Group, Portable Network Graphics, MetaPost
+\pdfcompresslevel=9
+\fi
+\usepackage{subcaption}
+\graphicspath{{./Figures/}}
+% -----------------------------------------
+%%
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{rotating}
+\usepackage{tabulary}
+\usepackage[titletoc]{appendix}
+%% Font style setting
+% -----------------------------------------
+\usepackage{mathspec}
+\setmainfont{Times New Roman}
+\setmathsfont{Times New Roman}
+\usepackage{xeCJK}
+\setCJKmainfont{標楷體}
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip = 0pt plus 1pt
+\defaultCJKfontfeatures{AutoFakeBold=6,AutoFakeSlant=.4}
+% -----------------------------------------
+%%
+\usepackage{wallpaper}
+\usepackage{setspace}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb}
+\allowdisplaybreaks
+\usepackage[english]{babel}
+%\usepackage[square,numbers]{natbib}
+\usepackage{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{breakcites}
+\usepackage{./macros_tn} %Loads all my macros
+\usepackage{geometry}
+\usepackage[draft]{todonotes}   % notes showed
+\usepackage{enumitem}
+%% Date setting for cover
+% -----------------------------------------
+\usepackage{datetime} % For displaying month and year in the cover
+\usepackage{fp} % To calculate the year of Minguo(民國)
+\FPsub\Minguo{\the\year}{1911}
+\FPeval{\Minguo}{round(Minguo,0)}
+% -----------------------------------------
+%%
+%% Nomenclature
+% -----------------------------------------
+\usepackage{nomencl}
+\makenomenclature
+% -----------------------------------------
+%%
+%% Grouping nomenclature
+% -----------------------------------------
+\usepackage{etoolbox}
+\renewcommand\nomgroup[1]{%
+	\item[\bfseries
+	\ifstrequal{#1}{A}{Group 1}{%
+	\ifstrequal{#1}{B}{Group 2}{%
+	\ifstrequal{#1}{C}{Group 3}{}}}%
+]}
+% -----------------------------------------
+%%
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{1}
+\usepackage{lipsum}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Please create a new tex file and copy the content of this template%
+%                    START WRITING FROM HERE                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	\pagenumbering{gobble}
+	\begin{titlepage}
+		\newgeometry{a4paper,
+		total={210mm,296mm},
+		top=23mm,
+		bottom=30mm,
+		left=20mm,
+		right=20mm,}
+	\input{Cover.tex}
+	\ThisCenterWallPaper{.325}{watermark.jpg}
+	\end{titlepage}
+	\newgeometry{
+		a4paper,
+		total={210mm,296mm},
+		left=30mm,
+		right=25mm,
+		top=23mm,
+		bottom=35mm,
+	}
+	\CenterWallPaper{.325}{watermark.jpg}
+	\begin{spacing}{1.5}
+		\frontmatter
+		\addcontentsline{toc}{chapter}{Chinese abstract}
+		\chapter*{\centering Chinese abstract}
+		\label{chap:chi_abstract}
+		\lipsum[1-2]
+		\newpage
+		%% Abstract
+		\addcontentsline{toc}{chapter}{Abstract}
+		\chapter*{\centering Abstract}
+		\label{chap:abstract}
+		\lipsum[3-4]
+		\newpage
+		\addcontentsline{toc}{chapter}{Acknowledgment}
+		%% acknowledgment
+		\chapter*{\centering Acknowledgment}
+		\label{chap:acknowledgment}
+		\lipsum[5-6]
+		\newpage
+		%% Table of contents
+		\dominitoc 
+		\begin{singlespace}
+		\renewcommand{\contentsname}{Table of Contents}
+		\cleardoublepage
+		\addcontentsline{toc}{chapter}{Table of Contents}
+		\tableofcontents
+		%% List of tables
+		\listoftables
+		\addcontentsline{toc}{chapter}{List of Tables}
+		%% List of figures
+		\listoffigures
+		\addcontentsline{toc}{chapter}{List of Figures}
+		%% List of symbols
+		% Note: add the following setting in configure of makeindex
+		% makeindex.exe %.nlo -s nomencl.ist -o %.nls -t %.nlg
+		\mbox{}
+		%% ---- Start writing nomenclature here ---- %%
+		\addcontentsline{toc}{chapter}{Nomenclature}
+		\printnomenclature
+		\end{singlespace}
+		%% Main content
+		\mainmatter
+		\chapter{Introduction}
+		\label{chap:Introduction}
+		\lipsum[7]
+		\chapter{Methods}
+		\label{chap:Methods}
+		\lipsum[8]
+		\chapter{Results}
+		\label{chap:Results}
+		\lipsum[9]
+		\chapter{Conclusion}
+		\label{chap:Conclusion}
+		\lipsum[10]
+		\begin{singlespace}
+			\clearpage
+			%% References (bibliography)
+			\addcontentsline{toc}{chapter}{References}
+			\renewcommand{\bibname}{References}
+			\bibliographystyle{apalike}
+			%% ----  Bib file here ---- %%
+			\clearpage
+		\end{singlespace}
+		%% Appendix
+		\begin{appendices}
+			\chapter{Lipsum}
+			\lipsum[11]
+		\end{appendices}
+		\backmatter
+	\end{spacing}
+\end{document}      

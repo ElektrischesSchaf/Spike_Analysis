@@ -1,0 +1,514 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macros and settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\@ifpackageloaded{amsthm}{}{\usepackage{amsthm}} % Added to get theorems
+\@ifpackageloaded{color}{}{\usepackage{color}} %Needed for color, the option usenames,dvipsnames will define a set of basic colors.
+\@ifpackageloaded{xcolor}{}{\usepackage[table]{xcolor}} %Needed to color rows in table
+\@ifpackageloaded{ifdraft}{}{\usepackage{ifdraft}} %Enables \ifdraft{draft case}{final case} where things automatically are turned on and off depending on draft status.
+\@ifpackageloaded{comment}{}{\usepackage{comment}} %Used to get comments turned on or off.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Show comments or not
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\ifdraft{}{\commentsoff{comment}} % Old comment command
+
+% Command for inserting todo items and colored sentences that need revision
+%\newcommand{\todo}[1]{\addcontentsline{tdo}{todo}{\protect{#1}}\begin{tikzpicture}[remember picture, baseline=-0.75ex]\node [coordinate] (inText) {}; \end{tikzpicture}\marginpar{\begin{tikzpicture}[remember picture]\definecolor{orange}{rgb}{0.9,0.7,0.6}\draw node[draw=black, fill=orange, text width = 1.5cm, text height = 1cm] (inNote){\footnotesize \singlespacing \rotatebox{90}{#1}};\end{tikzpicture}}\begin{tikzpicture}[remember picture, overlay]\draw[draw = orange, thick]([yshift=-0.2cm] inText) -| ([xshift=-0.2cm] inNote.west)-| (inNote.west);\end{tikzpicture}}
+\definecolor{explanations}{rgb}{0.8 0 0}
+\definecolor{furtherinfo}{rgb}{0.5 0.5 0}
+\definecolor{firstpass}{rgb}{0.0,0.5,0.0}
+\definecolor{secondpass}{rgb}{0,0.0,0.5}
+
+% Explanation of tags
+%re - explanation/outline
+%rd - details about statement
+%rn - note, comment to myself about why I write it
+%rc - code/script used to generate result
+%ra - additional result that is correct and completed
+%ru - unfinished result
+%ri - idea
+%rp - parallel/duplicate of result that exists elsewhere but with small changes
+
+% The following commands changes the spacing if they are used after a line feed, unless the proceeding row ends with a %. ALLWAYS add a % without any white space in between after these commands unless the previous row ends with a % to avoid strange spacing. (Too many % also introduces stange spacing.)
+\ifdraft{\newcommand{\re}[1]{\textcolor{explanations}{#1}} %Explanations about what will follow in the paragraph, i.e. its purpose
+}{\newcommand{\re}[1]{}} %Use to make explanations invisible
+\ifdraft{\newcommand{\rd}[1]{\textcolor{furtherinfo}{#1}} %Further information that is useful but not necessary for the story.
+}{\newcommand{\rd}[1]{}}%Use to make furtherinfo invisible
+\ifdraft{\newcommand{\rn}[1]{\textcolor{furtherinfo}{#1}} %Note, comment to myself about why I write it
+}{\newcommand{\rn}[1]{}}%Use to make invisible
+\ifdraft{\newcommand{\rc}[1]{\textcolor{furtherinfo}{#1}} %Code/script used to generate result
+}{\newcommand{\rc}[1]{}}%Use to make invisible
+\ifdraft{\newcommand{\ra}[1]{\textcolor{furtherinfo}{#1}} %Additional result that is correct and completed
+}{\newcommand{\ra}[1]{}}%Use to make invisible
+\ifdraft{\newcommand{\ru}[1]{\textcolor{furtherinfo}{#1}} %Unfinished result
+}{\newcommand{\ru}[1]{}}%Use to make invisible
+\ifdraft{\newcommand{\ri}[1]{\textcolor{furtherinfo}{#1}} %Idea
+}{\newcommand{\ri}[1]{}}%Use to make invisible
+\ifdraft{\newcommand{\rp}[1]{\textcolor{furtherinfo}{#1}} %Parallel/duplicate of result that exists elsewhere but with small changes
+}{\newcommand{\rp}[1]{}}%Use to make invisible
+\ifdraft{\newcommand{\rr}[1]{\textcolor{firstpass}{#1}} %Comments about what is missing or need to be changed.
+}{\newcommand{\rr}[1]{\textcolor{firstpass}{#1}}} %Use to make comment invisible
+\ifdraft{\newcommand{\rrr}[1]{\textcolor{secondpass}{#1}}
+}{\newcommand{\rrr}[1]{\textcolor{secondpass}{#1}}} %Use to make comment invisible
+
+%Explanations about what will follow in the paragraph, i.e. its purpose
+\specialcomment{ce}{\color{explanations}}{\color{black}}
+\ifdraft{\includecomment{ce}}{\excludecomment{ce}}
+%Further information that is useful but not necessary for the story.
+\specialcomment{cd}{\color{furtherinfo}}{\color{black}}
+\ifdraft{\includecomment{cd}}{\excludecomment{cd}}
+%Comments about what is missing or need to be changed.
+\specialcomment{crr}{\color{firstpass}}{\color{black}}
+\ifdraft{\includecomment{crr}}{\excludecomment{crr}}
+\specialcomment{crr}{\color{secondpass}}{\color{black}}
+\ifdraft{\includecomment{crr}}{\excludecomment{crr}}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Theorem environments and other numbered lists
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\numberwithin{equation}{section} %Makes equation numbers depend on section
+%\numberwithin{figure}{section} %Makes figure numbers depend on section. (Fucks up the numbering if chapters are used.)
+%\numberwithin{table}{section} %Makes table numbers depend on section. (Fucks up the numbering if chapters are used.)
+\theoremstyle{plain}% default
+\newtheorem{thm}{Theorem}[section] %Theorem environment has section number
+\newtheorem{lem}[thm]{Lemma} %Lemma environment has same numbering as thm
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{alg}{Algorithm}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{conj}{Conjecture}[section]
+\newtheorem{ex}{Example}[section]
+%\newenvironment{exa}{\begin{ex}}{\hfill $\qed$ \end{ex}}
+\newtheorem{ass}{Assumption}[section]
+% A proof theorem with qed exists by default but I want the same number as the theorem
+\newtheoremstyle{TheoremNum}
+    {\topsep}{\topsep}              %%% space between body and thm
+    {\itshape}                      %%% Thm body font
+    {}                              %%% Indent amount (empty = no indent)
+    {\bfseries}                     %%% Thm head font
+    {.}                             %%% Punctuation after thm head
+    { }                             %%% Space after thm head
+    {\thmname{#1}\thmnote{ \bfseries #3}}%%% Thm head spec
+\theoremstyle{TheoremNum}
+\newtheorem{prf}{Proof of} %E.g. Proof of Theorem 1.1.
+\newenvironment{prq}{\begin{prf}}{\hspace*{1pt}\hfill $\qed$ \end{prf}}
+\newtheoremstyle{TheoremNoNum}
+    {\topsep}{\topsep}              %%% space between body and thm
+    {\itshape}                      %%% Thm body font
+    {}                              %%% Indent amount (empty = no indent)
+    {\bfseries}                     %%% Thm head font
+    {.}                             %%% Punctuation after thm head
+    { }                             %%% Space after thm head
+    {\thmname{#1}}%%% Thm head spec
+\theoremstyle{TheoremNoNum}
+\newtheorem{prfh}{Proof} %E.g. Proof of Theorem 1.1.
+\newenvironment{prqh}{\begin{prfh}}{\hspace*{1pt}\hfill $\qed$ \end{prfh}}
+\theoremstyle{definition}
+\newtheorem{rf}{Finding}[section]
+\newtheorem{imp}{Implication}[rf]
+\newtheorem{fut}{Future work}[rf]
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+\newtheorem*{note}{Note}
+\newtheorem{case}{Case}[section]
+\newcommand{\figref}[1]{Figure~\ref{#1}}
+\newcommand{\boxref}[1]{Box~\ref{#1}}
+\newcommand{\chref}[1]{Chapter~\ref{#1}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\appref}[1]{Appendix~\ref{#1}}
+\newcommand{\tabref}[1]{Table~\ref{#1}}
+\newcommand{\thmref}[1]{\textup{Theorem \ref{#1}}}
+\newcommand{\lemref}[1]{\textup{Lemma \ref{#1}}}
+\newcommand{\propref}[1]{\textup{Proposition \ref{#1}}}
+\newcommand{\corref}[1]{\textup{Corollary \ref{#1}}}
+\newcommand{\algref}[1]{\textup{Algorithm \ref{#1}}}
+\newcommand{\defnref}[1]{\textup{Definition \ref{#1}}}
+\newcommand{\conjref}[1]{\textup{Conjecture \ref{#1}}}
+\newcommand{\exref}[1]{Example~\ref{#1}}
+\newcommand{\prfref}[1]{Proof~\ref{#1}}
+\newcommand{\assref}[1]{Assumption~\ref{#1}}
+\newcommand{\remref}[1]{Remark~\ref{#1}}
+\newcommand{\noteref}[1]{Note~\ref{#1}}
+\newcommand{\caseref}[1]{Case~\ref{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Box for Interampatte
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Creates the MyBox
+\definecolor{shadecolor}{rgb}{0.902,0.98,0.98}
+\newlength{\boxwidth}
+\newsavebox{\boxcontainer}
+\newcounter{boxcounter}
+
+% Improved version of Stephan_K's \mybox
+% Needs: shadecolor, \boxwidth
+\newcommand\mybox[1]{%
+  \setlength{\boxwidth}{\textwidth}
+  \addtolength{\boxwidth}{-2\fboxsep}
+  \addtolength{\boxwidth}{-2\fboxrule}
+  \begin{center}%
+    \fcolorbox{black}{shadecolor}{%
+      \begin{minipage}[t]{\boxwidth}%
+        #1%
+      \end{minipage}}%
+  \end{center}}
+
+% First environment version
+% Needs: shadecolor, \boxwidth, \boxcontainer
+\newenvironment{Mybox}{
+  \refstepcounter{boxcounter}
+  \setlength{\boxwidth}{\textwidth}
+   \addtolength{\boxwidth}{-2\fboxsep}
+   \addtolength{\boxwidth}{-2\fboxrule}
+   \begin{lrbox}{\boxcontainer}%
+     \begin{minipage}{\boxwidth}}%
+  {\end{minipage}\end{lrbox}%
+   \begin{center}%
+     \fcolorbox{black}{shadecolor}{\usebox{\boxcontainer}}
+   \end{center}}
+
+% Second environment version
+% Needs: shadecolor, \boxwidth and the framed package
+\newenvironment{MyBox}{%
+  \refstepcounter{boxcounter}
+  \def\FrameCommand{\fboxsep=\FrameSep \fboxrule=\FrameRule \fcolorbox{black}{shadecolor}}%
+  \MakeFramed {\setlength{\boxwidth}{\textwidth}
+  \addtolength{\boxwidth}{-2\FrameSep}
+  \addtolength{\boxwidth}{-2\FrameRule}
+  \setlength{\hsize}{\boxwidth} \FrameRestore}}%
+{\endMakeFramed}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom environments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Environment with custom space before and after equation
+\newenvironment{eqnspace}[1]
+{ \bgroup
+  \addtolength\abovedisplayshortskip{#1}
+  \addtolength\abovedisplayskip{#1}
+  \addtolength\belowdisplayshortskip{#1}
+  \addtolength\belowdisplayskip{#1}}
+{\egroup\ignorespacesafterend}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Torbjorns favorite macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Define different operators
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\spanv}{span}
+\DeclareMathOperator{\prank}{prank}
+\DeclareMathOperator{\erank}{erank}
+\DeclareMathOperator{\pspanv}{pspan}
+\DeclareMathOperator{\range}{range}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\vectorize}{vec}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\SNR}{SNR}
+\DeclareMathOperator{\NSR}{NSR}
+\DeclareMathOperator{\VSR}{VSR}
+\DeclareMathOperator{\MSE}{MSE}
+%\DeclareMathOperator{\real}{Re} % Use \Re
+%\DeclareMathOperator{\imag}{Im} % Use \Im
+
+% Define Probability, Expectation, Variance, Covariance, Median, Mode
+%\renewcommand{\Pr}{\mbox{$\mathsf P$}}
+\DeclareMathOperator{\Prob}{\mathsf{P}} %Probability
+\DeclareMathOperator{\E}{\mathbf{E}} %Expectation
+\DeclareMathOperator{\var}{var} % Variance
+\DeclareMathOperator{\cov}{cov} % Covariance
+\DeclareMathOperator{\mean}{mean} % Covariance
+\DeclareMathOperator{\median}{median} % Covariance
+\DeclareMathOperator{\pdf}{\mathbf{p}} %probability density function
+\DeclareMathOperator{\df}{\mathbf{P}} %cumulative distribution function
+\DeclareMathOperator{\chisquare}{\chi^{2}} %chi-square distribution function
+\DeclareMathOperator{\invchisquare}{\chi^{-2}} %inverse chi-square distribution function
+
+% Other
+\newcommand{\degree}{\ensuremath{^\circ}}
+\providecommand{\commentt}[1]{\emph{#1} }
+\renewcommand{\emph}{\textit} %Used to keep as italic in theorems
+\newcommand{\ie}{\emph{i.e.}\xspace}
+\newcommand{\eg}{\emph{e.g.}\xspace}
+\newcommand{\Ie}{\emph{I.e.}\xspace}
+\newcommand{\Eg}{\emph{E.g.}\xspace}
+\newcommand{\iec}{\emph{i.e.}, }
+\newcommand{\egc}{\emph{e.g.}, }
+\newcommand{\ied}{\emph{i.e\@.} }
+\newcommand{\egd}{\emph{e.g\@.} }
+\newcommand{\etc}{\emph{etc.}\xspace}
+\newcommand{\etcc}{\emph{etc.}, }
+\newcommand{\etcd}{\emph{etc\@.} }
+\newcommand{\etal}{\emph{et al.}\xspace}
+\newcommand{\etalc}{\emph{et al.}, }
+\newcommand{\etald}{\emph{et al.} }
+\newcommand{\invivo}{\emph{in vivo}\xspace}
+\newcommand{\invitro}{\emph{in vitro}\xspace}
+\newcommand{\insilico}{\emph{in silico}\xspace}
+\newcommand{\apriori}{\emph{a priori}\xspace}
+\newcommand{\aposteriori}{\emph{a posteriori}\xspace}
+\newcommand{\Apriori}{\emph{A priori}\xspace}
+\newcommand{\Aposteriori}{\emph{A posteriori}\xspace}
+\newcommand{\aprioric}{\emph{a priori}, }
+\newcommand{\aposterioric}{\emph{a posteriori}, }
+\newcommand{\defacto}{\emph{de facto}\xspace}
+\newcommand{\perse}{\emph{per se}\xspace}
+\newcommand{\persec}{\emph{per se}, }
+\newcommand{\persed}{\emph{per se\@.} }
+\newcommand{\viceversa}{\emph{vice versa}\xspace}
+\newcommand{\yeast}{\textit{S\@. cerevisiae}\xspace}
+\newcommand{\coli}{\textit{E\@. coli}\xspace}
+\newcommand{\lasso}{LASSO\xspace}
+%\newcommand{\iid}{{i.i.d.}\ } %This command already exist in BMC class
+\providecommand{\pp}[1]{p.~#1} %Used for indicating page numbers in references
+%\providecommand{\pp}[1]{} %Used for removing page numbers in references
+\providecommand{\s}[1]{ch.~#1} %Used for indicating section/chapter numbers in references
+%\providecommand{\s}[1]{} %Used for removing section/chapter numbers in references
+\def\inv{{^{-1}}}% inverse
+\providecommand{\abs}[1]{\left\lvert#1\right\rvert} %abs
+\providecommand{\norm}[1]{\left\lVert#1\right\rVert} %norm
+\providecommand{\bignorm}[1]{\big\lVert#1\big\rVert} %norm
+\providecommand{\Bignorm}[1]{\Big\lVert#1\Big\rVert} %norm
+\providecommand{\mnorm}[1]{\left\lVert#1\right\rVert} %matrix norm
+\providecommand{\bigmnorm}[1]{\big\lVert#1\big\rVert} %matrix norm
+\providecommand{\Bigmnorm}[1]{\Big\lVert#1\Big\rVert} %matrix norm
+\providecommand{\rv}[1]{\mathrm{#1}} %Mark of random variables
+\providecommand{\set}[1]{\mathcal{#1}} %Mark of variables denoting sets
+\providecommand{\mean}[1]{\ensuremath{\widehat{#1}}} %Mark of mean value
+\providecommand{\subs}[1]{\ensuremath{\textrm{#1}}} %Mark of substrates
+\providecommand{\conc}[1]{\ensuremath{\left[{#1}\right]}} %Mark of concentration
+\providecommand{\figvar}[1]{{\sffamily\itshape #1}} %Mark gene figure variables (looks like the font from Cytoscape and is italic like in Cantone et al.)
+\providecommand{\figvarp}[1]{{\sffamily #1}} %Mark protein figure variables (looks like the font from Cytoscape)
+\providecommand{\figvarsf}[1]{{\sffamily #1}} %Mark figure variables that should be san serf
+%\providecommand{\figvar}[1]{\ensuremath{\mathsf{#1}}} %Mark figure variables (looks very much like the font from Cytoscape)
+\providecommand{\genevar}[1]{{\sffamily\itshape #1}} %Mark gene variables (should be italic based on Cantone et al.)
+\providecommand{\protvar}[1]{{\sffamily #1}} %Mark protein variables (should be italic based on Cantone et al.)
+\renewcommand{\breve}{} %Used to remove the breve marks
+\def\pb{\\*[0.42cm]}
+\def\ones{{\boldsymbol{\mathbbm{1}}}} %Matrix of ones
+
+% Vector marker
+\def\b0{{\boldsymbol{0}}}
+\def\bA{{\boldsymbol{A}}}
+\def\ba{{\boldsymbol{a}}}
+\def\bB{{\boldsymbol{B}}}
+\def\bb{{\boldsymbol{b}}}
+\def\bC{{\boldsymbol{C}}}
+\def\bc{{\boldsymbol{c}}}
+\def\bD{{\boldsymbol{D}}}
+\def\bd{{\boldsymbol{d}}}
+\def\bE{{\boldsymbol{E}}}
+\def\be{{\boldsymbol{e}}}
+\def\bF{{\boldsymbol{F}}}
+\def\bbf{{\boldsymbol{f}}}
+\def\bG{{\boldsymbol{G}}}
+\def\bg{{\boldsymbol{g}}}
+\def\bH{{\boldsymbol{H}}}
+\def\bh{{\boldsymbol{h}}}
+\def\bI{{\boldsymbol{I}}}
+\def\bi{{\boldsymbol{i}}}
+\def\bJ{{\boldsymbol{J}}}
+\def\bj{{\boldsymbol{j}}}
+\def\bK{{\boldsymbol{K}}}
+\def\bk{{\boldsymbol{k}}}
+\def\bL{{\boldsymbol{L}}}
+\def\bl{{\boldsymbol{l}}}
+\def\bM{{\boldsymbol{M}}}
+\def\bm{{\boldsymbol{m}}}
+\def\bN{{\boldsymbol{N}}}
+\def\bn{{\boldsymbol{n}}}
+\def\bO{{\boldsymbol{O}}}
+\def\bo{{\boldsymbol{o}}}
+\def\bP{{\boldsymbol{P}}}
+\def\bp{{\boldsymbol{p}}}
+\def\bQ{{\boldsymbol{Q}}}
+\def\bq{{\boldsymbol{q}}}
+\def\bR{{\boldsymbol{R}}}
+\def\br{{\boldsymbol{r}}}
+\def\bs{{\boldsymbol{s}}}
+\def\bS{{\boldsymbol{S}}}
+\def\bT{{\boldsymbol{T}}}
+\def\bt{{\boldsymbol{t}}}
+\def\bU{{\boldsymbol{U}}}
+\def\bu{{\boldsymbol{u}}}
+\def\bV{{\boldsymbol{V}}}
+\def\bv{{\boldsymbol{v}}}
+\def\bW{{\boldsymbol{W}}}
+\def\bw{{\boldsymbol{w}}}
+\def\bx{{\boldsymbol{x}}}
+\def\bX{{\boldsymbol{X}}}
+\def\bY{{\boldsymbol{Y}}}
+\def\by{{\boldsymbol{y}}}
+\def\bZ{{\boldsymbol{Z}}}
+\def\bz{{\boldsymbol{z}}}
+
+\def\balpha{{\boldsymbol{\alpha}}}
+\def\bbeta{{\boldsymbol{\beta}}}
+\def\bgamma{{\boldsymbol{\gamma}}}
+\def\bdelta{{\boldsymbol{\delta}}}
+\def\bepsilon{{\boldsymbol{\epsilon}}}
+\def\bvarepsilon{{\boldsymbol{\varepsilon}}}
+\def\bzeta{{\boldsymbol{\zeta}}}
+\def\boldeta{{\boldsymbol{\eta}}}
+\def\btheta{{\boldsymbol{\theta}}}
+\def\bvartheta{{\boldsymbol{\vartheta}}}
+\def\biota{{\boldsymbol{\iota}}}
+\def\bkappa{{\boldsymbol{\kappa}}}
+\def\blambda{{\boldsymbol{\lambda}}}
+\def\bmu{{\boldsymbol{\mu}}}
+\def\bnu{{\boldsymbol{\nu}}}
+\def\bxi{{\boldsymbol{\xi}}}
+\def\bpi{{\boldsymbol{\pi}}}
+\def\bvarpi{{\boldsymbol{\varpi}}}
+\def\brho{{\boldsymbol{\rho}}}
+\def\bvarrho{{\boldsymbol{\varrho}}}
+\def\bsigma{{\boldsymbol{\sigma}}}
+\def\bvarsigma{{\boldsymbol{\varsigma}}}
+\def\btau{{\boldsymbol{\tau}}}
+\def\bupsilon{{\boldsymbol{\upsilon}}}
+\def\bphi{{\boldsymbol{\phi}}}
+\def\bvarphi{{\boldsymbol{\varphi}}}
+\def\bchi{{\boldsymbol{\chi}}}
+\def\bpsi{{\boldsymbol{\psi}}}
+\def\bomega{{\boldsymbol{\omega}}}
+\def\bGamma{{\boldsymbol{\Gamma}}}
+\def\bDelta{{\boldsymbol{\Delta}}}
+\def\bTheta{{\boldsymbol{\Theta}}}
+\def\bLambda{{\boldsymbol{\Lambda}}}
+\def\bXi{{\boldsymbol{\Xi}}}
+\def\bPi{{\boldsymbol{\Pi}}}
+\def\bSigma{{\boldsymbol{\Sigma}}}
+\def\bUpsilon{{\boldsymbol{\Upsilon}}}
+\def\bPhi{{\boldsymbol{\Phi}}}
+\def\bPsi{{\boldsymbol{\Psi}}}
+\def\bOmega{{\boldsymbol{\Omega}}}
+
+% Matrix marker
+\def\m0{{\boldsymbol{0}}}
+\def\mA{{\boldsymbol{A}}}
+\def\ma{{\boldsymbol{a}}}
+\def\mB{{\boldsymbol{B}}}
+\def\mb{{\boldsymbol{b}}}
+\def\mC{{\boldsymbol{C}}}
+\def\mc{{\boldsymbol{c}}}
+\def\mD{{\boldsymbol{D}}}
+\def\md{{\boldsymbol{d}}}
+\def\mE{{\boldsymbol{E}}}
+\def\me{{\boldsymbol{e}}}
+\def\mF{{\boldsymbol{F}}}
+\def\mf{{\boldsymbol{f}}}
+\def\mG{{\boldsymbol{G}}}
+\def\mg{{\boldsymbol{g}}}
+\def\mH{{\boldsymbol{H}}}
+\def\mh{{\boldsymbol{h}}}
+\def\mI{{\boldsymbol{I}}}
+\def\mi{{\boldsymbol{i}}}
+\def\mJ{{\boldsymbol{J}}}
+\def\mj{{\boldsymbol{j}}}
+\def\mK{{\boldsymbol{K}}}
+\def\mk{{\boldsymbol{k}}}
+\def\mL{{\boldsymbol{L}}}
+\def\ml{{\boldsymbol{l}}}
+\def\mM{{\boldsymbol{M}}}
+\def\mm{{\boldsymbol{m}}}
+\def\mN{{\boldsymbol{N}}}
+\def\mn{{\boldsymbol{n}}}
+\def\mO{{\boldsymbol{O}}}
+\def\mo{{\boldsymbol{o}}}
+\def\mP{{\boldsymbol{P}}}
+\def\mp{{\boldsymbol{p}}}
+\def\mQ{{\boldsymbol{Q}}}
+\def\mq{{\boldsymbol{q}}}
+\def\mR{{\boldsymbol{R}}}
+\def\mr{{\boldsymbol{r}}}
+\def\ms{{\boldsymbol{s}}}
+\def\mS{{\boldsymbol{S}}}
+\def\mT{{\boldsymbol{T}}}
+\def\mt{{\boldsymbol{t}}}
+\def\mU{{\boldsymbol{U}}}
+\def\muu{{\boldsymbol{u}}}
+\def\mV{{\boldsymbol{V}}}
+\def\mv{{\boldsymbol{v}}}
+\def\mW{{\boldsymbol{W}}}
+\def\mw{{\boldsymbol{w}}}
+\def\mx{{\boldsymbol{x}}}
+\def\mX{{\boldsymbol{X}}}
+\def\mY{{\boldsymbol{Y}}}
+\def\my{{\boldsymbol{y}}}
+\def\mZ{{\boldsymbol{Z}}}
+\def\mz{{\boldsymbol{z}}}
+
+\def\malpha{{\boldsymbol{\alpha}}}
+\def\mbeta{{\boldsymbol{\beta}}}
+\def\mgamma{{\boldsymbol{\gamma}}}
+\def\mdelta{{\boldsymbol{\delta}}}
+\def\mepsilon{{\boldsymbol{\epsilon}}}
+\def\mvarepsilon{{\boldsymbol{\varepsilon}}}
+\def\mzeta{{\boldsymbol{\zeta}}}
+\def\mateta{{\boldsymbol{\eta}}}
+\def\mtheta{{\boldsymbol{\theta}}}
+\def\mvartheta{{\boldsymbol{\vartheta}}}
+\def\miota{{\boldsymbol{\iota}}}
+\def\mkappa{{\boldsymbol{\kappa}}}
+\def\mlambda{{\boldsymbol{\lambda}}}
+\def\mmu{{\boldsymbol{\mu}}}
+\def\mnu{{\boldsymbol{\nu}}}
+\def\mxi{{\boldsymbol{\xi}}}
+\def\mpi{{\boldsymbol{\pi}}}
+\def\mvarpi{{\boldsymbol{\varpi}}}
+\def\mrho{{\boldsymbol{\rho}}}
+\def\mvarrho{{\boldsymbol{\varrho}}}
+\def\msigma{{\boldsymbol{\sigma}}}
+\def\mvarsigma{{\boldsymbol{\varsigma}}}
+\def\mtau{{\boldsymbol{\tau}}}
+\def\mupsilon{{\boldsymbol{\upsilon}}}
+\def\mphi{{\boldsymbol{\phi}}}
+\def\mvarphi{{\boldsymbol{\varphi}}}
+\def\mchi{{\boldsymbol{\chi}}}
+\def\mpsi{{\boldsymbol{\psi}}}
+\def\momega{{\boldsymbol{\omega}}}
+\def\mGamma{{\boldsymbol{\Gamma}}}
+\def\mDelta{{\boldsymbol{\Delta}}}
+\def\mTheta{{\boldsymbol{\Theta}}}
+\def\mLambda{{\boldsymbol{\Lambda}}}
+\def\mXi{{\boldsymbol{\Xi}}}
+\def\mPi{{\boldsymbol{\Pi}}}
+\def\mSigma{{\boldsymbol{\Sigma}}}
+\def\mUpsilon{{\boldsymbol{\Upsilon}}}
+\def\mPhi{{\boldsymbol{\Phi}}}
+\def\mPsi{{\boldsymbol{\Psi}}}
+\def\mOmega{{\boldsymbol{\Omega}}}
+
+% Symbols for number sets
+\def\bmF{{\mathbb{F}}}
+\def\bmR{{\mathbb{R}}}
+\def\bmC{{\mathbb{C}}}
+\def\bmZ{{\mathbb{Z}}}
+\def\bmN{{\mathbb{N}}}
+
+
+% I want to lift subsection to section level
+\newcommand{\tnsection}[1]{\section{{#1}}}
+\newcommand{\tnsubsection}[1]{\section{{#1}}}
+\newcommand{\tnsubsubsection}[1]{\subsection{{#1}}}
+
+
+
