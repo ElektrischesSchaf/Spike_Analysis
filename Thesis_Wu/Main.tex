@@ -81,6 +81,7 @@
 \usepackage[english]{babel}
 %\usepackage[square,numbers]{natbib}
 \usepackage{natbib}
+% \usepackage[square,numbers]{natbib} %Nice numbered citations
 \usepackage[hidelinks]{hyperref}
 \usepackage{breakcites}
 \usepackage{./macros_tn} %Loads all my macros
@@ -115,6 +116,13 @@
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{1}
 \usepackage{lipsum}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue, 
+  citecolor=blue,% new
+  linkbordercolor={0 0 1}
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Please create a new tex file and copy the content of this template%
 %                    START WRITING FROM HERE                        %
@@ -187,7 +195,8 @@
 		\mainmatter
 		\chapter{Introduction}
 		\label{chap:Introduction}
-		\lipsum[7]
+		% \lipsum[7]
+		\input{Introduction.tex}
 		\chapter{Methods}
 		\label{chap:Methods}
 		\lipsum[8]
@@ -203,6 +212,8 @@
 			\addcontentsline{toc}{chapter}{References}
 			\renewcommand{\bibname}{References}
 			\bibliographystyle{apalike}
+			% \bibliography{../LibraryAllReferences}
+			\bibliography{./reference}
 			%% ----  Bib file here ---- %%
 			\clearpage
 		\end{singlespace}
