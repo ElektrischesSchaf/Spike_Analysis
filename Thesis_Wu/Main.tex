@@ -79,9 +79,11 @@
 \usepackage{amsmath,amssymb}
 \allowdisplaybreaks
 \usepackage[english]{babel}
-%\usepackage[square,numbers]{natbib}
-\usepackage{natbib}
-% \usepackage[square,numbers]{natbib} %Nice numbered citations
+
+% \usepackage{natbib}
+\usepackage[square,numbers]{natbib} %Nice numbered citations
+\bibliographystyle{unsrtnat}
+
 \usepackage[hidelinks]{hyperref}
 \usepackage{breakcites}
 \usepackage{./macros_tn} %Loads all my macros
@@ -211,8 +213,8 @@
 			%% References (bibliography)
 			\addcontentsline{toc}{chapter}{References}
 			\renewcommand{\bibname}{References}
-			\bibliographystyle{apalike}
-			% \bibliography{../LibraryAllReferences}
+
+			% \bibliographystyle{apalike}
 			\bibliography{./reference}
 			%% ----  Bib file here ---- %%
 			\clearpage
