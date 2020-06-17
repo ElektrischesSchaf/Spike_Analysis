@@ -18,3 +18,7 @@ PCA_plot/
 *.log
 *.out
 *.gz
+*.maf
+*.mtc
+*.mtc0
+*.nlo
