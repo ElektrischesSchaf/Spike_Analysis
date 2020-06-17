@@ -90,6 +90,7 @@
 \usepackage{geometry}
 \usepackage[draft]{todonotes}   % notes showed
 \usepackage{enumitem}
+\usepackage{indentfirst}
 %% Date setting for cover
 % -----------------------------------------
 \usepackage{datetime} % For displaying month and year in the cover
@@ -156,14 +157,14 @@
 		\addcontentsline{toc}{chapter}{Chinese abstract}
 		\chapter*{\centering Chinese abstract}
 		\label{chap:chi_abstract}
-		% \lipsum[1-2]
+		\noindent
 		\input{chinese_abstract.tex}
 		\newpage
 		%% Abstract
 		\addcontentsline{toc}{chapter}{Abstract}
 		\chapter*{\centering Abstract}
 		\label{chap:abstract}
-		% \lipsum[3-4]
+		\noindent
 		\input{abstract.tex}
 		\newpage
 		\addcontentsline{toc}{chapter}{Acknowledgment}
