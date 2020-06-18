@@ -1,7 +1,49 @@
+In this capter we will briefly introduce several topics related to our research. 
+First and formost, the motivation for why we decided to dive into the domain of brain-machine interface in Sec. \ref{sec: motivation}. 
+Then, the delimitation of our reseach in \ref{sec:delimitation}. 
+The following Sec. \ref{sec:signal} is about the neural signal type and signal processing methods, 
+and the the primary technique for developing the neural activity decoder in Sec. \ref{sec:rnn} and the state-of-the-art attention machanism in Sec. \ref{sec:atten}. 
+The last is paragraph is the organization of this thesis in Sec. \ref{sec:org}.
 
-A part of brain computer interface (BCI) research is aimed to help those who have motor disability to move or control a computer cursor using imagined or attempted movements \cite{hosman2019bci}. 
-The importance of how the neurons act on the muscles when they perform a moving command is obvious. There are animal experiments conducted on rodent \cite{tampuu2019efficient}, Rhesus macaque monkeys \cite{makin2018}, and even on human \cite{kumar2018eeg}. 
+
+
+\section{Motivation and Objective}
+\label{sec: motivation}
+This research is aimed for developing algorithms that can convert neural signals into actual movement of the limbs. 
+For those who suffer from motor disability, there exist softwares that allow people to move or control a computer cursor using imagined or attempted movents \citep{hosman2019bci}, 
+or driving an exoskeleton to perform motro-related task for stroke rehabitation, as \cite{chowdhury2018active} successfully developed such EEG-based BCI supported neurorehabilitation system. 
+By implementing the advanced techniques of deep learning and exerting all possible computational resources, we stand great chance of developing an algorithm that outperforms current studies. 
+
+
+\section{Delimitation}
+\label{sec:delimitation}
+In order to reduce the difficulty of data acquisition, we only consider neural signal from monkeys instead of human or other kinds of animal. 
+Furthermore, no animal experiments were conducted in this reseach. All of hand movement decoding were computed off-line.
+
+\section{Introduction to Neural Signal}
+\label{sec:signal}
+Spikes are a commen type of signal used neural signal decoding. There are animal experiments conducted on rodent \citep{tampuu2019efficient}, rhesus macaque monkeys \citep{makin2018}, and even on human \citep{kumar2018eeg}. 
 In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
-Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \cite{ahmadi2019decoding} \cite{ahmadi2019end}. 
-On the other hand, some reseachers prefer to high frequency signal called spike train \cite{makin2018}, or merging those two signal all together \cite{stavisky2015high}, which attempt to reach higher decoding performance.
+Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
+On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
  
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=100pt]{smile_face.jpg}
+        \caption{This is a smile face}
+        \fontsize{10}{12}
+        \label{fig:smile_face}
+    \end{center}
+\end{figure}
+
+
+
+\section{Introduction to Recurrent Neural Networks}
+\label{sec:rnn}
+
+\section{Introduction to Attention Mechanism}
+\label{sec:atten}
+
+\section{Organization of This Thesis}
+\label{sec:org}
+

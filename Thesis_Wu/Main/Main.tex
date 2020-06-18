@@ -6,6 +6,7 @@
 \ifx\pdfoutput\undefined
 %Use old Latex if PDFLatex does not work
 \usepackage[dvips]{graphicx}% To get graphics working
+\usepackage{float} % in order to use H for figure position
 \DeclareGraphicsExtensions{.eps} % Encapsulated PostScript
 \else
 %Use PDFLatex
@@ -14,7 +15,7 @@
 \pdfcompresslevel=9
 \fi
 \usepackage{subcaption}
-\graphicspath{{./Figures/}}
+\graphicspath{{../Figures/}}
 % -----------------------------------------
 %%
 \usepackage[table,xcdraw]{xcolor}
@@ -80,13 +81,13 @@
 \allowdisplaybreaks
 \usepackage[english]{babel}
 
-% \usepackage{natbib}
-\usepackage[square,numbers]{natbib} %Nice numbered citations
-\bibliographystyle{unsrtnat}
+\usepackage{natbib}
+% \usepackage[square,numbers]{natbib} %Nice numbered citations
+% \bibliographystyle{unsrtnat}
 
 \usepackage[hidelinks]{hyperref}
 \usepackage{breakcites}
-\usepackage{./macros_tn} %Loads all my macros
+\usepackage{../macros_tn} %Loads all my macros
 \usepackage{geometry}
 \usepackage[draft]{todonotes}   % notes showed
 \usepackage{enumitem}
@@ -122,8 +123,8 @@
 
 \hypersetup{
   colorlinks=true,
-  linkcolor=blue, 
-  citecolor=blue,% new
+  linkcolor=black, 
+  citecolor=blue, % new
   linkbordercolor={0 0 1}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -140,7 +141,7 @@
 		bottom=30mm,
 		left=20mm,
 		right=20mm,}
-	\input{Cover.tex}
+	\input{../Cover.tex}
 	\ThisCenterWallPaper{.325}{watermark.jpg}
 	\end{titlepage}
 	\newgeometry{
@@ -158,14 +159,14 @@
 		\chapter*{\centering Chinese abstract}
 		\label{chap:chi_abstract}
 		\noindent
-		\input{chinese_abstract.tex}
+		\input{../chinese_abstract.tex}
 		\newpage
 		%% Abstract
 		\addcontentsline{toc}{chapter}{Abstract}
 		\chapter*{\centering Abstract}
 		\label{chap:abstract}
 		\noindent
-		\input{abstract.tex}
+		\input{../abstract.tex}
 		\newpage
 		\addcontentsline{toc}{chapter}{Acknowledgment}
 		%% acknowledgment
@@ -199,7 +200,7 @@
 		\chapter{Introduction}
 		\label{chap:Introduction}
 		% \lipsum[7]
-		\input{Introduction.tex}
+		\input{../Introduction.tex}
 		\chapter{Methods}
 		\label{chap:Methods}
 		\lipsum[8]
@@ -215,9 +216,9 @@
 			\addcontentsline{toc}{chapter}{References}
 			\renewcommand{\bibname}{References}
 
-			% \bibliographystyle{apalike}
-			\bibliography{./reference}
+			\bibliographystyle{apalike}
 			%% ----  Bib file here ---- %%
+			\bibliography{../reference}
 			\clearpage
 		\end{singlespace}
 		%% Appendix
