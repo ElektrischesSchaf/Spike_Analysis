@@ -47,7 +47,7 @@ kinematic_variable_type='y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:] 
+List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
@@ -177,10 +177,10 @@ for session_k in range(len(session_file_list)):
     print('shape of X_for_training before', X_for_training.shape)
 
     # Normalize Firing rate
-    the_mean=np.mean(X_for_training)
-    the_std=np.std(X_for_training)
-    X_for_training = (X_for_training - the_mean )/ the_std
-    X_for_prediction = (X_for_prediction - the_mean )/ the_std
+    # the_mean=np.mean(X_for_training)
+    # the_std=np.std(X_for_training)
+    # X_for_training = (X_for_training - the_mean )/ the_std
+    # X_for_prediction = (X_for_prediction - the_mean )/ the_std
 
     # Processing max orders
     order_num=max_timestep-1
@@ -301,8 +301,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = GRUModel(input_dim=feature_numbers, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
-    # print(net)  # net architecture
+    net = GRUModel(input_dim=feature_numbers, hidden_dim=hidden_dim, max_timestep=max_timestep, layer_dim=layer_dim, output_dim=output_dim)     # define the network    # print(net)  # net architecture
 
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss

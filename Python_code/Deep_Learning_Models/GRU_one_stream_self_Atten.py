@@ -9,7 +9,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class  GRUModel(torch.nn.Module):
 
-    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
+    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
         super(GRUModel, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
@@ -21,6 +21,11 @@ class  GRUModel(torch.nn.Module):
         # (batch_dim, seq_dim, feature_dim)
         self.GRU = torch.nn.GRU(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
         
+        # Layer Normalization
+        self.input_LN_1 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
+
+        self.input_LN_2 = torch.nn.LayerNorm( hidden_dim, elementwise_affine=True)
+
         # Readout layer
         self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
@@ -48,10 +53,14 @@ class  GRUModel(torch.nn.Module):
 
         # x torch.Size([batch size, feature num * orders])
         # print('x size 1= ', x.size())
+
+        # Layer Normalization 1
+        x=self.input_LN_1(x)
+
         x=x.view(x.size(0), -1, self.input_dim)
         # print('x size 2= ', x.size())
-        # m=torch.nn.LayerNorm( x.size()[:], elementwise_affine=False )
-        # x=m(x)
+
+
 
         # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
         # print('yee shape of x= ', x.size())
@@ -60,12 +69,16 @@ class  GRUModel(torch.nn.Module):
         out, _ = self.GRU(x)
         # print('out size 1= ', out.size())
 
+        # Layer Normalization 2
+        # out=self.input_LN_2(out)
 
         attn_weight_matrix = self.attention_net(out)
 
         hidden_matrix = torch.bmm(attn_weight_matrix, out)
         # print('shape of hidden_matrix= ', hidden_matrix.size())
-        out = torch.relu(self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) ) )
+
+        # out = torch.relu(self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) ) )
+        out = self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) )
 
         out = self.label(out)
 

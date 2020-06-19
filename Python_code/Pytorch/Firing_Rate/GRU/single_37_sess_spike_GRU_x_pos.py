@@ -47,7 +47,7 @@ kinematic_variable_type='x_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:] 
+List_FILE=ALL_List_FILE[1:2]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
@@ -178,10 +178,10 @@ for session_k in range(len(session_file_list)):
 
 
     # Normalize Firing rate
-    the_mean=np.mean(X_for_training)
-    the_std=np.std(X_for_training)
-    X_for_training = (X_for_training - the_mean )/ the_std
-    X_for_prediction = (X_for_prediction - the_mean )/ the_std
+    # the_mean=np.mean(X_for_training)
+    # the_std=np.std(X_for_training)
+    # X_for_training = (X_for_training - the_mean )/ the_std
+    # X_for_prediction = (X_for_prediction - the_mean )/ the_std
 
     # Processing max orders
     order_num=max_timestep-1
@@ -281,8 +281,8 @@ for session_k in range(len(session_file_list)):
         testing_y=testing_y.float()
 
     # Normalize label
-    training_y_mean=torch.mean(training_y)
-    training_y_std=torch.std(training_y)
+    # training_y_mean=torch.mean(training_y)
+    # training_y_std=torch.std(training_y)
 
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
@@ -305,7 +305,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = GRUModel(input_dim=feature_numbers, hidden_dim=hidden_dim, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    net = GRUModel(input_dim=feature_numbers, hidden_dim=hidden_dim, max_timestep=max_timestep, layer_dim=layer_dim, output_dim=output_dim)     # define the network
     # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
@@ -373,7 +373,7 @@ for session_k in range(len(session_file_list)):
         labels = y.to(device)
 
         o_labels = net(feature)
-        o_labels=o_labels*training_y_std+training_y_mean
+        # o_labels=o_labels*training_y_std+training_y_mean
 
         l_loss = loss_func(o_labels, labels)
         return o_labels, l_loss
@@ -446,7 +446,7 @@ for session_k in range(len(session_file_list)):
         #     continue
 
         o_labels = net(x.to(device))
-        o_labels=o_labels*training_y_std+training_y_mean
+        # o_labels=o_labels*training_y_std+training_y_mean
 
         real_y=testing_y.cpu().data.numpy()
         for ele in o_labels.cpu().data.numpy():
