@@ -70,7 +70,7 @@ class  GRUModel(torch.nn.Module):
         # print('out size 1= ', out.size())
 
         # Layer Normalization 2
-        # out=self.input_LN_2(out)
+        out=self.input_LN_2(out)
 
         attn_weight_matrix = self.attention_net(out)
 
