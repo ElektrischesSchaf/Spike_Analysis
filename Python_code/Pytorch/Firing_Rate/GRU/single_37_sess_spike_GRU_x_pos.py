@@ -52,12 +52,12 @@ session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name='GRU_with_Spike_Single_37_Session'
-MAX_EPOCH= 100
-LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=4
-BATCH_SIZE=4
-HIDDEN_DIMENSION=100
-max_timestep=20
+MAX_EPOCH= 50
+LEARNING_RATE = 1e-5
+NUMBER_OF_LAYERS = 4
+BATCH_SIZE = 4
+HIDDEN_DIMENSION = 100
+max_timestep = 20
 # Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
@@ -481,7 +481,7 @@ for session_k in range(len(session_file_list)):
 
     if kinematic_variable_type=='x_pos':
         plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.5)
+        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.7)
         plt.title( session_name + ' x-position prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
@@ -489,7 +489,7 @@ for session_k in range(len(session_file_list)):
 
     if kinematic_variable_type=='y_pos':
         plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.5)
+        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.7)
         plt.title( session_name + ' y-position prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )

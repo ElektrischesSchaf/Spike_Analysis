@@ -19,18 +19,19 @@ class  GRUModel(torch.nn.Module):
 
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.GRU = torch.nn.GRU(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
+        self.GRU_1 = torch.nn.GRU(input_dim, hidden_dim, 1          , batch_first=True, bidirectional=False)
+        self.GRU_2 = torch.nn.GRU(hidden_dim, hidden_dim, layer_dim-1, batch_first=True, bidirectional=False)
         
         # Layer Normalization
-        self.input_LN_1 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
-
+        self.input_LN_0 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
+        self.input_LN_1 = torch.nn.LayerNorm( hidden_dim, elementwise_affine=True)
         self.input_LN_2 = torch.nn.LayerNorm( hidden_dim, elementwise_affine=True)
 
         # Readout layer
         self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-        r = 1
+        r = 3
         da= 50
 
         self.W_s1 = torch.nn.Linear(hidden_dim, da)
@@ -51,33 +52,25 @@ class  GRUModel(torch.nn.Module):
     
     def forward(self, x):
 
-        # x torch.Size([batch size, feature num * orders])
-        # print('x size 1= ', x.size())
-
-        # Layer Normalization 1
-        x=self.input_LN_1(x)
+        # Layer Normalization 0
+        x=self.input_LN_0(x)
 
         x=x.view(x.size(0), -1, self.input_dim)
-        # print('x size 2= ', x.size())
 
+        out, _ = self.GRU_1(x)
 
+        # Layer Normalization 1
+        out = self.input_LN_1(out)
 
-        # print('input dim= ', x.size(), '\n') # input dim=  torch.Size([1, 64, 96]) => batch_first=True, (batch_dim, seq_dim, feature_dim)
-        # print('yee shape of x= ', x.size())
-        # time steps
-        # print('real input shape= ', x.size(), '\n')
-        out, _ = self.GRU(x)
-        # print('out size 1= ', out.size())
+        out, _ = self.GRU_2(out)
 
         # Layer Normalization 2
-        out=self.input_LN_2(out)
+        out = self.input_LN_2(out)
 
         attn_weight_matrix = self.attention_net(out)
 
         hidden_matrix = torch.bmm(attn_weight_matrix, out)
-        # print('shape of hidden_matrix= ', hidden_matrix.size())
 
-        # out = torch.relu(self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) ) )
         out = self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) )
 
         out = self.label(out)

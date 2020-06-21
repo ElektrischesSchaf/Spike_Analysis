@@ -47,17 +47,17 @@ kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_ac
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:]
+List_FILE=ALL_List_FILE[-2:-1]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
-model_name='GRU_with_Spike_Single_37_Session'
-MAX_EPOCH= 50
-LEARNING_RATE=1e-5
-NUMBER_OF_LAYERS=2
-BATCH_SIZE=4
-HIDDEN_DIMENSION=100
-max_timestep=10
+model_name = 'GRU_with_Spike_Single_37_Session'
+MAX_EPOCH = 50
+LEARNING_RATE = 1e-5
+NUMBER_OF_LAYERS = 2
+BATCH_SIZE = 4
+HIDDEN_DIMENSION = 100
+max_timestep = 10
 # Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
@@ -480,7 +480,7 @@ for session_k in range(len(session_file_list)):
 
     if kinematic_variable_type=='x_vel':
         plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Ground Truth', alpha=0.5)
+        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.7)
         plt.title( session_name + ', x-velocity prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
@@ -488,7 +488,7 @@ for session_k in range(len(session_file_list)):
 
     if kinematic_variable_type=='y_vel':
         plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
-        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Ground Truth', alpha=0.5)
+        plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.7)
         plt.title( session_name + ', y-velocity prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
