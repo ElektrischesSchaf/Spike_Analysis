@@ -8,6 +8,8 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
+from matplotlib.colors import LogNorm
+
 
 class Plotting():
 
@@ -28,7 +30,7 @@ class Plotting():
         for ticks_label in range(attn_weight_matrix_all.shape[1]):
             my_yticklabels.append( 't-' + str(  int(attn_weight_matrix_all.shape[1]) -1 - ticks_label) )
 
-        ax = sns.heatmap( attn_weight_matrix_all.transpose(), ax=ax, cbar=False, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False)
+        ax = sns.heatmap( attn_weight_matrix_all.transpose(), ax=ax, cbar=False, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False,  norm=LogNorm())
         plt.yticks(rotation=90)
         ax.set_title('Attention Map')
         ax.set_ylabel('Past Time Bins')
