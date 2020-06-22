@@ -59,7 +59,7 @@ model_name = 'Attention_Plot_with_Spike'
 MAX_EPOCH = 50
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 HIDDEN_DIMENSION = 100
 max_timestep = 10
 # Model Performance Lists

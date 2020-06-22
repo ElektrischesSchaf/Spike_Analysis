@@ -24,12 +24,17 @@ class Plotting():
 
         f, (ax, ax2) = plt.subplots(2)
 
-        ax = sns.heatmap( attn_weight_matrix_all.transpose(), ax=ax, cbar=False, cmap='YlGnBu', yticklabels=False, xticklabels=False)
+        my_yticklabels=[]
+        for ticks_label in range(attn_weight_matrix_all.shape[1]):
+            my_yticklabels.append( 't-' + str(  int(attn_weight_matrix_all.shape[1]) -1 - ticks_label) )
+
+        ax = sns.heatmap( attn_weight_matrix_all.transpose(), ax=ax, cbar=False, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False)
+        plt.yticks(rotation=90)
         ax.set_title('Attention Map')
         ax.set_ylabel('Past Time Bins')
 
-        ax2 = plt.plot( time, my_prediction[:time_bin_to_plot], 'b', linewidth=5, label='Prediction' )
-        ax2 = plt.plot( time, Ground_Truth[:time_bin_to_plot], 'r', linewidth=5, label='Actual', alpha=0.7 )
+        ax2 = plt.plot( time, my_prediction[:time_bin_to_plot], 'b', linewidth=3, label='Prediction' )
+        ax2 = plt.plot( time, Ground_Truth[:time_bin_to_plot], 'r', linewidth=3, label='Actual', alpha=0.7 )
         plt.legend(loc='upper right', fontsize=10)
 
         plt.xlim([ time[0], time[-1] ])
