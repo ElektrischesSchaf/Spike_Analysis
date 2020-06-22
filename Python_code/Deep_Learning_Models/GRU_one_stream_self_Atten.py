@@ -53,7 +53,7 @@ class  GRUModel(torch.nn.Module):
     def forward(self, x):
 
         # Layer Normalization 0
-        x=self.input_LN_0(x)
+        # x=self.input_LN_0(x)
 
         x=x.view(x.size(0), -1, self.input_dim)
 
