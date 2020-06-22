@@ -71,7 +71,7 @@ class  GRUModel(torch.nn.Module):
 
         hidden_matrix = torch.bmm(attn_weight_matrix, out)
 
-        out = self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) )
+        out = torch.relu( self.fc_layer( hidden_matrix.view( -1 , hidden_matrix.size()[1]*hidden_matrix.size()[2] ) ) )
 
         out = self.label(out)
 
