@@ -23,13 +23,13 @@ class  GRUModel(torch.nn.Module):
         self.GRU_2 = torch.nn.GRU(hidden_dim, hidden_dim, layer_dim-1, batch_first=True, bidirectional=False)
         
         # Layer Normalization
-        self.input_LN_0 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
-        self.input_LN_1 = torch.nn.LayerNorm( hidden_dim, elementwise_affine=True)
-        self.input_LN_2 = torch.nn.LayerNorm( hidden_dim, elementwise_affine=True)
+        # self.input_LN_0 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
+        self.input_LN_1 = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
+        self.input_LN_2 = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
 
         # Readout layer
-        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
-        self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
+        # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
+        # self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
         r = 3
         da= 50
