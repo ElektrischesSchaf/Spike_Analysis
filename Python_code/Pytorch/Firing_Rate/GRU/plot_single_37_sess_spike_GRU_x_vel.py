@@ -550,7 +550,7 @@ for session_k in range(len(session_file_list)):
 
     # plotting attention map
     # time_bin_to_plot, plot_path, my_prediction, Ground_Truth, attn_weight_matrix_all
-    Plotting.attention_map(time_bin_to_plot=300, plot_path=plot_path, my_prediction=my_prediction, Ground_Truth=Ground_Truth, attn_weight_matrix_all=attn_weight_matrix_all)
+    Plotting.attention_map(time_bin_to_plot=150, plot_path=plot_path, my_prediction=my_prediction, Ground_Truth=Ground_Truth, attn_weight_matrix_all=attn_weight_matrix_all)
 
 # session control end
 
