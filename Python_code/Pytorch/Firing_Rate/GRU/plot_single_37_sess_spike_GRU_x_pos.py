@@ -47,7 +47,7 @@ import Deep_Learning_Models.Attention_Map_Plotting as Attention_Map_Plotting
 Plotting=Attention_Map_Plotting.Plotting()
 
 # Make file list
-kinematic_variable_type='x_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='x_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -55,13 +55,13 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'Attention_Plot_with_Spike'
-MAX_EPOCH = 50
+model_name='Attention_Plot_with_Spike'
+MAX_EPOCH= 150
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 BATCH_SIZE = 16
 HIDDEN_DIMENSION = 100
-max_timestep = 10
+max_timestep = 20
 # Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
@@ -180,6 +180,7 @@ for session_k in range(len(session_file_list)):
 
     print('shape of X_for_training before', X_for_training.shape)
 
+
     # Normalize Firing rate
     # the_mean=np.mean(X_for_training)
     # the_std=np.std(X_for_training)
@@ -198,10 +199,10 @@ for session_k in range(len(session_file_list)):
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
     
     print('shape of X_for_training after', X_for_training.shape)
-    print('shape of x_velocity_label_training after', x_velocity_label_training.shape)
+    print('shape of x_position_label_training after', x_position_label_training.shape)
 
     print('\nshape of X_for_prediction after', X_for_prediction.shape)
-    print('shape of x_velocity_label_testing after', x_velocity_label_testing.shape)
+    print('shape of x_position_label_testing after', x_position_label_testing.shape)
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
@@ -242,19 +243,19 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame(X_for_prediction)
     df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
     
-    if kinematic_variable_type=='x_vel':
-        df=pd.DataFrame(x_velocity_label_training)
-        df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
+    if kinematic_variable_type=='x_pos':
+        df=pd.DataFrame(x_position_label_training)
+        df.to_csv(os.path.join(csv_path,'x_position_label_training.csv'), index=False)
 
-        df=pd.DataFrame(x_velocity_label_testing)
-        df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+        df=pd.DataFrame(x_position_label_testing)
+        df.to_csv(os.path.join(csv_path,'x_position_label_testing.csv'), index=False)
 
-    if kinematic_variable_type=='y_vel':
-        df=pd.DataFrame(y_velocity_label_training)
-        df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
+    if kinematic_variable_type=='y_pos':
+        df=pd.DataFrame(y_position_label_training)
+        df.to_csv(os.path.join(csv_path,'y_position_label_training.csv'), index=False)
 
-        df=pd.DataFrame(y_velocity_label_testing)
-        df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
+        df=pd.DataFrame(y_position_label_testing)
+        df.to_csv(os.path.join(csv_path,'y_position_label_testing.csv'), index=False)
 
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
@@ -265,29 +266,27 @@ for session_k in range(len(session_file_list)):
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
     testing_x=testing_x.float()
 
-    if kinematic_variable_type=='x_vel':
-        training_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
+    if kinematic_variable_type=='x_pos':
+        training_y=pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype=float)    
         training_y = torch.from_numpy(training_y.values)    
         training_y=training_y.float()
 
-        testing_y=pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
+        testing_y=pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)    
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
 
-    if kinematic_variable_type=='y_vel':
-        training_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
+    if kinematic_variable_type=='y_pos':
+        training_y=pd.read_csv(os.path.join(csv_path,'y_position_label_training.csv'), dtype=float)    
         training_y = torch.from_numpy(training_y.values)    
         training_y=training_y.float()
 
-        testing_y=pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
+        testing_y=pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)    
         testing_y = torch.from_numpy(testing_y.values)    
         testing_y=testing_y.float()
 
     # Normalize label
-    training_y_mean=torch.mean(training_y)
-    training_y_mean=training_y_mean.float()
-    training_y_std=torch.std(training_y)
-    training_y_std=training_y_std.float()
+    # training_y_mean=torch.mean(training_y)
+    # training_y_std=torch.std(training_y)
 
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
@@ -303,10 +302,15 @@ for session_k in range(len(session_file_list)):
     training_dataset=AbstractDataset(training_x, training_y)
     testing_dataset=AbstractDataset(testing_x, testing_y)
 
+    # TODO collate_fn
+    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False, collate_fn=training_dataset.collate_fn)
+    # train_loader = torch.utils.data.DataLoader(dataset=training_dataset, batch_size=batch_size, shuffle=False)
+    # test_loader=torch.utils.data.DataLoader(dataset=testing_dataset, batch_size=batch_size, shuffle=False)    
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = GRUModel(input_dim=feature_numbers, hidden_dim=hidden_dim, max_timestep=max_timestep, layer_dim=layer_dim, output_dim=output_dim)     # define the network    # print(net)  # net architecture
-
+    net = GRUModel(input_dim=feature_numbers, hidden_dim=hidden_dim, max_timestep=max_timestep, layer_dim=layer_dim, output_dim=output_dim)     # define the network
+    # print(net)  # net architecture
     optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate)
     loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
     net.to(device)
@@ -402,7 +406,7 @@ for session_k in range(len(session_file_list)):
 
 
     plt.figure(figsize=(7,5))
-    plt.title('Loss')
+    plt.title( 'Loss' )
     plt.plot(train_loss, label='train')
     plt.plot(valid_loss, label='test')
     plt.xlabel('Epoch')
@@ -411,7 +415,7 @@ for session_k in range(len(session_file_list)):
     plt.savefig(plot_path + '/' + model_name+"_Loss.png")
 
     plt.figure(figsize=(7,5))
-    plt.title('performance')
+    plt.title( 'performance' )
     plt.plot(train_R_square, label='train')
     plt.plot(valid_R_square, label='test')
     plt.xlabel('Epoch')
@@ -465,26 +469,22 @@ for session_k in range(len(session_file_list)):
         for ele in real_y:
             real_y_all.append( float(ele) )
 
-
         # attention map
         for ele in range(attn_weight_matrix.shape[0]):
             attn_weight_matrix_all.append( attn_weight_matrix[ele,:] )
 
     shutil.rmtree(save_epoch_path)
-    
+
     # attention map
     attn_weight_matrix_all=np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
-
-    df = pd.DataFrame( attn_weight_matrix_all )
-    df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
 
     testing_data_r_square=r2_score( real_y_all, my_prediction)
     testing_data_SNR=-10*math.log10(1-testing_data_r_square)
     testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
     PCC=pearsonr(real_y_all,my_prediction)
     Ground_Truth=real_y_all
-    print('\n* model_x_velocity score: ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
+    print('\n R-square: ', testing_data_r_square, ' RMSE: ', testing_data_RMSE, ', pearsonr=', PCC[0], '\n')
 
     R_square_across_all_sessions.append(testing_data_r_square)
     SNR_across_all_sessions.append(testing_data_SNR)
@@ -495,9 +495,6 @@ for session_k in range(len(session_file_list)):
     plt.figure(figsize=(32, 9))
     plotting_time_elapsed=time_stamp_64ms[testing_data_index:]
     plotting_time_elapsed=plotting_time_elapsed[max_timestep:]
-    # Ground_Truth_x_vel and Ground_Truth_y_vel may copy form testing_y in line 256 # TODO
-    # Ground_Truth_x_vel=x_velocity_label[testing_data_index:]
-    # Ground_Truth_y_vel=y_velocity_label[testing_data_index:]
 
     df = pd.DataFrame( plotting_time_elapsed )
     df.to_csv(os.path.join(csv_path, 'plotting_time_elapsed.csv'), index=False, header=False)
@@ -505,35 +502,35 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame( my_prediction )
     df.to_csv(os.path.join(csv_path, 'my_prediction.csv'), index=False, header=False)
 
-    if kinematic_variable_type=='x_vel':
+    if kinematic_variable_type=='x_pos':
         plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
         plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.7)
-        plt.title( session_name + ', x-velocity prediction' , fontsize=30, color="black")
+        plt.title( session_name + ' x-position prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
-        df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_vel.csv'), index=False, header=False) 
+        df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_pos.csv'), index=False, header=False) 
 
-    if kinematic_variable_type=='y_vel':
+    if kinematic_variable_type=='y_pos':
         plt.plot( plotting_time_elapsed, my_prediction, 'b', linewidth=5, label='Prediction' )
         plt.plot( plotting_time_elapsed, Ground_Truth, 'r', linewidth=5, label='Actual', alpha=0.7)
-        plt.title( session_name + ', y-velocity prediction' , fontsize=30, color="black")
+        plt.title( session_name + ' y-position prediction' , fontsize=30, color="black")
 
         df = pd.DataFrame( Ground_Truth )
-        df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_vel.csv'), index=False, header=False)
+        df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_pos.csv'), index=False, header=False)
 
     
     plt.legend(loc='upper right', fontsize=30)
     plt.xlabel('Time (second)', fontsize=25)
-    plt.ylabel('velocity (mm/s)', fontsize=25)
+    plt.ylabel('position (mm)', fontsize=25)
     plt.xticks(fontsize=25, color="black")
     plt.yticks(fontsize=25, color="black")
     axes = plt.gca()
     axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
     plt.tight_layout()
-    if kinematic_variable_type=='x_vel':
-        plt.savefig( plot_path + '/' +model_name+'_x-velocity_predict.png' )
-    if kinematic_variable_type=='y_vel':
-        plt.savefig( plot_path + '/' +model_name+'_y-velocity_predict.png' )
+    if kinematic_variable_type=='x_pos':
+        plt.savefig( plot_path + '/' +model_name+'_x-position_predict.png' )
+    if kinematic_variable_type=='y_pos':
+        plt.savefig( plot_path + '/' +model_name+'_y-position_predict.png' )
 
     plt.cla()
     plt.clf()
@@ -552,9 +549,9 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame( ((session_name, testing_data_SNR )) )
     df.to_csv(os.path.join(csv_path, 'SNR_this_session.csv'), index=False, header=False)
 
-
     # attention map
     Plotting.attention_map(time_bin_to_plot=150, plot_path=plot_path, my_prediction=my_prediction, Ground_Truth=Ground_Truth, attn_weight_matrix_all=attn_weight_matrix_all)
+
 
 # session control end
 
@@ -582,10 +579,10 @@ plt.xlabel('')
 plt.xlim([0,len(R_square_across_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
 plt.grid(True)
-if kinematic_variable_type=='x_vel':
-    plt.title('R square of x-velocity prediction')
-if kinematic_variable_type=='y_vel':
-    plt.title('R square of y-velocity prediction')
+if kinematic_variable_type=='x_pos':
+    plt.title('R square of x-position prediction')
+if kinematic_variable_type=='y_pos':
+    plt.title('R square of y-position prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'R_square_across_sessions.png')
 
@@ -596,15 +593,15 @@ plt.close()
 plt.figure(figsize=(16, 9))
 ind = np.arange(1,len(RMSE_across_all_sessions)+1)
 plt.bar(ind, RMSE_across_all_sessions, width=width_two, color='r')
-plt.ylabel('RMSE (mm/s)')
+plt.ylabel('RMSE (mm)')
 plt.xlabel('')
 plt.xlim([0,len(RMSE_across_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
 plt.grid(True)
-if kinematic_variable_type=='x_vel':
-    plt.title('RMSE of x-velocity prediction')
-if kinematic_variable_type=='y_vel':
-    plt.title('RMSE of y-velocity prediction')
+if kinematic_variable_type=='x_pos':
+    plt.title('RMSE of x-position prediction')
+if kinematic_variable_type=='y_pos':
+    plt.title('RMSE of y-position prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'RMSE_across_sessions.png')
 
@@ -620,10 +617,10 @@ plt.xlabel('')
 plt.xlim([0,len(person_correlation_coefficient_across_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
 plt.grid(True)
-if kinematic_variable_type=='x_vel':
-    plt.title('Pearson\'s correlation coefficient of x-velocity prediction')
-if kinematic_variable_type=='y_vel':
-    plt.title('Pearson\'s correlation coefficient of y-velocity prediction')
+if kinematic_variable_type=='x_pos':
+    plt.title('Pearson\'s correlation coefficient of x-position prediction')
+if kinematic_variable_type=='y_pos':
+    plt.title('Pearson\'s correlation coefficient of y-position prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'PCC_across_sessions.png')
 
@@ -640,10 +637,10 @@ plt.xlabel('')
 plt.xlim([0,len(best_epoch_arcoss_all_sessions)+1+width_two])
 plt.xticks(ind, session_file_list ,rotation=-90)
 plt.grid(True)
-if kinematic_variable_type=='x_vel':
-    plt.title('Best Epoch of x-velocity prediction')
-if kinematic_variable_type=='y_vel':
-    plt.title('Best Epoch of y-velocity prediction')
+if kinematic_variable_type=='x_pos':
+    plt.title('Best Epoch of x-position prediction')
+if kinematic_variable_type=='y_pos':
+    plt.title('Best Epoch of y-position prediction')
 plt.tight_layout()
 plt.savefig(bar_plot_path+'/'+'best_epoch_across_sessions.png')
 
