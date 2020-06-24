@@ -22,7 +22,22 @@ Furthermore, no animal experiments were conducted in this reseach. All of hand m
 
 \section{Introduction to Neural Signal}
 \label{sec:signal}
-Spikes are a commen type of signal used neural signal decoding. There are animal experiments conducted on rodent \citep{tampuu2019efficient}, rhesus macaque monkeys \citep{makin2018}, and even on human \citep{kumar2018eeg}. 
+Intractorticical microelectrode arrays are widely used in motor brain-machine interfaces (BMIs), 
+by recording spike activities as input signals. \citep{stavisky2015high}
+Spikes are a group of neural action potentials, and can be discriminated as single neuron activity, 
+since different neurons fire with different patterns. 
+These extracellular recordings have enabled non-human primates to accurately control computer cursors \citep{serruya2002instant, makin2018}, 
+robotic limbs \citep{carmena2003learning} or its own musulature \citep{ethier2012restoration}. 
+Except from motor cortex signals, a research about the self-location ability of rodents, 
+also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
+to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}. \\
+
+Howwever, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
+Therefore several studies adopted local filed potentials (LFP) or local motor potentials (LMP), 
+which stands for the low frequency part (<~300Hz) of neural signal.
+These studies show that low frequency signals are also informative regarding neural decoding \citep{wang2014long, flint2012accurate}. \\
+
+and even on human \citep{kumar2018eeg}. 
 In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
 Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
 On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
