@@ -67,7 +67,13 @@ class mat_file_processing():
 
             print('spikes shape: ', spikes.shape) #  (3, 192) in indy_20160407_02
             unit_number=spikes.shape[0]
-            channel_number = spikes.shape[1]
+            
+            # use S1 array data
+            # channel_number = spikes.shape[1]
+
+            # don't use S1 array data
+            channel_number = 96
+
             actual_channel_number = 96
 
             time_stamp_64ms=np.asarray(time_stamp_64ms)
@@ -96,7 +102,7 @@ class mat_file_processing():
                     firing_rate_cell.append([])
 
             # Handling S1 array data
-            if spikes.shape[1] == actual_channel_number*2:
+            if channel_number == actual_channel_number*2:
                 print('\nHas S1')
                 for channel_index in range(actual_channel_number, actual_channel_number*2):
 

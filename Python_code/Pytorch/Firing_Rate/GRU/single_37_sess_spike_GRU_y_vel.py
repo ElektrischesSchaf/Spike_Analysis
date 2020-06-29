@@ -93,8 +93,8 @@ for session_k in range(len(session_file_list)):
     [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
 
     # Get channel and unit numbers
-    channel_numbers_in_this_dataset=96
-    units_numbers_in_this_dataset=unit_number
+    channel_numbers_in_this_dataset = channel_number
+    units_numbers_in_this_dataset = unit_number
 
     if with_sorted_spikes==True:
         feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
