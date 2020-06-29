@@ -69,10 +69,10 @@ class mat_file_processing():
             unit_number=spikes.shape[0]
             
             # use S1 array data
-            # channel_number = spikes.shape[1]
+            channel_number = spikes.shape[1]
 
             # don't use S1 array data
-            channel_number = 96
+            # channel_number = 96
 
             actual_channel_number = 96
 
