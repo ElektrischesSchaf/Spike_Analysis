@@ -14,6 +14,7 @@ import pandas as pd
 import json
 import math
 import numpy as np
+from numpy import linalg as LA
 import h5py
 from tqdm import tqdm_notebook as tqdm
 from tqdm import trange
@@ -342,7 +343,7 @@ for session_k in range(len(session_file_list)):
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
 
-            loss+=batch_loss.item()
+            loss += batch_loss.item() 
 
             real_y=y.cpu().data.numpy()
             for ele in o_labels.cpu().data.numpy():
@@ -368,10 +369,17 @@ for session_k in range(len(session_file_list)):
         feature = x.to(device)
         labels = y.to(device)
 
-        o_labels = net(feature)
+        o_labels, attn_weight_matrix = net(feature)
+        torch.set_default_tensor_type('torch.cuda.FloatTensor')
+        attn_weight_matrix=attn_weight_matrix.to(device)
         # o_labels=o_labels*training_y_std+training_y_mean
 
-        l_loss = loss_func(o_labels, labels)
+        penality_loss = torch.norm(  torch.bmm( torch.transpose(attn_weight_matrix, 1, 2),  attn_weight_matrix ) - torch.eye( attn_weight_matrix.size(2) ) , 'fro')
+
+        # print('penality_loss= ', penality_loss)
+
+        l_loss = loss_func(o_labels, labels) + penality_loss
+
         return o_labels, l_loss
 
     def save(epoch):
@@ -441,7 +449,7 @@ for session_k in range(len(session_file_list)):
         # if(x.size()[0] is not batch_size):
         #     continue
 
-        o_labels = net(x.to(device))
+        o_labels, attn_weight_matrix = net(x.to(device))
         # o_labels=o_labels*training_y_std+training_y_mean
 
         real_y=testing_y.cpu().data.numpy()
