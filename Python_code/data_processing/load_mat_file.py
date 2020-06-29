@@ -67,16 +67,15 @@ class mat_file_processing():
 
             print('spikes shape: ', spikes.shape) #  (3, 192) in indy_20160407_02
             unit_number=spikes.shape[0]
-            channel_number=96
+            channel_number = spikes.shape[1]
+            actual_channel_number = 96
 
             time_stamp_64ms=np.asarray(time_stamp_64ms)
             time_stamp_64ms=time_stamp_64ms.flatten()
 
             # Making spike counts matrix
-            for channel_index in range(channel_number):
-                #print('Channel progress: ' + str( round( (channel_index/channel_number)*100, 3) )+' %' ) # 96 channels in this dataset
-                
-                # New below
+            # Handling M1 array data
+            for channel_index in range(actual_channel_number):
                 for unit_index in range( spikes.shape[0] ):
                     temp_spike_cell=[]
                     temp_spike_cell=mat_file[( spikes[unit_index][channel_index] )][()]
@@ -96,7 +95,29 @@ class mat_file_processing():
 
                     firing_rate_cell.append([])
 
-                # New above
+            # Handling S1 array data
+            if spikes.shape[1] == actual_channel_number*2:
+                print('\nHas S1')
+                for channel_index in range(actual_channel_number, actual_channel_number*2):
+
+                    for unit_index in range( spikes.shape[0] ):
+                        temp_spike_cell=[]
+                        temp_spike_cell=mat_file[( spikes[unit_index][channel_index] )][()]
+                        temp_spike_cell=np.asarray(temp_spike_cell)
+                        temp_spike_cell=temp_spike_cell.flatten()
+
+                        if temp_spike_cell.shape[0] != 2 and include_hash_unit==True:
+
+                            yee=self.histc(temp_spike_cell, time_stamp_64ms)
+                            #print('shape of yee:  ',yee.shape)
+                            firing_rate_cell.append(yee[:-1])
+                            #print('yee: ',yee)
+
+                        else:
+                            r = np.zeros( len(time_stamp_64ms)-1 )
+                            firing_rate_cell.append(r)
+
+                        firing_rate_cell.append([])
 
         return [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number]
 

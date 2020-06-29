@@ -52,7 +52,7 @@ session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name='GRU_with_Spike_Single_37_Session'
-MAX_EPOCH= 150
+MAX_EPOCH= 200
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 BATCH_SIZE = 16
@@ -93,8 +93,8 @@ for session_k in range(len(session_file_list)):
     [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
 
     # Get channel and unit numbers
-    channel_numbers_in_this_dataset=96
-    units_numbers_in_this_dataset=unit_number
+    channel_numbers_in_this_dataset = channel_number
+    units_numbers_in_this_dataset = unit_number
 
     if with_sorted_spikes==True:
         feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset

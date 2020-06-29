@@ -31,8 +31,8 @@ class  GRUModel(torch.nn.Module):
         # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         # self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-        r = 1
-        da= 50
+        r = 3
+        da= int(hidden_dim/2)
 
         self.W_s1 = torch.nn.Linear(hidden_dim, da)
         self.W_s2 = torch.nn.Linear(da, r)
