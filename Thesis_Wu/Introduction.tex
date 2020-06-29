@@ -20,10 +20,10 @@ By implementing the advanced techniques of deep learning and exerting all possib
 In order to reduce the difficulty of data acquisition, we only consider neural signal from monkeys instead of human or other kinds of animal. 
 Furthermore, no animal experiments were conducted in this reseach. All of hand movement decoding were computed off-line.
 
-\section{Introduction to Neural Signal}
+\section{Neural Signals}
 \label{sec:signal}
 Intractorticical microelectrode arrays are widely used in motor brain-machine interfaces (BMIs), 
-by recording spike activities as input signals. \citep{stavisky2015high}
+by recording spike activities as input signals \citep{stavisky2015high}. 
 Spikes are a group of neural action potentials, and can be discriminated as single neuron activity, 
 since different neurons fire with different patterns. 
 These extracellular recordings have enabled non-human primates to accurately control computer cursors \citep{serruya2002instant, makin2018}, 
@@ -32,32 +32,40 @@ Except from motor cortex signals, a research about the self-location ability of 
 also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
 to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}. \\
 
-Howwever, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
-Therefore several studies adopted local filed potentials (LFP) or local motor potentials (LMP), 
-which stands for the low frequency part (<~300Hz) of neural signal.
-These studies show that low frequency signals are also informative regarding neural decoding \citep{wang2014long, flint2012accurate}. \\
-% to do end-to-end Ahmadi2019
-and even on human \citep{kumar2018eeg}. 
-In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
-Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
-On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
+However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
+Therefore several studies adopted local filed potentials (LFPs), which stand for the low frequency part (<~300Hz) of neural signal. 
+And also local motor potentials (LMPs), which are the moving average of LFPs. 
+Due to the considerably low frequency of LFPs, they can be sampled, processed, and transmitted with lower power consuption \citep{flint2012accurate}.
+These studies show that low frequency signals are also informative regarding neural signal decoding \citep{wang2014long}. 
+As for human, the LFPs can be obtained by electroencephalography (EEG), and some studies consider the phase of LFPs from a specific frequency band, 
+instead of the amplitude of the signal, to be the only feature in decoding motor imagery tasks \citep{kumar2018eeg} or to proof the correlation between spatial updating process and the rhythmic process in the brain \citep{mclelland2016phase}.\\
+
+
+% In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
+% Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
+% On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
  
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=100pt]{smile_face.jpg}
-        \caption{This is a smile face}
-        \fontsize{10}{12}
-        \label{fig:smile_face}
-    \end{center}
-\end{figure}
+% \begin{figure}[H]
+%     \begin{center}
+%         \includegraphics[width=100pt]{smile_face.jpg}
+%         \caption{This is a smile face}
+%         \fontsize{10}{12}
+%         \label{fig:smile_face}
+%     \end{center}
+% \end{figure}
 
-
-
-\section{Introduction to Recurrent Neural Networks}
+\section{Recurrent Neural Networks}
 \label{sec:rnn}
+The first idea of recurrent neural networks (RNN), which is called the Hopfield networks, was introduced in 1980s \citep{hopfield1982neural}, 
+and the following different versions of RNN have been developed afterwards \citep{elman1990finding, jordan1997serial}. 
+But the these RNN models face the same gradient vanishing problem, and the two effective approachs to solve this problem is either clip and scale the gradient if the norm is too large, 
+or create a better RNN model \citep{alom2018history}.\\
 
-\section{Introduction to Attention Mechanism}
-Use layer normalization\cite{li2020bidirectional}
+
+
+
+\section{Attention Mechanism}
+Use layer normalization \cite{li2020bidirectional}
 \label{sec:atten}
 
 \section{Organization of This Thesis}
