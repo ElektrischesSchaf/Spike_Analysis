@@ -378,7 +378,15 @@ for session_k in range(len(session_file_list)):
         attn_weight_matrix=attn_weight_matrix.to(device)
         # o_labels=o_labels*training_y_std+training_y_mean
 
-        penality_loss = torch.norm(  torch.bmm( torch.transpose(attn_weight_matrix, 1, 2),  attn_weight_matrix ) - torch.eye( attn_weight_matrix.size(2) ) , 'fro')
+        # Old
+        # penality_loss=torch.tensor([0], dtype=torch.float64, requires_grad=True)
+        # penality_loss.to(device)
+        # for i in range(attn_weight_matrix.size(0)):
+        #     temp=attn_weight_matrix[i,:,:].clone()
+        #     temp=temp.squeeze(0)
+        #     penality_loss += torch.norm( input=( torch.mm(temp, torch.transpose( temp, 0, 1 ) ) - torch.eye( temp.size(0) ) ), p='fro')
+    
+        penality_loss = torch.norm(  input=(torch.bmm(  attn_weight_matrix, torch.transpose(attn_weight_matrix, 1, 2) ) - torch.eye( attn_weight_matrix.size(1) )), p='fro')
 
         # print('penality_loss= ', penality_loss)
 
