@@ -30,7 +30,7 @@ These extracellular recordings have enabled non-human primates to accurately con
 robotic limbs \citep{carmena2003learning} or its own musulature \citep{ethier2012restoration}. 
 Except from motor cortex signals, a research about the self-location ability of rodents, 
 also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
-to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}. \\
+to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}. 
 
 However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
 Therefore several studies adopted local filed potentials (LFPs), which stand for the low frequency part (<~300Hz) of neural signal. 
@@ -59,14 +59,32 @@ instead of the amplitude of the signal, to be the only feature in decoding motor
 The first idea of recurrent neural networks (RNN), which is called the Hopfield networks, was introduced in 1980s \citep{hopfield1982neural}, 
 and the following different versions of RNN have been developed afterwards \citep{elman1990finding, jordan1997serial}. 
 But the these RNN models face the same gradient vanishing problem, and the two effective approachs to solve this problem is either clip and scale the gradient if the norm is too large, 
-or create a better RNN model \citep{alom2018history}.\\
+or create a better RNN model \citep{alom2018history}. 
 
+Therefore, \cite{hochreiter1997long} created a well-known model named Long Short-Term Memory (LSTM), solved the gradient vanishing problem of the original RNNs. LSTM quipped with three gates to learn how to forget or keep the memory from previous states. 
+Followed by the work of \cite{chung2014empirical}, a new model named Gated Recurrent Unit (GRU) which is similar to LSTM, was introduced. 
+It is has gained popularity in the community due to its efficiency in training and the high performance sometimes even outdoes the LSTM. 
 
+Nowadays, RNNs come with various architectures have benn widely used in BMI reseachers \citep{ahmadi2020impact}, \cite{tuleuov2019deep} even developed a hybrid deep leaning model which combined RNN with convolution neural network (CNN). 
+These preceding works manifest the uprising potentials of RNNs in computational neural science.
 
 
 \section{Attention Mechanism}
-Use layer normalization \cite{li2020bidirectional}
 \label{sec:atten}
+When it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
+This is primarily due to the fact that the longer the sequence lenght, the higher the possibility of gradient vanishing might occur in RNNs \citep{chandar2019towards}. 
+Especially in neural machine translation researches, where long input sentences are apt to cause translation errors. 
+Thus, the a novel architecture for neural machine translation, named alignment model, is proposed in \cite{bahdanau2014neural}, which put an additional weights on the original outputs of an RNN. 
+The alighment model scores how well the inputs around one position matches the output on another position, such that model is capable of focusing on the information relevant part of the input sentence, and leave a major positive impact on the ability of the neural machine translation system. 
+Furthermore, by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent}. 
+
+Much endeavor has been made in recent neural network researches is all about \citep{hudson2018compositional}.
+
+
+
+layer normalization \cite{li2020bidirectional}
+
+
 
 \section{Organization of This Thesis}
 \label{sec:org}
