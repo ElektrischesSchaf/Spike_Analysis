@@ -1,10 +1,10 @@
 In this capter we will briefly introduce several topics related to our research. 
 First we mention the motivation for why we decided to dive into the domain of brain-machine interface in Section \ref{sec: motivation}. 
 Then, the delimitation of our reseach in Section \ref{sec:delimitation}. 
-The following Section \ref{sec:signal} is about the neural signal type and signal processing methods. 
-The the primary methods for developing the neural activity decoder in Section \ref{sec:rnn} and the state-of-the-art attention machanism in Section \ref{sec:atten}. 
-Also, various normalization techniques will be discussed in Section \ref{sec:norm}. 
-The last is paragraph is the organization of this thesis in Section \ref{sec:org}.
+The following Section \ref{sec:signal} is about the neural signal and some other brain-machine interfaces research topics. 
+The the primary methods for developing the neural activity decoder in Section \ref{sec:rnn} and the state-of-the-art self-attention machanism in Section \ref{sec:atten}. 
+Also, a couple of normalization techniques will be discussed in Section \ref{sec:norm}, since it is an important factor to optimize the training of the deep learning models. 
+The last paragraph is the organization of this thesis in Section \ref{sec:org}.
 
 
 
@@ -92,7 +92,7 @@ Also in the field of image processing, generative adversarial network (GAN) thri
     \centering
     \begin{tabular}{cccc}
         \hline
-        \textbf{Article}            & \multicolumn{2}{c}{\textbf{Normalization Type}}   & \textbf{Applicable Models} \\ 
+        \textbf{Article}            &  \multicolumn{2}{c}{\textbf{ \quad Normalization Measures \quad }}   & \textbf{Applicable Models} \\ 
         \hline \\
         \cite{ioffe2015batch}       & Batch       & \multirow{11}{*}{Normalization}     & CNN \\ \\
         \cite{ba2016layer}          & Layer       &                                     & RNN \\ \\ 
@@ -101,7 +101,7 @@ Also in the field of image processing, generative adversarial network (GAN) thri
         \cite{wu2018group}          & Group       &                                     & CNN \\ \\
         \cite{miyato2018spectral}   & Spectral    &                                     & GAN
     \end{tabular}
-    \caption{Six Types of Normalization}
+    \caption{Six Measures of Normalization}
     \label{tab:six_types_of_norm}
 \end{table}
 
