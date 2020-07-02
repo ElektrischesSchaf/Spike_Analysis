@@ -1,10 +1,10 @@
 In this capter we will briefly introduce several topics related to our research. 
-First we mention the motivation for why we decided to dive into the domain of brain-machine interface in Sec. \ref{sec: motivation}. 
-Then, the delimitation of our reseach in \ref{sec:delimitation}. 
-The following Sec. \ref{sec:signal} is about the neural signal type and signal processing methods. 
-The the primary methods for developing the neural activity decoder in Sec. \ref{sec:rnn} and the state-of-the-art attention machanism in Sec. \ref{sec:atten}. 
-Also, various data normalization techniques will be discussed in Sec. \ref{sec:norm}. 
-The last is paragraph is the organization of this thesis in Sec. \ref{sec:org}.
+First we mention the motivation for why we decided to dive into the domain of brain-machine interface in Section \ref{sec: motivation}. 
+Then, the delimitation of our reseach in Section \ref{sec:delimitation}. 
+The following Section \ref{sec:signal} is about the neural signal type and signal processing methods. 
+The the primary methods for developing the neural activity decoder in Section \ref{sec:rnn} and the state-of-the-art attention machanism in Section \ref{sec:atten}. 
+Also, various normalization techniques will be discussed in Section \ref{sec:norm}. 
+The last is paragraph is the organization of this thesis in Section \ref{sec:org}.
 
 
 
@@ -79,33 +79,35 @@ Thus, the a novel architecture for neural machine translation, named \textit{ali
 The alighment model scores how well the inputs around one position matches the output on another position, such that model is capable of focusing on the information relevant part of the input sentence, and leave a major positive impact on the ability of the neural machine translation system. 
 Furthermore, by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
 
-\section{Data Normalization}
+\section{Normalization}
 \label{sec:norm}
-When training a deep learning model, \textit{internal covariate shift} is an issue that hinders the model to reach better performance. 
-Several novel approachs related to data normalization were designed to cope with this problem. 
-\cite{li2020bidirectional} used layer normalization  
-
-Table \ref{tab:6_types_of_norm} shows that
+When training a deep learning model, \textit{internal covariate shift} as the change in distribution of network activations, is an issue that hinders the loss of the model to converge and sometimes incurs poor performances. 
+Several novel approachs related to data normalization were designed to cope with this problem, showed in Table \ref{tab:six_types_of_norm}. 
+Most of the measures calculate the means and variances from layer inputs. 
+But due to the design, the effect of a normalization measure might vary in different deep learning models, e.g. batch normalization is not suitable for RNNs. 
+Also in the field of image processing, generative adversarial network (GAN) thrives as well as its own normalization methods. 
 
 \begin{table}[H]
     % https://medium.com/@ZhengLungWu/normalization-in-pytorch-84519d8b4fe1
     \centering
-    \begin{tabular}{ccc}
+    \begin{tabular}{cccc}
         \hline
-        Article                     & \ Normalization Type \    & Applicable Deep Leanring Models \\ 
+        \textbf{Article}            & \multicolumn{2}{c}{\textbf{Normalization Type}}   & \textbf{Applicable Models} \\ 
         \hline \\
-        \cite{ioffe2015batch}       & Batch                     & CNN \\ \\
-        \cite{ba2016layer}          & Layer                     & RNN \\ \\ 
-        \cite{salimans2016weight}   & Weight                    & CNN \& RNN \\ \\
-        \cite{ulyanov2016instance}  & Instance                  & GAN \\ \\
-        \cite{wu2018group}          & Group                     & CNN \\ \\
-        \cite{miyato2018spectral}   & Spectral                  & GAN
+        \cite{ioffe2015batch}       & Batch       & \multirow{11}{*}{Normalization}     & CNN \\ \\
+        \cite{ba2016layer}          & Layer       &                                     & RNN \\ \\ 
+        \cite{salimans2016weight}   & Weight      &                                     & CNN \& RNN \\ \\
+        \cite{ulyanov2016instance}  & Instance    &                                     & GAN \\ \\
+        \cite{wu2018group}          & Group       &                                     & CNN \\ \\
+        \cite{miyato2018spectral}   & Spectral    &                                     & GAN
     \end{tabular}
-    \caption{6 Types of Normalization}
-    \label{tab:6_types_of_norm}
+    \caption{Six Types of Normalization}
+    \label{tab:six_types_of_norm}
 \end{table}
+
+Since this research primarily used RNN, the best methods to facilitate our model is layer normalization, in latest reseach \cite{li2020bidirectional} used layer normalization actually put it in practice, along with self-attention mechanism. 
 
 
 \section{Organization of This Thesis}
 \label{sec:org}
-
+\colorbox{green}{跳過}
