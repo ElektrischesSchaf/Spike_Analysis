@@ -1,8 +1,9 @@
 In this capter we will briefly introduce several topics related to our research. 
-First and formost, the motivation for why we decided to dive into the domain of brain-machine interface in Sec. \ref{sec: motivation}. 
+First we mention the motivation for why we decided to dive into the domain of brain-machine interface in Sec. \ref{sec: motivation}. 
 Then, the delimitation of our reseach in \ref{sec:delimitation}. 
-The following Sec. \ref{sec:signal} is about the neural signal type and signal processing methods, 
-and the the primary technique for developing the neural activity decoder in Sec. \ref{sec:rnn} and the state-of-the-art attention machanism in Sec. \ref{sec:atten}. 
+The following Sec. \ref{sec:signal} is about the neural signal type and signal processing methods. 
+The the primary methods for developing the neural activity decoder in Sec. \ref{sec:rnn} and the state-of-the-art attention machanism in Sec. \ref{sec:atten}. 
+Also, various data normalization techniques will be discussed in Sec. \ref{sec:norm}. 
 The last is paragraph is the organization of this thesis in Sec. \ref{sec:org}.
 
 
@@ -74,16 +75,34 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 When it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
 This is primarily due to the fact that the longer the sequence lenght, the higher the possibility of gradient vanishing might occur in RNNs \citep{chandar2019towards}. 
 Especially in neural machine translation researches, where long input sentences are apt to cause translation errors. 
-Thus, the a novel architecture for neural machine translation, named alignment model, is proposed in \cite{bahdanau2014neural}, which put an additional weights on the original outputs of an RNN. 
+Thus, the a novel architecture for neural machine translation, named \textit{alignment model}, is proposed in \cite{bahdanau2014neural}, which put an additional weights on the original outputs of an RNN. 
 The alighment model scores how well the inputs around one position matches the output on another position, such that model is capable of focusing on the information relevant part of the input sentence, and leave a major positive impact on the ability of the neural machine translation system. 
-Furthermore, by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent}. 
+Furthermore, by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
 
-Much endeavor has been made in recent neural network researches is all about \citep{hudson2018compositional}.
+\section{Data Normalization}
+\label{sec:norm}
+When training a deep learning model, \textit{internal covariate shift} is an issue that hinders the model to reach better performance. 
+Several novel approachs related to data normalization were designed to cope with this problem. 
+\cite{li2020bidirectional} used layer normalization  
 
+Table \ref{tab:6_types_of_norm} shows that
 
-
-layer normalization \cite{li2020bidirectional}
-
+\begin{table}[H]
+    % https://medium.com/@ZhengLungWu/normalization-in-pytorch-84519d8b4fe1
+    \centering
+    \begin{tabular}{ccc}
+        \hline
+        Article & \ Normalization Type \ & Tasks \\ \hline \\
+        \cite{ioffe2015batch} &  Batch   & Image \\ \\
+        \cite{ba2016layer} & Layer  & RNN \\ \\
+        \cite{salimans2016weight} & Weight  & Yee \\ \\
+        \cite{ulyanov2016instance} & Instance  & GAN \\ \\
+        \cite{wu2018group} & Group  & Image \\ \\
+        \cite{miyato2018spectral} & Spectral  & GAN
+    \end{tabular}
+    \caption{6 Types of Normalization}
+    \label{tab:6_types_of_norm}
+\end{table}
 
 
 \section{Organization of This Thesis}
