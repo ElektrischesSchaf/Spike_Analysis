@@ -44,7 +44,7 @@ from  Deep_Learning_Models.GRU_one_stream_self_Atten import GRUModel
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # Make file list
-kinematic_variable_type='x_and_y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type='x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -53,13 +53,13 @@ session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRU_with_Spike_Single_37_Session'
-MAX_EPOCH = 100
+MAX_EPOCH = 150
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
 BATCH_SIZE = 16
 HIDDEN_DIMENSION = 100
-max_timestep = 10
+max_timestep = 20
 # Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
@@ -241,17 +241,17 @@ for session_k in range(len(session_file_list)):
     df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
     
 
-    df=pd.DataFrame(x_velocity_label_training)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
+    df=pd.DataFrame(x_position_label_training)
+    df.to_csv(os.path.join(csv_path,'x_position_label_training.csv'), index=False)
 
-    df=pd.DataFrame(x_velocity_label_testing)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+    df=pd.DataFrame(x_position_label_testing)
+    df.to_csv(os.path.join(csv_path,'x_position_label_testing.csv'), index=False)
 
-    df=pd.DataFrame(y_velocity_label_training)
-    df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
+    df=pd.DataFrame(y_position_label_training)
+    df.to_csv(os.path.join(csv_path,'y_position_label_training.csv'), index=False)
 
-    df=pd.DataFrame(y_velocity_label_testing)
-    df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
+    df=pd.DataFrame(y_position_label_testing)
+    df.to_csv(os.path.join(csv_path,'y_position_label_testing.csv'), index=False)
 
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
@@ -263,21 +263,21 @@ for session_k in range(len(session_file_list)):
     testing_x=testing_x.float()
 
 
-    # x_vel
-    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
+    # x_pos
+    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype=float)    
     training_y_1  = torch.from_numpy(training_y_1.values)    
     training_y_1  = training_y_1.float()
 
-    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
+    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)    
     testing_y_1 = torch.from_numpy(testing_y_1.values)    
     testing_y_1 = testing_y_1.float()
 
-    # y_vel
-    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
+    # y_pos
+    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_training.csv'), dtype=float)    
     training_y_2 = torch.from_numpy(training_y_2.values)    
     training_y_2 = training_y_2.float()
 
-    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
+    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)    
     testing_y_2 = torch.from_numpy(testing_y_2.values)    
     testing_y_2 = testing_y_2.float()
 
@@ -498,26 +498,26 @@ for session_k in range(len(session_file_list)):
     df.to_csv(os.path.join(csv_path, 'plotting_time_elapsed.csv'), index=False, header=False)
 
     df = pd.DataFrame( my_prediction_1 )
-    df.to_csv(os.path.join(csv_path, 'my_prediction_x_vel.csv'), index=False, header=False)
+    df.to_csv(os.path.join(csv_path, 'my_prediction_x_pos.csv'), index=False, header=False)
     df = pd.DataFrame( my_prediction_2 )
-    df.to_csv(os.path.join(csv_path, 'my_predictionyx_vel.csv'), index=False, header=False)
+    df.to_csv(os.path.join(csv_path, 'my_predictiony_y_pos.csv'), index=False, header=False)
 
-    plt.plot( plotting_time_elapsed, my_prediction_1, 'b', linewidth=5, label='x-vel prediction', alpha=0.5 )
-    plt.plot( plotting_time_elapsed, Ground_Truth_1, 'b--', linewidth=5, label='x-vel actual', alpha=0.7)
-    plt.title( session_name + ', x & y velocity prediction' , fontsize=30, color="black")
+    plt.plot( plotting_time_elapsed, my_prediction_1, 'b', linewidth=5, label='x-pos prediction', alpha=0.5 )
+    plt.plot( plotting_time_elapsed, Ground_Truth_1, 'b--', linewidth=5, label='x-pos actual', alpha=0.7)
+    plt.title( session_name + ', x & y position prediction' , fontsize=30, color="black")
 
     df = pd.DataFrame( Ground_Truth_1 )
-    df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_vel.csv'), index=False, header=False) 
+    df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_pos.csv'), index=False, header=False) 
     df = pd.DataFrame( Ground_Truth_2 )
-    df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_vel.csv'), index=False, header=False) 
+    df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_pos.csv'), index=False, header=False) 
 
-    plt.plot( plotting_time_elapsed, my_prediction_2, 'g', linewidth=5, label='y-vel prediction', alpha=0.5 )
-    plt.plot( plotting_time_elapsed, Ground_Truth_2, 'g--', linewidth=5, label='y-vel actual', alpha=0.7)
+    plt.plot( plotting_time_elapsed, my_prediction_2, 'g', linewidth=5, label='y-pos prediction', alpha=0.5 )
+    plt.plot( plotting_time_elapsed, Ground_Truth_2, 'g--', linewidth=5, label='y-pos actual', alpha=0.7)
     # plt.title( session_name + ', y-velocity prediction' , fontsize=30, color="black")
    
     plt.legend(loc='upper right', fontsize=30)
     plt.xlabel('Time (second)', fontsize=25)
-    plt.ylabel('velocity (mm/s)', fontsize=25)
+    plt.ylabel('Position (mm)', fontsize=25)
     plt.xticks(fontsize=25, color="black")
     plt.yticks(fontsize=25, color="black")
     axes = plt.gca()
@@ -525,7 +525,7 @@ for session_k in range(len(session_file_list)):
     plt.tight_layout()
 
 
-    plt.savefig( plot_path + '/' +model_name+'_x_and_y-velocity_predict.png' )
+    plt.savefig( plot_path + '/' +model_name+'_x_and_y-position_predict.png' )
 
     plt.cla()
     plt.clf()
