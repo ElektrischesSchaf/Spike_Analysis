@@ -57,12 +57,12 @@ session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRU_with_Spike_Single_37_Session'
-MAX_EPOCH =  50 #150
+MAX_EPOCH =  150
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
 BATCH_SIZE = 16
-HIDDEN_DIMENSION = 256
+HIDDEN_DIMENSION = 512
 max_timestep = 20
 # Model Performance Lists
 R_square_across_all_sessions=[]
