@@ -17,3 +17,6 @@
 #### [Docker Container Tutorial #3 Executing container commands](https://www.youtube.com/watch?v=pr8jZBmcF18)
 
 #### [Docker Container Tutorial #4 Container Names & Container Tips](https://www.youtube.com/watch?v=pr8jZBmcF18)
+
+### RNN hidden units
+* [Article](https://stackoverflow.com/questions/37901047/what-is-num-units-in-tensorflow-basiclstmcell)
