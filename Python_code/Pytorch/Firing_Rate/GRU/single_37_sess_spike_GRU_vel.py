@@ -502,8 +502,8 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame( my_prediction_2 )
     df.to_csv(os.path.join(csv_path, 'my_predictionyx_vel.csv'), index=False, header=False)
 
-    plt.plot( plotting_time_elapsed, my_prediction_1, 'b', linewidth=5, label='x-vel prediction', alpha=0.5 )
-    plt.plot( plotting_time_elapsed, Ground_Truth_1, 'b--', linewidth=5, label='x-vel actual', alpha=0.7)
+    plt.plot( plotting_time_elapsed, my_prediction_1, 'b', linewidth=5, label='x-vel prediction', alpha=0.7 )
+    plt.plot( plotting_time_elapsed, Ground_Truth_1, 'b--', linewidth=5, label='x-vel actual', alpha=0.8 )
     plt.title( session_name + ', x & y velocity prediction' , fontsize=30, color="black")
 
     df = pd.DataFrame( Ground_Truth_1 )
@@ -511,8 +511,8 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame( Ground_Truth_2 )
     df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_vel.csv'), index=False, header=False) 
 
-    plt.plot( plotting_time_elapsed, my_prediction_2, 'g', linewidth=5, label='y-vel prediction', alpha=0.5 )
-    plt.plot( plotting_time_elapsed, Ground_Truth_2, 'g--', linewidth=5, label='y-vel actual', alpha=0.7)
+    plt.plot( plotting_time_elapsed, my_prediction_2, 'g', linewidth=5, label='y-vel prediction', alpha=0.7 )
+    plt.plot( plotting_time_elapsed, Ground_Truth_2, 'g--', linewidth=5, label='y-vel actual', alpha=0.8 )
     # plt.title( session_name + ', y-velocity prediction' , fontsize=30, color="black")
    
     plt.legend(loc='upper right', fontsize=30)
@@ -522,6 +522,7 @@ for session_k in range(len(session_file_list)):
     plt.yticks(fontsize=25, color="black")
     axes = plt.gca()
     axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
+    axes.set_ylim([ -400, 400 ])
     plt.tight_layout()
 
 
@@ -630,7 +631,6 @@ plt.savefig(bar_plot_path+'/'+'best_epoch_across_sessions.png')
 plt.cla()
 plt.clf()
 plt.close()
-
+'''
 tEnd=time.time()
 print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
-'''
