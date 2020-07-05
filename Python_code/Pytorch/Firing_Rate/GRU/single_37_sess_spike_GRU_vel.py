@@ -43,6 +43,10 @@ mat_file_processing=load_mat_file.mat_file_processing()
 from  Deep_Learning_Models.GRU_one_stream_self_Atten import GRUModel
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
+# attention map plotting module
+import Deep_Learning_Models.Attention_Map_Plotting as Attention_Map_Plotting
+Plotting=Attention_Map_Plotting.Plotting()
+
 # Make file list
 kinematic_variable_type='x_and_y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
@@ -442,6 +446,9 @@ for session_k in range(len(session_file_list)):
     my_prediction_2 = []
     real_y_all_2 = []
 
+    # attention map
+    attn_weight_matrix_all=[]
+
     for i, (x, testing_y) in trange:
 
         # GRU batch
@@ -449,6 +456,12 @@ for session_k in range(len(session_file_list)):
         #     continue
 
         o_labels, attn_weight_matrix = net(x.to(device))
+
+        # attention map
+        # attn_weight_matrix=attn_weight_matrix.squeeze(1)
+        attn_weight_matrix = torch.sum(attn_weight_matrix, dim=0)
+        # print('shape of attn_weight_matrix= ', attn_weight_matrix.size(), '\n')
+        attn_weight_matrix = attn_weight_matrix.cpu().detach().numpy()
 
         o_labels = o_labels.cpu().data.numpy()
         o_labels_1 = o_labels[:,0]
@@ -468,7 +481,18 @@ for session_k in range(len(session_file_list)):
         for ele in real_y_2:
             real_y_all_2.append( float(ele) )
 
+        # attention map
+        for ele in range(attn_weight_matrix.shape[0]):
+            attn_weight_matrix_all.append( attn_weight_matrix[ele,:] )
+
     shutil.rmtree(save_epoch_path)
+
+    # attention map
+    attn_weight_matrix_all=np.asarray(attn_weight_matrix_all)
+    print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
+
+    df = pd.DataFrame( attn_weight_matrix_all )
+    df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
 
     testing_data_r_square_1 = r2_score( real_y_all_1, my_prediction_1)
     testing_data_SNR_1 = -10*math.log10(1-testing_data_r_square_1)
@@ -521,7 +545,10 @@ for session_k in range(len(session_file_list)):
     plt.xticks(fontsize=25, color="black")
     plt.yticks(fontsize=25, color="black")
     axes = plt.gca()
-    axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
+
+    # axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
+    axes.set_xlim([ plotting_time_elapsed[0], plotting_time_elapsed[0+230] ])
+
     axes.set_ylim([ -400, 400 ])
     plt.tight_layout()
 
@@ -544,6 +571,9 @@ for session_k in range(len(session_file_list)):
 
     df = pd.DataFrame( [[session_name, testing_data_SNR_1, testing_data_SNR_2 ]] , columns=['session', 'x-axis', 'y-axis'] )
     df.to_csv(os.path.join(csv_path, 'SNR_this_session.csv'), index=False, header=True)
+
+    # attention map
+    Plotting.attention_map_2_outputs(time_bin_to_plot=230, plot_path=plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all)
 
 # session control end
 

@@ -479,6 +479,9 @@ for session_k in range(len(session_file_list)):
     attn_weight_matrix_all=np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
 
+    df = pd.DataFrame( attn_weight_matrix_all )
+    df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
+
     testing_data_r_square=r2_score( real_y_all, my_prediction)
     testing_data_SNR=-10*math.log10(1-testing_data_r_square)
     testing_data_RMSE=np.sqrt(mean_squared_error(real_y_all,my_prediction))
@@ -528,7 +531,7 @@ for session_k in range(len(session_file_list)):
 
     # axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
     axes.set_xlim([ plotting_time_elapsed[0], plotting_time_elapsed[0+230] ])
-    
+
     plt.tight_layout()
     if kinematic_variable_type=='x_pos':
         plt.savefig( plot_path + '/' +model_name+'_x-position_predict.png' )
