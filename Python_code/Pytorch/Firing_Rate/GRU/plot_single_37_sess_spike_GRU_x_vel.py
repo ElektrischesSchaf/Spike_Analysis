@@ -97,8 +97,8 @@ for session_k in range(len(session_file_list)):
     [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
 
     # Get channel and unit numbers
-    channel_numbers_in_this_dataset=96
-    units_numbers_in_this_dataset=unit_number
+    channel_numbers_in_this_dataset = channel_number
+    units_numbers_in_this_dataset = unit_number
 
     if with_sorted_spikes==True:
         feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
@@ -528,7 +528,11 @@ for session_k in range(len(session_file_list)):
     plt.xticks(fontsize=25, color="black")
     plt.yticks(fontsize=25, color="black")
     axes = plt.gca()
-    axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
+
+    # axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
+    axes.set_xlim([ plotting_time_elapsed[0], plotting_time_elapsed[0+230] ])
+    axes.set_ylim([ -400, 400 ])
+
     plt.tight_layout()
     if kinematic_variable_type=='x_vel':
         plt.savefig( plot_path + '/' +model_name+'_x-velocity_predict.png' )
@@ -554,7 +558,7 @@ for session_k in range(len(session_file_list)):
 
 
     # attention map
-    Plotting.attention_map(time_bin_to_plot=150, plot_path=plot_path, my_prediction=my_prediction, Ground_Truth=Ground_Truth, attn_weight_matrix_all=attn_weight_matrix_all)
+    Plotting.attention_map(time_bin_to_plot=230, plot_path=plot_path, my_prediction=my_prediction, Ground_Truth=Ground_Truth, attn_weight_matrix_all=attn_weight_matrix_all)
 
 # session control end
 

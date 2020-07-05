@@ -521,7 +521,7 @@ for session_k in range(len(session_file_list)):
     plt.xticks(fontsize=25, color="black")
     plt.yticks(fontsize=25, color="black")
     axes = plt.gca()
-    axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
+    axes.set_xlim( [   time_stamp_64ms[testing_data_index], time_stamp_64ms[testing_data_index + 230 ]  ] )
     plt.tight_layout()
 
 
