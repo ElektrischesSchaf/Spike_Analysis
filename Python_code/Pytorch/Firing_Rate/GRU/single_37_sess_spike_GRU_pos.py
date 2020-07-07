@@ -62,7 +62,7 @@ LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
 BATCH_SIZE = 16
-HIDDEN_DIMENSION = 512
+HIDDEN_DIMENSION = 256
 max_timestep = 20
 # Model Performance Lists
 R_square_across_all_sessions=[]
