@@ -1,25 +1,59 @@
 \section{Dataset}
-The dataset is available at \href{https://zenodo.org/record/583331#.Xv2qFygzaUk}{Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology}, it contains
-This is a monkey in Fig. \ref{fig:monkey_exp_1}. This is another monkey is Fig. \ref{fig:monkey_exp_2}
+\label{sec:dataset}
+The dataset provided by \cite{makin2018} is available at \href{https://zenodo.org/record/583331#.Xv2qFygzaUk}{Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology}.
+It containes the recordings from two Rhesus macaque monkeys, named Indy and Loco.
+Each monkey performed a number of sessions, and in our research, a session means a consecutive experiment recording within several minutes.
+The lengths of the sessions are not consistant, but normally they are in the range of 5 to 20 minutes.
+Two 96-channel silicon microelectrode arrays were chronically implanted into their sensorimotor cortex.
+Each array consisted of 96 electrodes, and the distance between two adjacent electrodes is $400 \mu m$. All electrodes covered the area of size $4mm \times 4mm$.
+For each monkey two arrays were implanted, one was in primary motor cortex (M1) and the other was in primary somatosensory cortex (S1).
+Some sessions of the dataset were made with the recording from both arrays, whereas most of the sessions only consisted of the recording from the M1 array.
+The sampling rate of both arrays is 24.4kHz.
+
+The monkeys were trained to perform reaching tasks with their arms in a transverse plane, with targets showing up in a virtual reality environment.
+They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand.
+An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
+The experimental environment is showed in Figure \ref{fig:monkey_exp_2}.
+Fingertip position was recorded simultaneously with a six-axis electromagnetic position sensors, with a 250Hz sampling rate.
+The fingertip velocity and acceleration were then computed afterwards by discrete derivative, which is simply the differeces divided by the sampling period.
+
+
+% \begin{figure}[H]
+%     \centering
+%         \begin{minipage}[t]{0.48\textwidth}
+%             \centering
+%             \includegraphics[width=6cm]{monkey.jpg}
+%             \caption{Animal Experiment}
+%             \label{fig:monkey_exp_1}
+%         \end{minipage}
+%         \begin{minipage}[t]{0.48\textwidth}
+%             \centering
+%             \includegraphics[width=6cm]{monkey2.jpg}
+%             \caption{Experiment Environment}
+%             \label{fig:monkey_exp_2}
+%         \end{minipage}
+% \end{figure}
 
 \begin{figure}[H]
-    \centering
-        \begin{minipage}[t]{0.48\textwidth}
-            \centering
-            \includegraphics[width=6cm]{monkey.jpg}
-            \caption{Animal Experiment}
-            \label{fig:monkey_exp_1}
-        \end{minipage}
-        \begin{minipage}[t]{0.48\textwidth}
-            \centering
-            \includegraphics[width=6cm]{monkey2.jpg}
-            \caption{Equipment Layout}
-            \label{fig:monkey_exp_2}
-        \end{minipage}
+    \begin{center}
+        \includegraphics[width=0.48\textwidth]{monkey2.jpg}
+        \caption{Experiment Environment}
+        \fontsize{10}{12}
+        \label{fig:monkey_exp_2}
+    \end{center}
 \end{figure}
 
 \section{Data Preprocessing}
-\subsection{Spike Firing Rate}
+The electrode arrays' sampling rate was 24.4kHz, as mentioned in Section \ref{sec:dataset}, and their recordings were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
+Spikes were detected and sorted online by \cite{makin2018} with a custom software written in C++.
+Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session vary from 2 to 4. 
+For all sessions preserved an unsorted "noise" or "hash" unit for each recording channel.
+Theses units contained all events which surpass the threshold on a channel but which did not match any of the operator defined templates.
+
+
+Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms bins.
+For other experiments, different width of time bins were used to acquire different firing rates.
+
 
 
 \section{Deep Neural Network}
