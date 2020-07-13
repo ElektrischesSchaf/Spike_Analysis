@@ -11,6 +11,9 @@ Some sessions of the dataset were made with the recording from both arrays, wher
 The sampling rate of both arrays is 24.4kHz.
 
 The monkeys were trained to perform reaching tasks with their arms in a transverse plane, with targets showing up in a virtual reality environment.
+Circular targets in 5mm virual radius were presented in either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
+and for monky Loco, square grid of size $6 \times 6$ was used.
+Only when the monkeys' fingertip reached the acceptance zone of size $7.5  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand.
 An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
 The experimental environment is showed in Figure \ref{fig:monkey_exp_2}.
@@ -46,13 +49,33 @@ The fingertip velocity and acceleration were then computed afterwards by discret
 \section{Data Preprocessing}
 The electrode arrays' sampling rate was 24.4kHz, as mentioned in Section \ref{sec:dataset}, and their recordings were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
 Spikes were detected and sorted online by \cite{makin2018} with a custom software written in C++.
-Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session vary from 2 to 4. 
+Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session varied from 2 to 4.
 For all sessions preserved an unsorted "noise" or "hash" unit for each recording channel.
 Theses units contained all events which surpass the threshold on a channel but which did not match any of the operator defined templates.
+However, \cite{todorova2014sort} showed that there exists some information in the hash unit thus keeping them is benefitial in the movement decoding tasks. 
+As showed in Figure \ref{fig:indy_20160407_02_M1_ch_60}, which visualized the M1 spike train in channel 60 from session indy\_20160407\_02.
+The black rasters are the spikes classified as hash unit, and this session has two more sorted units, marked in red and blue respectively.
+Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode array in the same session and same time interval.
 
+\begin{figure}[H]
+    \centering
+        \begin{minipage}[t]{0.8\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{M1_Spike_Train_Channel_060.png}
+            \caption{M1 Spike Train}
+            \label{fig:indy_20160407_02_M1_ch_60}
+        \end{minipage}
+        \begin{minipage}[t]{0.8\textwidth}
+            \centering
+            \includegraphics[width=1\textwidth]{S1_Spike_Train_Channel_060.png}
+            \caption{S1 Spike Train}
+            \label{fig:indy_20160407_02_S1_ch_60}
+        \end{minipage}
+\end{figure}
 
 Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms bins.
 For other experiments, different width of time bins were used to acquire different firing rates.
+
 
 
 
