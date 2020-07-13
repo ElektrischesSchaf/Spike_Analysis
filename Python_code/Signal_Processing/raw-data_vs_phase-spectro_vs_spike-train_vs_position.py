@@ -49,10 +49,10 @@ def running_mean(x, N):
     return (cumsum[N:] - cumsum[:-N]) / float(N)
 
 # Read data and plot raw waveform
-channel_number=31 # channel 49 is decicive; 31 is not
-start_second=310
-plot_time_duration=10
-end_second=start_second+plot_time_duration
+channel_number = 31 # channel 49 is decicive; 31 is not
+start_second = 310
+plot_time_duration = 10
+end_second = start_second+plot_time_duration
 
 session_name='indy_20161007_02'
 # 'pos' or 'vel'
@@ -198,9 +198,9 @@ for i in range(50):
     #plt.show()
 
     # 出圖比例
-    my_plot_width=29
-    my_plot_height=7
-    my_fontsize=30
+    my_plot_width = 32
+    my_plot_height = 9
+    my_fontsize = 30
     figure_path='../../Figures/Raw_data_and_Spike/Spike_train_and_kinematic/'
 
     plt.figure(figsize=(my_plot_width, my_plot_height*1.5))
@@ -259,7 +259,8 @@ for i in range(50):
 
     plt.subplot(311)
     plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
-    plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1), fontsize=my_fontsize, color="black")
+    # plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1), fontsize=my_fontsize, color="black")
+    plt.title('')
 
     #plt.xlabel("Time (s)", fontsize=my_fontsize, color="black")
     plt.ylabel("Amp. (mV)", fontsize=my_fontsize, color="black")
@@ -287,20 +288,19 @@ for i in range(50):
     spike_line_width=4
     spike_line_length=18
     spike_line_offlet=190
-    plt.eventplot(temp_spike_cell_1, color='red', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-2*spike_line_length, linestyles='solid')
-    plt.eventplot(temp_spike_cell_2, color='blue', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet, linestyles='solid')
-    plt.eventplot(temp_spike_cell_3, color='green', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-1*spike_line_length, linestyles='solid')
+    plt.eventplot(temp_spike_cell_1, color='black', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-2*spike_line_length, linestyles='solid')
+    plt.eventplot(temp_spike_cell_2, color='red', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet, linestyles='solid')
+    plt.eventplot(temp_spike_cell_3, color='blue', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-1*spike_line_length, linestyles='solid')
     plt.eventplot(temp_spike_cell_4, color='yellow', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-3*spike_line_length, linestyles='solid')
 
     #plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1),fontsize=30, color="black")
 
-    #plt.xlabel("Time (s)", fontsize=my_fontsize, color="black")
-    plt.xticks([], [])
+    plt.xlabel("Time (second)", fontsize=my_fontsize, color="black")
     plt.ylabel("Amp. (mV)", fontsize=my_fontsize, color="black")
 
     plt.xlim(start_second, end_second)
     plt.ylim(0, 200)
-    plt.xticks(fontsize=my_fontsize*0.5, color="black")
+    plt.xticks(fontsize=my_fontsize, color="black")
     plt.yticks(fontsize=my_fontsize*0.5, color="black")
 
     plt.subplot(313)
@@ -343,8 +343,8 @@ for i in range(50):
     if kinematic_variable_type=='vel':
         plt.savefig(figure_path+'raw-data_vs_spike-train_vs_velocity_on_Channel_' + str(channel_number+1)+'_from_'+ str(start_second)  +'_to_'+str(end_second) + '.png')
 
-    start_second+=plot_time_duration
-    end_second+=plot_time_duration
+    start_second += plot_time_duration
+    end_second += plot_time_duration
 
     plt.clf()
     plt.cla()

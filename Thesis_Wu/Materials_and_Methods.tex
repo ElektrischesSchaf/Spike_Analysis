@@ -49,6 +49,16 @@ The fingertip velocity and acceleration were then computed afterwards by discret
 \section{Data Preprocessing}
 The electrode arrays' sampling rate was 24.4kHz, as mentioned in Section \ref{sec:dataset}, and their recordings were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
 Spikes were detected and sorted online by \cite{makin2018} with a custom software written in C++.
+In Figure \ref{fig:raw_to_spike}, the upper subplot is the raw broadband signal and the bottom subplot is the filtered high-frequency signal and the detected spikes.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{raw_to_spike.png}
+        \caption{Raw Data Waveform and the Detected Spikes}
+        \fontsize{10}{12}
+        \label{fig:raw_to_spike}
+    \end{center}
+\end{figure}
+
 Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session varied from 2 to 4.
 For all sessions preserved an unsorted "noise" or "hash" unit for each recording channel.
 Theses units contained all events which surpass the threshold on a channel but which did not match any of the operator defined templates.
