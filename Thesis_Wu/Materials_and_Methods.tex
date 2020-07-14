@@ -85,11 +85,20 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode 
 
 Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms bins.
 For other experiments, different width of time bins were used to acquire different firing rates.
+The heatmap of the firing rate within 50 time bins and the 6 kinematic variables are showed in Figure \ref{fig:firing_rate_and_kinematic_variable}.
+For each type of the kinematic variable (position, velocity, acceleration) we will predict the changes in x and y axis, omitting the z axis.
+The heatmap is showing an relationship between the occurrance of movements and the intensive spike firing.
 
-
-
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{firing_rate_and_kinematic_variable.png}
+        \caption{Firing Rate and Kinematic Variables}
+        \fontsize{10}{12}
+        \label{fig:firing_rate_and_kinematic_variable}
+    \end{center}
+\end{figure}
 
 \section{Deep Neural Network}
-\subsection{Layer Normalization}
 \subsection{Recurrent Neural Network}
+\subsection{Layer Normalization}
 \subsection{Attention Mechanism}
