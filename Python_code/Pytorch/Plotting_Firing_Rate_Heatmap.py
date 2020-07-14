@@ -10,6 +10,12 @@ import imageio
 import matplotlib.pyplot as plot
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from matplotlib import rc
+# rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+## for Palatino and other serif fonts use:
+#rc('font',**{'family':'serif','serif':['Palatino']})
+# rc('text', usetex=True)
+
 width_two=0.2
 # Data Processing
 import pandas as pd
@@ -185,7 +191,7 @@ df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
 df = pd.DataFrame(X_for_prediction)
 df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
 
-
+# positino
 df=pd.DataFrame(x_position_label_training)
 df.to_csv(os.path.join(csv_path,'x_position_label_training.csv'), index=False)
 
@@ -198,6 +204,31 @@ df.to_csv(os.path.join(csv_path,'y_position_label_training.csv'), index=False)
 df=pd.DataFrame(y_position_label_testing)
 df.to_csv(os.path.join(csv_path,'y_position_label_testing.csv'), index=False)
 
+# velocity
+df=pd.DataFrame(x_velocity_label_training)
+df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
+
+df=pd.DataFrame(x_velocity_label_testing)
+df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
+
+df=pd.DataFrame(y_velocity_label_training)
+df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
+
+df=pd.DataFrame(y_velocity_label_testing)
+df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
+
+# acceleration
+df=pd.DataFrame(x_acceleration_label_training)
+df.to_csv(os.path.join(csv_path,'x_acceleration_label_training.csv'), index=False)
+
+df=pd.DataFrame(x_acceleration_label_testing)
+df.to_csv(os.path.join(csv_path,'x_acceleration_label_testing.csv'), index=False)
+
+df=pd.DataFrame(y_acceleration_label_training)
+df.to_csv(os.path.join(csv_path,'y_acceleration_label_training.csv'), index=False)
+
+df=pd.DataFrame(y_acceleration_label_testing)
+df.to_csv(os.path.join(csv_path,'y_acceleration_label_testing.csv'), index=False)
 
 # read from csv file
 training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
@@ -227,9 +258,43 @@ testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'),
 testing_y_2 = torch.from_numpy(testing_y_2.values)    
 testing_y_2 = testing_y_2.float()
 
-training_y = torch.cat( (training_y_1, training_y_2), 1)
-testing_y = torch.cat( (testing_y_1, testing_y_2), 1)
 
+# x_vel
+training_y_3 = pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
+training_y_3  = torch.from_numpy(training_y_3.values)    
+training_y_3  = training_y_3.float()
+
+testing_y_3 = pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
+testing_y_3 = torch.from_numpy(testing_y_3.values)    
+testing_y_3 = testing_y_3.float()
+
+# y_vel
+training_y_4 = pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
+training_y_4 = torch.from_numpy(training_y_4.values)    
+training_y_4 = training_y_4.float()
+
+testing_y_4 = pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)    
+testing_y_4 = torch.from_numpy(testing_y_4.values)    
+testing_y_4 = testing_y_4.float()
+
+
+# x_acc
+training_y_5 = pd.read_csv(os.path.join(csv_path,'x_acceleration_label_training.csv'), dtype=float)    
+training_y_5  = torch.from_numpy(training_y_5.values)    
+training_y_5  = training_y_5.float()
+
+testing_y_5 = pd.read_csv(os.path.join(csv_path,'x_acceleration_label_testing.csv'), dtype=float)    
+testing_y_5 = torch.from_numpy(testing_y_5.values)    
+testing_y_5 = testing_y_5.float()
+
+# y_acc
+training_y_6 = pd.read_csv(os.path.join(csv_path,'y_acceleration_label_training.csv'), dtype=float)    
+training_y_6 = torch.from_numpy(training_y_6.values)    
+training_y_6 = training_y_6.float()
+
+testing_y_6 = pd.read_csv(os.path.join(csv_path,'y_acceleration_label_testing.csv'), dtype=float)    
+testing_y_6 = torch.from_numpy(testing_y_6.values)    
+testing_y_6 = testing_y_6.float()
 
 # Start plotting
 reduce_time_bin = 50
@@ -253,7 +318,7 @@ if not os.path.exists(plot_path):
 plt.figure(figsize=(my_plot_width, my_plot_height))
 
 # plt.subplot(211)
-plt.title(  session_name + ' Firing Rate', fontsize=30, color="black")
+plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
 # plt.title('test')
 sns.set(font_scale=3)
 data = torch.transpose( testing_x[reduce_time_bin:reduce_time_bin*2,:], 0, 1)
@@ -282,6 +347,72 @@ plt.cla()
 plt.close()
 
 # Figure firing rate and all kinematic variables
+
+# plt.rc('text', usetex=True)
+# plt.rc('font', family='serif')
+
+plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
+sns.set(font_scale=3)
+
+f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [12, 1, 1, 1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, figsize=(my_plot_width, my_plot_height*1.2))
+
+cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), torch.max(data) ]}
+sns.heatmap( data=data, xticklabels=False, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', ax=ax[0]) # important, not ax[0] = sns.heatmap(...)
+# ax[0].set_xticklabels(ax[0].get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
+ax[0].set_title('Firing Rate '+ ' of Session '+ session_name, fontsize=my_fontsize)
+ax[0].set_yticklabels(ax[0].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0)
+
+# ax[0].xaxis.set_major_locator(ticker.MultipleLocator(5))
+# ax[0].xaxis.set_major_formatter(ticker.ScalarFormatter())
+
+ax[0].yaxis.set_major_locator(ticker.MultipleLocator(50))
+ax[0].yaxis.set_major_formatter(ticker.ScalarFormatter())
+
+# ax[0].set_xlabel('Time Bins', fontsize=my_fontsize, color="black")
+ax[0].set_ylabel('Units', fontsize=my_fontsize, color="black")
+
+
+
+ax[1].set_title('Position', fontsize=my_fontsize)
+ax[1].plot( testing_y_1[reduce_time_bin:reduce_time_bin*2], 'b', linewidth=3, label='x-axis', alpha=0.8 )
+ax[1].plot( testing_y_2[reduce_time_bin:reduce_time_bin*2], 'g', linewidth=3, label='y-axis', alpha=0.8 )
+ax[1].set_ylabel('mm', fontsize=my_fontsize, rotation=90)
+ax[1].get_xaxis().set_ticks([])
+ax[1].legend(loc='upper right', fontsize=my_fontsize*0.5)
+ax[1].set_xlim([ 0, len( testing_y_2[reduce_time_bin:reduce_time_bin*2] ) ])
+
+
+ax[2].set_title('Velocity', fontsize=my_fontsize)
+ax[2].plot( testing_y_3[reduce_time_bin:reduce_time_bin*2], 'b', linewidth=3, label='x-axis', alpha=0.8 )
+ax[2].plot( testing_y_4[reduce_time_bin:reduce_time_bin*2], 'g', linewidth=3, label='y-axis', alpha=0.8 )
+ax[2].set_ylabel('mm/s', fontsize=my_fontsize, rotation=90)
+ax[2].get_xaxis().set_ticks([])
+ax[2].legend(loc='upper right', fontsize=my_fontsize*0.5)
+ax[2].set_xlim([ 0, len( testing_y_4[reduce_time_bin:reduce_time_bin*2] ) ])
+
+
+
+ax[3].set_title('Acceleration', fontsize=my_fontsize)
+ax[3].plot( testing_y_5[reduce_time_bin:reduce_time_bin*2], 'b', linewidth=3, label='x-axis', alpha=0.8 )
+ax[3].plot( testing_y_6[reduce_time_bin:reduce_time_bin*2], 'g', linewidth=3, label='y-axis', alpha=0.8 )
+ax[3].set_ylabel( 'mm/s^2', fontsize=my_fontsize, rotation=90)
+# ax[3].get_xaxis().set_ticks([])
+ax[3].set_xlabel('Time Bins', fontsize=my_fontsize)
+ax[3].legend(loc='upper right', fontsize=my_fontsize*0.5)
+ax[3].set_xlim([ 0, len( testing_y_6[reduce_time_bin:reduce_time_bin*2] ) ])
+
+
+
+# plt.tight_layout()
+plt.savefig( plot_path+'/'+ 'attention_map' +'.png' )
+
+
+plt.cla()
+plt.clf()
+plt.close()
+
+
+
 
 
 
