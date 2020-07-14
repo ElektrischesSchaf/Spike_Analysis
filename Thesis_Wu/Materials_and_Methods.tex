@@ -13,7 +13,7 @@ The sampling rate of both arrays is 24.4kHz.
 The monkeys were trained to perform reaching tasks with their arms in a transverse plane, with targets showing up in a virtual reality environment.
 Circular targets in 5mm virual radius were presented in either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
 and for monky Loco, square grid of size $6 \times 6$ was used.
-Only when the monkeys' fingertip reached the acceptance zone of size $7.5  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
+Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand.
 An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
 The experimental environment is showed in Figure \ref{fig:monkey_exp_2}.
@@ -60,10 +60,10 @@ In Figure \ref{fig:raw_to_spike}, the upper subplot is the raw broadband signal 
 \end{figure}
 
 Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session varied from 2 to 4.
-For all sessions preserved an unsorted "noise" or "hash" unit for each recording channel.
+For all sessions preserved an unsorted \textit{hash} unit for each recording channel.
 Theses units contained all events which surpass the threshold on a channel but which did not match any of the operator defined templates.
 However, \cite{todorova2014sort} showed that there exists some information in the hash unit thus keeping them is benefitial in the movement decoding tasks. 
-As showed in Figure \ref{fig:indy_20160407_02_M1_ch_60}, which visualized the M1 spike train in channel 60 from session indy\_20160407\_02.
+As showed in Figure \ref{fig:indy_20160407_02_M1_ch_60}, which visualized the M1 spike train in channel 60 from session \textbf{indy\_20160407\_02}.
 The black rasters are the spikes classified as hash unit, and this session has two more sorted units, marked in red and blue respectively.
 Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode array in the same session and same time interval.
 
