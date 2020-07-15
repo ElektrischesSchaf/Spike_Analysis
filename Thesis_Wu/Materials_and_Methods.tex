@@ -139,17 +139,75 @@ The heatmap is showing an relationship between the occurrance of movements and t
 \subsection{Recurrent Neural Network}
 In our study, we used the model name Gated Recurrent Unit (GRU) as neural decoder.
 The structure in each cell is showed in Figure \ref{fig:GRU_cell}.
-
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{GRU_cell.png}
-        \caption{Inside of a GRU Cell}
+        \caption{Inside of a GRU Cell\\ \colorbox{green}{這是網路上允許再利用的圖，有CC4.0 licence}}
         \fontsize{10}{12}
         \label{fig:GRU_cell}
     \end{center}
 \end{figure}
+The four equations in the GRU cell:
+\begin{align}
+    % \label{eq:gru_cell}
+    % \begin{split}
+        r_t &=  \sigma (W_r h_{t-1} + U_r x_t + b_r) \label{eq:reset_gate} \\
+        z_t &= \sigma (W_z h_{t-1} + U_z x_t + b_z) \label{eq:update_gate} \\
+        \hat{h_t} &= \phi(W (r_t \circ h_{t-1}) + U x_t + b) \label{eq:h_hat} \\
+        h_t &= z_t \circ h_{t-1} + (1-z_t) \circ \hat{s_t} \label{eq:h_out}
+    % \end{split}
+\end{align}
+And the two activation functions:
+\begin{align}
+    \sigma (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
+    \phi (x) &= \frac{ e^{x}-e^{-x} }{ e^{x}+e^{-x} } \label{eq:tanh}
+\end{align}
 
+Where $r_t$ is the \textbf{Rest Gate} or \textbf{Reset Gate} and $z_t$ is the \textbf{Update Gate}.
+Notation $\circ$ means elementwise multiplication for two tensors of same shape.
+Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}), which maps the input value to (0,1).
+$\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}), mapping the input value to (-1,1).
+At each timestep, a single GRU cell can take in two tensors, one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, which is the output from last timestep.
+In the process of calculating each gate value (Equation \ref{eq:reset_gate}, \ref{eq:update_gate}) and $\hat{h_t}$ (Equation \ref{eq:h_hat}),
+hidden state from last timestep ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
+and so does the input tensor ($x_t$) will be multiplied by its own weights ($U_r$, $U_z$, $U$).
+After the multiplication, 3 biases ($b_r$, $b_z$, $b$) will be added to the results before entering the activation functions.
 
+A hyperparameter named \textbf{hidden dimension} or \textbf{number of hidden units} specified the dimensions for all hidden states, which is a vector.
+This hyperparameter also determine the number of each gates, i.e. with the setting of $u$ hidden units,
+the shape of all hidden states should be $1 \times u$ and there will be $u$ reset gates, $u$ update gates in each cell.
+Typically with the larger the hidden dimension, the more complex the model will be.
+However, sophisticated models tend to overfit.
+
+Figure \ref{fig:two_layer_GRU} demonstrated how hidden states are passed from one layer to another.
+Where $n$ is the order of our input, representing how many the time bins to be fed into the model at a time for decoding the current kinematic states.
+The input data at a time contains the firing rate at this moment $x_t$ and the past firing rate from $x_{t-n+1}$ to $x_{t-1}$.
+The corrosponding outputs of our model are the kinematic variables at time $t$.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{two_layer_GRU.png}
+        \caption{Architecture of one-way two-layer GRU}
+        \fontsize{10}{12}
+        \label{fig:two_layer_GRU}
+    \end{center}
+\end{figure}
+In the first GRU layer, $n$ bins of firing rate are fed chronologically.
+Hidden state $h^{j}_{i}$ denotes the output tensor from the cell in timestep $i$ and layer $j$, and will be the input to the cell in timestep $i+1$ and layer $j+1$.
+The size of $h^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined parameter.
+Ideally tensor $h^{2}_{t}$ should contain the information from the firing rate $x_{t-n+1}$ to $x_{t-1}$, thus by feeding it to some fully connect layers we can acquire the desired output.
+
+The so called bidirectional RNN is made by simply adding another feeding of the same input sequence in reverse order.
+As in Figure \ref{fig:Bi_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$, 
+the first half of the this vector contains the information by feeding input sequence forward the last half by feeding backward.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{two-way_two-layer_GRU.png}
+        \caption{Architecture of Bidirectional Two-layer GRU}
+        \fontsize{10}{12}
+        \label{fig:Bi_two_layer_GRU}
+    \end{center}
+\end{figure}
+It is up to the internal dynamics of the GRU to determine the degree of forget and keep the previous information.
 
 \subsection{Layer Normalization}
 \subsection{Attention Mechanism}
