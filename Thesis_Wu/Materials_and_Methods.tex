@@ -11,15 +11,46 @@ Some sessions of the dataset were made with the recording from both arrays, wher
 The sampling rate of both arrays is 24.4kHz.
 
 The monkeys were trained to perform reaching tasks with their arms in a transverse plane, with targets showing up in a virtual reality environment.
-Circular targets in 5mm virual radius were presented in either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
+Circular targets in 5mm virual radius were presented in either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy in Figure \ref{fig:panels},
 and for monky Loco, square grid of size $6 \times 6$ was used.
+
+\begin{figure}[H]
+	\begin{center}
+		\centering
+		\begin{subfigure}{0.48\textwidth}
+            \centering\includegraphics[width=1\textwidth]{indy_20170123_02_panel.png}
+            \label{fig:8_times_8}
+			\caption{} 
+		\end{subfigure}
+		\begin{subfigure}{0.48\textwidth}
+            \centering\includegraphics[width=1\textwidth]{indy_20160411_02_panel.png}
+            \label{fig:8_times_17}
+			\caption{} 
+		\end{subfigure}
+        \caption[Two sizes of the panel]{ (a) $8 \times 8 $ square grid   (b) $8 \times 17$ rectangular grid}
+        \label{fig:panels}		
+	\end{center}	
+\end{figure}
+
+
 Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
+The recorded tragectory in the x- and y-axis as well as the target cue for both directions is in Figure \ref{fig:position_and_cue},
+where the solid lines indicate the actual tragectory of the fingertip and the dash lines indicate the target cue.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
+        \caption{Actual Fingertip Trajectories with Target Cue}
+        \fontsize{10}{12}
+        \label{fig:position_and_cue}
+    \end{center}
+\end{figure}
+
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand.
 An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
 The experimental environment is showed in Figure \ref{fig:monkey_exp_2}.
 Fingertip position was recorded simultaneously with a six-axis electromagnetic position sensors, with a 250Hz sampling rate.
 The fingertip velocity and acceleration were then computed afterwards by discrete derivative, which is simply the differeces divided by the sampling period.
-
 
 % \begin{figure}[H]
 %     \centering
@@ -86,8 +117,8 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode 
 Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms bins.
 For other experiments, different width of time bins were used to acquire different firing rates.
 The heatmap of the firing rate within 50 time bins and the 6 kinematic variables are showed in Figure \ref{fig:firing_rate_and_kinematic_variable}.
-For each type of the kinematic variable (position, velocity, acceleration) we will predict the changes in x and y axis, omitting the z axis.
-The heatmap is showing an relationship between the occurrance of movements and the intensive spike firing.
+For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x- and y-axis, but omitting the z-axis.
+The heatmap is showing an relationship between the occurrance of movements and the intensity of spike firing.
 
 \begin{figure}[H]
     \begin{center}
@@ -98,7 +129,22 @@ The heatmap is showing an relationship between the occurrance of movements and t
     \end{center}
 \end{figure}
 
+\newpage
 \section{Deep Neural Network}
 \subsection{Recurrent Neural Network}
+In our study, we used the model name Gated Recurrent Unit (GRU) as neural decoder.
+The structure in each cell is showed in Figure \ref{fig:GRU_cell}.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{GRU_cell.png}
+        \caption{Inside of a GRU Cell}
+        \fontsize{10}{12}
+        \label{fig:GRU_cell}
+    \end{center}
+\end{figure}
+
+
+
 \subsection{Layer Normalization}
 \subsection{Attention Mechanism}
