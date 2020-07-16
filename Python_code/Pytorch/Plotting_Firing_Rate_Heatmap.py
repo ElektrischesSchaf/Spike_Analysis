@@ -177,11 +177,11 @@ print('shape of x_velocity_label_testing after', x_velocity_label_testing.shape)
 # Write featrue and label to csv files
 CWD = os.getcwd()
 
-CWD = os.path.join(CWD, 'Firing_Rate_Visualization')
-if not os.path.exists(CWD):
-    os.mkdir(CWD)
+Firing_Rate_Visualization = os.path.join(CWD, 'Firing_Rate_Visualization')
+if not os.path.exists(Firing_Rate_Visualization):
+    os.mkdir(Firing_Rate_Visualization)
 
-csv_path=os.path.join(CWD,'csv_files')
+csv_path=os.path.join(Firing_Rate_Visualization,'csv_files')
 if not os.path.exists(csv_path):
     os.mkdir(str(csv_path))
 
@@ -295,6 +295,9 @@ training_y_6 = training_y_6.float()
 testing_y_6 = pd.read_csv(os.path.join(csv_path,'y_acceleration_label_testing.csv'), dtype=float)    
 testing_y_6 = torch.from_numpy(testing_y_6.values)    
 testing_y_6 = testing_y_6.float()
+
+
+shutil.rmtree(Firing_Rate_Visualization)
 
 # Start plotting
 reduce_time_bin = 50
