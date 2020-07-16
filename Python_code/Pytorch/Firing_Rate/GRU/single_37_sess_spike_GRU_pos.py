@@ -56,14 +56,14 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'GRU_with_Spike_Single_37_Session'
-MAX_EPOCH =  150
+model_name = 'GRU_with_Spike_Single_37_Session_2_outputs'
+MAX_EPOCH =   3#150
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
 BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
-max_timestep = 20
+max_timestep = 5 #20
 # Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
@@ -446,6 +446,8 @@ for session_k in range(len(session_file_list)):
     my_prediction_2 = []
     real_y_all_2 = []
 
+    firing_rate_collector = []
+
     # attention map
     attn_weight_matrix_all=[]
 
@@ -463,7 +465,12 @@ for session_k in range(len(session_file_list)):
         # print('shape of attn_weight_matrix= ', attn_weight_matrix.size(), '\n')
         attn_weight_matrix = attn_weight_matrix.cpu().detach().numpy()
 
+        # collect firing rate
+        x = x.cpu().data.numpy()
+        for index_batch in  range(x.shape[0]):
+            firing_rate_collector.append(  x[index_batch, -feature_numbers:].flatten() )
 
+        # collect label
         o_labels = o_labels.cpu().data.numpy()
         o_labels_1 = o_labels[:,0]
         o_labels_2 = o_labels[:,1]
@@ -491,6 +498,10 @@ for session_k in range(len(session_file_list)):
     # attention map
     attn_weight_matrix_all=np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
+
+    # collected firing rate
+    firing_rate_collector=np.asarray(firing_rate_collector)
+    print('shape of firing_rate_collector= ', firing_rate_collector.shape, '\n')
 
     df = pd.DataFrame( attn_weight_matrix_all )
     df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
@@ -573,7 +584,7 @@ for session_k in range(len(session_file_list)):
     df.to_csv(os.path.join(csv_path, 'SNR_this_session.csv'), index=False, header=True)
 
     # attention map
-    Plotting.attention_map_2_outputs(time_bin_to_plot=230, plot_path=plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all)
+    Plotting.attention_map_2_outputs(time_bin_to_plot=230, plot_path=plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, firing_rate_collector=firing_rate_collector)
 
 # session control end
 
