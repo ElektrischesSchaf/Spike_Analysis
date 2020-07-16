@@ -66,7 +66,7 @@ class Plotting():
         for i in range(time_bin_to_plot):
             time+=[i]
 
-        f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [5,3,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
+        f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [5,2,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
 
         firing_rate_data = firing_rate_collector.transpose()
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
