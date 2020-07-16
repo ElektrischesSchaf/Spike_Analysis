@@ -9,6 +9,7 @@ import torch.nn.functional as F
 import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
 from matplotlib.colors import LogNorm
+import matplotlib.ticker as ticker
 
 my_fontsize=30
 
@@ -58,45 +59,66 @@ class Plotting():
         firing_rate_collector=firing_rate_collector[:time_bin_to_plot,:]
         attn_weight_matrix_all=attn_weight_matrix_all[:time_bin_to_plot,:]
 
-        sns.set(font_scale=1.5)
-        plt.rcParams["figure.figsize"] = (16,9)
+        sns.set(font_scale=3)
+        plt.rcParams["figure.figsize"] = (30,30)
 
         time=[]
         for i in range(time_bin_to_plot):
             time+=[i]
 
-        f, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [3,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
+        f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [5,3,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
+
+        firing_rate_data = firing_rate_collector.transpose()
+        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
+        sns.heatmap( data=firing_rate_data , ax=ax[0], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=False ) # norm=LogNorm()
+    
+        ax[0].set_yticklabels(ax[0].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0) # This will get correct row numbers of data matrix
+
+        # b, t = ax[0].get_ylim() # discover the values for bottom and top
+        # b += 0.5 # Add 0.5 to the bottom
+        # t -= 0.5 # Subtract 0.5 from the top
+        # ax[0].set_ylim(b, t) # update the ylim(bottom, top) values
+
+        ax[0].yaxis.set_major_locator(ticker.MultipleLocator(50))
+        ax[0].yaxis.set_major_formatter(ticker.ScalarFormatter())
+
+        # ax[0].set_yticklabels(ax[0].get_yticklabels(), rotation=0) # This will get wrong row numbers of data matrix
+
+        ax[0].set_title('Firing Rate', fontsize=my_fontsize, color="black")
+        ax[0].set_ylabel('Units', fontsize=my_fontsize, color="black")
+
 
         my_yticklabels=[]
         for ticks_label in range(attn_weight_matrix_all.shape[1]):
             my_yticklabels.append( 't-' + str(  int(attn_weight_matrix_all.shape[1]) -1 - ticks_label) )
 
-        attention_map_data=attn_weight_matrix_all.transpose()
-        cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(attention_map_data), np.max(attention_map_data) ]}
-        sns.heatmap( data=attention_map_data , ax=ax[0], cbar_kws=cbar_kws, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False ) # norm=LogNorm()
+        attention_map_data = attn_weight_matrix_all.transpose()
 
-        b, t = ax[0].get_ylim() # discover the values for bottom and top
+        cbar_kws_attention = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(attention_map_data), np.max(attention_map_data) ]}
+        sns.heatmap( data=attention_map_data , ax=ax[1], cbar_kws=cbar_kws_attention, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False ) # norm=LogNorm()
+
+        b, t = ax[1].get_ylim() # discover the values for bottom and top
         b += 0.5 # Add 0.5 to the bottom
         t -= 0.5 # Subtract 0.5 from the top
-        ax[0].set_ylim(b, t) # update the ylim(bottom, top) values
+        ax[1].set_ylim(b, t) # update the ylim(bottom, top) values
 
-        ax[0].set_yticklabels(ax[0].get_yticklabels(), rotation=0)
-        ax[0].set_title('Attention Map')
-        ax[0].set_ylabel('Past Time Bins')
+        ax[1].set_yticklabels(ax[1].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0)
+        ax[1].set_title('Attention Map', fontsize=my_fontsize, color="black")
+        ax[1].set_ylabel('Past Time Bins', fontsize=my_fontsize, color="black")
 
-        ax[1].set_title( 'Kinematic Variable Reconstruction')
-        ax[1].set_ylabel( 'Position (mm)', rotation=90)
-        # ax[1].set_ylabel( 'Velocity (mm/s)', rotation=90)
-        ax[1].plot( time, my_prediction_1[:time_bin_to_plot], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[1].plot( time, Ground_Truth_1[:time_bin_to_plot], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+        ax[2].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
+        ax[2].set_ylabel( 'Position (mm)', rotation=90)
+        # ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
+        ax[2].plot( time, my_prediction_1[:time_bin_to_plot], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
+        ax[2].plot( time, Ground_Truth_1[:time_bin_to_plot], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 
-        ax[1].plot( time, my_prediction_2[:time_bin_to_plot], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[1].plot( time, Ground_Truth_2[:time_bin_to_plot], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[2].plot( time, my_prediction_2[:time_bin_to_plot], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
+        ax[2].plot( time, Ground_Truth_2[:time_bin_to_plot], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
     
-        ax[1].legend(loc='upper right', fontsize=my_fontsize*0.3)
+        ax[2].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
-        ax[1].set_xlim([ time[0], time[-1] ])
-        ax[1].set_xlabel('Time Bins')
+        ax[2].set_xlim([ time[0], time[-1] ])
+        ax[2].set_xlabel('Time Bins', fontsize=my_fontsize, color="black")
 
         plt.savefig( plot_path+'/'+ 'attention_map' +'.png' )
         plt.cla()

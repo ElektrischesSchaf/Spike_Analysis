@@ -359,10 +359,10 @@ sns.set(font_scale=3)
 
 f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [12, 1, 1, 1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, figsize=(my_plot_width, my_plot_height*1.2))
 
-cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), torch.max(data) ]}
-sns.heatmap( data=data, xticklabels=False, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', ax=ax[0]) # important, not ax[0] = sns.heatmap(...)
+cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), 4 ]}
+sns.heatmap( data=data, vmax=4 ,xticklabels=False, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', ax=ax[0]) # important, not ax[0] = sns.heatmap(...)
 # ax[0].set_xticklabels(ax[0].get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
-ax[0].set_title('Firing Rate '+ ' of Session '+ session_name, fontsize=my_fontsize)
+ax[0].set_title('Firing Rate from Session '+ session_name, fontsize=my_fontsize)
 ax[0].set_yticklabels(ax[0].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0)
 
 # ax[0].xaxis.set_major_locator(ticker.MultipleLocator(5))
