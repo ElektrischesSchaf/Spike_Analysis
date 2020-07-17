@@ -527,14 +527,14 @@ for session_k in range(len(session_file_list)):
     testing_data_RMSE_1 = np.sqrt(mean_squared_error(real_y_all_1, my_prediction_1))
     PCC_1 = pearsonr(real_y_all_1, my_prediction_1)
     Ground_Truth_1 = real_y_all_1
-    print('\nx-velocity score: ', testing_data_r_square_1, ' RMSE: ', testing_data_RMSE_1, ', pearsonr=', PCC_1[0])
+    print('\nx-position score: ', testing_data_r_square_1, ' RMSE: ', testing_data_RMSE_1, ', pearsonr=', PCC_1[0])
 
     testing_data_r_square_2 = r2_score( real_y_all_2, my_prediction_2)
     testing_data_SNR_2 = -10*math.log10(1-testing_data_r_square_2)
     testing_data_RMSE_2 = np.sqrt(mean_squared_error(real_y_all_2, my_prediction_2))
     PCC_2 = pearsonr(real_y_all_2, my_prediction_2)
     Ground_Truth_2 = real_y_all_2
-    print('\ny-velocity score: ', testing_data_r_square_2, ' RMSE: ', testing_data_RMSE_2, ', pearsonr=', PCC_2[0])
+    print('\ny-position score: ', testing_data_r_square_2, ' RMSE: ', testing_data_RMSE_2, ', pearsonr=', PCC_2[0])
 
     R_square_across_all_sessions.append([testing_data_r_square_1, testing_data_r_square_2])
     SNR_across_all_sessions.append([testing_data_SNR_1,testing_data_SNR_2])
