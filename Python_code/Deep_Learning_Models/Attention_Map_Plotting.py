@@ -16,15 +16,15 @@ my_fontsize=30
 class Plotting():
 
     # for 1-output GRU model
-    def attention_map( self, time_bin_to_plot, plot_path, my_prediction, Ground_Truth, attn_weight_matrix_all ):
-        attn_weight_matrix_all=attn_weight_matrix_all[:time_bin_to_plot,:]
+    def attention_map( self, end_time_bin, plot_path, my_prediction, Ground_Truth, attn_weight_matrix_all ):
+        attn_weight_matrix_all=attn_weight_matrix_all[:end_time_bin,:]
 
         sns.set(font_scale=1.5)
         plt.rcParams["figure.figsize"] = (16,9)
 
         # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
         time=[]
-        for i in range(time_bin_to_plot):
+        for i in range(end_time_bin):
             time+=[i]
 
         f, (ax, ax2) = plt.subplots(2)
@@ -38,8 +38,8 @@ class Plotting():
         ax.set_title('Attention Map')
         ax.set_ylabel('Past Time Bins')
 
-        ax2 = plt.plot( time, my_prediction[:time_bin_to_plot], 'b', linewidth=3, label='Prediction' )
-        ax2 = plt.plot( time, Ground_Truth[:time_bin_to_plot], 'r', linewidth=3, label='Actual', alpha=0.7 )
+        ax2 = plt.plot( time, my_prediction[:end_time_bin], 'b', linewidth=3, label='Prediction' )
+        ax2 = plt.plot( time, Ground_Truth[:end_time_bin], 'r', linewidth=3, label='Actual', alpha=0.7 )
         plt.legend(loc='upper right', fontsize=10)
 
         plt.xlim([ time[0], time[-1] ])
@@ -54,22 +54,22 @@ class Plotting():
 
 
     # for 2-output GRU model
-    def attention_map_2_outputs( self, time_bin_to_plot, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, firing_rate_collector):
+    def attention_map_2_outputs( self, session_name, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, firing_rate_collector):
 
-        firing_rate_collector=firing_rate_collector[:time_bin_to_plot,:]
-        attn_weight_matrix_all=attn_weight_matrix_all[:time_bin_to_plot,:]
+        firing_rate_collector=firing_rate_collector[start_time_bin:end_time_bin,:]
+        attn_weight_matrix_all=attn_weight_matrix_all[start_time_bin:end_time_bin,:]
 
         sns.set(font_scale=3)
         plt.rcParams["figure.figsize"] = (30,30)
 
         time=[]
-        for i in range(time_bin_to_plot):
+        for i in range(start_time_bin, end_time_bin):
             time+=[i]
 
-        f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [5,2,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
+        f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [4,3,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
 
         firing_rate_data = firing_rate_collector.transpose()
-        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
+        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
         sns.heatmap( data=firing_rate_data , ax=ax[0], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=False ) # norm=LogNorm()
     
         ax[0].set_yticklabels(ax[0].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0) # This will get correct row numbers of data matrix
@@ -84,7 +84,7 @@ class Plotting():
 
         # ax[0].set_yticklabels(ax[0].get_yticklabels(), rotation=0) # This will get wrong row numbers of data matrix
 
-        ax[0].set_title('Firing Rate', fontsize=my_fontsize, color="black")
+        ax[0].set_title('Firing Rate from Session '+session_name, fontsize=my_fontsize, color="black")
         ax[0].set_ylabel('Units', fontsize=my_fontsize, color="black")
 
 
@@ -107,20 +107,25 @@ class Plotting():
         ax[1].set_ylabel('Past Time Bins', fontsize=my_fontsize, color="black")
 
         ax[2].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
-        ax[2].set_ylabel( 'Position (mm)', rotation=90)
-        # ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
-        ax[2].plot( time, my_prediction_1[:time_bin_to_plot], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[2].plot( time, Ground_Truth_1[:time_bin_to_plot], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+        if type_name=='pos':
+            ax[2].set_ylabel( 'Position (mm)', rotation=90)
+        if type_name=='vel':
+            ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
+        if type_name=='acc':
+            ax[2].set_ylabel( 'Acceleration (mm/s^2)', rotation=90)
+        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
+        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 
-        ax[2].plot( time, my_prediction_2[:time_bin_to_plot], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[2].plot( time, Ground_Truth_2[:time_bin_to_plot], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
+        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
     
         ax[2].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
         ax[2].set_xlim([ time[0], time[-1] ])
         ax[2].set_xlabel('Time Bins', fontsize=my_fontsize, color="black")
 
-        plt.savefig( plot_path+'/'+ 'attention_map' +'.png' )
+        plt.savefig( plot_path+'/'+ 'attention_map_' +str(start_time_bin)+ '_to_'+str(end_time_bin) +'.png' )
+
         plt.cla()
         plt.clf()
         plt.close()
