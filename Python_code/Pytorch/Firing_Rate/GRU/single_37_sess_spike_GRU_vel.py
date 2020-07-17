@@ -56,7 +56,7 @@ List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'GRU_with_Spike_Single_37_Session'
+model_name = 'GRU_with_Spike_Single_37_Session_2_outputs'
 MAX_EPOCH = 100
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
@@ -237,6 +237,9 @@ for session_k in range(len(session_file_list)):
     if not os.path.exists(plot_path):
         os.mkdir(plot_path)
 
+    attention_plot_path = os.path.join(CWD, 'attention_map')
+    if not os.path.exists(attention_plot_path):
+        os.mkdir(attention_plot_path) 
 
     df = pd.DataFrame(X_for_training)
     df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
@@ -287,6 +290,8 @@ for session_k in range(len(session_file_list)):
 
     training_y = torch.cat( (training_y_1, training_y_2), 1)
     testing_y = torch.cat( (testing_y_1, testing_y_2), 1)
+
+    testing_data_length = int(testing_y.size(0))
 
 
     # General Neural Network Hyperparameters
@@ -402,6 +407,9 @@ for session_k in range(len(session_file_list)):
     train_R_square = [l['R^2'] for l in history['train']]
     valid_R_square = [l['R^2'] for l in history['test']]
 
+    plt.cla()
+    plt.clf()
+    plt.close()
 
     plt.figure(figsize=(7,5))
     plt.title('Loss')
@@ -412,6 +420,10 @@ for session_k in range(len(session_file_list)):
     plt.tight_layout()
     plt.savefig(plot_path + '/' + model_name+"_Loss.png")
 
+    plt.cla()
+    plt.clf()
+    plt.close()
+
     plt.figure(figsize=(7,5))
     plt.title('performance')
     plt.plot(train_R_square, label='train')
@@ -421,6 +433,10 @@ for session_k in range(len(session_file_list)):
     plt.legend()
     plt.tight_layout()
     plt.savefig(plot_path + '/' +model_name+"_R-square.png")
+
+    plt.cla()
+    plt.clf()
+    plt.close()
 
     best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['test'])])
     print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')    
@@ -446,6 +462,8 @@ for session_k in range(len(session_file_list)):
     my_prediction_2 = []
     real_y_all_2 = []
 
+    firing_rate_collector = []
+
     # attention map
     attn_weight_matrix_all=[]
 
@@ -462,6 +480,11 @@ for session_k in range(len(session_file_list)):
         attn_weight_matrix = torch.sum(attn_weight_matrix, dim=1)
         # print('shape of attn_weight_matrix= ', attn_weight_matrix.size(), '\n')
         attn_weight_matrix = attn_weight_matrix.cpu().detach().numpy()
+
+        # collect firing rate
+        x = x.cpu().data.numpy()
+        for index_batch in  range(x.shape[0]):
+            firing_rate_collector.append(  x[index_batch, -feature_numbers:].flatten() )
 
         o_labels = o_labels.cpu().data.numpy()
         o_labels_1 = o_labels[:,0]
@@ -490,6 +513,10 @@ for session_k in range(len(session_file_list)):
     # attention map
     attn_weight_matrix_all=np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
+
+    # collected firing rate
+    firing_rate_collector=np.asarray(firing_rate_collector)
+    print('shape of firing_rate_collector= ', firing_rate_collector.shape, '\n')
 
     df = pd.DataFrame( attn_weight_matrix_all )
     df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
@@ -573,8 +600,13 @@ for session_k in range(len(session_file_list)):
     df.to_csv(os.path.join(csv_path, 'SNR_this_session.csv'), index=False, header=True)
 
     # attention map
-    Plotting.attention_map_2_outputs(time_bin_to_plot=230, plot_path=plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all)
+    plottin_duration_time_bin = 200
+    time_bin_index = 0
+    # Plotting.attention_map_2_outputs(start_time_bin=time_bin_index, time_bin_to_plot=time_bin_index+plottin_duration_time_bin, plot_path=plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, firing_rate_collector=firing_rate_collector)
 
+    while time_bin_index < (testing_data_length -plottin_duration_time_bin*2 ):
+        Plotting.attention_map_2_outputs(session_name=session_name, type_name='vel', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, firing_rate_collector=firing_rate_collector)
+        time_bin_index = time_bin_index + plottin_duration_time_bin
 # session control end
 
 # Write all performances to csv files
