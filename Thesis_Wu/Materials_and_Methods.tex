@@ -125,6 +125,7 @@ The heatmap of the firing rate within 50 time bins and the 6 kinematic variables
 For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x- and y-axis, but omitting the z-axis.
 The heatmap is showing an relationship between the occurrance of movements and the intensity of spike firing.
 
+\newpage
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{firing_rate_and_kinematic_variable.png}
@@ -133,6 +134,8 @@ The heatmap is showing an relationship between the occurrance of movements and t
         \label{fig:firing_rate_and_kinematic_variable}
     \end{center}
 \end{figure}
+Some units in the channels contain no recordings in the whole session, and the value would be counted as zero in the firing rate form, so the heatmap of those units keep constant color among the time axis.
+Those empty units might seem disturbing, however it does not affect the neural network decoder performances whether we remove those units or not.
 
 \newpage
 \section{Deep Neural Network}
@@ -147,6 +150,11 @@ The structure in each cell is showed in Figure \ref{fig:GRU_cell}.
         \label{fig:GRU_cell}
     \end{center}
 \end{figure}
+
+\begin{align}
+    h_t &= g^{GRU} \left(  h_{t-1}, x_t  \right)
+\end{align}
+
 The four equations in the GRU cell:
 \begin{align}
     % \label{eq:gru_cell}
@@ -197,8 +205,17 @@ The size of $h^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined paramet
 Ideally tensor $h^{2}_{t}$ should contain the information from the firing rate $x_{t-n+1}$ to $x_{t-1}$, thus by feeding it to some fully connect layers we can acquire the desired output.
 
 The so called bidirectional RNN is made by simply adding another feeding of the same input sequence in reverse order.
-As in Figure \ref{fig:Bi_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$, 
+As in Figure \ref{fig:Bi_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$, $ h_t = \overrightarrow{h_t} \oplus \overleftarrow{h_t}  $,
 the first half of the this vector contains the information by feeding input sequence forward the last half by feeding backward.
+
+
+\begin{align}
+    \begin{split}
+    \overrightarrow{h_t} &= g^{GRU} \left(  \overrightarrow{h_{t-1}}, x_t  \right) \\
+    \overleftarrow{h_t}  &= g^{GRU} \left(  \overleftarrow{h_{t-1}}, x_t  \right)
+    \end{split}
+\end{align}
+
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{two-way_two-layer_GRU.png}
@@ -207,7 +224,30 @@ the first half of the this vector contains the information by feeding input sequ
         \label{fig:Bi_two_layer_GRU}
     \end{center}
 \end{figure}
-It is up to the internal dynamics of the GRU to determine the degree of forget and keep the previous information.
+It is the internal dynamics of the GRU to determine the degree of forget and keep the previous information in every timestep.
+
 
 \subsection{Layer Normalization}
+With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the drawbacks of batch normalization.
+The covariate shift problem can be reduced by fixing the mean and the variance of the summed inputs with each layer.
+By compute the hidden units in the same layer 
+
+\begin{align}
+    \begin{split}
+        \label{eq:normalization_term}
+        \mu^l &= \frac{1}{H} \sum^{H}_{i=1} a^l_i \\
+        \sigma^l &= \sqrt{ \frac{1}{H} \sum^H_{i=1} \left( a^l_i -\mu^l  \right)^2 }
+    \end{split}
+\end{align}
+
+where $H$ denotes the number of hidden units in a layer, all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
+Unlike batch normalization, layer normalization does not impose any constraint on the size of a mini-batch and can be used with batch size 1.
+
+In a standard RNN, the summed inputs in the recurrent layer are computed from the current input $x_t$ and previous vector of hidden states $h^{t-1}$, 
+which are computed as $a^t = W_{hh} h^{t-1} + W_{xh} x^{t} $. 
+The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalizatio terms similar to Equation \ref{eq:normalization_term}:
+
+
+
+
 \subsection{Attention Mechanism}
