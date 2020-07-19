@@ -63,6 +63,8 @@ class  Real_Layer_LSTM(torch.nn.Module):
 
         out, (hy, cy) = self.LSTM_1(x)
 
+        print('out size= ', out.size(), '  hy size= ', hy.size() )
+        breakpoint()
         out=out.permute(1,0,2)
         # print('shape of out= ', out.size())
 
