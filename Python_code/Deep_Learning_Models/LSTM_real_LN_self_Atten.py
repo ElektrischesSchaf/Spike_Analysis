@@ -59,6 +59,8 @@ class  Real_Layer_LSTM(torch.nn.Module):
 
         x=x.view(x.size(0), -1, self.input_dim)
 
+        x=x.permute(1,0,2)
+
         out, (hy, cy) = self.LSTM_1(x)
 
         # print('shape of out= ', out.size())
