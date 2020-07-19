@@ -387,7 +387,7 @@ for session_k in range(len(session_file_list)):
         penality_loss_backward = torch.norm(  input=(torch.bmm(  attn_weight_matrix_backward, torch.transpose(attn_weight_matrix_backward, 1, 2) ) - torch.eye( attn_weight_matrix_backward.size(1) )), p='fro')
 
 
-        l_loss = loss_func(o_labels, labels) + 0.5*penality_loss_forward + 0.5*penality_loss_backward
+        l_loss = loss_func(o_labels, labels) + penality_loss_forward + penality_loss_backward
 
         return o_labels, l_loss
 
