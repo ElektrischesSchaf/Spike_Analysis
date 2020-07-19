@@ -1,13 +1,18 @@
 # https://github.com/pytorch/pytorch/issues/11335
+import torch
+from torch.autograd import Variable
+import torch.nn.functional as F
+import torch.utils.data as Data
+from torch.utils.data import Dataset, DataLoader
 
-class LayerNormLSTMCell(nn.LSTMCell):
+class LayerNormLSTMCell(torch.nn.LSTMCell):
 
     def __init__(self, input_size, hidden_size, bias=True):
         super().__init__(input_size, hidden_size, bias)
 
-        self.ln_ih = nn.LayerNorm(4 * hidden_size)
-        self.ln_hh = nn.LayerNorm(4 * hidden_size)
-        self.ln_ho = nn.LayerNorm(hidden_size)
+        self.ln_ih = torch.nn.LayerNorm(4 * hidden_size)
+        self.ln_hh = torch.nn.LayerNorm(4 * hidden_size)
+        self.ln_ho = torch.nn.LayerNorm(hidden_size)
 
     def forward(self, input, hidden=None):
         self.check_forward_input(input)
@@ -29,7 +34,7 @@ class LayerNormLSTMCell(nn.LSTMCell):
         return hy, cy
 
 
-class LayerNormLSTM(nn.Module):
+class LayerNormLSTM(torch.nn.Module):
 
     def __init__(self, input_size, hidden_size, num_layers=1, bias=True, bidirectional=False):
         super().__init__()
@@ -39,14 +44,14 @@ class LayerNormLSTM(nn.Module):
         self.bidirectional = bidirectional
 
         num_directions = 2 if bidirectional else 1
-        self.hidden0 = nn.ModuleList([
+        self.hidden0 = torch.nn.ModuleList([
             LayerNormLSTMCell(input_size=(input_size if layer == 0 else hidden_size * num_directions),
                               hidden_size=hidden_size, bias=bias)
             for layer in range(num_layers)
         ])
 
         if self.bidirectional:
-            self.hidden1 = nn.ModuleList([
+            self.hidden1 = torch.nn.ModuleList([
                 LayerNormLSTMCell(input_size=(input_size if layer == 0 else hidden_size * num_directions),
                                   hidden_size=hidden_size, bias=bias)
                 for layer in range(num_layers)
