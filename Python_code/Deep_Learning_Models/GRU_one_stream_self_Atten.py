@@ -107,15 +107,29 @@ class  GRUModel_bidir_separate(torch.nn.Module):
         r = int( max_timestep/4 )
         da= int( hidden_dim/2 )
 
-        self.W_s1 = torch.nn.Linear( hidden_dim, da )
-        self.W_s2 = torch.nn.Linear( da, r )
+        self.W_s1_1 = torch.nn.Linear( hidden_dim, da )
+        self.W_s2_1 = torch.nn.Linear( da, r )
+        self.fc_layer_1 = torch.nn.Linear( r*hidden_dim, int(hidden_dim/2))
 
-        self.fc_layer = torch.nn.Linear( r*hidden_dim, int(hidden_dim/2))
-        self.label = torch.nn.Linear( int(hidden_dim/1), output_dim )
+        self.W_s1_2 = torch.nn.Linear( hidden_dim, da )
+        self.W_s2_2 = torch.nn.Linear( da, r )
+        self.fc_layer_2 = torch.nn.Linear( r*hidden_dim, int(hidden_dim/2))
 
-    def attention_net(self, gru_output):
+        self.label = torch.nn.Linear( int(hidden_dim), output_dim )
+
+    def attention_net_1(self, gru_output):
         # lstm_output=lstm_output.permute(0, 2, 1)
-        attn_weight_matrix = self.W_s2(torch.tanh(self.W_s1(gru_output)))
+        attn_weight_matrix = self.W_s2_1(torch.tanh(self.W_s1_1(gru_output)))
+        attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
+
+        attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
+        # print('shape of attn_weight_matrix= ', attn_weight_matrix.size())
+        # print(attn_weight_matrix)
+        return attn_weight_matrix
+
+    def attention_net_2(self, gru_output):
+        # lstm_output=lstm_output.permute(0, 2, 1)
+        attn_weight_matrix = self.W_s2_2(torch.tanh(self.W_s1_2(gru_output)))
         attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
 
         attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
@@ -141,14 +155,14 @@ class  GRUModel_bidir_separate(torch.nn.Module):
 
         out = self.input_LN_2(out)
 
-        attn_weight_matrix_forward = self.attention_net( out[:,:,:self.hidden_dim] )
+        attn_weight_matrix_forward = self.attention_net_1( out[:,:,:self.hidden_dim] )
         hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, out[:,:,:self.hidden_dim] )
 
-        attn_weight_matrix_backward = self.attention_net( out[:,:,-self.hidden_dim:] )
+        attn_weight_matrix_backward = self.attention_net_2( out[:,:,-self.hidden_dim:] )
         hidden_matrix_backward = torch.bmm( attn_weight_matrix_backward, out[:,:,-self.hidden_dim:] )
 
-        out_forward = torch.relu( self.fc_layer( hidden_matrix_forward.view( -1 , hidden_matrix_forward.size()[1]*hidden_matrix_forward.size()[2] ) ) )
-        out_backward = torch.relu( self.fc_layer( hidden_matrix_backward.view( -1 , hidden_matrix_backward.size()[1]*hidden_matrix_backward.size()[2] ) ) )
+        out_forward = torch.relu( self.fc_layer_1( hidden_matrix_forward.view( -1 , hidden_matrix_forward.size()[1]*hidden_matrix_forward.size()[2] ) ) )
+        out_backward = torch.relu( self.fc_layer_2( hidden_matrix_backward.view( -1 , hidden_matrix_backward.size()[1]*hidden_matrix_backward.size()[2] ) ) )
 
         out = self.label( torch.cat( (out_forward, out_backward), 1) )
         # attn_weight_matrix = attn_weight_matrix_forward + attn_weight_matrix_backward
