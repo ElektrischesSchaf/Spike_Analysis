@@ -393,7 +393,11 @@ for session_k in range(len(session_file_list)):
 
     def save(epoch):
         torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
+
         with open( os.path.join( save_epoch_path, 'history.json'), 'w') as f:
+            json.dump(history, f, indent=4)
+
+        with open( os.path.join( csv_path, 'history.json'), 'w') as f:
             json.dump(history, f, indent=4)
 
     for epoch in range(max_epoch):
