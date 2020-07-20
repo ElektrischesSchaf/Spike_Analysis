@@ -52,12 +52,12 @@ kinematic_variable_type='x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[20:]
+List_FILE=ALL_List_FILE[:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRU_with_Spike_Single_37_Session_2_outputs_bidir_sep'
-MAX_EPOCH = 5#150
+MAX_EPOCH = 150
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
