@@ -224,3 +224,27 @@ class Plotting():
         plt.clf()
         plt.close()
         return
+
+    def hidden_state_bar_plot( self, session_name,  plot_path, hidden_state_1, hidden_state_2):
+
+        plt.rcParams["figure.figsize"] = (16,9)
+        plt.rcParams['xtick.labelsize'] = my_fontsize*0.5
+        plt.rcParams['ytick.labelsize'] = my_fontsize*0.5
+
+        f, ax = plt.subplots(2, 1, gridspec_kw={ 'height_ratios': [1,1], "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.9, "bottom":0.1} )
+
+        bins = [ i for i in np.arange( -2, 2, 0.01 )]
+
+        ax[0].hist( x=hidden_state_1[0,:] , bins=bins )
+        ax[0].set_title(' Layer 1 Hidden State Distribution', fontsize=my_fontsize*0.5 )
+
+        ax[1].hist( x=hidden_state_2[0,:] , bins=bins )
+        ax[1].set_title(' Layer 2 Hidden State Distribution', fontsize=my_fontsize*0.5 )
+
+
+        plt.savefig( plot_path+'/'+ 'hidden_state_distribution'+'.png' )
+
+        plt.cla()
+        plt.clf()
+        plt.close()
+        return

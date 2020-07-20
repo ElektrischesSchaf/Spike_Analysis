@@ -149,11 +149,14 @@ class  GRUModel_bidir_separate(torch.nn.Module):
         # Layer Normalization 1
         out = self.input_LN_1(out)
 
+        hidden_state_1 = out.clone()
+
         out, _ = self.GRU_2(out)
 
         # Layer Normalization 2
-
         out = self.input_LN_2(out)
+
+        hidden_state_2 = out.clone()
 
         attn_weight_matrix_forward = self.attention_net_1( out[:,:,:self.hidden_dim] )
         hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, out[:,:,:self.hidden_dim] )
@@ -167,4 +170,4 @@ class  GRUModel_bidir_separate(torch.nn.Module):
         out = self.label( torch.cat( (out_forward, out_backward), 1) )
         # attn_weight_matrix = attn_weight_matrix_forward + attn_weight_matrix_backward
 
-        return out, attn_weight_matrix_forward, attn_weight_matrix_backward
+        return out, attn_weight_matrix_forward, attn_weight_matrix_backward, hidden_state_1, hidden_state_2

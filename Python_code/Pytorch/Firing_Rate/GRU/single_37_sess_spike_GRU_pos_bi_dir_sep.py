@@ -52,12 +52,12 @@ kinematic_variable_type='x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:]
+List_FILE=ALL_List_FILE[20:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRU_with_Spike_Single_37_Session_2_outputs_bidir_sep'
-MAX_EPOCH = 150
+MAX_EPOCH = 5#150
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
@@ -377,7 +377,7 @@ for session_k in range(len(session_file_list)):
         feature = x.to(device)
         labels = y.to(device)
 
-        o_labels, attn_weight_matrix_forward, attn_weight_matrix_backward = net(feature)
+        o_labels, attn_weight_matrix_forward, attn_weight_matrix_backward, hidden_state_1, hidden_state_2 = net(feature)
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
         attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)        
@@ -461,12 +461,16 @@ for session_k in range(len(session_file_list)):
                                 )
     trange = tqdm(enumerate(dataloader), total=len(dataloader), desc='Predict')
     
+    # collect predictions
     my_prediction_1 = []
     real_y_all_1 = []
-
     my_prediction_2 = []
     real_y_all_2 = []
 
+    # collect hidden state
+    hidden_state_all = []
+
+    # collect firing rate
     firing_rate_collector = []
 
     # attention map
@@ -478,7 +482,15 @@ for session_k in range(len(session_file_list)):
         # if(x.size()[0] is not batch_size):
         #     continue
 
-        o_labels, attn_weight_matrix_forward, attn_weight_matrix_backward = net(x.to(device))
+        o_labels, attn_weight_matrix_forward, attn_weight_matrix_backward, hidden_state_1, hidden_state_2 = net(x.to(device))
+
+        # hidden_state 1
+        hidden_state_1 = hidden_state_1.view( -1, hidden_state_1.size(2) )
+        hidden_state_1 = hidden_state_1.cpu().data.numpy()
+
+        # hidden_state 2
+        hidden_state_2 = hidden_state_2.view( -1, hidden_state_2.size(2) )
+        hidden_state_2 = hidden_state_2.cpu().data.numpy()
 
         # attention map
         attn_weight_matrix =  torch.cat(  (torch.sum(attn_weight_matrix_forward, dim=1) , torch.sum(attn_weight_matrix_backward, dim=1)), 1)
@@ -518,6 +530,18 @@ for session_k in range(len(session_file_list)):
     # attention map
     attn_weight_matrix_all=np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
+
+    # hidden state 1
+    hidden_state_1 = np.asarray(hidden_state_1)
+    print('shape of hidden_state_1= ', hidden_state_1.shape, '\n')
+    df = pd.DataFrame( hidden_state_1 )
+    df.to_csv(os.path.join(csv_path, 'hidden_state_1.csv'), index=False, header=False)
+
+    # hidden state 2
+    hidden_state_2 = np.asarray(hidden_state_2)
+    print('shape of hidden_state_2= ', hidden_state_2.shape, '\n')
+    df = pd.DataFrame( hidden_state_2 )
+    df.to_csv(os.path.join(csv_path, 'hidden_state_2.csv'), index=False, header=False)
 
     # collected firing rate
     firing_rate_collector=np.asarray(firing_rate_collector)
@@ -602,6 +626,9 @@ for session_k in range(len(session_file_list)):
 
     df = pd.DataFrame( [[session_name, testing_data_SNR_1, testing_data_SNR_2 ]] , columns=['session', 'x-axis', 'y-axis'] )
     df.to_csv(os.path.join(csv_path, 'SNR_this_session.csv'), index=False, header=True)
+
+    # hidden state histogram
+    Plotting.hidden_state_bar_plot( session_name, plot_path, hidden_state_1, hidden_state_2 )
 
     # attention map
     plottin_duration_time_bin = 200
