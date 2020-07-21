@@ -38,3 +38,5 @@ PCA_plot/
 *.mtc9
 *.lof
 *.toc
+*.nlg
+*.nls
