@@ -4,11 +4,22 @@ The dataset provided by \cite{makin2018} is available at \href{https://zenodo.or
 It containes the recordings from two Rhesus macaque monkeys, named Indy and Loco.
 Each monkey performed a number of sessions, and in our research, a session means a consecutive experiment recording within several minutes.
 The lengths of the sessions are not consistant, but normally they are in the range of 5 to 20 minutes.
-Two 96-channel silicon microelectrode arrays were chronically implanted into their sensorimotor cortex.
+Two 96-channel silicon microelectrode arrays (Figure \ref{fig:Utah_array}) were chronically implanted into their sensorimotor cortex.
 Each array consisted of 96 electrodes, and the distance between two adjacent electrodes is $400 \mu m$. All electrodes covered the area of size $4mm \times 4mm$.
 For each monkey two arrays were implanted, one was in primary motor cortex (M1) and the other was in primary somatosensory cortex (S1).
 Some sessions of the dataset were made with the recording from both arrays, whereas most of the sessions only consisted of the recording from the M1 array.
 The sampling rate of both arrays is 24.4kHz.
+
+\begin{figure}[H]
+    \begin{center}
+        \captionsetup{width=0.7\textwidth}
+        \includegraphics[width=0.7\textwidth]{Utah_array.jpg}
+        \caption{ Utah array }
+        \caption*{\small source by \url{ https://upload.wikimedia.org/wikipedia/commons/c/cd/Utah_array_pat5215088.jpg }}
+        \label{fig:Utah_array}
+    \end{center}
+\end{figure}
+
 
 The monkeys were trained to perform reaching tasks with their arms in a transverse plane, with targets showing up in a virtual reality environment.
 Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
@@ -17,22 +28,22 @@ and for monky Loco square grid of size $6 \times 6$ was used.
 \begin{figure}[H]
 	\begin{center}
 		\centering
-		\begin{subfigure}{0.48\textwidth}
+		\begin{subfigure}{0.3\textwidth}
             \centering\includegraphics[width=1\textwidth]{indy_20170123_02_panel.png}
             \label{fig:8_times_8}
-			\caption{} 
+			\caption{$8 \times 8 $ square grid} 
 		\end{subfigure}
-		\begin{subfigure}{0.48\textwidth}
+		\begin{subfigure}{0.3\textwidth}
             \centering\includegraphics[width=1\textwidth]{indy_20160411_02_panel.png}
             \label{fig:8_times_17}
-			\caption{} 
+			\caption{$8 \times 17$ rectangular grid} 
         \end{subfigure}
-        \begin{subfigure}{0.48\textwidth}
+        \begin{subfigure}{0.3\textwidth}
             \centering\includegraphics[width=1\textwidth]{loco_20170217_02_panel.png}
             \label{fig:6_times_6}
-			\caption{} 
+			\caption{$6 \times 6$ square grid} 
         \end{subfigure}
-        \caption[Two sizes of the panel]{ (a) $8 \times 8 $ square grid   (b) $8 \times 17$ rectangular grid (c) $6 \times 6$ square grid }
+        \caption[Three sizes of the panel]{Three sizes of the panel}
         \label{fig:panels}		
 	\end{center}	
 \end{figure}
@@ -134,7 +145,8 @@ The heatmap is showing an relationship between the occurrance of movements and t
         \label{fig:firing_rate_and_kinematic_variable}
     \end{center}
 \end{figure}
-Some units in the channels contain no recordings in the whole session, and the value would be counted as zero in the firing rate form, so the heatmap of those units keep constant color among the time axis.
+
+Some units in several channels contain no recordings during the whole session, and the value would be counted as zero in the firing rate form, so the heatmap of those units keep constant color among the time axis.
 Those empty units might seem disturbing, however it does not affect the neural network decoder performances whether we remove those units or not.
 
 \newpage
@@ -142,20 +154,23 @@ Those empty units might seem disturbing, however it does not affect the neural n
 \subsection{Recurrent Neural Network}
 In our study, we used the model name Gated Recurrent Unit (GRU) as neural decoder.
 The structure in each cell is showed in Figure \ref{fig:GRU_cell}.
+
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{GRU_cell.png}
-        \caption{Inside of a GRU Cell\\ \colorbox{green}{這是網路上允許再利用的圖，有CC4.0 licence}}
-        \fontsize{10}{12}
+        \captionsetup{width=0.7\textwidth}
+        \includegraphics[width=0.7\textwidth]{GRU_cell.png}
+        \caption[GRU Cell]{ Mecahnism inside a GRU Cell}
+        \caption*{\small source by \url{ https://en.wikipedia.org/wiki/File:Gated_Recurrent_Unit,_type_2.svg }}
         \label{fig:GRU_cell}
     \end{center}
 \end{figure}
 
 \begin{align}
-    h_t &= g^{GRU} \left(  h_{t-1}, x_t  \right)
+    h_t &= g^{GRU} \left(  h_{t-1}, \ x_t  \right)
 \end{align}
 
 The four equations in the GRU cell:
+
 \begin{align}
     % \label{eq:gru_cell}
     % \begin{split}
@@ -165,7 +180,9 @@ The four equations in the GRU cell:
         h_t &= z_t \circ h_{t-1} + (1-z_t) \circ \hat{s_t} \label{eq:h_out}
     % \end{split}
 \end{align}
-And the two activation functions:
+
+\noindent and the two activation functions:
+
 \begin{align}
     \sigma (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
     \phi (x) &= \frac{ e^{x}-e^{-x} }{ e^{x}+e^{-x} } \label{eq:tanh}
@@ -191,6 +208,7 @@ Figure \ref{fig:two_layer_GRU} demonstrated how hidden states are passed from on
 Where $n$ is the order of our input, representing how many the time bins to be fed into the model at a time for decoding the current kinematic states.
 The input data at a time contains the firing rate at this moment $x_t$ and the past firing rate from $x_{t-n+1}$ to $x_{t-1}$.
 The corrosponding outputs of our model are the kinematic variables at time $t$.
+
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{two_layer_GRU.png}
@@ -199,20 +217,21 @@ The corrosponding outputs of our model are the kinematic variables at time $t$.
         \label{fig:two_layer_GRU}
     \end{center}
 \end{figure}
+
 In the first GRU layer, $n$ bins of firing rate are fed chronologically.
 Hidden state $h^{j}_{i}$ denotes the output tensor from the cell in timestep $i$ and layer $j$, and will be the input to the cell in timestep $i+1$ and layer $j+1$.
 The size of $h^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined parameter.
 Ideally tensor $h^{2}_{t}$ should contain the information from the firing rate $x_{t-n+1}$ to $x_{t-1}$, thus by feeding it to some fully connect layers we can acquire the desired output.
 
 The so called bidirectional RNN is made by simply adding another feeding of the same input sequence in reverse order.
-As in Figure \ref{fig:Bi_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$, $ h_t = \overrightarrow{h_t} \oplus \overleftarrow{h_t}  $,
-the first half of the this vector contains the information by feeding input sequence forward the last half by feeding backward.
-
+As in Figure \ref{fig:Bi_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$,
+since the first half of the this vector contains the information by feeding input sequence forward the last half by feeding backward.
 
 \begin{align}
     \begin{split}
-    \overrightarrow{h_t} &= g^{GRU} \left(  \overrightarrow{h_{t-1}}, x_t  \right) \\
-    \overleftarrow{h_t}  &= g^{GRU} \left(  \overleftarrow{h_{t-1}}, x_t  \right)
+    \overrightarrow{h_t} &= g^{GRU} \left(  \overrightarrow{h_{t-1}}, \ x_t  \right) \\
+    \overleftarrow{h_t}  &= g^{GRU} \left(  \overleftarrow{h_{t-1}}, \ x_t  \right) \\
+    h_t &= \overrightarrow{h_t} \oplus \overleftarrow{h_t}
     \end{split}
 \end{align}
 
@@ -224,8 +243,8 @@ the first half of the this vector contains the information by feeding input sequ
         \label{fig:Bi_two_layer_GRU}
     \end{center}
 \end{figure}
-It is the internal dynamics of the GRU to determine the degree of forget and keep the previous information in every timestep.
 
+It is the internal dynamics of the GRU to determine the degree of forget and keep the previous information in every timestep.
 
 \subsection{Layer Normalization}
 With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the drawbacks of batch normalization.
@@ -240,14 +259,63 @@ By compute the hidden units in the same layer
     \end{split}
 \end{align}
 
-where $H$ denotes the number of hidden units in a layer, all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
+\noindent where $H$ denotes the number of hidden units in a layer, all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
 Unlike batch normalization, layer normalization does not impose any constraint on the size of a mini-batch and can be used with batch size 1.
 
+The original layer normalization methods is computed within a RNN cell.
 In a standard RNN, the summed inputs in the recurrent layer are computed from the current input $x_t$ and previous vector of hidden states $h^{t-1}$, 
 which are computed as $a^t = W_{hh} h^{t-1} + W_{xh} x^{t} $. 
-The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalizatio terms similar to Equation \ref{eq:normalization_term}:
+Where $W_{hh}$ is the recurrent hidden to hidden weights and $W_{xh}$ are the input to hidden weights.
+The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalization terms similar to Equation \ref{eq:normalization_term}:
 
+\begin{align}
+    \begin{split}
+        h^{t} &= f \left[ \frac{g}{\sigma^t} \odot \left( a^t- \mu^t \right) +b \right] \\
+        \mu^t &= \frac{1}{H} \sum^{H}_{i=1} a^{t}_{i} \\
+        \sigma^t &= \sqrt{ \frac{1}{H} \sum^{H}_{i=1} \left( a^t_i - \mu^t \right)^2 }
+    \end{split}
+\end{align}
 
+\noindent where $\odot$ is the elementwise multiplication, and $b$, $g$ are defined as the bias and gain parameters of the same dimension as $h^t$.
+$f$ is the activation function in the RNN cell, it could be a sigmoid or hyperbolic tangent function.
 
+We define layer normalization as a function mapping $LN: \mathbb{R}^D \rightarrow \mathbb{R}^D$ with two set of adaptive parameters,
+gains $\alpha$ and biases $\beta$:
+
+\begin{align}
+    \begin{split}
+        LN(z; \ \alpha, \ \beta) &= \frac{(z-\mu)}{\sigma} \odot \alpha + \beta \\
+        \mu &= \frac{1}{D} \sum^{D}_{i=1} z_i \\
+        \sigma &= \sqrt{ \frac{1}{D} \sum^{D}_{i=1} \left( z_i- \mu \right)^{2} }
+    \end{split}
+\end{align}
+
+When implementing it on GRU,
+
+\begin{align}
+    \begin{split}
+        \begin{pmatrix}
+            z_t \\
+            r_t
+        \end{pmatrix} &= W_h h_{t-1} + W_x x_t \\
+        \hat{ h_t } &= \tanh( W x_t + \sigma (r_t) \odot \left( U h_{t-1} \right) ) \\
+        h_t &= \left( 1- \sigma(z_t) \right) h_{t-1} + \sigma(z_t) \hat{h_t}
+    \end{split}
+\end{align}
+
+\noindent layer normalization is applied as follows:
+
+\begin{align}
+    \begin{split}
+        \begin{pmatrix}
+            z_t \\
+            r_t
+        \end{pmatrix} &=  LN( W_h h_{t-1} ; \ \alpha_1, \ \beta_1 ) + LN(  W_x x_t ; \ \alpha_2 , \ \beta_2 ) \\
+        \hat{ h_t } &= \tanh(  LN( W x_t ; \ \alpha_3, \ \beta_3 ) + \sigma (r_t) \odot LN( U h_{t-1} ; \ \alpha_4, \beta_4 ) ) \\
+        h_t &= \left( 1- \sigma(z_t) \right) h_{t-1} + \sigma(z_t) \hat{h_t}
+    \end{split}
+\end{align}
+
+\noindent where $\alpha_i$ and $\beta_i$ are initialized as vector of zeros and ones, respectively.
 
 \subsection{Attention Mechanism}
