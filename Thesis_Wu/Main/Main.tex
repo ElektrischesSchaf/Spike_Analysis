@@ -179,9 +179,9 @@
 		\noindent
 		\input{../abstract.tex}
 		\newpage
-		\addcontentsline{toc}{chapter}{Acknowledgment}
 		%% acknowledgment
 		\chapter*{\centering Acknowledgment}
+		\addcontentsline{toc}{chapter}{Acknowledgment}
 		\label{chap:acknowledgment}
 		% \lipsum[5-6]
 		\input{../Acknowledgment.tex}
@@ -191,8 +191,9 @@
 		\begin{singlespace}
 		\renewcommand{\contentsname}{Table of Contents}
 		\cleardoublepage
-		\addcontentsline{toc}{chapter}{Table of Contents}
 		\tableofcontents
+		\addcontentsline{toc}{chapter}{Table of Contents}
+
 		%% List of tables
 		\listoftables
 		\addcontentsline{toc}{chapter}{List of Tables}
@@ -204,9 +205,10 @@
 		% makeindex.exe %.nlo -s nomencl.ist -o %.nls -t %.nlg
 		\mbox{}
 		%% ---- Start writing nomenclature here ---- %%
-		\addcontentsline{toc}{chapter}{Nomenclature}
+
 		\input{../Nomenclature.tex}
 		\printnomenclature
+		\addcontentsline{toc}{chapter}{Nomenclature}
 		\end{singlespace}
 		%% Main content
 		\mainmatter
@@ -228,11 +230,12 @@
 		\begin{singlespace}
 			\clearpage
 			%% References (bibliography)
-			\addcontentsline{toc}{chapter}{References}
+
 			\renewcommand{\bibname}{References}
 
 			%% ----  Bib file here ---- %%
 			\bibliography{../reference}
+			\addcontentsline{toc}{chapter}{References}
 			\clearpage
 		\end{singlespace}
 		%% Appendix
