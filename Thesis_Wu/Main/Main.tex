@@ -22,6 +22,7 @@
 \usepackage[table,xcdraw]{xcolor}
 \usepackage{rotating}
 \usepackage{tabulary}
+\usepackage{longtable}
 \usepackage{multirow}
 \usepackage{makecell}
 \usepackage[titletoc]{appendix}
@@ -138,6 +139,12 @@
   filecolor=cyan,
   linkbordercolor={0 0 1}
 }
+
+%% checkmark
+\usepackage{amssymb}% http://ctan.org/pkg/amssymb
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Please create a new tex file and copy the content of this template%
 %                    START WRITING FROM HERE                        %
@@ -240,8 +247,8 @@
 		\end{singlespace}
 		%% Appendix
 		\begin{appendices}
-			\chapter{Lipsum}
-			\lipsum[11]
+			\chapter{Dataset Indy}
+			\input{../Appendix_indy.tex}
 		\end{appendices}
 		\backmatter
 	\end{spacing}
