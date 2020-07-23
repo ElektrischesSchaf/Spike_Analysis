@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
 
-from .layer_norm_LSTM import LayerNormLSTM
+from .LSTM_layernorm_cell import LayerNormLSTMCell
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -21,7 +21,7 @@ class  Real_Layer_LSTM(torch.nn.Module):
 
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.LSTM_1 = LayerNormLSTM( input_dim      , hidden_dim    , layer_dim         , bias=True, bidirectional=True )
+        self.LSTM_Cell = LayerNormLSTMCell( input_dim      , hidden_dim    ,  bias=True )
         # self.LSTM_2 = LayerNormLSTM( 2*hidden_dim   , hidden_dim    , layer_dim-1   , bidirectional=True )
         
         # Layer Normalization
@@ -33,7 +33,7 @@ class  Real_Layer_LSTM(torch.nn.Module):
         # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         # self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-        r = int( max_timestep/4 )
+        r = 1#int( max_timestep/4 )
         da= int( hidden_dim/2 )
 
         self.W_s1_1 = torch.nn.Linear( hidden_dim, da )
@@ -68,25 +68,39 @@ class  Real_Layer_LSTM(torch.nn.Module):
     
     def forward(self, x):
 
-        # Layer Normalization 0
-        # x=self.input_LN_0(x)
-
         x=x.view(x.size(0), -1, self.input_dim)
 
-        x=x.permute(1,0,2)
+        # Initialize hidden state with zeros
+        h0 = torch.zeros( x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        # h0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
+        h0=h0.to(device)
 
-        out, (hy, cy) = self.LSTM_1(x)
+        # Initialize cell state
+        c0 = torch.zeros( x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        # c0 = torch.zeros(self.layer_dim*2, x.size(0), self.hidden_dim).requires_grad_() # bidirectional
+        c0=c0.to(device)
 
-        out=out.permute(1,0,2)
-        # print('shape of out= ', out.size())
+        hidden_state_list=[]
+        cell_state_list=[]
+        out_list=[]
+        # time steps
+        for i , input_t in enumerate( x.chunk( x.size(1), dim=1 )):
+            input_t=input_t.squeeze(1)
+            # print('shape of input_t= ', input_t.size(), '\n')
+            (h0, c0) = self.LSTM_Cell(input_t, (h0, c0))
+            out=torch.relu(self.fc1(h0))
+            out=self.fc2(out)
+            # print('out size= ', out.size(), '\n')
+            out_list+=[out]
+            hidden_state_list+=[h0]
+            cell_state_list+=[c0]
 
-        # Layer Normalization 1
-        # out = self.input_LN_1(out)
+        out_list = torch.stack(out_list, 0)
+        hidden_state_list = torch.stack(hidden_state_list, 0)
+        cell_state_list = torch.stack(cell_state_list, 0)
 
-        # y, out ,cy = self.LSTM_2(hy) #TODO
+        breakpoint()
 
-        # Layer Normalization 2
-        # out = self.input_LN_2(out)
 
         attn_weight_matrix_forward = self.attention_net_1( out[:,:,:self.hidden_dim] )
         hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, out[:,:,:self.hidden_dim] )

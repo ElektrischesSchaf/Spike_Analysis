@@ -63,7 +63,7 @@ NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
 BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
-max_timestep = 20
+max_timestep = 3
 # Model Performance Lists
 R_square_across_all_sessions = []
 SNR_across_all_sessions = []
@@ -102,7 +102,7 @@ for session_k in range(len(session_file_list)):
     channel_numbers_in_this_dataset = channel_number
     units_numbers_in_this_dataset = unit_number
 
-    if with_sorted_spikes =  = True:
+    if with_sorted_spikes == True:
         feature_numbers = channel_numbers_in_this_dataset*units_numbers_in_this_dataset
     else:
         feature_numbers = channel_numbers_in_this_dataset
@@ -120,7 +120,7 @@ for session_k in range(len(session_file_list)):
     for row_index in range( len( firing_rate_cell) ):   
         if len(firing_rate_cell[row_index]):
             firing_rate_final.append( firing_rate_cell[row_index] )
-            units_have_value+ = 1
+            units_have_value += 1
 
     '''
     for row_index in range( len( firing_rate_final) ):            
@@ -136,7 +136,7 @@ for session_k in range(len(session_file_list)):
 
 
     # New Without spike sorting:
-    if with_sorted_spikes =  = False:
+    if with_sorted_spikes == False:
         with_sorting_firing_rate = firing_rate_matrix.copy()
         firing_rate_matrix = np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
         print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
@@ -150,7 +150,7 @@ for session_k in range(len(session_file_list)):
                 
                 all_units_firing_rate_sum = 0
                 for unit_index in range( int(with_sorting_firing_rate.shape[0] / channel_number) ):
-                    all_units_firing_rate_sum+ = with_sorting_firing_rate[k+unit_index][i]
+                    all_units_firing_rate_sum += with_sorting_firing_rate[k+unit_index][i]
                 firing_rate_matrix[index][i] = all_units_firing_rate_sum
 
                 # firing_rate_matrix[index][i] = with_sorting_firing_rate[k][i]+with_sorting_firing_rate[k+1][i]+with_sorting_firing_rate[k+2][i]
@@ -322,7 +322,7 @@ for session_k in range(len(session_file_list)):
 
     def _run_epoch(epoch, mode):
         net.train(True)
-        if mode =  = 'train':
+        if mode == 'train':
             descrpition = 'Train'
             dataset = training_dataset
             schuffle = False
@@ -349,12 +349,12 @@ for session_k in range(len(session_file_list)):
 
             o_labels, batch_loss = _run_iter(x,y)
 
-            if mode =  = 'train':
+            if mode == 'train':
                 optimizer.zero_grad()   # clear gradients for next train
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
 
-            loss + =  batch_loss.item() 
+            loss  +=  batch_loss.item() 
 
             real_y = y.cpu().data.numpy()
             for ele in o_labels.cpu().data.numpy():
@@ -367,7 +367,7 @@ for session_k in range(len(session_file_list)):
 
             trange.set_postfix(loss = loss/(i+1), R_square = R_square)
 
-        if mode =  = 'train':
+        if mode == 'train':
             history['train'].append({'loss':loss/len(trange), 'R^2': R_square })
             # writer.add_scalar('Loss/train', loss/len(trange), epoch)
         else:
