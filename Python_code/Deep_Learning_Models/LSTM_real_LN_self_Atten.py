@@ -165,7 +165,7 @@ class  Real_Layer_LSTM(torch.nn.Module):
         cell_state_list=[]
         out_list=[]
         # time steps
-        for i , input_t in reversed( list(enumerate( hidden_state_list_1.chunk( hidden_state_list_1.size(1), dim=1 )))):
+        for i , input_t in enumerate( hidden_state_list_1.chunk( hidden_state_list_1.size(1), dim=1 )):
             input_t=input_t.squeeze(1)
             # print('shape of input_t= ', input_t.size(), '\n')
             h0, c0 = self.LSTM_Cell_backward_2(input_t, h0, c0)
@@ -178,6 +178,8 @@ class  Real_Layer_LSTM(torch.nn.Module):
         hidden_state_list = hidden_state_list.permute(1,0,2)
         cell_state_list = cell_state_list.permute(1,0,2)
     
+        hidden_state_list = hidden_state_list.flip(1)
+
         self.input_LN_backward(hidden_state_list)
 
         attn_weight_matrix_backward = self.attention_net_2( hidden_state_list )
