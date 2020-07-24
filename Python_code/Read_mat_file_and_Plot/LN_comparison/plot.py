@@ -20,7 +20,7 @@ my_fontsize=30
 
 plt.figure(figsize=(16,9))
 
-plt.plot(test_loss_1, 'b', linewidth=5, label = 'LN-LSMT')
+plt.plot(test_loss_1, 'b', linewidth=5, label = 'LN-LSTM')
 plt.plot(test_loss_2, 'g', linewidth=5, label = 'LSTM')
 
 plt.xlabel('Epoch' , fontsize=my_fontsize*0.8 )
@@ -29,7 +29,7 @@ plt.ylabel('Loss', fontsize=my_fontsize*0.8 )
 plt.yticks(fontsize=my_fontsize*0.8)
 plt.legend( loc='upper right', fontsize=my_fontsize*0.8 )
 
-plt.xlim([0, 60])
+# plt.xlim([0, 60])
 
 plt.tight_layout()
 plt.savefig( 'Comparison.png' )
