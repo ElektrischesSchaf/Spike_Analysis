@@ -10,9 +10,9 @@ class LayerNormLSTMCell(torch.nn.Module):
     def __init__(self, input_size, hidden_size, bias=True):
         super(LayerNormLSTMCell, self).__init__()
 
-        self.ln_i2h = torch.nn.LayerNorm(4*hidden_size)
-        self.ln_h2h = torch.nn.LayerNorm(4*hidden_size)
-        self.ln_cell = torch.nn.LayerNorm(hidden_size)
+        self.ln_i2h = torch.nn.LayerNorm(4*hidden_size, elementwise_affine=False)
+        self.ln_h2h = torch.nn.LayerNorm(4*hidden_size, elementwise_affine=False)
+        self.ln_cell = torch.nn.LayerNorm(hidden_size, elementwise_affine=False)
         self.i2h = torch.nn.Linear(input_size, 4 * hidden_size, bias=bias)
         self.h2h = torch.nn.Linear(hidden_size, 4 * hidden_size, bias=bias)
         self.hidden_size=hidden_size
@@ -35,6 +35,7 @@ class LayerNormLSTMCell(torch.nn.Module):
         i2h = self.i2h(x)
         h2h = self.h2h(h)
 
+        # Layer norm
         i2h = self.ln_i2h(i2h)
         h2h = self.ln_h2h(h2h)
 
@@ -50,7 +51,9 @@ class LayerNormLSTMCell(torch.nn.Module):
         # cell computations
         c_t = torch.mul(c, f_t) + torch.mul(i_t, g_t)
 
+        # Layer norm
         c_t = self.ln_cell(c_t)
+
         h_t = torch.mul(o_t, c_t.tanh())
 
         # Reshape for compatibility

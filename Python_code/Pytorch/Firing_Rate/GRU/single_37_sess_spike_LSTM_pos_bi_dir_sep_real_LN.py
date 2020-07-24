@@ -489,7 +489,7 @@ for session_k in range(len(session_file_list)):
 
         # attention map
         # attn_weight_matrix = attn_weight_matrix.squeeze(1)
-        attn_weight_matrix = torch.sum(attn_weight_matrix_forward, dim = 1) + torch.sum(attn_weight_matrix_backward, dim = 1)
+        attn_weight_matrix =  torch.cat(  (torch.sum(attn_weight_matrix_forward, dim=1) , torch.sum(attn_weight_matrix_backward, dim=1)), 1)
         # print('shape of attn_weight_matrix =  ', attn_weight_matrix.size(), '\n')
         attn_weight_matrix = attn_weight_matrix.cpu().detach().numpy()
 
