@@ -13,6 +13,8 @@ class LayerNormLSTMCell(torch.nn.Module):
         self.ln_i2h = torch.nn.LayerNorm(4*hidden_size)
         self.ln_h2h = torch.nn.LayerNorm(4*hidden_size)
         self.ln_cell = torch.nn.LayerNorm(hidden_size)
+        self.i2h = torch.nn.Linear(input_size, 4 * hidden_size, bias=bias)
+        self.h2h = torch.nn.Linear(hidden_size, 4 * hidden_size, bias=bias)
         self.hidden_size=hidden_size
         self.reset_parameters()
 
@@ -21,11 +23,13 @@ class LayerNormLSTMCell(torch.nn.Module):
         for w in self.parameters():
             w.data.uniform_(-std, std)
 
-    def forward(self, x, hidden):
-        h, c = hidden
-        h = h.view(h.size(1), -1)
-        c = c.view(c.size(1), -1)
-        x = x.view(x.size(1), -1)
+    def forward(self, x, h, c):
+        # h, c = hidden
+        h = h
+        c = c
+        h = h.view(h.size(0), -1)
+        c = c.view(c.size(0), -1)
+        x = x.view(x.size(0), -1)
 
         # Linear mappings
         i2h = self.i2h(x)
@@ -44,13 +48,13 @@ class LayerNormLSTMCell(torch.nn.Module):
         o_t = gates[:, -self.hidden_size:]
 
         # cell computations
-        c_t = th.mul(c, f_t) + th.mul(i_t, g_t)
+        c_t = torch.mul(c, f_t) + torch.mul(i_t, g_t)
 
         c_t = self.ln_cell(c_t)
-        h_t = th.mul(o_t, c_t.tanh())
+        h_t = torch.mul(o_t, c_t.tanh())
 
         # Reshape for compatibility
 
-        h_t = h_t.view(1, h_t.size(0), -1)
-        c_t = c_t.view(1, c_t.size(0), -1)
-        return h_t, (h_t, c_t)
+        h_t = h_t.view( h_t.size(0), -1)
+        c_t = c_t.view( c_t.size(0), -1)
+        return h_t, c_t

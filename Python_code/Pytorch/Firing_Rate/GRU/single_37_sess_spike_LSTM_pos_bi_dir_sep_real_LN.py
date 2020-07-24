@@ -57,13 +57,13 @@ session_file_list = List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'LSTM_with_Spike_Single_37_Session_2_outputs_bidir_sep_real_LN'
-MAX_EPOCH = 150
+MAX_EPOCH = 50
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
 BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
-max_timestep = 3
+max_timestep = 20
 # Model Performance Lists
 R_square_across_all_sessions = []
 SNR_across_all_sessions = []
@@ -396,8 +396,12 @@ for session_k in range(len(session_file_list)):
 
     def save(epoch):
         torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
+
         with open( os.path.join( save_epoch_path, 'history.json'), 'w') as f:
-            json.dump(history, f, indent = 4)
+            json.dump(history, f, indent=4)
+
+        with open( os.path.join( csv_path, 'history.json'), 'w') as f:
+            json.dump(history, f, indent=4)
 
     for epoch in range(max_epoch):
         print('Epoch: {}'.format(epoch))
@@ -613,7 +617,7 @@ for session_k in range(len(session_file_list)):
     # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
 
     while time_bin_index < (testing_data_length -plottin_duration_time_bin*2 ):
-        Plotting.attention_map_2_outputs(session_name = session_name, type_name = 'pos', start_time_bin = time_bin_index, end_time_bin = time_bin_index+plottin_duration_time_bin, plot_path = attention_plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
+        Plotting.attention_map_2_outputs_bidir_sep(session_name=session_name, type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all_forward=attn_weight_matrix_all[:,:max_timestep], attn_weight_matrix_all_backward=attn_weight_matrix_all[:,-max_timestep:], firing_rate_collector=firing_rate_collector)
         time_bin_index = time_bin_index + plottin_duration_time_bin
 
 # session control end
