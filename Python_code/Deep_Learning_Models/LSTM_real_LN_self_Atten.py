@@ -28,8 +28,8 @@ class  Real_Layer_LSTM(torch.nn.Module):
         
         # Layer Normalization
         # self.input_LN_0 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
-        # self.input_LN_1 = torch.nn.LayerNorm( [max_timestep, 2*hidden_dim], elementwise_affine=True)
-        # self.input_LN_2 = torch.nn.LayerNorm( [max_timestep, 2*hidden_dim], elementwise_affine=True)
+        self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
+        self.input_LN_backward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
 
         # Readout layer
         # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
@@ -122,6 +122,8 @@ class  Real_Layer_LSTM(torch.nn.Module):
         hidden_state_list = hidden_state_list.permute(1,0,2)
         cell_state_list = cell_state_list.permute(1,0,2)
 
+        self.input_LN_forward(hidden_state_list)
+
         attn_weight_matrix_forward = self.attention_net_1( hidden_state_list )
         hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, hidden_state_list )
 
@@ -175,6 +177,8 @@ class  Real_Layer_LSTM(torch.nn.Module):
 
         hidden_state_list = hidden_state_list.permute(1,0,2)
         cell_state_list = cell_state_list.permute(1,0,2)
+    
+        self.input_LN_backward(hidden_state_list)
 
         attn_weight_matrix_backward = self.attention_net_2( hidden_state_list )
         hidden_matrix_backward = torch.bmm( attn_weight_matrix_backward, hidden_state_list )
