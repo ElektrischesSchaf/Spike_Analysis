@@ -40,7 +40,7 @@ mat_file_processing = load_mat_file.mat_file_processing()
 
 # Deep leaning module
 # from  Deep_Learning_Models.GRU_one_stream import GRUModel
-from  Deep_Learning_Models.LSTM_real_LN_self_Atten import Real_Layer_LSTM_bidir_sep
+from  Deep_Learning_Models.LSTM_real_LN_self_Atten import Real_Layer_LSTM_one_way
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # attention map plotting module
@@ -56,7 +56,7 @@ List_FILE = ALL_List_FILE[:]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'LSTM_with_Spike_Single_37_Session_2_outputs_bidir_sep_real_LN'
+model_name = 'LSTM_with_Spike_Single_37_Session_2_outputs_one_way_real_LN'
 MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
@@ -310,7 +310,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = Real_Layer_LSTM_bidir_sep(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
+    net = Real_Layer_LSTM_one_way(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
 
     for n, p in net.named_parameters():
         print(n, p.shape)
@@ -380,17 +380,13 @@ for session_k in range(len(session_file_list)):
         feature = x.to(device)
         labels = y.to(device)
 
-        o_labels, attn_weight_matrix_forward, attn_weight_matrix_backward = net(feature)
+        o_labels, attn_weight_matrix_forward = net(feature)
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
         attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)        
         penality_loss_forward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
 
-        attn_weight_matrix_backward = attn_weight_matrix_backward.to(device)        
-        penality_loss_backward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_backward, torch.transpose(attn_weight_matrix_backward, 1, 2) ) - torch.eye( attn_weight_matrix_backward.size(1) )), p = 'fro')
-
-
-        l_loss = loss_func(o_labels, labels) + penality_loss_forward + penality_loss_backward
+        l_loss = loss_func(o_labels, labels) + penality_loss_forward
 
         return o_labels, l_loss
 
@@ -485,11 +481,11 @@ for session_k in range(len(session_file_list)):
         # if(x.size()[0] is not batch_size):
         #     continue
 
-        o_labels, attn_weight_matrix_forward, attn_weight_matrix_backward = net(x.to(device))
+        o_labels, attn_weight_matrix_forward = net(x.to(device))
 
         # attention map
         # attn_weight_matrix = attn_weight_matrix.squeeze(1)
-        attn_weight_matrix =  torch.cat(  (torch.sum(attn_weight_matrix_forward, dim=1) , torch.sum(attn_weight_matrix_backward, dim=1)), 1)
+        attn_weight_matrix = torch.sum(attn_weight_matrix_forward, dim=1)
         # print('shape of attn_weight_matrix =  ', attn_weight_matrix.size(), '\n')
         attn_weight_matrix = attn_weight_matrix.cpu().detach().numpy()
 
@@ -617,7 +613,7 @@ for session_k in range(len(session_file_list)):
     # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
 
     while time_bin_index < (testing_data_length -plottin_duration_time_bin*2 ):
-        Plotting.attention_map_2_outputs_bidir_sep(session_name=session_name, type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all_forward=attn_weight_matrix_all[:,:max_timestep], attn_weight_matrix_all_backward=attn_weight_matrix_all[:,-max_timestep:], firing_rate_collector=firing_rate_collector)
+        Plotting.attention_map_2_outputs(session_name=session_name, type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, firing_rate_collector=firing_rate_collector)
         time_bin_index = time_bin_index + plottin_duration_time_bin
 
 # session control end
