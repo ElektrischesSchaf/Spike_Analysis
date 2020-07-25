@@ -122,7 +122,7 @@ class  Real_Layer_LSTM_bidir_sep(torch.nn.Module):
         hidden_state_list = hidden_state_list.permute(1,0,2)
         cell_state_list = cell_state_list.permute(1,0,2)
 
-        self.input_LN_forward(hidden_state_list)
+        hidden_state_list = self.input_LN_forward(hidden_state_list)
 
         attn_weight_matrix_forward = self.attention_net_1( hidden_state_list )
         hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, hidden_state_list )
@@ -180,7 +180,7 @@ class  Real_Layer_LSTM_bidir_sep(torch.nn.Module):
     
         hidden_state_list = hidden_state_list.flip(1)
 
-        self.input_LN_backward(hidden_state_list)
+        hidden_state_list = self.input_LN_backward(hidden_state_list)
 
         attn_weight_matrix_backward = self.attention_net_2( hidden_state_list )
         hidden_matrix_backward = torch.bmm( attn_weight_matrix_backward, hidden_state_list )
@@ -283,7 +283,7 @@ class  Real_Layer_LSTM_one_way(torch.nn.Module):
         hidden_state_list = hidden_state_list.permute(1,0,2)
         cell_state_list = cell_state_list.permute(1,0,2)
 
-        self.input_LN_forward(hidden_state_list)
+        hidden_state_list = self.input_LN_forward(hidden_state_list)
 
         attn_weight_matrix_forward = self.attention_net_1( hidden_state_list )
         hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, hidden_state_list )
