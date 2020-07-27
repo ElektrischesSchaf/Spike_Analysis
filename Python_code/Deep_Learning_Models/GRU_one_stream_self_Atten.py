@@ -19,13 +19,13 @@ class  GRUModel(torch.nn.Module):
 
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.GRU_1 = torch.nn.GRU( input_dim, hidden_dim, 1          , batch_first=True, bidirectional=True )
-        self.GRU_2 = torch.nn.GRU( 2*hidden_dim, hidden_dim, layer_dim-1, batch_first=True, bidirectional=True )
+        self.GRU_1 = torch.nn.GRU( input_dim, hidden_dim, 1          , batch_first=True, bidirectional=False )
+        self.GRU_2 = torch.nn.GRU( hidden_dim, hidden_dim, layer_dim-1, batch_first=True, bidirectional=False )
         
         # Layer Normalization
         # self.input_LN_0 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
-        self.input_LN_1 = torch.nn.LayerNorm( [max_timestep, 2*hidden_dim], elementwise_affine=True)
-        self.input_LN_2 = torch.nn.LayerNorm( [max_timestep, 2*hidden_dim], elementwise_affine=True)
+        self.input_LN_1 = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
+        self.input_LN_2 = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
 
         # Readout layer
         # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
@@ -34,10 +34,10 @@ class  GRUModel(torch.nn.Module):
         r = int( max_timestep/4 )
         da= int( hidden_dim/2 )
 
-        self.W_s1 = torch.nn.Linear( 2*hidden_dim, da )
+        self.W_s1 = torch.nn.Linear( hidden_dim, da )
         self.W_s2 = torch.nn.Linear( da, r )
 
-        self.fc_layer = torch.nn.Linear( r*2*hidden_dim, int(hidden_dim/2))
+        self.fc_layer = torch.nn.Linear( r*hidden_dim, int(hidden_dim/2))
         self.label = torch.nn.Linear( int(hidden_dim/2), output_dim )
 
     def attention_net(self, gru_output):
