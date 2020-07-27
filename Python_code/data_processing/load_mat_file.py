@@ -36,13 +36,40 @@ class mat_file_processing():
         y_acceleration_label_testing= np.empty([0])
 
         z_acceleration_label_training= np.empty([0])
-        z_acceleration_label_testing= np.empty([0]) 
+        z_acceleration_label_testing= np.empty([0])
+
+        x_position_target_training= np.empty([0])
+        x_position_target_testing= np.empty([0])
+
+        y_position_target_training= np.empty([0])
+        y_position_target_testing= np.empty([0])
+
+        z_position_target_training= np.empty([0])
+        z_position_target_testing= np.empty([0])
+
+        x_velocity_target_training= np.empty([0])
+        x_velocity_target_testing= np.empty([0])
+
+        y_velocity_target_training= np.empty([0])
+        y_velocity_target_testing= np.empty([0])
+
+        z_velocity_target_training= np.empty([0])
+        z_velocity_target_testing= np.empty([0])
+
+        x_acceleration_target_training= np.empty([0])
+        x_acceleration_target_testing= np.empty([0])
+
+        y_acceleration_target_training= np.empty([0])
+        y_acceleration_target_testing= np.empty([0])
+
+        z_acceleration_target_training= np.empty([0])
+        z_acceleration_target_testing= np.empty([0])
 
         return [X_for_training, X_for_prediction, 
         x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
         x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]
-
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+        x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing]
 
     def histc(self, X, bins):
         map_to_bins = np.digitize(X,bins)
@@ -133,11 +160,16 @@ class mat_file_processing():
 
             time_stamp=mat_file['t']
 
-            numpy_finger_pos_GET_2=mat_file.get('finger_pos')
-            numpy_finger_pos_2=np.array(numpy_finger_pos_GET_2)
+            numpy_finger_target=mat_file.get('target_pos')
+            numpy_finger_target=np.array(numpy_finger_target)
 
-            numpy_time_stamp=mat_file.get('t')
-            numpy_time_stamp=np.array(numpy_time_stamp)
+
+
+            numpy_finger_pos_GET_2 = mat_file.get('finger_pos')
+            numpy_finger_pos_2 = np.array(numpy_finger_pos_GET_2)
+
+            numpy_time_stamp = mat_file.get('t')
+            numpy_time_stamp = np.array(numpy_time_stamp)
 
             print('numpy_finger_pos_2 shape: ', numpy_finger_pos_2.shape) #  (3, 204446) in indy_20160407_02
             print('\n') 
@@ -145,25 +177,28 @@ class mat_file_processing():
             print('numpy_time_stamp: ',end='')
             print(numpy_time_stamp.shape)  #  (1, 204446)in indy_20160407_02
 
-            sampling_rate=the_sampling_rate
-            time_stamp_64ms=time_stamp[0][::sampling_rate]
+            sampling_rate = the_sampling_rate
+            time_stamp_64ms = time_stamp[0][::sampling_rate]
 
-            finger_z_pos_64ms=(numpy_finger_pos_2[0][::sampling_rate])*10 # cm to mm
-            finger_x_pos_64ms=(numpy_finger_pos_2[1][::sampling_rate])*10 # cm to mm
-            finger_y_pos_64ms=(numpy_finger_pos_2[2][::sampling_rate])*10 # cm to mm
+            finger_z_pos_64ms = (numpy_finger_pos_2[0][::sampling_rate])*10 # cm to mm
+            finger_x_pos_64ms = (numpy_finger_pos_2[1][::sampling_rate])*10 # cm to mm
+            finger_y_pos_64ms = (numpy_finger_pos_2[2][::sampling_rate])*10 # cm to mm
             print('shape of finger_x_pos_64ms', finger_x_pos_64ms.shape) # (12778,) in indy_20160407_02
 
-            finger_x_velocity=[]
-            finger_y_velocity=[]
-            finger_z_velocity=[]
-            velocity_time_coor=[]
+            target_x_coor = numpy_finger_target[0][::sampling_rate]
+            target_y_coor = numpy_finger_target[1][::sampling_rate]
 
-            finger_x_acceleration=[]
-            finger_y_acceleration=[]
-            finger_z_acceleration=[]
-            acceleration_time_coor=[]
+            finger_x_velocity = []
+            finger_y_velocity = []
+            finger_z_velocity = []
+            velocity_time_coor = []
 
-            duration=time_stamp_64ms.shape[0]
+            finger_x_acceleration = []
+            finger_y_acceleration = []
+            finger_z_acceleration = []
+            acceleration_time_coor = []
+
+            duration = time_stamp_64ms.shape[0]
 
             for i in range(duration):
                 #print('Velocity computing progress: ' + str( round( (i/duration)*100, 3) )+' %' )
@@ -182,15 +217,6 @@ class mat_file_processing():
                     finger_y_velocity.append(velocity)
 
                     velocity_time_coor.append( numpy_time_stamp[0][i] )
-
-                else:
-                    '''
-                    finger_x_velocity.append(0)
-                    finger_y_velocity.append(0)
-                    finger_z_velocity.append(0)
-                    velocity_time_coor.append(0)
-                    '''
-                    pass
             
             finger_x_velocity=np.array(finger_x_velocity)
             finger_x_velocity=finger_x_velocity.astype(np.float32)
@@ -221,44 +247,41 @@ class mat_file_processing():
                     finger_z_acceleration.append(acceleration)
 
                     acceleration_time_coor.append(velocity_time_coor[i])
-                else:
-                    '''
-                    finger_x_acceleration.append(0)
-                    finger_y_acceleration.append(0)
-                    finger_z_acceleration.append(0)
-                    acceleration_time_coor.append(0)
-                    '''
-                    pass
-            finger_x_acceleration=np.array(finger_x_acceleration)
-            finger_x_acceleration=finger_x_acceleration.astype(np.float32)
+
+            finger_x_acceleration = np.array(finger_x_acceleration)
+            finger_x_acceleration = finger_x_acceleration.astype(np.float32)
             
-            finger_y_acceleration=np.array(finger_y_acceleration)
-            finger_y_acceleration=finger_y_acceleration.astype(np.float32)
+            finger_y_acceleration = np.array(finger_y_acceleration)
+            finger_y_acceleration = finger_y_acceleration.astype(np.float32)
                 
-            finger_z_acceleration=np.array(finger_z_acceleration)
-            finger_z_acceleration=finger_z_acceleration.astype(np.float32)
+            finger_z_acceleration = np.array(finger_z_acceleration)
+            finger_z_acceleration = finger_z_acceleration.astype(np.float32)
 
-            acceleration_time_coor=np.array(acceleration_time_coor)
+            acceleration_time_coor = np.array(acceleration_time_coor)
 
-            x_position_label = finger_x_pos_64ms[:-1]
-            y_position_label = finger_y_pos_64ms[:-1]
-            z_position_label = finger_z_pos_64ms[:-1]
+            x_position_label = finger_x_pos_64ms[1:]
+            y_position_label = finger_y_pos_64ms[1:]
+            z_position_label = finger_z_pos_64ms[1:]
 
             x_velocity_label = finger_x_velocity
             y_velocity_label = finger_y_velocity
             z_velocity_label = finger_z_velocity
 
-            x_acceleration_label = finger_x_acceleration
-            y_acceleration_label = finger_y_acceleration
-            z_acceleration_label = finger_z_acceleration
+            x_acceleration_label = np.insert(finger_x_acceleration, 0,0)
+            y_acceleration_label = np.insert(finger_y_acceleration, 0,0)
+            z_acceleration_label = np.insert(finger_z_acceleration, 0,0)
 
-        return [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]
+            x_position_target = target_x_coor
+            y_position_target = target_y_coor
+
+        return [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label, x_position_target, y_position_target]
 
     def cross_session_data_concatenation(self, feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
-    x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label,
+    x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label, x_position_target, y_position_target,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing):       
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing):
       
         print('feature_numbers_of_firing_rate= ', feature_numbers_of_firing_rate, '\n')
 
@@ -292,57 +315,71 @@ class mat_file_processing():
         z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[:testing_data_index ]), axis=0)
         z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index:]), axis=0)
 
+        x_position_target_training = np.concatenate((x_position_target_training, x_position_target[:testing_data_index]), axis=0)
+        x_position_target_testing = np.concatenate((x_position_target_testing, x_position_target[testing_data_index:]), axis=0)
+
+        y_position_target_training =  np.concatenate((y_position_target_training, y_position_target[:testing_data_index ]), axis=0)
+        y_position_target_testing = np.concatenate((y_position_target_testing, y_position_target[testing_data_index:]), axis=0)
+
         return [X_for_training, X_for_prediction, \
         x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,\
         x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,\
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,\
+        x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing]
 
     def max_order_preparation(self, order_num, feature_numbers_per_sample, 
     X_for_training, X_for_prediction,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing):
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing):
 
-        if order_num>=2:
+        if order_num >= 2:
 
-            order_original_matrix=X_for_training[:-order_num,:]
+            order_original_matrix = X_for_training[:-order_num,:]
             for order_loop_index in range(1, order_num):
-                temp_order_matrix=X_for_training[order_loop_index:-(order_num-order_loop_index),:]
-                order_original_matrix=np.concatenate(( order_original_matrix, temp_order_matrix ), axis=1)
-            final_order_matrix=X_for_training[order_num:,:]
-            order_original_matrix=np.concatenate(( order_original_matrix, final_order_matrix ), axis=1)
-            X_for_training=order_original_matrix.copy()
+                temp_order_matrix = X_for_training[order_loop_index:-(order_num-order_loop_index),:]
+                order_original_matrix = np.concatenate(( order_original_matrix, temp_order_matrix ), axis = 1)
+            final_order_matrix = X_for_training[order_num:,:]
+            order_original_matrix = np.concatenate(( order_original_matrix, final_order_matrix ), axis = 1)
+            X_for_training = order_original_matrix.copy()
 
             order_original_matrix=X_for_prediction[:-order_num,:]
             for order_loop_index in range(1, order_num):
                 temp_order_matrix=X_for_prediction[order_loop_index:-(order_num-order_loop_index),:]
-                order_original_matrix=np.concatenate(( order_original_matrix, temp_order_matrix ), axis=1)
+                order_original_matrix=np.concatenate(( order_original_matrix, temp_order_matrix ), axis = 1)
             final_order_matrix=X_for_prediction[order_num:,:]
-            order_original_matrix=np.concatenate(( order_original_matrix, final_order_matrix ), axis=1)
+            order_original_matrix=np.concatenate(( order_original_matrix, final_order_matrix ), axis = 1)
             X_for_prediction=order_original_matrix.copy()
 
-            x_position_label_training=x_position_label_training[order_num:]
-            x_position_label_testing=x_position_label_testing[order_num:]
-            y_position_label_training=y_position_label_training[order_num:]
-            y_position_label_testing=y_position_label_testing[order_num:]
-            z_position_label_training=z_position_label_training[order_num:]
-            z_position_label_testing=z_position_label_testing[order_num:]
+            x_position_label_training = x_position_label_training[order_num:]
+            x_position_label_testing = x_position_label_testing[order_num:]
+            y_position_label_training = y_position_label_training[order_num:]
+            y_position_label_testing = y_position_label_testing[order_num:]
+            z_position_label_training = z_position_label_training[order_num:]
+            z_position_label_testing = z_position_label_testing[order_num:]
 
-            x_velocity_label_training=x_velocity_label_training[order_num:]
-            x_velocity_label_testing=x_velocity_label_testing[order_num:]
-            y_velocity_label_training=y_velocity_label_training[order_num:]
-            y_velocity_label_testing=y_velocity_label_testing[order_num:]
-            z_velocity_label_training=z_velocity_label_training[order_num:]
-            z_velocity_label_testing=z_velocity_label_testing[order_num:]
+            x_velocity_label_training = x_velocity_label_training[order_num:]
+            x_velocity_label_testing = x_velocity_label_testing[order_num:]
+            y_velocity_label_training = y_velocity_label_training[order_num:]
+            y_velocity_label_testing = y_velocity_label_testing[order_num:]
+            z_velocity_label_training = z_velocity_label_training[order_num:]
+            z_velocity_label_testing = z_velocity_label_testing[order_num:]
 
-            x_acceleration_label_training=x_acceleration_label_training[order_num:]
-            x_acceleration_label_testing=x_acceleration_label_testing[order_num:]
-            y_acceleration_label_training=y_acceleration_label_training[order_num:]
-            y_acceleration_label_testing=y_acceleration_label_testing[order_num:]
-            z_acceleration_label_training=z_acceleration_label_training[order_num:]
-            z_acceleration_label_testing=z_acceleration_label_testing[order_num:]
+            x_acceleration_label_training = x_acceleration_label_training[order_num:]
+            x_acceleration_label_testing = x_acceleration_label_testing[order_num:]
+            y_acceleration_label_training = y_acceleration_label_training[order_num:]
+            y_acceleration_label_testing = y_acceleration_label_testing[order_num:]
+            z_acceleration_label_training = z_acceleration_label_training[order_num:]
+            z_acceleration_label_testing = z_acceleration_label_testing[order_num:]
+
+            x_position_target_training = x_position_target_training[order_num:]
+            x_position_target_testing = x_position_target_testing[order_num:]
+            y_position_target_training = y_position_target_training[order_num:]
+            y_position_target_testing = y_position_target_testing[order_num:]
 
         return [X_for_training, X_for_prediction, \
         x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,\
         x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,\
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,\
+        x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing]
