@@ -111,9 +111,14 @@ for session_k in range(len(session_file_list)):
     [X_for_training, X_for_prediction, 
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing ]=mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
 
-    [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label] = mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
+    [time_stamp_64ms, 
+    x_position_label, y_position_label, z_position_label, 
+    x_velocity_label, y_velocity_label, z_velocity_label, 
+    x_acceleration_label, y_acceleration_label, z_acceleration_label,
+    x_position_target, y_position_target] = mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
 
     # Extract firing_rate_cell with rows have length bigger than zero
     firing_rate_final = [] # not[[]]
@@ -173,13 +178,14 @@ for session_k in range(len(session_file_list)):
     [X_for_training, X_for_prediction,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.cross_session_data_concatenation(
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.cross_session_data_concatenation(
     feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
-    x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label,
+    x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label, x_position_target, y_position_target,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
-
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
     print('shape of X_for_training before', X_for_training.shape)
 
     # Normalize Firing rate
@@ -189,16 +195,18 @@ for session_k in range(len(session_file_list)):
     # X_for_prediction = (X_for_prediction - the_mean )/ the_std
 
     # Processing max orders
-    order_num = max_timestep-1
+    order_num=max_timestep-1
     [X_for_training, X_for_prediction,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.max_order_preparation(
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.max_order_preparation(
     order_num, feature_numbers, X_for_training, X_for_prediction,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
-    
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
+
     print('shape of X_for_training after', X_for_training.shape)
     print('shape of x_velocity_label_training after', x_velocity_label_training.shape)
 
@@ -247,7 +255,7 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame(X_for_prediction)
     df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index = False)
     
-
+    # position label
     df = pd.DataFrame(x_position_label_training)
     df.to_csv(os.path.join(csv_path,'x_position_label_training.csv'), index = False)
 
@@ -260,36 +268,61 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame(y_position_label_testing)
     df.to_csv(os.path.join(csv_path,'y_position_label_testing.csv'), index = False)
 
-    # read from csv file
-    training_x = pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype = float)
-    training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
-    training_x = training_x.float()
+    # Target cue
+    # df=pd.DataFrame(x_position_target_training)
+    # df.to_csv(os.path.join(csv_path,'x_position_target_training.csv'), index=False)
 
-    testing_x = pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype = float)
+    df=pd.DataFrame(x_position_target_testing)
+    df.to_csv(os.path.join(csv_path,'x_position_target_testing.csv'), index=False)
+
+    # df=pd.DataFrame(y_position_target_training)
+    # df.to_csv(os.path.join(csv_path,'y_position_target_training.csv'), index=False)
+
+    df=pd.DataFrame(y_position_target_testing)
+    df.to_csv(os.path.join(csv_path,'y_position_target_testing.csv'), index=False)
+
+    # read from csv file
+    training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
+    training_x = torch.from_numpy(training_x.values) # .values can turn pandas dataframe to numpy array
+    training_x=training_x.float()
+
+    testing_x=pd.read_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), dtype=float)
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
-    testing_x = testing_x.float()
+    testing_x=testing_x.float()
 
 
     # x_pos
-    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype = float)    
+    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype=float)    
     training_y_1  = torch.from_numpy(training_y_1.values)    
     training_y_1  = training_y_1.float()
 
-    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype = float)    
-    testing_y_1 = torch.from_numpy(testing_y_1.values)    
-    testing_y_1 = testing_y_1.float()
-
     # y_pos
-    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_training.csv'), dtype = float)    
+    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_training.csv'), dtype=float)    
     training_y_2 = torch.from_numpy(training_y_2.values)    
     training_y_2 = training_y_2.float()
 
-    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype = float)    
+
+    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)    
+    testing_y_1 = torch.from_numpy(testing_y_1.values)    
+    testing_y_1 = testing_y_1.float()
+
+    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)
     testing_y_2 = torch.from_numpy(testing_y_2.values)    
     testing_y_2 = testing_y_2.float()
 
+    # target cue
+    testing_y_3 = pd.read_csv(os.path.join(csv_path,'x_position_target_testing.csv'), dtype=float)
+    testing_y_3 = torch.from_numpy(testing_y_3.values)
+    testing_y_3 = testing_y_3.float()
+
+    testing_y_4 = pd.read_csv(os.path.join(csv_path,'y_position_target_testing.csv'), dtype=float)
+    testing_y_4 = torch.from_numpy(testing_y_4.values)
+    testing_y_4 = testing_y_4.float()
+
     training_y = torch.cat( (training_y_1, training_y_2), 1)
     testing_y = torch.cat( (testing_y_1, testing_y_2), 1)
+
+    testing_y_with_target = torch.cat( (testing_y_1, testing_y_2, testing_y_3, testing_y_4), 1)
 
     testing_data_length = int(testing_y.size(0))
 
@@ -307,6 +340,7 @@ for session_k in range(len(session_file_list)):
     # Training / Testing AbstractDataset
     training_dataset = AbstractDataset(training_x, training_y)
     testing_dataset = AbstractDataset(testing_x, testing_y)
+    testing_dataset_with_target = AbstractDataset(testing_x, testing_y_with_target)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -419,11 +453,12 @@ for session_k in range(len(session_file_list)):
     plt.clf()
     plt.close()
 
-    plt.figure(figsize = (7,5))
-    plt.title('Loss')
-    plt.plot(train_loss, label = 'train')
-    plt.plot(valid_loss, label = 'test')
-    plt.xlabel('Epoch')
+    plt.figure(figsize=(7,5))
+    plt.title('Loss', fontsize=15)
+    plt.plot(train_loss, label='train')
+    plt.plot(valid_loss, label='test')
+    plt.xlabel('Epoch', fontsize=10)
+    plt.ylabel('Loss', fontsize=10)
     plt.legend()
     plt.tight_layout()
     plt.savefig(plot_path + '/' + model_name+"_Loss.png")
@@ -432,12 +467,12 @@ for session_k in range(len(session_file_list)):
     plt.clf()
     plt.close()
 
-    plt.figure(figsize = (7,5))
-    plt.title('performance')
-    plt.plot(train_R_square, label = 'train')
-    plt.plot(valid_R_square, label = 'test')
-    plt.xlabel('Epoch')
-    plt.ylabel('R square')
+    plt.figure(figsize=(7,5))
+    plt.title('performance', fontsize=15)
+    plt.plot(train_R_square, label='train')
+    plt.plot(valid_R_square, label='test')
+    plt.xlabel('Epoch', fontsize=10)
+    plt.ylabel('R square', fontsize=10)
     plt.legend()
     plt.tight_layout()
     plt.savefig(plot_path + '/' +model_name+"_R-square.png")
@@ -456,7 +491,7 @@ for session_k in range(len(session_file_list)):
     net.load_state_dict(state_dict = torch.load(os.path.join(save_epoch_path, 'model.pkl.{}'.format(best_model))))
     net.train(False)
     # start testing
-    dataloader = DataLoader(dataset = testing_dataset,
+    dataloader = DataLoader(dataset = testing_dataset_with_target,
                                 batch_size = batch_size,
                                 shuffle = False
                                 #collate_fn = testData.collate_fn,
@@ -472,8 +507,10 @@ for session_k in range(len(session_file_list)):
 
     firing_rate_collector = []
 
+    x_target_all = []
+    y_target_all = []
     # attention map
-    attn_weight_matrix_all = []
+    attn_weight_matrix_all=[]
 
     for i, (x, testing_y) in trange:
 
@@ -494,14 +531,17 @@ for session_k in range(len(session_file_list)):
         for index_batch in  range(x.shape[0]):
             firing_rate_collector.append(  x[index_batch, -feature_numbers:].flatten() )
 
-        # collect label
+        # collect label and target
         o_labels = o_labels.cpu().data.numpy()
         o_labels_1 = o_labels[:,0]
         o_labels_2 = o_labels[:,1]
 
+
         real_y = testing_y.cpu().data.numpy()
         real_y_1 = real_y[:,0]
         real_y_2 = real_y[:,1]
+        x_target = real_y[:,2]
+        y_target = real_y[:,3]
 
         for ele in o_labels_1:
             my_prediction_1.append( float(ele) )
@@ -512,6 +552,11 @@ for session_k in range(len(session_file_list)):
             my_prediction_2.append( float(ele) )
         for ele in real_y_2:
             real_y_all_2.append( float(ele) )
+
+        for ele in x_target:
+            x_target_all.append( float(ele) )
+        for ele in y_target:
+            y_target_all.append( float(ele) )
 
         # attention map
         for ele in range(attn_weight_matrix.shape[0]):
@@ -613,7 +658,7 @@ for session_k in range(len(session_file_list)):
     # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
 
     while time_bin_index < (testing_data_length -plottin_duration_time_bin*2 ):
-        Plotting.attention_map_2_outputs(session_name=session_name, type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, firing_rate_collector=firing_rate_collector)
+        Plotting.attention_map_2_outputs_with_target_cue(session_name=session_name, type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
         time_bin_index = time_bin_index + plottin_duration_time_bin
 
 # session control end

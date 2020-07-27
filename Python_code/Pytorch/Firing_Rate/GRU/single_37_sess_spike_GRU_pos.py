@@ -206,7 +206,7 @@ for session_k in range(len(session_file_list)):
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
-    
+
     print('shape of X_for_training after', X_for_training.shape)
     print('shape of x_velocity_label_training after', x_velocity_label_training.shape)
 
@@ -485,9 +485,9 @@ for session_k in range(len(session_file_list)):
     net.load_state_dict(state_dict=torch.load(os.path.join(save_epoch_path, 'model.pkl.{}'.format(best_model))))
     net.train(False)
     # start testing
-    dataloader = DataLoader(dataset=testing_dataset_with_target,
-                                batch_size=batch_size,
-                                shuffle=False
+    dataloader = DataLoader(dataset = testing_dataset_with_target,
+                                batch_size = batch_size,
+                                shuffle = False
                                 #collate_fn=testData.collate_fn,
                                 #num_workers=8
                                 )
