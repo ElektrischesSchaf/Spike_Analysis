@@ -203,10 +203,14 @@ class Plotting():
         the_y = y_target_cue[start_time_bin:end_time_bin]
         change_points_x = np.where(  np.roll( the_x,1)!= the_x )[0]
         change_points_y = np.where( np.roll( the_y,1)!= the_y )[0]
-        for ele in change_points_x:
-            ax[2].axvline( ele , color='black' , linewidth=5, alpha=0.5 )
-        for ele in change_points_y:
-            ax[2].axvline( ele , color='black' , linewidth=5, alpha=0.5 )
+
+        change_points_x_set = set(change_points_x)
+        change_points_y_set = set(change_points_y)
+        
+        for ele in list(change_points_x_set.union( change_points_y_set )):
+            ax[2].axvline( time[0]+ele , color='black' , linewidth=5, alpha=0.3 )
+        
+        # this is for target cue checking
         # ax[2].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
         # ax[2].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-axis cue', alpha=0.8)
 
