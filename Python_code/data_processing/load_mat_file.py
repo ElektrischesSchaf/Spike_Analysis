@@ -180,9 +180,9 @@ class mat_file_processing():
             sampling_rate = the_sampling_rate
             time_stamp_64ms = time_stamp[0][::sampling_rate]
 
-            finger_z_pos_64ms = (numpy_finger_pos_2[0][::sampling_rate])*10 # cm to mm
-            finger_x_pos_64ms = (numpy_finger_pos_2[1][::sampling_rate])*10 # cm to mm
-            finger_y_pos_64ms = (numpy_finger_pos_2[2][::sampling_rate])*10 # cm to mm
+            finger_z_pos_64ms = (numpy_finger_pos_2[0][::sampling_rate])*-10 # cm to mm
+            finger_x_pos_64ms = (numpy_finger_pos_2[1][::sampling_rate])*-10 # cm to mm
+            finger_y_pos_64ms = (numpy_finger_pos_2[2][::sampling_rate])*-10 # cm to mm
             print('shape of finger_x_pos_64ms', finger_x_pos_64ms.shape) # (12778,) in indy_20160407_02
 
             target_x_coor = numpy_finger_target[0][::sampling_rate]
