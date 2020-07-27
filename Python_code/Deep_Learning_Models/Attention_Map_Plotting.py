@@ -198,8 +198,17 @@ class Plotting():
         ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
         ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
 
-        ax[2].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
-        ax[2].plot(time, y_target_cue[start_time_bin:end_time_bin] , 'og',linewidth=3, label='y-axis cue', alpha=0.8)
+        # plot target cue change points
+        the_x = x_target_cue[start_time_bin:end_time_bin]
+        the_y = y_target_cue[start_time_bin:end_time_bin]
+        change_points_x = np.where(  np.roll( the_x,1)!= the_x )[0]
+        change_points_y = np.where( np.roll( the_y,1)!= the_y )[0]
+        for ele in change_points_x:
+            ax[2].axvline( ele , color='black' , linewidth=5, alpha=0.5 )
+        for ele in change_points_y:
+            ax[2].axvline( ele , color='black' , linewidth=5, alpha=0.5 )
+        # ax[2].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
+        # ax[2].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-axis cue', alpha=0.8)
 
         ax[2].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
