@@ -255,7 +255,7 @@ for session_k in range(len(session_file_list)):
     df = pd.DataFrame(X_for_prediction)
     df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
     
-
+    # position label
     df=pd.DataFrame(x_position_label_training)
     df.to_csv(os.path.join(csv_path,'x_position_label_training.csv'), index=False)
 
@@ -267,6 +267,20 @@ for session_k in range(len(session_file_list)):
 
     df=pd.DataFrame(y_position_label_testing)
     df.to_csv(os.path.join(csv_path,'y_position_label_testing.csv'), index=False)
+
+    # Target cue
+    # df=pd.DataFrame(x_position_target_training)
+    # df.to_csv(os.path.join(csv_path,'x_position_target_training.csv'), index=False)
+
+    df=pd.DataFrame(x_position_target_testing)
+    df.to_csv(os.path.join(csv_path,'x_position_target_testing.csv'), index=False)
+
+    # df=pd.DataFrame(y_position_target_training)
+    # df.to_csv(os.path.join(csv_path,'y_position_target_training.csv'), index=False)
+
+    df=pd.DataFrame(y_position_target_testing)
+    df.to_csv(os.path.join(csv_path,'y_position_target_testing.csv'), index=False)
+
 
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
@@ -283,24 +297,36 @@ for session_k in range(len(session_file_list)):
     training_y_1  = torch.from_numpy(training_y_1.values)    
     training_y_1  = training_y_1.float()
 
-    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)    
-    testing_y_1 = torch.from_numpy(testing_y_1.values)    
-    testing_y_1 = testing_y_1.float()
-
     # y_pos
     training_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_training.csv'), dtype=float)    
     training_y_2 = torch.from_numpy(training_y_2.values)    
     training_y_2 = training_y_2.float()
 
-    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)    
+
+    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)    
+    testing_y_1 = torch.from_numpy(testing_y_1.values)    
+    testing_y_1 = testing_y_1.float()
+
+    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)
     testing_y_2 = torch.from_numpy(testing_y_2.values)    
     testing_y_2 = testing_y_2.float()
+
+    # target cue
+    testing_y_3 = pd.read_csv(os.path.join(csv_path,'x_position_target_testing.csv'), dtype=float)
+    testing_y_3 = torch.from_numpy(testing_y_3.values)
+    testing_y_3 = testing_y_3.float()
+
+    testing_y_4 = pd.read_csv(os.path.join(csv_path,'y_position_target_testing.csv'), dtype=float)
+    testing_y_4 = torch.from_numpy(testing_y_4.values)
+    testing_y_4 = testing_y_4.float()
+
 
     training_y = torch.cat( (training_y_1, training_y_2), 1)
     testing_y = torch.cat( (testing_y_1, testing_y_2), 1)
 
-    testing_data_length = int(testing_y.size(0))
+    testing_y_with_target = torch.cat( (testing_y_1, testing_y_2, testing_y_3, testing_y_4), 1)
 
+    testing_data_length = int(testing_y.size(0))
 
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
@@ -313,8 +339,9 @@ for session_k in range(len(session_file_list)):
     output_dim = OUTPUT_DIM
 
     # Training / Testing AbstractDataset
-    training_dataset=AbstractDataset(training_x, training_y)
-    testing_dataset=AbstractDataset(testing_x, testing_y)
+    training_dataset = AbstractDataset(training_x, training_y)
+    testing_dataset = AbstractDataset(testing_x, testing_y)
+    testing_dataset_with_target = AbstractDataset(testing_x, testing_y_with_target)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -398,7 +425,8 @@ for session_k in range(len(session_file_list)):
         torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
         with open( os.path.join( save_epoch_path, 'history.json'), 'w') as f:
             json.dump(history, f, indent=4)
-
+        with open( os.path.join( csv_path, 'history.json'), 'w') as f:
+            json.dump(history, f, indent=4)
     for epoch in range(max_epoch):
         print('Epoch: {}'.format(epoch))
         _run_epoch(epoch, 'train')
@@ -420,10 +448,11 @@ for session_k in range(len(session_file_list)):
     plt.close()
 
     plt.figure(figsize=(7,5))
-    plt.title('Loss')
+    plt.title('Loss', fontsize=15)
     plt.plot(train_loss, label='train')
     plt.plot(valid_loss, label='test')
-    plt.xlabel('Epoch')
+    plt.xlabel('Epoch', fontsize=10)
+    plt.ylabel('Loss', fontsize=10)
     plt.legend()
     plt.tight_layout()
     plt.savefig(plot_path + '/' + model_name+"_Loss.png")
@@ -433,11 +462,11 @@ for session_k in range(len(session_file_list)):
     plt.close()
 
     plt.figure(figsize=(7,5))
-    plt.title('performance')
+    plt.title('performance', fontsize=15)
     plt.plot(train_R_square, label='train')
     plt.plot(valid_R_square, label='test')
-    plt.xlabel('Epoch')
-    plt.ylabel('R square')
+    plt.xlabel('Epoch', fontsize=10)
+    plt.ylabel('R square', fontsize=10)
     plt.legend()
     plt.tight_layout()
     plt.savefig(plot_path + '/' +model_name+"_R-square.png")
@@ -456,7 +485,7 @@ for session_k in range(len(session_file_list)):
     net.load_state_dict(state_dict=torch.load(os.path.join(save_epoch_path, 'model.pkl.{}'.format(best_model))))
     net.train(False)
     # start testing
-    dataloader = DataLoader(dataset=testing_dataset,
+    dataloader = DataLoader(dataset=testing_dataset_with_target,
                                 batch_size=batch_size,
                                 shuffle=False
                                 #collate_fn=testData.collate_fn,
@@ -472,6 +501,8 @@ for session_k in range(len(session_file_list)):
 
     firing_rate_collector = []
 
+    x_target_all = []
+    y_target_all = []
     # attention map
     attn_weight_matrix_all=[]
 
@@ -494,14 +525,17 @@ for session_k in range(len(session_file_list)):
         for index_batch in  range(x.shape[0]):
             firing_rate_collector.append(  x[index_batch, -feature_numbers:].flatten() )
 
-        # collect label
+        # collect label and target
         o_labels = o_labels.cpu().data.numpy()
         o_labels_1 = o_labels[:,0]
         o_labels_2 = o_labels[:,1]
 
+
         real_y = testing_y.cpu().data.numpy()
         real_y_1 = real_y[:,0]
         real_y_2 = real_y[:,1]
+        x_target = real_y[:,2]
+        y_target = real_y[:,3]
 
         for ele in o_labels_1:
             my_prediction_1.append( float(ele) )
@@ -512,6 +546,11 @@ for session_k in range(len(session_file_list)):
             my_prediction_2.append( float(ele) )
         for ele in real_y_2:
             real_y_all_2.append( float(ele) )
+
+        for ele in x_target:
+            x_target_all.append( float(ele) )
+        for ele in y_target:
+            y_target_all.append( float(ele) )
 
         # attention map
         for ele in range(attn_weight_matrix.shape[0]):

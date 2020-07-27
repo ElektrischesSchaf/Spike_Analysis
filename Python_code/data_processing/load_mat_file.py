@@ -271,8 +271,8 @@ class mat_file_processing():
             y_acceleration_label = np.insert(finger_y_acceleration, 0,0)
             z_acceleration_label = np.insert(finger_z_acceleration, 0,0)
 
-            x_position_target = target_x_coor
-            y_position_target = target_y_coor
+            x_position_target = target_x_coor[1:]
+            y_position_target = target_y_coor[1:]
 
         return [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label, x_position_target, y_position_target]
 
