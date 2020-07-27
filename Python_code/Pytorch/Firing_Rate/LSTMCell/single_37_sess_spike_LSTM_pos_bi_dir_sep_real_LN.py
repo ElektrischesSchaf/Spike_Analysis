@@ -57,7 +57,7 @@ session_file_list = List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'LSTM_with_Spike_Single_37_Session_2_outputs_bidir_sep_real_LN'
-MAX_EPOCH = 7
+MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
