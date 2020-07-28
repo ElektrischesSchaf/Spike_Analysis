@@ -59,7 +59,7 @@ instead of the amplitude of the signal, to be the only feature in decoding motor
 \label{sec:rnn}
 The first idea of recurrent neural networks (RNN), which is called the Hopfield networks, was introduced in 1980s \citep{hopfield1982neural}, 
 and the following different versions of RNN have been developed afterwards \citep{elman1990finding, jordan1997serial}. 
-But the these RNN models face the same gradient vanishing problem, and the two effective approachs to solve this problem is either clip and scale the gradient if the norm is too large, 
+But the these RNN models face the same gradient vanishing problem, and the two effective approaches to solve this problem is either clip and scale the gradient if the norm is too large, 
 or create a better RNN model \citep{alom2018history}. 
 
 Therefore, \cite{hochreiter1997long} created a well-known model named Long Short-Term Memory (LSTM), solved the gradient vanishing problem of the original RNNs. LSTM quipped with three gates to learn how to forget or keep the memory from previous states. 
@@ -69,20 +69,31 @@ It is has gained popularity in the community due to its efficiency in training a
 Nowadays, RNNs come with various architectures have benn widely used in BMI reseachers \citep{ahmadi2020impact}, \cite{tuleuov2019deep} even developed a hybrid deep leaning model which combined RNN with convolution neural network (CNN). 
 These preceding works manifest the uprising potentials of RNNs in computational neural science.
 
-
 \section{Attention Mechanism}
 \label{sec:atten}
 When it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
-This is primarily due to the fact that the longer the sequence lenght, the higher the possibility of gradient vanishing might occur in RNNs \citep{chandar2019towards}. 
+This is primarily due to the fact that the longer the sequence lenght, 
+the higher the possibility of gradient vanishing might occur in RNNs \citep{chandar2019towards}. 
 Especially in neural machine translation researches, where long input sentences are apt to cause translation errors. 
-Thus, the a novel architecture for neural machine translation, named \textit{alignment model}, is proposed in \cite{bahdanau2014neural}, which put an additional weights on the original outputs of an RNN. 
-The alighment model scores how well the inputs around one position matches the output on another position, such that model is capable of focusing on the information relevant part of the input sentence, and leave a major positive impact on the ability of the neural machine translation system. 
+Thus, the a novel architecture for neural machine translation, 
+named \textit{alignment model}, is proposed in \cite{bahdanau2014neural}, 
+which put an additional weights on the original outputs of an RNN. 
+The alighment model scores how well the inputs around one position matches the output on another position, 
+such that model is capable of focusing on the information relevant part of the input sentence, 
+and leave a major positive impact on the ability of the neural machine translation system. 
 Furthermore, by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
+
+Similar attention techniques can be seen in sentiment classification research \citep{wang2016attention}, 
+where they appended the attention mechanism right after the LSTM outputs and named it attention-based LSTM.
+They also visualized the aspect in each sentence, e.g., the term "service" or "food" by showing the weights in attention vectors.
+They can tell the important words from the whole sentence.
+In EEG signal processing, \cite{zhang2019convolutional} used both CNN and RNN to extract the spatio and temporal dynamics.
+
 
 \section{Normalization}
 \label{sec:norm}
 When training a deep learning model, \textit{internal covariate shift} as the change in distribution of network activations, is an issue that hinders the loss of the model to converge and sometimes incurs poor performances. 
-Several novel approachs related to data normalization were designed to cope with this problem, showed in Table \ref{tab:six_types_of_norm}. 
+Several novel approaches related to data normalization were designed to cope with this problem, showed in Table \ref{tab:six_types_of_norm}. 
 Most of the measures calculate the means and variances from layer inputs. 
 But due to the design, the effect of a normalization measure might vary in different deep learning models, e.g. batch normalization is not suitable for RNNs. 
 Also in the field of image processing, generative adversarial network (GAN) thrives as well as its own normalization methods. 
@@ -92,7 +103,8 @@ Also in the field of image processing, generative adversarial network (GAN) thri
     \centering
     \begin{tabular}{cccc}
         \hline
-        \textbf{Article}            &  \multicolumn{2}{c}{\textbf{ \quad Normalization Measures \quad }}   & \textbf{Applicable Models} \\ 
+        \multicolumn{1}{c}{ \multirow{2}{*}{ \textbf{Article} } }    &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Normalization \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Applicable }}}  \\ 
+        \multicolumn{1}{c}{}                                         &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Approaches    \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Models     }}}     \\
         \hline \\
         \cite{ioffe2015batch}       & Batch       & \multirow{11}{*}{Normalization}     & CNN \\ \\
         \cite{ba2016layer}          & Layer       &                                     & RNN \\ \\ 
@@ -101,7 +113,7 @@ Also in the field of image processing, generative adversarial network (GAN) thri
         \cite{wu2018group}          & Group       &                                     & CNN \\ \\
         \cite{miyato2018spectral}   & Spectral    &                                     & GAN
     \end{tabular}
-    \caption{Six Measures of Normalization}
+    \caption{Six Approaches of Normalization}
     \label{tab:six_types_of_norm}
 \end{table}
 
