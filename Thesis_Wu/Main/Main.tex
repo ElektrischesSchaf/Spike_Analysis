@@ -121,10 +121,13 @@
 \usepackage{etoolbox}
 \renewcommand\nomgroup[1]{%
 	\item[\bfseries
-	\ifstrequal{#1}{A}{Abbreviation}{%
-	\ifstrequal{#1}{B}{Group 2}{%
-	\ifstrequal{#1}{C}{Group 3}{}}}%
-]}
+			\ifstrequal{#1}{A}{List of Abbreviations}{%
+					\ifstrequal{#1}{B}{Group 2}{%
+						\ifstrequal{#1}{C}{Attention Mechanism} {}
+					}
+			}%
+		]
+}
 % -----------------------------------------
 %%
 \setcounter{secnumdepth}{4}

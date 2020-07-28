@@ -63,7 +63,7 @@ Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and th
         \makecell{\cite{coude2014}}         & \makecell{7-13Hz\\13-19Hz\\19-25Hz}   & Magnitude                         & \makecell{Monkey's motor system\\and mirror neuron} \\ \\
         \makecell{\cite{cattani2015}}       &\makecell{delta (1-4Hz)\\theta (4-8Hz)}& \makecell{Instantaneous\\phase}   &  \makecell{ Monkeys \\ binocularly presented \\ a color movie}  \\ \\
         \makecell{\cite{kumar2018eeg}}      & 8-24Hz                                & \makecell{Instantaneous\\phase}   & \makecell{Motor imagery \\ classification of human } \\ \\
-        \makecell{\cite{ahmadi2019end}}     & \makecell{0-4Hz\\ 0-300Hz}            & Magnitude                         & \makecell{ Monkey's hand \\ movement}\\ \\
+        \makecell{\cite{ahmadi2019decoding}}     & \makecell{0-4Hz\\ 0-300Hz}            & Magnitude                         & \makecell{ Monkey's hand \\ movement}\\ \\
     \caption{Reasearches involved LFPs}
     \label{tab:LFP_research}
 \end{longtable}
@@ -107,6 +107,9 @@ where they appended the attention mechanism right after the LSTM outputs and nam
 They also visualized the aspect in each sentence, e.g., the term "service" or "food" by showing the weights in attention vectors.
 They can tell the important words from the whole sentence.
 In EEG signal processing, \cite{zhang2019convolutional} used both CNN and RNN to extract the spatio and temporal dynamics.
+The self-attention module was placed in the last layer, after the raw signal was first processed by CNN and then RNN.
+The proposed method, convolutional recurrent attention model outperformed other state-of-the-art methods in EEG classification tasks.
+
 
 
 \section{Normalization}
@@ -116,6 +119,7 @@ Several novel approaches related to data normalization were designed to cope wit
 Most of the measures calculate the means and variances from layer inputs. 
 But due to the design, the effect of a normalization measure might vary in different deep learning models, e.g. batch normalization is not suitable for RNNs. 
 Also in the field of image processing, generative adversarial network (GAN) thrives as well as its own normalization methods. 
+
 
 \begin{table}[H]
     % https://medium.com/@ZhengLungWu/normalization-in-pytorch-84519d8b4fe1
@@ -136,8 +140,9 @@ Also in the field of image processing, generative adversarial network (GAN) thri
     \label{tab:six_types_of_norm}
 \end{table}
 
-Since this research primarily used RNN, the best methods to facilitate our model is layer normalization, in latest reseach \cite{li2020bidirectional} used layer normalization actually put it in practice, along with self-attention mechanism. 
-
+Since this research primarily used RNN, the best methods to facilitate our model is layer normalization, 
+In a recent sentiment classification reseach \cite{li2020bidirectional} used layer normalization to regulate the values the outputs of bidirectional LSTM, 
+then feed them input the self-attention mechanism.
 
 \section{Organization of This Thesis}
 \label{sec:org}
