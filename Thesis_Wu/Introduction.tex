@@ -33,19 +33,6 @@ Except from motor cortex signals, a research about the self-location ability of 
 also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
 to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}. 
 
-However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
-Therefore several studies adopted local filed potentials (LFPs), which stand for the low frequency part (<~300Hz) of neural signal. 
-And also local motor potentials (LMPs), which are the moving average of LFPs. 
-Due to the considerably low frequency of LFPs, they can be sampled, processed, and transmitted with lower power consuption \citep{flint2012accurate}.
-These studies show that low frequency signals are also informative regarding neural signal decoding \citep{wang2014long}. 
-As for human, the LFPs can be obtained by electroencephalography (EEG), and some studies consider the phase of LFPs from a specific frequency band, 
-instead of the amplitude of the signal, to be the only feature in decoding motor imagery tasks \citep{kumar2018eeg} or to proof the correlation between spatial updating process and the rhythmic process in the brain \citep{mclelland2016phase}.\\
-
-
-% In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
-% Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
-% On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
- 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.48\textwidth]{monkey.jpg}
@@ -54,6 +41,38 @@ instead of the amplitude of the signal, to be the only feature in decoding motor
         \label{fig:intro_monkey}
     \end{center}
 \end{figure}
+
+However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
+Therefore several studies adopted local filed potentials (LFPs), which stand for the low frequency part (<~300Hz) of neural signal. 
+And also local motor potentials (LMPs), which are the moving average of LFPs. 
+Due to the considerably low frequency of LFPs, they can be sampled, processed, and transmitted with lower power consuption \citep{flint2012accurate}.
+These studies show that low frequency signals are also informative regarding neural signal decoding \citep{wang2014long}. 
+As for human, the LFPs can be obtained by electroencephalography (EEG), and some studies consider the phase of LFPs from a specific frequency band, 
+instead of the amplitude of the signal, to be the only feature in decoding motor imagery tasks \citep{kumar2018eeg} or to proof the correlation between spatial updating process and the rhythmic process in the brain \citep{mclelland2016phase}.
+Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and the frequency bands they were using the perform specific tasks.
+
+\begin{longtable}{cccc}
+        \hline
+        \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Aritcle }}}  & \multicolumn{1}{c}{  \multirow{1}{*}{ \textbf{Frequency}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Phase}}} & \multicolumn{1}{c}{  \multirow{1}{*}{ \textbf{Objective}}}   \\
+        \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{  \multirow{1}{*}{ \textbf{Band}}}       & \multicolumn{1}{c}{}                                  & \multicolumn{1}{c}{  \multirow{1}{*}{\textcolor{blue}{Notes}}} \\
+        \hline
+        \endhead
+        \makecell{\cite{kumar2018eeg}}      & 8-24Hz                                & \makecell{Instantaneous\\phase}  & \makecell{Motor imagery \\ classification of human \\ \textcolor{blue}{common spatial pattern} \\ \textcolor{blue}{instantaneous phase difference}   } \\ \\
+        \makecell{\cite{coude2014}}         & \makecell{7-13Hz\\13-19Hz\\19-25Hz}   & \textbf{None}             & \makecell{Monkey's motor system\\and mirror neuron} \\ \\
+        \makecell{\cite{quiroga2009}}       & LFP & instantaneous phase             & \makecell{Heading of the mouse  \\  \textcolor{blue}{Merging Spike and LFP}} \\ \\
+        \makecell{\cite{ahmadi2019end}}     & \makecell{0-4Hz\\ 0-300Hz}            & \textbf{None}             & \makecell{ Monkey's hand \\ movement \\  \textcolor{blue}{LMP and DHE} \\ \textcolor{blue}{delta Hilbert envelope} }\\ \\
+        \makecell{\cite{einevoll2013}}      & LFP & Not specified                   & \makecell{Sensory stimuli \\ \textcolor{blue}{LFP-spike analysis} \\ \textcolor{blue}{cross-frequency} \\  \textcolor{blue}{phase-phase inter-frequency coupling} } \\ \\
+        \makecell{\cite{cattani2015}}       &\makecell{delta [1-4Hz]\\theta [4-8Hz]}& \makecell{Instantaneous\\phase}   &  \makecell{anaesthetic macaques \\ binocularly presented a color movie \\ \textcolor{blue}{primary visual cortex} }  \\ \\
+        \makecell{\cite{siapas2005}}        & theta (4-10Hz)                        & \makecell{Instantaneous\\phase}   & Place cells  \\
+    \caption{Reasearches involved LFPs}
+    \label{tab:LFP_research}
+\end{longtable}
+
+% In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
+% Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
+% On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
+ 
+
 
 \section{Recurrent Neural Networks}
 \label{sec:rnn}
@@ -104,7 +123,7 @@ Also in the field of image processing, generative adversarial network (GAN) thri
     \begin{tabular}{cccc}
         \hline
         \multicolumn{1}{c}{ \multirow{2}{*}{ \textbf{Article} } }    &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Normalization \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Applicable }}}  \\ 
-        \multicolumn{1}{c}{}                                         &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Approaches    \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Models     }}}     \\
+        \multicolumn{1}{c}{}                                         &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Approaches    \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Models     }}}  \\
         \hline \\
         \cite{ioffe2015batch}       & Batch       & \multirow{11}{*}{Normalization}     & CNN \\ \\
         \cite{ba2016layer}          & Layer       &                                     & RNN \\ \\ 
