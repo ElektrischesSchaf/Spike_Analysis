@@ -379,7 +379,8 @@ named the \textit{penalization term} and defined as follows,
     P &= {\norm{ A A^T - I }_F}^2
 \end{align}
 
-\noindent where $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix. The Frobenius norm is defined as
+\noindent where $A A^T$ is a square matrix of size $(r \times r)$, 
+and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined as
 \begin{align}
     \label{eq:frobenius_norm}
     \norm{X}_F &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|x_{ij}|}_2 }
@@ -400,4 +401,13 @@ thus the dot products $ \vec{a^i} \cdot \vec{a^j} $ should be $0$, and can be ex
     0 < a_{ij} &= \sum^{n}_{k=1} a^i_k a^j_k < 1
 \end{align}
 \noindent where $a_{ij}$ is a non-diagonal element in matrix $A A^T$, also should equal to $0$.
-$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $\vec{a^i}$ and ${\vec{a^j}}$ severally.
+$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $\vec{a^i}$ and ${\vec{a^j}}$, severally.
+The diagonal elements, on the other hand,
+will always be $1$ since they are the dot products of two identity vectors ($ \vec{a^i} \cdot \vec{a^i}$, i=1 $\sim$ r). 
+That's why substracting an identity matrix from $A A^T$ is needed when calculating $P$.
+The author of \cite{lin2017structured} claimed that in this way, 
+each annotation vector $a^i$ is encouraged to focus on fewer parts of the sequence,
+enabling each vector be focused on a single aspect.
+
+\subsection{Visualization}
+Interpretation of the neural signals is one of the main topic in our study.
