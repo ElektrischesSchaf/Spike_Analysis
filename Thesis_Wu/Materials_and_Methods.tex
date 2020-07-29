@@ -319,7 +319,7 @@ When implementing it on GRU,
 \noindent where $\alpha_i$ and $\beta_i$ are initialized as vector of zeros and ones, respectively.
 
 \subsection{Attention Mechanism}
-\cite{lin2017structured} proposed a concise but powerful attention mechanism
+\cite{lin2017structured} proposed a concise but effective attention mechanism.
 The output hidden states from the last layer of GRU will be the input of our attention mechanism.
 The hidden states matrix,
 \begin{align}
@@ -372,5 +372,32 @@ The second layer reduces the dimension from $d_a$ to $r$.
 The embedding matrix $M$ should contains $r$ different parts of aspects from the same sequence.
 But without further constraints, the attention mechanism might always provide similar summation weights for all the $r$ hops.
 \cite{lin2017structured} also proposed an approach to optimize the distribution of the annotations across sequence,
-named the \textit{penalization term}.
+named the \textit{penalization term} and defined as follows,
 
+\begin{align}
+    \label{eq:penalization_term}
+    P &= {\norm{ A A^T - I }_F}^2
+\end{align}
+
+\noindent where $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix. The Frobenius norm is defined as
+\begin{align}
+    \label{eq:frobenius_norm}
+    \norm{X}_F &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|x_{ij}|}_2 }
+\end{align}
+
+\noindent indicates that the summation of the squared value of every element in the matrix $A A^T - I$ should be closed to $0$.
+The term $P$ itself is a kind of loss function, and the value, which is an error,
+should be multipled by a coefficient and then propagate backwards to modify the weights in the our attention mechanism.
+
+To explain this design, let's start by considering two different annotation vectors $ \vec{a^i} $ and $\vec{a^j} $.
+Both vectors share the same size $(1 \times n)$.
+Due to the fact that $softmax$ is implemented, the summation of every element of these vectors is $1$.
+The values each vector can be consider as a probability distribution.
+
+In an extreme case, there should have the no overlapping between the probability distribution of these two vectors, 
+thus the dot products $ \vec{a^i} \cdot \vec{a^j} $ should be $0$, and can be expressed as
+\begin{align}
+    0 < a_{ij} &= \sum^{n}_{k=1} a^i_k a^j_k < 1
+\end{align}
+\noindent where $a_{ij}$ is a non-diagonal element in matrix $A A^T$, also should equal to $0$.
+$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $\vec{a^i}$ and ${\vec{a^j}}$ severally.
