@@ -70,11 +70,12 @@ SNR_across_all_sessions=[]
 RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
+testing_data_length_all_sessions = []
 
 # session control start
 for session_k in range(len(session_file_list)):
 
-    session_name=str(session_file_list[session_k])[:-4]
+    session_name = str(session_file_list[session_k])[:-4]
     file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
     # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
 
@@ -86,9 +87,9 @@ for session_k in range(len(session_file_list)):
     units_have_value=0
 
     # Parameters should be assigned
-    the_sampling_rate=my_parameters.the_sampling_rate
-    file_numbers=my_parameters.file_numbers
-    time_lag=my_parameters.time_lag
+    the_sampling_rate = my_parameters.the_sampling_rate
+    file_numbers = my_parameters.file_numbers
+    time_lag = my_parameters.time_lag
 
     with_sorted_spikes=True
     include_hash_unit=my_parameters.include_hash_unit
@@ -96,7 +97,7 @@ for session_k in range(len(session_file_list)):
     print('In session '+ session_name + ': ' + '\n' )
 
     # Load Spike Firing Rate
-    [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
+    [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number] = mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
 
     # Get channel and unit numbers
     channel_numbers_in_this_dataset = channel_number
@@ -180,7 +181,7 @@ for session_k in range(len(session_file_list)):
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.cross_session_data_concatenation(
-    feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
+    session_name, feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
     x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label, x_position_target, y_position_target,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
@@ -195,13 +196,13 @@ for session_k in range(len(session_file_list)):
     # X_for_prediction = (X_for_prediction - the_mean )/ the_std
 
     # Processing max orders
-    order_num=max_timestep-1
+    order_num = max_timestep-1
     [X_for_training, X_for_prediction,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.max_order_preparation(
-    order_num, feature_numbers, X_for_training, X_for_prediction,
+    session_name, order_num, feature_numbers, X_for_training, X_for_prediction,
     x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
     x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
     x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
@@ -211,6 +212,7 @@ for session_k in range(len(session_file_list)):
     print('shape of x_velocity_label_training after', x_velocity_label_training.shape)
 
     print('\nshape of X_for_prediction after', X_for_prediction.shape)
+    testing_data_length_all_sessions.append( X_for_prediction.shape[0] )
     print('shape of x_velocity_label_testing after', x_velocity_label_testing.shape)
 
     # Write features and label from each session to csv files
@@ -672,6 +674,8 @@ df.to_csv(os.path.join(bar_plot_path, 'person_correlation_coefficient_across_all
 df = pd.DataFrame({ 'session': session_file_list, 'x-axis':[x[0] for x in SNR_across_all_sessions], 'y-axis':[x[1] for x in SNR_across_all_sessions]  })
 df.to_csv(os.path.join(bar_plot_path, 'SNR_across_all_sessions.csv'), index=False, header=True)
 
+df = pd.DataFrame({ 'session': session_file_list, 'testing length':[x for x in testing_data_length_all_sessions] })
+df.to_csv(os.path.join(bar_plot_path, 'testing_data_length_all_sessions.csv'), index=False, header=True)
 
 # Plot all performances as bar charts
 '''
