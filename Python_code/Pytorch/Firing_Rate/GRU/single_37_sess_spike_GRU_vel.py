@@ -446,7 +446,7 @@ for session_k in range(len(session_file_list)):
     plt.clf()
     plt.close()
 
-    plt.figure(figsize=(7,5))
+    plt.figure(figsize=(16,9))
     plt.title('Loss', fontsize=15)
     plt.plot(train_loss, label='train')
     plt.plot(valid_loss, label='test')
@@ -460,7 +460,7 @@ for session_k in range(len(session_file_list)):
     plt.clf()
     plt.close()
 
-    plt.figure(figsize=(7,5))
+    plt.figure(figsize=(16,9))
     plt.title('performance', fontsize=15)
     plt.plot(train_R_square, label='train')
     plt.plot(valid_R_square, label='test')
