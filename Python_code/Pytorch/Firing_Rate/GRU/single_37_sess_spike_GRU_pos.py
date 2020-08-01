@@ -52,7 +52,7 @@ kinematic_variable_type='x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE=ALL_List_FILE[:]
+List_FILE=ALL_List_FILE[11:]
 session_file_list=List_FILE
 
 # Neural Network Hyperparameters
@@ -592,8 +592,12 @@ for session_k in range(len(session_file_list)):
 
     # Plotting the kinematic variable reconstructure figure
     plt.figure(figsize=(32, 9))
-    plotting_time_elapsed=time_stamp_64ms[testing_data_index:]
-    plotting_time_elapsed=plotting_time_elapsed[max_timestep:]
+    plotting_time_elapsed = time_stamp_64ms[testing_data_index:]
+    plotting_time_elapsed = plotting_time_elapsed[max_timestep:]
+
+    if len(plotting_time_elapsed) != len (my_prediction_1):
+        diff = abs( len(plotting_time_elapsed)-len(my_prediction_1) )
+        plotting_time_elapsed = plotting_time_elapsed[:-diff]
 
     df = pd.DataFrame( plotting_time_elapsed )
     df.to_csv(os.path.join(csv_path, 'plotting_time_elapsed.csv'), index=False, header=False)
