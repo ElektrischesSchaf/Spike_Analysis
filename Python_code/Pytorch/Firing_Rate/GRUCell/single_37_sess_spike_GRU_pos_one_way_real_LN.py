@@ -40,7 +40,7 @@ mat_file_processing = load_mat_file.mat_file_processing()
 
 # Deep leaning module
 # from  Deep_Learning_Models.GRU_one_stream import GRUModel
-from  Deep_Learning_Models.LSTM_real_LN_self_Atten import Real_Layer_LSTM_one_way
+from  Deep_Learning_Models.GRU_real_LN_self_Atten import Real_Layer_GRU_one_way
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # attention map plotting module
@@ -56,7 +56,7 @@ List_FILE = ALL_List_FILE[:]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'LSTM_with_Spike_Single_37_Session_2_outputs_one_way_real_LN'
+model_name = 'GRU_with_Spike_Single_37_Session_2_outputs_one_way_real_LN'
 MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
@@ -347,7 +347,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = Real_Layer_LSTM_one_way(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
+    net = Real_Layer_GRU_one_way(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
 
     for n, p in net.named_parameters():
         print(n, p.shape)

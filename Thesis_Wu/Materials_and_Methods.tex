@@ -177,7 +177,7 @@ The four equations in the GRU cell:
         r_t &=  \sigma (W_r h_{t-1} + U_r x_t + b_r) \label{eq:reset_gate} \\
         z_t &= \sigma (W_z h_{t-1} + U_z x_t + b_z) \label{eq:update_gate} \\
         \hat{h_t} &= \phi(W (r_t \circ h_{t-1}) + U x_t + b) \label{eq:h_hat} \\
-        h_t &= z_t \circ h_{t-1} + (1-z_t) \circ \hat{s_t} \label{eq:h_out}
+        h_t &= z_t \circ h_{t-1} + (1-z_t) \circ \hat{h_t} \label{eq:h_out}
     % \end{split}
 \end{align}
 
