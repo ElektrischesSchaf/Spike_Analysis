@@ -35,8 +35,11 @@ import sys
 sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
-my_parameters=my_parameters.my_parameters()
-mat_file_processing=load_mat_file.mat_file_processing()
+my_parameters = my_parameters.my_parameters()
+mat_file_processing = load_mat_file.mat_file_processing()
+
+import data_processing.some_modules as some_modules
+regular_modules = some_modules.regular_modules()
 
 # Deep leaning module
 # from  Deep_Learning_Models.GRU_one_stream import GRUModel
@@ -91,7 +94,7 @@ for session_k in range(len(session_file_list)):
     file_numbers = my_parameters.file_numbers
     time_lag = my_parameters.time_lag
 
-    with_sorted_spikes=True
+    with_sorted_spikes = True
     include_hash_unit=my_parameters.include_hash_unit
 
     print('In session '+ session_name + ': ' + '\n' )
@@ -142,30 +145,7 @@ for session_k in range(len(session_file_list)):
 
 
     # New Without spike sorting:
-    if with_sorted_spikes==False:
-        with_sorting_firing_rate=firing_rate_matrix.copy()
-        firing_rate_matrix=np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
-        print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
-        print('with_sorting_firing_rate shape: ', with_sorting_firing_rate.shape) # (288, 12777)
-        print('\n')
-
-        for i in range(with_sorting_firing_rate.shape[1]):
-            index=0
-            k=0
-            while index < channel_number:
-                
-                all_units_firing_rate_sum=0
-                for unit_index in range( int(with_sorting_firing_rate.shape[0] / channel_number) ):
-                    all_units_firing_rate_sum+=with_sorting_firing_rate[k+unit_index][i]
-                firing_rate_matrix[index][i]=all_units_firing_rate_sum
-
-                # firing_rate_matrix[index][i]=with_sorting_firing_rate[k][i]+with_sorting_firing_rate[k+1][i]+with_sorting_firing_rate[k+2][i]
-
-                index = index + 1
-                k = k+ unit_number
-        print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
-        print('with_sorting_firing_rate shape: ', with_sorting_firing_rate.shape) # (288, 12777)
-        print('\n')
+    firing_rate_matrix = regular_modules.with_or_without_sorting(with_sorted_spikes, firing_rate_matrix, channel_number, unit_number)
 
     firing_rate_matrix=np.transpose(firing_rate_matrix)        
     feature_numbers_of_firing_rate = firing_rate_matrix.shape[1]
@@ -217,72 +197,19 @@ for session_k in range(len(session_file_list)):
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
-    if model_name not in CWD:
-        CWD = os.path.join(CWD, model_name)
-        if not os.path.exists(CWD):
-            os.mkdir(CWD)
 
-    CWD=os.path.join(CWD, kinematic_variable_type)
-    if not os.path.exists(CWD):
-        os.mkdir(CWD)
-    
-    bar_plot_path=os.path.join(CWD, 'bar_plot_across_sessions')
-    if not os.path.exists(bar_plot_path):
-        os.mkdir(bar_plot_path)
+    bar_plot_path, save_epoch_path, csv_path, plot_path, attention_plot_path = regular_modules.create_pathes(CWD, session_name, model_name, kinematic_variable_type)
 
-    if session_name not in CWD:
-        CWD = os.path.join(CWD, session_name)
-        if not os.path.exists(CWD):
-            os.mkdir(CWD)
-
-    save_epoch_path=os.path.join(CWD,'save')
-    if not os.path.exists(save_epoch_path):
-        os.makedirs(save_epoch_path)
-
-    csv_path=os.path.join(CWD,'csv_files')
-    if not os.path.exists(csv_path):
-        os.mkdir(str(csv_path))
-
-    plot_path = os.path.join(CWD, 'plots')
-    if not os.path.exists(plot_path):
-        os.mkdir(plot_path)
-
-    attention_plot_path = os.path.join(CWD, 'attention_map')
-    if not os.path.exists(attention_plot_path):
-        os.mkdir(attention_plot_path) 
-
-    df = pd.DataFrame(X_for_training)
-    df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
-
-    df = pd.DataFrame(X_for_prediction)
-    df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
-    
-    # position label
-    df=pd.DataFrame(x_position_label_training)
-    df.to_csv(os.path.join(csv_path,'x_position_label_training.csv'), index=False)
-
-    df=pd.DataFrame(x_position_label_testing)
-    df.to_csv(os.path.join(csv_path,'x_position_label_testing.csv'), index=False)
-
-    df=pd.DataFrame(y_position_label_training)
-    df.to_csv(os.path.join(csv_path,'y_position_label_training.csv'), index=False)
-
-    df=pd.DataFrame(y_position_label_testing)
-    df.to_csv(os.path.join(csv_path,'y_position_label_testing.csv'), index=False)
-
-    # Target cue
-    # df=pd.DataFrame(x_position_target_training)
-    # df.to_csv(os.path.join(csv_path,'x_position_target_training.csv'), index=False)
-
-    df=pd.DataFrame(x_position_target_testing)
-    df.to_csv(os.path.join(csv_path,'x_position_target_testing.csv'), index=False)
-
-    # df=pd.DataFrame(y_position_target_training)
-    # df.to_csv(os.path.join(csv_path,'y_position_target_training.csv'), index=False)
-
-    df=pd.DataFrame(y_position_target_testing)
-    df.to_csv(os.path.join(csv_path,'y_position_target_testing.csv'), index=False)
-
+    regular_modules.write_data_to_path(csv_path,
+    X_for_training, X_for_prediction, 
+    x_position_label_training, x_position_label_testing, 
+    y_position_label_training, y_position_label_testing, 
+    x_velocity_label_training, x_velocity_label_testing,
+    y_velocity_label_training, y_velocity_label_testing,
+    x_acceleration_label_training, x_acceleration_label_testing,
+    y_acceleration_label_training, y_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, 
+    y_position_target_training, y_position_target_testing)
 
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
