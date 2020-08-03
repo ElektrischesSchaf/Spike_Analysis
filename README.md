@@ -7,8 +7,8 @@
 			- [R-square](#R-square-indy) <br>
 			- [SNR](#SNR-indy) <br>
 		- [loco](#loco) <br>
-			- [R-square](#R-square) <br>
-			- [SNR](#SNR) <br>
+			- [R-square](#R-square-loco) <br>
+			- [SNR](#SNR-loco) <br>
     - [Plots](#plots)<br>
         - [Spike Train](#Spike-Train)<br> 
         - [Trajectory of finger tip](#Trajectory-of-finger-tip)<br>
