@@ -38,6 +38,9 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
+import data_processing.some_modules as some_modules
+regular_modules = some_modules.regular_modules()
+
 # Deep leaning module
 # from  Deep_Learning_Models.GRU_one_stream import GRUModel
 from  Deep_Learning_Models.GRU_one_stream_self_Atten import GRUModel
@@ -64,6 +67,7 @@ OUTPUT_DIM = 2
 BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
 max_timestep = 10
+
 # Model Performance Lists
 R_square_across_all_sessions=[]
 SNR_across_all_sessions=[]
@@ -91,7 +95,7 @@ for session_k in range(len(session_file_list)):
     file_numbers = my_parameters.file_numbers
     time_lag = my_parameters.time_lag
 
-    with_sorted_spikes=True
+    with_sorted_spikes = True
     include_hash_unit=my_parameters.include_hash_unit
 
     print('In session '+ session_name + ': ' + '\n' )
@@ -142,30 +146,7 @@ for session_k in range(len(session_file_list)):
 
 
     # New Without spike sorting:
-    if with_sorted_spikes==False:
-        with_sorting_firing_rate=firing_rate_matrix.copy()
-        firing_rate_matrix=np.zeros([ channel_number, firing_rate_matrix.shape[1] ])
-        print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
-        print('with_sorting_firing_rate shape: ', with_sorting_firing_rate.shape) # (288, 12777)
-        print('\n')
-
-        for i in range(with_sorting_firing_rate.shape[1]):
-            index=0
-            k=0
-            while index < channel_number:
-                
-                all_units_firing_rate_sum=0
-                for unit_index in range( int(with_sorting_firing_rate.shape[0] / channel_number) ):
-                    all_units_firing_rate_sum+=with_sorting_firing_rate[k+unit_index][i]
-                firing_rate_matrix[index][i]=all_units_firing_rate_sum
-
-                # firing_rate_matrix[index][i]=with_sorting_firing_rate[k][i]+with_sorting_firing_rate[k+1][i]+with_sorting_firing_rate[k+2][i]
-
-                index = index + 1
-                k = k+ unit_number
-        print('firing_rate_matrix shape: ', firing_rate_matrix.shape)  # (96, 12777)
-        print('with_sorting_firing_rate shape: ', with_sorting_firing_rate.shape) # (288, 12777)
-        print('\n')
+    firing_rate_matrix = regular_modules.with_or_without_sorting(with_sorted_spikes, firing_rate_matrix, channel_number, unit_number)
 
     firing_rate_matrix=np.transpose(firing_rate_matrix)        
     feature_numbers_of_firing_rate = firing_rate_matrix.shape[1]
@@ -217,71 +198,19 @@ for session_k in range(len(session_file_list)):
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
-    if model_name not in CWD:
-        CWD = os.path.join(CWD, model_name)
-        if not os.path.exists(CWD):
-            os.mkdir(CWD)
 
-    CWD=os.path.join(CWD, kinematic_variable_type)
-    if not os.path.exists(CWD):
-        os.mkdir(CWD)
-    
-    bar_plot_path=os.path.join(CWD, 'bar_plot_across_sessions')
-    if not os.path.exists(bar_plot_path):
-        os.mkdir(bar_plot_path)
+    bar_plot_path, save_epoch_path, csv_path, plot_path, attention_plot_path = regular_modules.create_pathes(CWD, session_name, model_name, kinematic_variable_type)
 
-    if session_name not in CWD:
-        CWD = os.path.join(CWD, session_name)
-        if not os.path.exists(CWD):
-            os.mkdir(CWD)
-
-    save_epoch_path=os.path.join(CWD,'save')
-    if not os.path.exists(save_epoch_path):
-        os.makedirs(save_epoch_path)
-
-    csv_path=os.path.join(CWD,'csv_files')
-    if not os.path.exists(csv_path):
-        os.mkdir(str(csv_path))
-
-    plot_path = os.path.join(CWD, 'plots')
-    if not os.path.exists(plot_path):
-        os.mkdir(plot_path)
-
-    attention_plot_path = os.path.join(CWD, 'attention_map')
-    if not os.path.exists(attention_plot_path):
-        os.mkdir(attention_plot_path) 
-
-    df = pd.DataFrame(X_for_training)
-    df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
-
-    df = pd.DataFrame(X_for_prediction)
-    df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
-    
-
-    df=pd.DataFrame(x_velocity_label_training)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
-
-    df=pd.DataFrame(x_velocity_label_testing)
-    df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
-
-    df=pd.DataFrame(y_velocity_label_training)
-    df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
-
-    df=pd.DataFrame(y_velocity_label_testing)
-    df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
-
-    # Target cue
-    # df=pd.DataFrame(x_position_target_training)
-    # df.to_csv(os.path.join(csv_path,'x_position_target_training.csv'), index=False)
-
-    df=pd.DataFrame(x_position_target_testing)
-    df.to_csv(os.path.join(csv_path,'x_position_target_testing.csv'), index=False)
-
-    # df=pd.DataFrame(y_position_target_training)
-    # df.to_csv(os.path.join(csv_path,'y_position_target_training.csv'), index=False)
-
-    df=pd.DataFrame(y_position_target_testing)
-    df.to_csv(os.path.join(csv_path,'y_position_target_testing.csv'), index=False)
+    regular_modules.write_data_to_path(csv_path,
+    X_for_training, X_for_prediction, 
+    x_position_label_training, x_position_label_testing, 
+    y_position_label_training, y_position_label_testing, 
+    x_velocity_label_training, x_velocity_label_testing,
+    y_velocity_label_training, y_velocity_label_testing,
+    x_acceleration_label_training, x_acceleration_label_testing,
+    y_acceleration_label_training, y_acceleration_label_testing,
+    x_position_target_training, x_position_target_testing, 
+    y_position_target_training, y_position_target_testing)
 
     # read from csv file
     training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
@@ -435,47 +364,12 @@ for session_k in range(len(session_file_list)):
     # Plot the training results 
     with open(os.path.join(save_epoch_path, 'history.json'), 'r') as f:
         history = json.loads(f.read())
-        
-    train_loss = [l['loss'] for l in history['train']]
-    valid_loss = [l['loss'] for l in history['test']]
 
-    train_R_square = [l['R^2'] for l in history['train']]
-    valid_R_square = [l['R^2'] for l in history['test']]
-
-    plt.cla()
-    plt.clf()
-    plt.close()
-
-    plt.figure(figsize=(16,9))
-    plt.title('Loss', fontsize=15)
-    plt.plot(train_loss, label='train')
-    plt.plot(valid_loss, label='test')
-    plt.xlabel('Epoch', fontsize=10)
-    plt.ylabel('Loss', fontsize=10)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(plot_path + '/' + model_name+"_Loss.png")
-
-    plt.cla()
-    plt.clf()
-    plt.close()
-
-    plt.figure(figsize=(16,9))
-    plt.title('performance', fontsize=15)
-    plt.plot(train_R_square, label='train')
-    plt.plot(valid_R_square, label='test')
-    plt.xlabel('Epoch', fontsize=10)
-    plt.ylabel('R square', fontsize=10)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(plot_path + '/' +model_name+"_R-square.png")
-
-    plt.cla()
-    plt.clf()
-    plt.close()
+    regular_modules.plot_training_results( history, plot_path , model_name)
 
     best_score, best_epoch=max([[l['R^2'], idx] for idx, l in enumerate(history['test'])])
     print('best_score= ', best_score, ', best_epoch= ', best_epoch, '\n')    
+
     best_epoch_arcoss_all_sessions.append(best_epoch)
     print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['test'])]))
 
@@ -502,6 +396,7 @@ for session_k in range(len(session_file_list)):
 
     x_target_all = []
     y_target_all = []
+
     # attention map
     attn_weight_matrix_all=[]
 
@@ -556,27 +451,23 @@ for session_k in range(len(session_file_list)):
     shutil.rmtree(save_epoch_path)
 
     # attention map
-    attn_weight_matrix_all=np.asarray(attn_weight_matrix_all)
+    attn_weight_matrix_all = np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
-
-    # collected firing rate
-    firing_rate_collector=np.asarray(firing_rate_collector)
-    print('shape of firing_rate_collector= ', firing_rate_collector.shape, '\n')
 
     df = pd.DataFrame( attn_weight_matrix_all )
     df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
 
-    testing_data_r_square_1 = r2_score( real_y_all_1, my_prediction_1)
-    testing_data_SNR_1 = -10*math.log10(1-testing_data_r_square_1)
-    testing_data_RMSE_1 = np.sqrt(mean_squared_error(real_y_all_1, my_prediction_1))
-    PCC_1 = pearsonr(real_y_all_1, my_prediction_1)
+    # collected firing rate
+    firing_rate_collector = np.asarray(firing_rate_collector)
+    print('shape of firing_rate_collector= ', firing_rate_collector.shape, '\n')
+
+
+
+    testing_data_r_square_1, testing_data_SNR_1, testing_data_RMSE_1, PCC_1 = regular_modules.evlauate_performance( real_y_all_1, my_prediction_1 )
     Ground_Truth_1 = real_y_all_1
     print('\nx-velocity score: ', testing_data_r_square_1, ' RMSE: ', testing_data_RMSE_1, ', pearsonr=', PCC_1[0])
 
-    testing_data_r_square_2 = r2_score( real_y_all_2, my_prediction_2)
-    testing_data_SNR_2 = -10*math.log10(1-testing_data_r_square_2)
-    testing_data_RMSE_2 = np.sqrt(mean_squared_error(real_y_all_2, my_prediction_2))
-    PCC_2 = pearsonr(real_y_all_2, my_prediction_2)
+    testing_data_r_square_2, testing_data_SNR_2, testing_data_RMSE_2, PCC_2 = regular_modules.evlauate_performance( real_y_all_2, my_prediction_2 )
     Ground_Truth_2 = real_y_all_2
     print('\ny-velocity score: ', testing_data_r_square_2, ' RMSE: ', testing_data_RMSE_2, ', pearsonr=', PCC_2[0])
 
@@ -586,54 +477,7 @@ for session_k in range(len(session_file_list)):
     person_correlation_coefficient_across_all_sessions.append([PCC_1[0], PCC_2[0]])
 
     # Plotting the kinematic variable reconstructure figure
-    plt.figure(figsize=(32, 9))
-    plotting_time_elapsed=time_stamp_64ms[testing_data_index:]
-    plotting_time_elapsed=plotting_time_elapsed[max_timestep:]
-
-    if len(plotting_time_elapsed) != len (my_prediction_1):
-        diff = abs( len(plotting_time_elapsed)-len(my_prediction_1) )
-        plotting_time_elapsed = plotting_time_elapsed[:-diff]
-
-    df = pd.DataFrame( plotting_time_elapsed )
-    df.to_csv(os.path.join(csv_path, 'plotting_time_elapsed.csv'), index=False, header=False)
-
-    df = pd.DataFrame( my_prediction_1 )
-    df.to_csv(os.path.join(csv_path, 'my_prediction_x_vel.csv'), index=False, header=False)
-    df = pd.DataFrame( my_prediction_2 )
-    df.to_csv(os.path.join(csv_path, 'my_predictionyx_vel.csv'), index=False, header=False)
-
-    plt.plot( plotting_time_elapsed, my_prediction_1, 'b', linewidth=5, label='x-vel prediction', alpha=0.7 )
-    plt.plot( plotting_time_elapsed, Ground_Truth_1, 'b--', linewidth=5, label='x-vel actual', alpha=0.8 )
-    plt.title( session_name + ', x & y velocity prediction' , fontsize=30, color="black")
-
-    df = pd.DataFrame( Ground_Truth_1 )
-    df.to_csv(os.path.join(csv_path, 'Ground_Truth_x_vel.csv'), index=False, header=False) 
-    df = pd.DataFrame( Ground_Truth_2 )
-    df.to_csv(os.path.join(csv_path, 'Ground_Truth_y_vel.csv'), index=False, header=False) 
-
-    plt.plot( plotting_time_elapsed, my_prediction_2, 'g', linewidth=5, label='y-vel prediction', alpha=0.7 )
-    plt.plot( plotting_time_elapsed, Ground_Truth_2, 'g--', linewidth=5, label='y-vel actual', alpha=0.8 )
-    # plt.title( session_name + ', y-velocity prediction' , fontsize=30, color="black")
-   
-    plt.legend(loc='upper right', fontsize=30)
-    plt.xlabel('Time (second)', fontsize=25)
-    plt.ylabel('velocity (mm/s)', fontsize=25)
-    plt.xticks(fontsize=25, color="black")
-    plt.yticks(fontsize=25, color="black")
-    axes = plt.gca()
-
-    # axes.set_xlim([time_stamp_64ms[testing_data_index]+5, time_stamp_64ms[testing_data_index]+20])
-    axes.set_xlim([ plotting_time_elapsed[0], plotting_time_elapsed[0+230] ])
-
-    axes.set_ylim([ -400, 400 ])
-    plt.tight_layout()
-
-
-    plt.savefig( plot_path + '/' +model_name+'_x_and_y-velocity_predict.png' )
-
-    plt.cla()
-    plt.clf()
-    plt.close()
+    regular_modules.kinematic_variable_reconstruction( kinematic_variable_type, model_name, '_x_and_y-position_predict.png', session_name, csv_path, plot_path, time_stamp_64ms, testing_data_index, max_timestep, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2)
 
     # Save the result of kinematic variable reconstruction of each session
     df = pd.DataFrame( [[session_name, testing_data_r_square_1,  testing_data_r_square_2]], columns=['session', 'x-axis', 'y-axis'])
@@ -661,20 +505,9 @@ for session_k in range(len(session_file_list)):
 # Write all performances to csv files
 # https://www.geeksforgeeks.org/create-a-pandas-dataframe-from-lists/
 
-df = pd.DataFrame({ 'session': session_file_list, 'x-axis':[x[0] for x in R_square_across_all_sessions], 'y-axis':[x[1] for x in R_square_across_all_sessions]  })
-df.to_csv(os.path.join(bar_plot_path, 'R_square_across_all_sessions.csv'), index=False, header=True)
-
-df = pd.DataFrame({ 'session': session_file_list, 'x-axis':[x[0] for x in RMSE_across_all_sessions], 'y-axis':[x[1] for x in RMSE_across_all_sessions]  })
-df.to_csv(os.path.join(bar_plot_path, 'RMSE_across_all_sessions.csv'), index=False, header=True)
-
-df = pd.DataFrame({ 'session': session_file_list, 'x-axis':[x[0] for x in person_correlation_coefficient_across_all_sessions], 'y-axis':[x[1] for x in person_correlation_coefficient_across_all_sessions]  })
-df.to_csv(os.path.join(bar_plot_path, 'person_correlation_coefficient_across_all_sessions.csv'), index=False, header=True)
-
-df = pd.DataFrame({ 'session': session_file_list, 'x-axis':[x[0] for x in SNR_across_all_sessions], 'y-axis':[x[1] for x in SNR_across_all_sessions]  })
-df.to_csv(os.path.join(bar_plot_path, 'SNR_across_all_sessions.csv'), index=False, header=True)
-
-df = pd.DataFrame({ 'session': session_file_list, 'testing length':[x for x in testing_data_length_all_sessions] })
-df.to_csv(os.path.join(bar_plot_path, 'testing_data_length_all_sessions.csv'), index=False, header=True)
+regular_modules.save_across_sessions_data(bar_plot_path, session_file_list, 
+R_square_across_all_sessions, RMSE_across_all_sessions, person_correlation_coefficient_across_all_sessions, SNR_across_all_sessions,
+testing_data_length_all_sessions, best_epoch_arcoss_all_sessions)
 
 # Plot all performances as bar charts
 '''
