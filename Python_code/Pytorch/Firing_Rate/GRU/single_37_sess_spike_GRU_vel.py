@@ -477,7 +477,7 @@ for session_k in range(len(session_file_list)):
     person_correlation_coefficient_across_all_sessions.append([PCC_1[0], PCC_2[0]])
 
     # Plotting the kinematic variable reconstructure figure
-    regular_modules.kinematic_variable_reconstruction( kinematic_variable_type, model_name, '_x_and_y-position_predict.png', session_name, csv_path, plot_path, time_stamp_64ms, testing_data_index, max_timestep, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2)
+    regular_modules.kinematic_variable_reconstruction( kinematic_variable_type, model_name, '_x_and_y-velocity_predict.png', session_name, csv_path, plot_path, time_stamp_64ms, testing_data_index, max_timestep, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2)
 
     # Save the result of kinematic variable reconstruction of each session
     df = pd.DataFrame( [[session_name, testing_data_r_square_1,  testing_data_r_square_2]], columns=['session', 'x-axis', 'y-axis'])

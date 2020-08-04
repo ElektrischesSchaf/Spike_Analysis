@@ -76,6 +76,63 @@ best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
 testing_data_length_all_sessions = []
 
+# epoch optimizer
+def epoch_handle(session_name):
+    epoch_dich={
+    "indy_20160407_02":99,
+    "indy_20160411_01":64,
+    "indy_20160411_02":42,
+    "indy_20160418_01":42,
+    "indy_20160419_01":58,
+    "indy_20160420_01":149,
+    "indy_20160426_01":146,
+    "indy_20160622_01":56,
+    "indy_20160624_03":66,
+    "indy_20160627_01":136,
+    "indy_20160630_01":45,
+    "indy_20160915_01":15,
+    "indy_20160916_01":23,
+    "indy_20160921_01":120,
+    "indy_20160927_04":148,
+    "indy_20160927_06":28,
+    "indy_20160930_02":113,
+    "indy_20160930_05":27,
+    "indy_20161005_06":89,
+    "indy_20161006_02":149,
+    "indy_20161007_02":144,
+    "indy_20161011_03":149,
+    "indy_20161013_03":54,
+    "indy_20161014_04":126,
+    "indy_20161017_02":19,
+    "indy_20161024_03":33,
+    "indy_20161025_04":29,
+    "indy_20161026_03":147,
+    "indy_20161027_03":37,
+    "indy_20161206_02":20,
+    "indy_20161207_02":111,
+    "indy_20161212_02":114,
+    "indy_20161220_02":149,
+    "indy_20170123_02":22,
+    "indy_20170124_01":8,
+    "indy_20170127_03":19,
+    "indy_20170131_02":100,
+    "loco_20170210_03":139,
+    "loco_20170213_02":143,
+    "loco_20170214_02":55,
+    "loco_20170215_02":29,
+    "loco_20170216_02":33,
+    "loco_20170217_02":40,
+    "loco_20170227_04":149,
+    "loco_20170228_02":147,
+    "loco_20170301_05":82,
+    "loco_20170302_02":136
+    }
+    for i in epoch_dich:
+        if session_name==i:
+            new_epoch=epoch_dich[i]
+            break
+    return new_epoch
+
 # session control start
 for session_k in range(len(session_file_list)):
 
@@ -261,7 +318,7 @@ for session_k in range(len(session_file_list)):
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    max_epoch=MAX_EPOCH
+    max_epoch = epoch_handle(session_name) + 10
 
     # GRU Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
