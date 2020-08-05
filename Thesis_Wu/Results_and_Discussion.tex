@@ -25,3 +25,19 @@ which their full length
         \caption{Trimmed Testing Data}
         \label{fig:trimmed_testing_data}
 \end{figure}
+
+To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR), 
+two vectors are required which are the observed value $ \vec{y} = \left[ y_1, \cdots , y_n  \right]^{T} $ and predicted value $ \vec{f} = \left[ f_1, \cdots , f_n \right]^{T} $.
+First we compute the mean of the observed data:
+\begin{align}
+    \bar{y} &= \frac{1}{n} \sum^{n}_{i=1} y_i
+    \intertext{ then the total sum of squares, }
+    SS_{tot} &= \sum^{n}_{i=1} \left( y_i - \bar{y} \right)^{2}
+    \intertext{ the residual sum of squares, }
+    SS_{res} &= \sum^{n}_{i=1} \left( y_i - f_i \right)^{2}
+    \intertext{ with that the coefficient of determination will be }
+    R^{2} &\equiv 1 - \frac{ SS_{res} }{ SS_{tot} } \label{eq:r_square}
+    \intertext{ The SNR is defined by:}
+    \text{SNR} &\equiv -10 \log_{10} (1 - R^{2})
+\end{align}
+
