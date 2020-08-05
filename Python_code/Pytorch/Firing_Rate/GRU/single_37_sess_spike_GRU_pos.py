@@ -78,7 +78,7 @@ testing_data_length_all_sessions = []
 
 # epoch optimizer
 def epoch_handle(session_name):
-    epoch_dich={
+    epoch_dict={
     "indy_20160407_02":99,
     "indy_20160411_01":64,
     "indy_20160411_02":42,
@@ -127,9 +127,9 @@ def epoch_handle(session_name):
     "loco_20170301_05":82,
     "loco_20170302_02":136
     }
-    for i in epoch_dich:
+    for i in epoch_dict:
         if session_name==i:
-            new_epoch=epoch_dich[i]
+            new_epoch=epoch_dict[i]
             break
     return new_epoch
 
