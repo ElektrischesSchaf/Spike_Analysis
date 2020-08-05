@@ -110,6 +110,21 @@ In EEG signal processing, \cite{zhang2019convolutional} used both CNN and RNN to
 The self-attention module was placed in the last layer, after the raw signal was first processed by CNN and then RNN.
 The proposed method, convolutional recurrent attention model outperformed other state-of-the-art methods in EEG classification tasks.
 
+\newpage
+\begin{longtable}{cccc}
+    \hline
+    \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Aritcle}}} & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Novelty} }}   & \multicolumn{1}{c}{  \multirow{1}{*}{\textbf{Applicable}}} & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Objective}}} \\
+    \multicolumn{1}{c}{}                                    & \multicolumn{1}{c}{}                                              & \multicolumn{1}{c}{  \multirow{1}{*}{\textbf{Model}}}      & \multicolumn{1}{c}{}                                       \\
+    \hline
+    \endhead
+    \cite{bahdanau2014neural} & \makecell{Alignment\\Model} & \makecell{Encoder-decoder \\ (Seq2Seq)} & Machine Translation \\ \\
+    \cite{luong2015effective} & \makecell{Global/Local\\ Attention} &  \makecell{Encoder-decoder \\ (Seq2Seq)} & Machine Translation \\ \\
+    \cite{xu2015show} & \makecell{Soft/Hard\\ Attention} & RNN & Image Caption \\ \\
+    \cite{vaswani2017attention} & \makecell{Self-attention,\\Parallelization,\\remove RNN} & Encoder-decoder & Machine Translation \\ \\
+    \cite{lin2017structured} & \makecell{Self-attention} & RNN & Setiment Analysis \\ \\
+    \caption{Development of Time Series Attention}
+    \label{tab:atten_dev}
+\end{longtable}
 
 
 \section{Normalization}
