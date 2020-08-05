@@ -76,6 +76,62 @@ best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
 testing_data_length_all_sessions = []
 
+# epoch optimizer
+def epoch_handle(session_name):
+    epoch_dict={
+        "indy_20160407_02":38,
+        "indy_20160411_01":19,
+        "indy_20160411_02":18,
+        "indy_20160418_01":29,
+        "indy_20160419_01":60,
+        "indy_20160420_01":73,
+        "indy_20160426_01":46,
+        "indy_20160622_01":27,
+        "indy_20160624_03":29,
+        "indy_20160627_01":18,
+        "indy_20160630_01":25,
+        "indy_20160915_01":10,
+        "indy_20160916_01":35,
+        "indy_20160921_01":30,
+        "indy_20160927_04":24,
+        "indy_20160927_06":11,
+        "indy_20160930_02":24,
+        "indy_20160930_05":73,
+        "indy_20161005_06":42,
+        "indy_20161006_02":59,
+        "indy_20161007_02":53,
+        "indy_20161011_03":66,
+        "indy_20161013_03":19,
+        "indy_20161014_04":19,
+        "indy_20161017_02":39,
+        "indy_20161024_03":14,
+        "indy_20161025_04":13,
+        "indy_20161026_03":74,
+        "indy_20161027_03":9,
+        "indy_20161206_02":20,
+        "indy_20161207_02":42,
+        "indy_20161212_02":31,
+        "indy_20161220_02":69,
+        "indy_20170123_02":56,
+        "indy_20170124_01":22,
+        "indy_20170127_03":68,
+        "indy_20170131_02":47,
+        "loco_20170210_03":68,
+        "loco_20170213_02":37,
+        "loco_20170214_02":68,
+        "loco_20170215_02":20,
+        "loco_20170216_02":31,
+        "loco_20170217_02":21,
+        "loco_20170227_04":16,
+        "loco_20170228_02":74,
+        "loco_20170301_05":74,
+        "loco_20170302_02":43
+    }
+    for i in epoch_dict:
+        if session_name==i:
+            new_epoch=epoch_dict[i]
+            break
+    return new_epoch
 
 # session control start
 for session_k in range(len(session_file_list)):
@@ -263,7 +319,7 @@ for session_k in range(len(session_file_list)):
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    max_epoch = MAX_EPOCH
+    max_epoch = epoch_handle(session_name) + 10
 
     # GRU Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
