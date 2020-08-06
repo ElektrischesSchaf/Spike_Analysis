@@ -1,10 +1,10 @@
 \section{Decoder Evaluation}
 
-Figure \ref{fig:full_testing_data} shows the testing data from several sessions,
-which their full length 
+The training data of each session are the first 5000 time bins, and the rest is the testing data.
+Figure \ref{fig:full_testing_data} visualized the complete testing data from a few sessions,
 
 \begin{figure}[H]
-    \foreach \i in {indy_20160426_01,indy_20160622_01,indy_20160624_03,indy_20160627_01}
+    \foreach \i in {indy_20160622_01,indy_20160624_03,indy_20160627_01}
         {
             \begin{subfigure}{1\textwidth}
                 \includegraphics[width=1\textwidth]{../Figures_2/\i_x_y_testing_data_trajectory.png}
@@ -13,6 +13,10 @@ which their full length
         \caption{Testing Data with Full Length}
         \label{fig:full_testing_data}
 \end{figure}
+
+\noindent whereas some sessions, had their testing data trimmed by \cite{makin2018} due to the abnormal recording periods.
+These sessions contained intervals when monkeys fingertip stayed still for a considerable long while.
+As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated the discarded intervals.
 
 \newpage
 \begin{figure}[H]
@@ -37,7 +41,9 @@ First we compute the mean of the observed data:
     SS_{res} &= \sum^{n}_{i=1} \left( y_i - f_i \right)^{2}
     \intertext{ with that the coefficient of determination will be }
     R^{2} &\equiv 1 - \frac{ SS_{res} }{ SS_{tot} } \label{eq:r_square}
-    \intertext{ The SNR is defined by:}
+    \intertext{ the SNR is defined by:}
     \text{SNR} &\equiv -10 \log_{10} (1 - R^{2})
 \end{align}
 
+\noindent and since the length of the testing data varied, weighted average is used to compute the mean performance across sessions,
+with the weights equal to the testing data length.
