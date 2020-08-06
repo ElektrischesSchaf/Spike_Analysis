@@ -5,7 +5,7 @@ import h5py
 import numpy
 import matplotlib.pyplot as plot 
 path=r'''../../Figures/Kinematic_Variables_Plots/'''
-session_name='indy_20161025_04'
+session_name='loco_20170214_02' #indy_20161025_04 8X8, indy_20160411_02 8X17, loco_20170214_02 6X6
 with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat', 'r') as mat_file:
 
     '''
@@ -56,6 +56,7 @@ plot.savefig(path+'X-Y_plane_trajectory.png')
 
 plot.cla()
 plot.clf()
+plot.close()
 
 plot.scatter(finger_x_coor, finger_z_coor, s=1)
 plot.title('X-Z plane')
@@ -66,6 +67,7 @@ plot.savefig(path+'X-Z_plane_trajectory.png')
 
 plot.cla()
 plot.clf()
+plot.close()
 
 plot.scatter(finger_y_coor, finger_z_coor, s=1)
 plot.title('Y-Z plane')
@@ -76,6 +78,21 @@ plot.savefig(path+'Y-Z_plane_trajectory.png')
 
 plot.cla()
 plot.clf()
+plot.close()
+
+plot.figure(figsize=(9,9))
+plot.scatter(target_x_coor, target_y_coor, s=80)
+# plot.title('X-Y plane', fontsize=my_fontsize, color='black')
+plot.xlabel('mm', fontsize=my_fontsize, color='black')
+plot.ylabel('mm', fontsize=my_fontsize, color='black')
+plot.xticks(fontsize=my_fontsize*0.8)
+plot.yticks(fontsize=my_fontsize*0.8)
+plot.tight_layout()
+plot.savefig(path+'X-Y_plane_virtual.png')
+
+plot.cla()
+plot.clf()
+plot.close()
 
 
 plot.figure(figsize=(my_height,my_width))
