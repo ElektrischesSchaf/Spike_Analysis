@@ -13,15 +13,16 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.6\textwidth}
-            \captionsetup{width=1\textwidth}
+            \captionsetup{width=0.6\textwidth}
             \includegraphics[width=1\textwidth]{Utah_array.jpg}
             \caption{ Utah Array }
-            % \caption*{\small source by \url{ https://upload.wikimedia.org/wikipedia/commons/c/cd/Utah_array_pat5215088.jpg }}
+            \caption*{\small source by \url{ https://upload.wikimedia.org/wikipedia/commons/c/cd/Utah_array_pat5215088.jpg }}
+            \medskip
         \end{subfigure}
         \begin{subfigure}{0.48\textwidth}
             \captionsetup{width=1\textwidth}
             \includegraphics[width=1\textwidth]{channel_array_1.png}
-            \caption{ Indy M1, Loco M1 and S1 }
+            \caption{ Indy M1, Loco M1 and Loco S1 }
         \end{subfigure}
         \begin{subfigure}{0.48\textwidth}
             \captionsetup{width=1\textwidth}
@@ -31,7 +32,6 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
         \label{fig:Utah_array}
         \captionsetup{width=0.7\textwidth}
         \caption{ The Electrode Array and the Spatial Arrangement of 96 Channels }
-        \caption*{ \small (a) source by \url{ https://upload.wikimedia.org/wikipedia/commons/c/cd/Utah_array_pat5215088.jpg }}
     \end{center}
 \end{figure}
 
@@ -172,7 +172,7 @@ The structure in each cell is showed in Figure \ref{fig:GRU_cell}.
 
 \begin{figure}[H]
     \begin{center}
-        \captionsetup{width=0.7\textwidth}
+        \captionsetup{width=0.5\textwidth}
         \includegraphics[width=0.7\textwidth]{GRU_cell.png}
         \caption[GRU Cell]{ Mecahnism inside a GRU Cell}
         \caption*{\small source by \url{ https://en.wikipedia.org/wiki/File:Gated_Recurrent_Unit,_type_2.svg }}
@@ -207,11 +207,34 @@ Where $r_t$ is the \textbf{Reset Gate} and $z_t$ is the \textbf{Update Gate}.
 Notation $\circ$ means elementwise multiplication for two tensors of same shape.
 Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}), which maps the input value to (0,1).
 $\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}), mapping the input value to (-1,1).
+Illustrated in Figure \ref{fig:GRU_activations}.
+
+\begin{figure}[H]
+	\begin{center}
+		\centering
+        \begin{subfigure}{0.48\textwidth}
+            \captionsetup{width=0.5\textwidth}
+            \centering\includegraphics[width=1\textwidth]{sigmoid.png}
+            \caption{ Sigmoid function} 
+            \caption*{\small{source by \url{https://commons.wikimedia.org/wiki/File:Sigmoid-function-2.svg}}}
+		\end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \captionsetup{width=0.5\textwidth}
+            \centering\includegraphics[width=1\textwidth]{tanh.png}
+            \caption{ Tanh function } 
+            \caption*{\small{source by \url{https://commons.wikimedia.org/wiki/File:Hyperbolic_Tangent.svg}}}
+        \end{subfigure}
+        \caption{}
+        \label{fig:GRU_activations}		
+	\end{center}	
+\end{figure}
+
+
 At each timestep, a single GRU cell can take in two tensors, one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, which is the output from last timestep.
 In the process of calculating each gate value (Equation \ref{eq:reset_gate}, \ref{eq:update_gate}) and $\hat{h_t}$ (Equation \ref{eq:h_hat}),
 hidden state from last timestep ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
 and so does the input tensor ($x_t$) will be multiplied by its own weights ($U_r$, $U_z$, $U$).
-After the multiplication, 3 biases ($b_r$, $b_z$, $b$) will be added to the results before entering the activation functions.
+After the multiplication, 3 biases ($b_r$, $b_z$, $b$) will be added to the results before entering the activation functions
 
 A hyperparameter named \textbf{hidden dimension} or \textbf{number of hidden units} specified the dimensions for all hidden states, which is a vector.
 This hyperparameter also determine the number of each gates, i.e. with the setting of $u$ hidden units,
