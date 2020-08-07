@@ -42,17 +42,19 @@ and for monky Loco square grid of size $6 \times 6$ was used.
 
 \begin{figure}[H]
 	\begin{center}
-		\centering
+        \centering
+        \begin{subfigure}{0.6\textwidth}
+            \centering\includegraphics[width=1\textwidth]{indy_20160411_02_panel.png}
+            \label{fig:8_times_17}
+			\caption{$8 \times 17$ rectangular grid} 
+        \end{subfigure}
+
+        \medskip
 		\begin{subfigure}{0.3\textwidth}
             \centering\includegraphics[width=1\textwidth]{indy_20161025_04_panel.png}
             \label{fig:8_times_8}
 			\caption{$8 \times 8 $ square grid} 
 		\end{subfigure}
-		\begin{subfigure}{0.3\textwidth}
-            \centering\includegraphics[width=1\textwidth]{indy_20160411_02_panel.png}
-            \label{fig:8_times_17}
-			\caption{$8 \times 17$ rectangular grid} 
-        \end{subfigure}
         \begin{subfigure}{0.3\textwidth}
             \centering\includegraphics[width=1\textwidth]{loco_20170214_02_panel.png}
             \label{fig:6_times_6}
@@ -65,17 +67,28 @@ and for monky Loco square grid of size $6 \times 6$ was used.
 
 
 Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
-The recorded tragectory in the x- and y-axis as well as the target cue for both directions is in Figure \ref{fig:position_and_cue},
-where the solid lines indicate the actual tragectory of the fingertip and the dash lines indicate the target cue.
+Figure \ref{fig:X-Y_trajectory_in_VR_panel} 
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
-        \caption{Actual Fingertip Trajectories with Target Cue}
-        \fontsize{10}{12}
-        \label{fig:position_and_cue}
+        \includegraphics[width=0.6\textwidth]{X-Y_trajectory_in_VR_panel.png}
+        \caption{Fingertip Trajectory in 2D Virtual Panel}
+        \label{fig:X-Y_trajectory_in_VR_panel}
     \end{center}
 \end{figure}
+
+The recorded tragectory in the x- and y-axis as well as the target cue for both directions is in Figure \ref{fig:x_and_y_trajectory_and_cue},
+where the solid lines indicate the actual tragectory of the fingertip and the dash lines indicate the target cue.
+
+\todo[inline]{這邊真實紀錄到的軌跡都用虛線表示，是為了跟之後有包含 prediction、actual 的圖保持一致}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
+        \caption{Fingertip trajectory with respect to time}
+        \label{fig:x_and_y_trajectory_and_cue}
+    \end{center}
+\end{figure}
+
 
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand.
 An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
@@ -151,7 +164,6 @@ The heatmap of the firing rate within 50 time bins and the 6 kinematic variables
 For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x- and y-axis, but omitting the z-axis.
 The heatmap is showing an relationship between the occurrance of movements and the intensity of spike firing.
 
-\newpage
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{firing_rate_and_kinematic_variable.png}

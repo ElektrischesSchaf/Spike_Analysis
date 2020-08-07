@@ -82,8 +82,8 @@ plot.close()
 
 
 # Plot virtual panel layout
-plot.figure(figsize=(9,9))
-plot.scatter(target_x_coor, target_y_coor, s=80)
+plot.figure(figsize=(8, 8))
+plot.scatter(target_x_coor, target_y_coor, color='black' , s=80)
 # plot.title('X-Y plane', fontsize=my_fontsize, color='black')
 plot.xlabel('mm', fontsize=my_fontsize, color='black')
 plot.ylabel('mm', fontsize=my_fontsize, color='black')

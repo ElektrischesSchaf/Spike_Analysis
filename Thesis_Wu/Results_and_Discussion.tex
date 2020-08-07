@@ -47,4 +47,15 @@ First we compute the mean of the observed data:
 
 \noindent and since the length of the testing data varied, weighted average is used to compute the mean performance across sessions,
 with the weights equal to the testing data length.
-\todo[inline]{test}
+
+\newpage
+\begin{figure}[H]
+    \foreach \i in {2,3,4,5,6}
+    {
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
+        \end{subfigure}
+    }
+    \caption{Position Prediction}
+    \label{fig:position_prediction}
+\end{figure}
