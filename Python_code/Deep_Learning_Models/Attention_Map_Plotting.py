@@ -69,6 +69,14 @@ class Plotting():
         f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [4,3,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
 
         firing_rate_data = firing_rate_collector.transpose()
+
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_data.shape[0]):
+            if not np.all( firing_rate_data[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_data = firing_rate_data[valid_rows,:]
+
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
         sns.heatmap( data=firing_rate_data , ax=ax[0], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=False ) # norm=LogNorm()
     
@@ -148,6 +156,14 @@ class Plotting():
         f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [4,3,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
 
         firing_rate_data = firing_rate_collector.transpose()
+
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_data.shape[0]):
+            if not np.all( firing_rate_data[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_data = firing_rate_data[valid_rows,:]
+
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
         sns.heatmap( data=firing_rate_data , ax=ax[0], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=False ) # norm=LogNorm()
     
@@ -243,6 +259,14 @@ class Plotting():
 
 
         firing_rate_data = firing_rate_collector.transpose()
+
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_data.shape[0]):
+            if not np.all( firing_rate_data[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_data = firing_rate_data[valid_rows,:]
+
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
         sns.heatmap( data=firing_rate_data , ax=ax[0], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=False ) # norm=LogNorm()
     
@@ -336,6 +360,14 @@ class Plotting():
 
 
         firing_rate_data = firing_rate_collector.transpose()
+
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_data.shape[0]):
+            if not np.all( firing_rate_data[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_data = firing_rate_data[valid_rows,:]
+
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
         sns.heatmap( data=firing_rate_data , ax=ax[0], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=False ) # norm=LogNorm()
     

@@ -71,7 +71,7 @@ include_hash_unit=my_parameters.include_hash_unit
 print('In session '+ session_name + ': ' + '\n' )
 
 # Load Spike Firing Rate
-[firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number]=mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
+[firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number] = mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
 
 # Get channel and unit numbers
 channel_numbers_in_this_dataset = channel_number
@@ -86,9 +86,14 @@ else:
 [X_for_training, X_for_prediction, 
 x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
 x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing]=mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
+x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing ]=mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
 
-[time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label]=mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
+[time_stamp_64ms, 
+x_position_label, y_position_label, z_position_label, 
+x_velocity_label, y_velocity_label, z_velocity_label, 
+x_acceleration_label, y_acceleration_label, z_acceleration_label,
+x_position_target, y_position_target] = mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
 
 # Extract firing_rate_cell with rows have length bigger than zero
 firing_rate_final=[] # not[[]]
@@ -148,25 +153,28 @@ print('\n')
 [X_for_training, X_for_prediction,
 x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
 x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.cross_session_data_concatenation(
-feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
-x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label,
+x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.cross_session_data_concatenation(
+session_name, feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
+x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label, x_position_target, y_position_target,
 x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
 x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
-
+x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
 print('shape of X_for_training before', X_for_training.shape)
 
 # Processing max orders
-# order_num=max_timestep-1
+# order_num = max_timestep-1
 # [X_for_training, X_for_prediction,
 # x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
 # x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-# x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing] = mat_file_processing.max_order_preparation(
-# order_num, feature_numbers, X_for_training, X_for_prediction,
+# x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+# x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.max_order_preparation(
+# session_name, order_num, feature_numbers, X_for_training, X_for_prediction,
 # x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
 # x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-# x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing)
+# x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+# x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
 
 print('shape of X_for_training after', X_for_training.shape)
 print('shape of x_velocity_label_training after', x_velocity_label_training.shape)
@@ -325,6 +333,14 @@ plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black
 # plt.title('test')
 sns.set(font_scale=3)
 data = torch.transpose( testing_x[reduce_time_bin:reduce_time_bin*2,:], 0, 1)
+
+# Eliminate empty units
+valid_rows=[]
+for row_idx in range(data.size(0)):
+    if not torch.all( data[row_idx,:] ==0 ):
+        valid_rows.append(row_idx)
+data = data[valid_rows,:]
+
 # https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.pyplot.colorbar.html
 cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.07, 'ticks' : [ torch.min(data), torch.max(data) ]}
 
@@ -407,7 +423,7 @@ ax[3].set_xlim([ 0, len( testing_y_6[reduce_time_bin:reduce_time_bin*2] ) ])
 
 
 # plt.tight_layout()
-plt.savefig( plot_path+'/'+ 'attention_map' +'.png' )
+plt.savefig( plot_path+'/'+ 'Firing_rate_heatmap_and_all_kinematic_variables' +'.png' )
 
 
 plt.cla()
