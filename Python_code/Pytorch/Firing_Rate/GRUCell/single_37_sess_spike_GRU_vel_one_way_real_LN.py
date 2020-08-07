@@ -75,7 +75,64 @@ RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
 testing_data_length_all_sessions = []
+my_best_epoch_dict={}
 
+# epoch optimizer
+def epoch_handle(session_name):
+    epoch_dict={
+        "indy_20160407_02":43,
+        "indy_20160411_01":39,
+        "indy_20160411_02":44,
+        "indy_20160418_01":46,
+        "indy_20160419_01":51,
+        "indy_20160420_01":32,
+        "indy_20160426_01":74,
+        "indy_20160622_01":33,
+        "indy_20160624_03":21,
+        "indy_20160627_01":65,
+        "indy_20160630_01":34,
+        "indy_20160915_01":17,
+        "indy_20160916_01":36,
+        "indy_20160921_01":23,
+        "indy_20160927_04":31,
+        "indy_20160927_06":32,
+        "indy_20160930_02":40,
+        "indy_20160930_05":61,
+        "indy_20161005_06":73,
+        "indy_20161006_02":71,
+        "indy_20161007_02":25,
+        "indy_20161011_03":40,
+        "indy_20161013_03":36,
+        "indy_20161014_04":61,
+        "indy_20161017_02":32,
+        "indy_20161024_03":53,
+        "indy_20161025_04":29,
+        "indy_20161026_03":50,
+        "indy_20161027_03":38,
+        "indy_20161206_02":36,
+        "indy_20161207_02":16,
+        "indy_20161212_02":17,
+        "indy_20161220_02":33,
+        "indy_20170123_02":36,
+        "indy_20170124_01":74,
+        "indy_20170127_03":68,
+        "indy_20170131_02":65,
+        "loco_20170210_03":36,
+        "loco_20170213_02":26,
+        "loco_20170214_02":45,
+        "loco_20170215_02":32,
+        "loco_20170216_02":33,
+        "loco_20170217_02":44,
+        "loco_20170227_04":23,
+        "loco_20170228_02":68,
+        "loco_20170301_05":47,
+        "loco_20170302_02":61
+    }
+    for i in epoch_dict:
+        if session_name==i:
+            new_epoch=epoch_dict[i]
+            break
+    return new_epoch
 
 # session control start
 for session_k in range(len(session_file_list)):
@@ -263,7 +320,7 @@ for session_k in range(len(session_file_list)):
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    max_epoch = MAX_EPOCH
+    max_epoch = epoch_handle(session_name) + 10
 
     # GRU Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
@@ -383,6 +440,8 @@ for session_k in range(len(session_file_list)):
 
     best_epoch_arcoss_all_sessions.append(best_epoch)
     print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['test'])]))
+
+    my_best_epoch_dict[session_name] = best_epoch
 
     # Testing
     best_model = best_epoch # TODO
@@ -519,6 +578,9 @@ for session_k in range(len(session_file_list)):
 regular_modules.save_across_sessions_data(bar_plot_path, session_file_list, 
 R_square_across_all_sessions, RMSE_across_all_sessions, person_correlation_coefficient_across_all_sessions, SNR_across_all_sessions,
 testing_data_length_all_sessions, best_epoch_arcoss_all_sessions)
+
+with open( os.path.join( bar_plot_path, 'my_best_epoch_dict.json'), 'w') as f:
+    json.dump(my_best_epoch_dict, f, indent=4)
 
 # Plot all performances as bar charts
 '''
