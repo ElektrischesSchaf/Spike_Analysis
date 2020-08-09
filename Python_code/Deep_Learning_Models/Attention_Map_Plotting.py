@@ -462,6 +462,123 @@ class Plotting():
         return
 
 
+    def attention_map_2_outputs_2_stream_with_target_cue(self, session_name, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_forward_M1, attn_weight_matrix_forward_S1, x_target_cue, y_target_cue, firing_rate_collector):
+        firing_rate_collector = firing_rate_collector[start_time_bin:end_time_bin,:]
+        attn_weight_matrix_forward_M1 = attn_weight_matrix_forward_M1[start_time_bin:end_time_bin,:]
+        attn_weight_matrix_forward_S1 = attn_weight_matrix_forward_S1[start_time_bin:end_time_bin,:]
+
+        sns.set(font_scale=3)
+        plt.rcParams["figure.figsize"] = (30,40)
+
+        time=[]
+        for i in range(start_time_bin, end_time_bin):
+            time+=[i]
+
+        f, ax = plt.subplots(4, 1, gridspec_kw={'height_ratios': [4,3,3,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} )
+
+
+        firing_rate_data = firing_rate_collector.transpose()
+
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_data.shape[0]):
+            if not np.all( firing_rate_data[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_data = firing_rate_data[valid_rows,:]
+
+        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
+        sns.heatmap( data=firing_rate_data , ax=ax[0], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=False ) # norm=LogNorm()
+    
+
+        ax[0].set_yticklabels(ax[0].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0) # This will get correct row numbers of data matrix
+
+        ax[0].yaxis.set_major_locator(ticker.MultipleLocator(50))
+        ax[0].yaxis.set_major_formatter(ticker.ScalarFormatter())
+
+        ax[0].set_title('Firing Rate from Session '+session_name, fontsize=my_fontsize, color="black")
+        ax[0].set_ylabel('Units', fontsize=my_fontsize, color="black")
+
+
+        my_yticklabels=[]
+        for ticks_label in range(attn_weight_matrix_forward_M1.shape[1]):
+            my_yticklabels.append( 't-' + str(  int(attn_weight_matrix_forward_M1.shape[1]) -1 - ticks_label) )
+
+        attention_map_data = attn_weight_matrix_forward_M1.transpose()
+
+        cbar_kws_attention = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(attention_map_data), np.max(attention_map_data) ]}
+        sns.heatmap( data=attention_map_data , ax=ax[1], cbar_kws=cbar_kws_attention, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False ) # norm=LogNorm()
+
+        b, t = ax[1].get_ylim() # discover the values for bottom and top
+        b += 0.5 # Add 0.5 to the bottom
+        t -= 0.5 # Subtract 0.5 from the top
+        ax[1].set_ylim(b, t) # update the ylim(bottom, top) values
+
+        ax[1].set_yticklabels(ax[1].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0)
+        ax[1].set_title('Attention Map M1', fontsize=my_fontsize, color="black")
+        ax[1].set_ylabel('Past Time Bins', fontsize=my_fontsize, color="black")
+
+
+
+        my_yticklabels=[]
+        for ticks_label in range(attn_weight_matrix_forward_S1.shape[1]):
+            my_yticklabels.append( 't-' + str(  int(attn_weight_matrix_forward_S1.shape[1]) -1 - ticks_label) )
+
+        attention_map_data = attn_weight_matrix_forward_S1.transpose()
+
+        cbar_kws_attention = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(attention_map_data), np.max(attention_map_data) ]}
+        sns.heatmap( data=attention_map_data , ax=ax[2], cbar_kws=cbar_kws_attention, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False ) # norm=LogNorm()
+
+        b, t = ax[2].get_ylim() # discover the values for bottom and top
+        b += 0.5 # Add 0.5 to the bottom
+        t -= 0.5 # Subtract 0.5 from the top
+        ax[2].set_ylim(b, t) # update the ylim(bottom, top) values
+
+        ax[2].set_yticklabels(ax[2].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0)
+        ax[2].set_title('Attention Map S1', fontsize=my_fontsize, color="black")
+        ax[2].set_ylabel('Past Time Bins', fontsize=my_fontsize, color="black")
+
+
+        ax[3].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
+        if type_name=='pos':
+            ax[3].set_ylabel( 'Position (mm)', rotation=90)
+        if type_name=='vel':
+            ax[3].set_ylabel( 'Velocity (mm/s)', rotation=90)
+        if type_name=='acc':
+            ax[3].set_ylabel( 'Acceleration (mm/s^2)', rotation=90)
+        ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
+        ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+
+        ax[3].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
+        ax[3].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+
+        # plot target cue change points
+        the_x = x_target_cue[start_time_bin:end_time_bin]
+        the_y = y_target_cue[start_time_bin:end_time_bin]
+        change_points_x = np.where(  np.roll( the_x,1)!= the_x )[0]
+        change_points_y = np.where( np.roll( the_y,1)!= the_y )[0]
+
+        change_points_x_set = set(change_points_x)
+        change_points_y_set = set(change_points_y)
+        
+        for ele in list(change_points_x_set.union( change_points_y_set )):
+            ax[3].axvline( time[0]+ele , color='black' , linewidth=5, alpha=0.3 )
+        
+        # this is for target cue checking
+        # ax[3].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
+        # ax[3].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-axis cue', alpha=0.8)
+
+        ax[3].legend(loc='upper right', fontsize=my_fontsize*0.8)
+
+        ax[3].set_xlim([ time[0], time[-1] ])
+        ax[3].set_xlabel('Time Bins', fontsize=my_fontsize, color="black")
+
+        plt.savefig( plot_path+'/'+ 'attention_map_' +str(start_time_bin)+ '_to_'+str(end_time_bin) +'.png' )
+
+        plt.cla()
+        plt.clf()
+        plt.close()
+        return
+
     def hidden_state_bar_plot( self, session_name,  plot_path, hidden_state_1, hidden_state_2):
 
         plt.rcParams["figure.figsize"] = (16,9)
