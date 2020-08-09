@@ -218,7 +218,7 @@ class mat_file_processing():
                     # velocity=( finger_y_pos_64ms[i+1] - finger_y_pos_64ms[i] ) / ( 1 )
                     finger_y_velocity.append(velocity)
 
-                    velocity_time_coor.append( numpy_time_stamp[0][i] )
+                    velocity_time_coor.append( time_stamp_64ms[i] )
             
             finger_x_velocity=np.array(finger_x_velocity)
             finger_x_velocity=finger_x_velocity.astype(np.float32)
