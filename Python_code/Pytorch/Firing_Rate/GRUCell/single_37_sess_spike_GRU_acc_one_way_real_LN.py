@@ -320,7 +320,7 @@ for session_k in range(len(session_file_list)):
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    max_epoch = epoch_handle(session_name) + 10
+    max_epoch = epoch_handle(session_name) + 20
 
     # GRU Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
@@ -410,7 +410,7 @@ for session_k in range(len(session_file_list)):
         attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)        
         penality_loss_forward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
 
-        l_loss = loss_func(o_labels, labels) + penality_loss_forward
+        l_loss = 0.5*loss_func(o_labels, labels) + penality_loss_forward
 
         return o_labels, l_loss
 
