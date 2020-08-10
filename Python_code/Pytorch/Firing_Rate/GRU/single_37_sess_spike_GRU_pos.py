@@ -75,6 +75,7 @@ RMSE_across_all_sessions=[]
 best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
 testing_data_length_all_sessions = []
+my_best_epoch_dict={}
 
 # epoch optimizer
 def epoch_handle(session_name):
@@ -432,6 +433,8 @@ for session_k in range(len(session_file_list)):
     best_epoch_arcoss_all_sessions.append(best_epoch)
     print('Best R-square score ', max([[l['R^2'], idx] for idx, l in enumerate(history['test'])]))
 
+    my_best_epoch_dict[session_name] = best_epoch
+
     # Testing
     best_model=best_epoch # TODO
     net.load_state_dict(state_dict=torch.load(os.path.join(save_epoch_path, 'model.pkl.{}'.format(best_model))))
@@ -569,6 +572,9 @@ for session_k in range(len(session_file_list)):
 regular_modules.save_across_sessions_data(bar_plot_path, session_file_list, 
 R_square_across_all_sessions, RMSE_across_all_sessions, person_correlation_coefficient_across_all_sessions, SNR_across_all_sessions,
 testing_data_length_all_sessions, best_epoch_arcoss_all_sessions)
+
+with open( os.path.join( bar_plot_path, 'my_best_epoch_dict.json'), 'w') as f:
+    json.dump(my_best_epoch_dict, f, indent=4)
 
 # Plot all performances as bar charts
 '''
