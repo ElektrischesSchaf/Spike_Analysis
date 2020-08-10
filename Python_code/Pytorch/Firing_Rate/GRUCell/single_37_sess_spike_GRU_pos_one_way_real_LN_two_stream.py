@@ -171,6 +171,12 @@ for session_k in range(len(session_file_list)):
         feature_numbers=channel_numbers_in_this_dataset
 
     if channel_number == 96:
+        R_square_across_all_sessions.append([0, 0])
+        SNR_across_all_sessions.append([0,0])
+        RMSE_across_all_sessions.append([0,0])
+        person_correlation_coefficient_across_all_sessions.append([0, 0])
+        testing_data_length_all_sessions.append(0)
+        best_epoch_arcoss_all_sessions.append(0)
         continue
 
     # Create empty arrrays from data
