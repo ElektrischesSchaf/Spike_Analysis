@@ -30,6 +30,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
         \label{fig:trimmed_testing_data}
 \end{figure}
 
+
 To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR), 
 two vectors are required which are the observed value $ \vec{y} = \left[ y_1, \cdots , y_n  \right]^{T} $ and predicted value $ \vec{f} = \left[ f_1, \cdots , f_n \right]^{T} $.
 First we compute the mean of the observed data:
@@ -49,6 +50,7 @@ First we compute the mean of the observed data:
 with the weights equal to the testing data length.
 
 \newpage
+\todo{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
     \foreach \i in {2,3,4,5,6}
     {
@@ -60,12 +62,68 @@ with the weights equal to the testing data length.
     \label{fig:position_prediction}
 \end{figure}
 
+\newpage
+\todo{ 位置、速度、加速度 各一頁 }
+\begin{figure}[H]
+    \foreach \i in {7,8,9,10,11}
+    {
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
+        \end{subfigure}
+    }
+    \caption{Velocity Prediction}
+    \label{fig:velocity_prediction}
+\end{figure}
+
+\newpage
+\todo{ 位置、速度、加速度 各一頁 }
+\begin{figure}[H]
+    \foreach \i in {12,13,14,15,16}
+    {
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
+        \end{subfigure}
+    }
+    \caption{Acceleration Prediction}
+    \label{fig:acceleration_prediction}
+\end{figure}
+
+\begin{table}
+    \centering
+    \begin{tabular}{cccc}
+        \hline
+        \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{Kinematic }}}  & \multicolumn{1}{c}{ \multirow{2}{*}{ \cite{makin2018} }}  & \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{GRU} }}                                                                       \\ \cline{3-4}
+        \multicolumn{1}{c}{\multirow{1}{*}{ \textbf{Variable }}}    & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{one-way}}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{bidirectional}}} \\
+        \hline
+        123 & 456 & 789 & aaa \\ \\
+        \hline
+    \end{tabular}
+    \caption{Performances Weighted Average $R^2$}
+    \label{tab:weighted_average_with_makin}
+\end{table}
+
+
 \section{Model Comparison}
+The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
+These diagrams help us analysis the model based on the how many epoch numbers are required for the testing loss to converge.
+In the position and velocity decoders, it seems that implementing layer normalization does not contribute to a better convergence significantly since two classes of curve overlap.
+However, for acceleration decoders, the loss dropped drastically with the aid of layer normalization, and the two
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.7\textwidth]{loss_to_epoch.png}
-        \caption{}
-        \label{fig:loss_to_epoch}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{loss_to_epoch_position.png}
+            \caption{Position}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{loss_to_epoch_velocity.png}
+            \caption{Velocity}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{loss_to_epoch_acceleration.png}
+            \caption{Acceleration}
+        \end{subfigure}
+        \caption{Epoch vs Loss Graphs from 3 different kinematic variable decoders}
+        \label{fig:loss_vs_epoch}
     \end{center}
 \end{figure}
