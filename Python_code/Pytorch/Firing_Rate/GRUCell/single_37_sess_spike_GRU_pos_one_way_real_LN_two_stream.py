@@ -80,53 +80,24 @@ my_best_epoch_dict={}
 # epoch optimizer
 def epoch_handle(session_name):
     epoch_dict={
-    "indy_20160407_02": 43,
-    "indy_20160411_01": 26,
-    "indy_20160411_02": 17,
-    "indy_20160418_01": 19,
-    "indy_20160419_01": 58,
-    "indy_20160420_01": 14,
-    "indy_20160426_01": 40,
-    "indy_20160622_01": 30,
-    "indy_20160624_03": 28,
-    "indy_20160627_01": 19,
-    "indy_20160630_01": 25,
-    "indy_20160915_01": 10,
-    "indy_20160916_01": 11,
-    "indy_20160921_01": 19,
-    "indy_20160927_04": 15,
-    "indy_20160927_06": 11,
-    "indy_20160930_02": 31,
-    "indy_20160930_05": 75,
-    "indy_20161005_06": 41,
-    "indy_20161006_02": 60,
-    "indy_20161007_02": 46,
-    "indy_20161011_03": 64,
-    "indy_20161013_03": 28,
-    "indy_20161014_04": 27,
-    "indy_20161017_02": 39,
-    "indy_20161024_03": 18,
-    "indy_20161025_04": 10,
-    "indy_20161026_03": 29,
-    "indy_20161027_03": 8,
-    "indy_20161206_02": 23,
-    "indy_20161207_02": 46,
-    "indy_20161212_02": 33,
-    "indy_20161220_02": 66,
-    "indy_20170123_02": 62,
-    "indy_20170124_01": 23,
-    "indy_20170127_03": 18,
-    "indy_20170131_02": 51,
+    "indy_20160407_02": 29,
+    "indy_20160411_01": 25,
+    "indy_20160411_02": 14,
+    "indy_20160418_01": 28,
+    "indy_20160419_01": 62,
+    "indy_20160420_01": 13,
+    "indy_20160426_01": 49,
+    "indy_20160630_01": 31,
     "loco_20170210_03": 20,
-    "loco_20170213_02": 41,
-    "loco_20170214_02": 77,
-    "loco_20170215_02": 20,
-    "loco_20170216_02": 30,
-    "loco_20170217_02": 28,
-    "loco_20170227_04": 14,
-    "loco_20170228_02": 83,
-    "loco_20170301_05": 71,
-    "loco_20170302_02": 50
+    "loco_20170213_02": 24,
+    "loco_20170214_02": 85,
+    "loco_20170215_02": 29,
+    "loco_20170216_02": 35,
+    "loco_20170217_02": 13,
+    "loco_20170227_04": 11,
+    "loco_20170228_02": 92,
+    "loco_20170301_05": 32,
+    "loco_20170302_02": 46
     }
     for i in epoch_dict:
         if session_name==i:
@@ -329,7 +300,7 @@ for session_k in range(len(session_file_list)):
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    max_epoch = epoch_handle(session_name) + 10
+    max_epoch = epoch_handle(session_name) + 20
 
     # GRU Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
