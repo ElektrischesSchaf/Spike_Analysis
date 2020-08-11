@@ -88,20 +88,29 @@ with the weights equal to the testing data length.
     \label{fig:acceleration_prediction}
 \end{figure}
 
+\newpage
+\begin{landscape}
 \begin{table}
     \centering
-    \begin{tabular}{cccc}
+    \begin{tabular}{ccccccccccc}
         \hline
-        \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{Kinematic }}}  & \multicolumn{1}{c}{ \multirow{2}{*}{ \cite{makin2018} }}  & \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{GRU} }}                                                                       \\ \cline{3-4}
-        \multicolumn{1}{c}{\multirow{1}{*}{ \textbf{Variable }}}    & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{one-way}}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{bidirectional}}} \\
+        \multicolumn{2}{c}{}                                         & \multicolumn{1}{c}{ \multirow{4}{*}{ \cite{makin2018} }}  & \multicolumn{8}{c}{ \multirow{1}{*}{ \textbf{GRU} }} \\ \cline{4-11}
+        \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{Kinematic }}}    & \multicolumn{1}{c}{}                                     & \multicolumn{4}{c|}{ \multirow{1}{*}{ \textbf{w/ attention}}}   & \multicolumn{4}{c}{ \multirow{1}{*}{ \textbf{w/o attention}}} \\ \cline{4-11}
+        \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{Variable }}} &     \multicolumn{1}{c}{}                                 & \multicolumn{2}{c|}{ \multirow{1}{*}{ \textbf{w/ LN}} }         & \multicolumn{2}{c|}{ \multirow{1}{*}{ \textbf{w/o LN}} }  & \multicolumn{2}{c|}{ \multirow{1}{*}{ \textbf{w/ LN}} }  & \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{w/o LN}} }  \\ \cline{4-11}
+        \multicolumn{2}{c}{}                                         &     \multicolumn{1}{c}{}                                 & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{one-way}} }         & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{bidir.}} }     & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{one-way}} }         & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{bidir.}} }    & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{one-way}} }    & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{bidir.}} }    & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{ one-way }} }         & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ bidir. }} }    \\
         \hline
-        123 & 456 & 789 & aaa \\ \\
+        \multicolumn{1}{c}{\multirow{2}{*}{Position}} & x &  &  &  &  &  &  &  &  & \\
+                                                      & y &  &  &  &  &  &  &  &  & \\ \\
+        \multicolumn{1}{c}{\multirow{2}{*}{Velocity} }& x &  &  &  &  &  &  &  &  & \\
+                                                       & y &  &  &  &  &  &  &  &  & \\ \\
+        \multicolumn{1}{c}{\multirow{2}{*}{Acceleration}}& x &  &  &  &  &  &  &  &  & \\
+                                                        & y &  &  &  &  &  &  &  &  & \\
         \hline
     \end{tabular}
     \caption{Performances Weighted Average $R^2$}
     \label{tab:weighted_average_with_makin}
 \end{table}
-
+\end{landscape}
 
 \section{Model Comparison}
 The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
