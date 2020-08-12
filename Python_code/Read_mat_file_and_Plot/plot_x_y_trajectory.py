@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import h5py
-
+import os
 import numpy
-import matplotlib.pyplot as plot 
+import matplotlib.pyplot as plot
+
 path=r'''../../Figures/Kinematic_Variables_Plots/'''
+if not os.path.exists(path):
+    os.mkdir(path)
+
 session_name='indy_20161025_04' #indy_20161025_04 8X8, indy_20160411_02 8X17, loco_20170214_02 6X6
 with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat', 'r') as mat_file:
 
