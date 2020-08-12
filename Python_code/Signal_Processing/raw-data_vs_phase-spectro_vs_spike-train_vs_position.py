@@ -51,7 +51,7 @@ def running_mean(x, N):
 # Read data and plot raw waveform
 channel_number = 31 # channel 49 is decicive; 31 is not
 start_second = 310
-plot_time_duration = 10
+plot_time_duration = 3
 end_second = start_second+plot_time_duration
 
 session_name='indy_20161007_02'
@@ -259,8 +259,7 @@ for i in range(50):
 
     plt.subplot(311)
     plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
-    # plt.title("indy_20161007_02 raw record in Channel "+ str(channel_number+1), fontsize=my_fontsize, color="black")
-    plt.title('')
+    plt.title('Session '+ session_name + ', channel ' +str(channel_number+1) , fontsize=my_fontsize, color="black")
 
     #plt.xlabel("Time (s)", fontsize=my_fontsize, color="black")
     plt.ylabel("Amp. (mV)", fontsize=my_fontsize, color="black")
@@ -289,8 +288,8 @@ for i in range(50):
     spike_line_length=18
     spike_line_offlet=190
     plt.eventplot(temp_spike_cell_1, color='black', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-2*spike_line_length, linestyles='solid')
-    plt.eventplot(temp_spike_cell_2, color='red', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet, linestyles='solid')
-    plt.eventplot(temp_spike_cell_3, color='blue', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-1*spike_line_length, linestyles='solid')
+    plt.eventplot(temp_spike_cell_2, color='blue', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet, linestyles='solid')
+    plt.eventplot(temp_spike_cell_3, color='red', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-1*spike_line_length, linestyles='solid')
     plt.eventplot(temp_spike_cell_4, color='yellow', linewidths=spike_line_width, linelengths=spike_line_length, lineoffsets=spike_line_offlet-3*spike_line_length, linestyles='solid')
 
     #plt.title("indy_20161007_02 Spike Signal (500Hz-5000Hz) in Channel "+ str(channel_number+1),fontsize=30, color="black")

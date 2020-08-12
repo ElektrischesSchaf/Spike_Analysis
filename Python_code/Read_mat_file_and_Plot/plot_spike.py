@@ -102,7 +102,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat', 'r') a
 
         # Provide the title for the spike raster plot
         title_text='M1 Spike Train in Session '+ session_name + ' Channel ' + str(channel_index+1)
-        plot.title(  '', fontsize=30)
+        plot.title(  'Session '+session_name+ ', M1 channel '+ str(channel_index+1), fontsize=30)
 
         # Give x axis label for the spike raster plot
         plot.xlabel('Time (Second)', fontsize=25)
@@ -165,8 +165,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat', 'r') a
             plot.eventplot(plot_row_S1, color=colorCodes, linelengths = lineSize)
 
             # Provide the title for the spike raster plot
-            title_text='S1 Spike Train in Session '+session_name+' Channel ' + str(channel_index+1 -96)
-            plot.title(  '', fontsize=30)
+            plot.title(  'Session '+session_name+ ', S1 channel '+ str(channel_index+1-96), fontsize=30)
 
             # Give x axis label for the spike raster plot
             plot.xlabel('Time (Second)', fontsize=25)
@@ -188,6 +187,10 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat', 'r') a
 
             plot.tight_layout()
             plot.savefig(path+ str( f"{channel_index+1 -96:03}" )  +'.png')
+
+            plot.cla()
+            plot.clf()
+            plot.close()
             # plot.show()
     # plot spike train end
 
