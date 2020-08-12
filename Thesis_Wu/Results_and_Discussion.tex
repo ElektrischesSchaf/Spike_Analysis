@@ -116,7 +116,7 @@ with the weights equal to the testing data length.
 The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
 These diagrams help us analysis the model based on the how many epoch numbers are required for the testing loss to converge.
 In the position and velocity decoders, it seems that implementing layer normalization does not contribute to a better convergence significantly since two classes of curve overlap.
-However, for acceleration decoders, the loss dropped drastically with the aid of layer normalization, and the two
+However, for acceleration decoders, the loss dropped drastically with the aid of layer normalization compared to original GRU.
 
 \begin{figure}[H]
     \begin{center}
@@ -136,3 +136,10 @@ However, for acceleration decoders, the loss dropped drastically with the aid of
         \label{fig:loss_vs_epoch}
     \end{center}
 \end{figure}
+
+The failure for original GRU to the play a good role on decoding hand acceleration is likely caused by the wide range of this kinematic variable.
+When it comes to decoding hand position, the labels are distributed mainly between 100~-50.
+But for velotiy the distribution is between 200~-200 and acceleration 2000~-2000, whereas most values are approximately close to zero.
+
+
+
