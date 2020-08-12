@@ -5,6 +5,10 @@ import os
 import numpy
 import matplotlib.pyplot as plot 
 
+path=r'''../../Figures/Spike_Train_Plots/'''
+if not os.path.exists(path):
+    os.mkdir(path)
+
 session_name='indy_20160407_02'
 with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat', 'r') as mat_file:
     # <KeysViewHDF5 ['#refs#', 'chan_names', 'cursor_pos', 'finger_pos', 'spikes', 't', 'target_pos', 'wf']>
@@ -120,10 +124,10 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat', 'r') a
             plot.yticks([1, 2, 3, 4, 5, 6], ['Hash Unit', 'Sorted Unit 1', 'Sorted Unit 2', 'Sorted Unit 3', 'Sorted Unit 4', 'Sorted Unit 5'], fontsize=25, rotation=0)
         # Display the spike raster plot
 
-        path=r'''../../Figures/Spike_Train_Plots/M1_Spike_Train_Channel_'''
+
 
         plot.tight_layout()
-        plot.savefig(path+ str( f"{channel_index+1:03}" )  +'.png')
+        plot.savefig(path+ 'M1_Spike_Train_Channel_' + str( f"{channel_index+1:03}" )  +'.png')
         # plot.show()
 
     # plot each channel start
@@ -183,10 +187,9 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat', 'r') a
                 plot.yticks([1, 2, 3, 4, 5, 6], ['Hash Unit', 'Sorted Unit 1', 'Sorted Unit 2', 'Sorted Unit 3', 'Sorted Unit 4', 'Sorted Unit 5'], fontsize=25, rotation=0)
             # Display the spike raster plot
 
-            path=r'''../../Figures/Spike_Train_Plots/S1_Spike_Train_Channel_'''
-
             plot.tight_layout()
-            plot.savefig(path+ str( f"{channel_index+1 -96:03}" )  +'.png')
+            plot.savefig(path+ 'S1_Spike_Train_Channel_' + str( f"{channel_index+1-96:03}" )  +'.png')
+
 
             plot.cla()
             plot.clf()

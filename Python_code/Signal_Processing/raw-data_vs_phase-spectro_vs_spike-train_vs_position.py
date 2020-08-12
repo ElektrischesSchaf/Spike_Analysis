@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib as mpl
+import os
 
 #https://github.com/guillaume-chevalier/filtering-stft-and-laplace-transform
 # Low pass
@@ -202,6 +203,9 @@ for i in range(50):
     my_plot_height = 9
     my_fontsize = 30
     figure_path='../../Figures/Raw_data_and_Spike/Spike_train_and_kinematic/'
+
+    if not os.path.exists(figure_path):
+        os.mkdir(figure_path)
 
     plt.figure(figsize=(my_plot_width, my_plot_height*1.5))
     plt.scatter(new_nwb_time_stamp, new_data, s=1, color= 'black')
