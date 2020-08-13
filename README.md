@@ -17,9 +17,12 @@
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 # Spike Analysis
+## Dataset 1
 * Spikes are signals generated from the single frequency and have magnitude significantly larger than noise, the voltage drop from neural soma and axon membrane. Spike train is time-series data which comes from a neuron. In this repository I use the mat file "indy_20160407_02.mat" downloaded from [Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology](https://zenodo.org/record/583331#.XWirEigzZPb). This dataset has 96 channels and each channel contains 1-6 units. 
+## Dataset 2
 * Second dataset from article [A cryptography-based approach for movement decoding](https://www.biorxiv.org/content/10.1101/080861v1) and its github repository [Distribution Alignment Decoder (DAD)](https://github.com/KordingLab/DAD/tree/master/data). Download from [Dropbox](https://www.dropbox.com/s/nrgnte5m34xb18n/DAD-data-10-21-2017.zip?dl=0) or [Kording DAD](http://kordinglab.com/DAD/). 
 * Contact: Eva.L.Dyer@gmail.com
+## Cheat sheet
 * ```find . -name "testset*" -type f -delete | find . -name "trainset*" -type f -delete```
 * ```scatter(target_pos(:,1),target_pos(:,2), 'filled'); xlabel('mm'); ylabel('mm');ax=gca;ax.FontSize = 10;```
 
