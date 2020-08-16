@@ -15,6 +15,7 @@ units_per_channel_all_sessions=[]
 has_S1_array_all_sessions = []
 original_testing_data_length_all_session = []
 real_units_all_sessions = []
+session_has_S1=[]
 
 def histc(X, bins):
     map_to_bins = np.digitize(X,bins)
@@ -95,6 +96,7 @@ for session_k in range(len(session_file_list)):
         # Handling S1 array data
         if channel_number == actual_channel_number*2:
             print('Has S1')
+            session_has_S1.append('True')
             for channel_index in range(actual_channel_number, actual_channel_number*2):
 
                 for unit_index in range( spikes.shape[0] ):
@@ -115,6 +117,8 @@ for session_k in range(len(session_file_list)):
                     #     firing_rate_cell.append(r)
 
                     firing_rate_cell.append([])
+        else:
+            session_has_S1.append('False')
 
         units_have_value = 0
         firing_rate_final=[] # not[[]]
@@ -141,3 +145,6 @@ df.to_csv(os.path.join(CWD, 'original_testing_data_length_all_session.csv'), ind
 
 df = pd.DataFrame({ 'session': [ str(x)[:-4] for x in session_file_list], 'units number':[x for x in real_units_all_sessions] })
 df.to_csv(os.path.join(CWD, 'real_units_all_sessions.csv'), index=False, header=True)
+
+df = pd.DataFrame({ 'session': [ str(x)[:-4] for x in session_file_list], 'Has S1?':[x for x in session_has_S1] })
+df.to_csv(os.path.join(CWD, 'session_has_S1.csv'), index=False, header=True)
