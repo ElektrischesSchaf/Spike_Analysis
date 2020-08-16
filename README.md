@@ -9,7 +9,7 @@
 		- [loco](#loco) <br>
 			- [R-square](#R-square-loco) <br>
 			- [SNR](#SNR-loco) <br>
-		- [testing data length](#testing-data-length)<br>
+		- [Makin2018 result](#Makin2018-result)<br>
     - [Plots](#plots)<br>
         - [Spike Train](#Spike-Train)<br> 
         - [Trajectory of finger tip](#Trajectory-of-finger-tip)<br>
@@ -188,7 +188,7 @@ Loco M1 and S1
 |	loco_20170301_05	|	1.203839692	|	5.760478572	|	3.34078066	|	6.365081325	|	1.149553361	|	2.911518334	|
 |	loco_20170302_02	|	2.241950779	|	3.805704185	|	1.418233773	|	4.697853887	|	0.022570107	|	1.503095324	|
 
-### testing data length
+### Makin2018 result
 | session          | time bins | units |
 |------------------|-----------|-------|
 | indy_20160407_02 | 7777      | 291   |
