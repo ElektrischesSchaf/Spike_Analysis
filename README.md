@@ -9,7 +9,7 @@
 		- [loco](#loco) <br>
 			- [R-square](#R-square-loco) <br>
 			- [SNR](#SNR-loco) <br>
-		-[testing data length](#testing-data-length)<br>
+		- [testing data length](#testing-data-length)<br>
     - [Plots](#plots)<br>
         - [Spike Train](#Spike-Train)<br> 
         - [Trajectory of finger tip](#Trajectory-of-finger-tip)<br>
