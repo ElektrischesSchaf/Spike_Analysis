@@ -101,13 +101,13 @@ for session_k in range(len(session_file_list)):
         x4=targets_corner[index,1]+target_grid_width
         y4=targets_corner[index,4]+target_grid_width
 
-        plt.plot( [x1,x2],[y1,y2] ,color='cyan')
-        plt.plot( [x1,x4],[y1,y4] ,color='cyan')
-        plt.plot( [x2,x3],[y2,y3] ,color='cyan')
-        plt.plot( [x3,x4],[y3,y4] ,color='cyan')
+        plt.plot( [x1,x2],[y1,y2] ,color='magenta')
+        plt.plot( [x1,x4],[y1,y4] ,color='magenta')
+        plt.plot( [x2,x3],[y2,y3] ,color='magenta')
+        plt.plot( [x3,x4],[y3,y4] ,color='magenta')
 
     plt.scatter( down_sampling_pos[:,0], down_sampling_pos[:,1], color='black' , s=5)
-    plt.xlim([-11, 15])
+    plt.xlim([-10, 15])
     plt.ylim([-46, 11])
     plt.xlabel('mm', fontsize=my_fontsize)
     plt.xticks(fontsize=my_fontsize*0.5)
