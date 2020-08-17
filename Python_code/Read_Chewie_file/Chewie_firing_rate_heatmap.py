@@ -86,7 +86,7 @@ for session_k in range(len(session_file_list)):
     f, ax = plt.subplots( 3,1,gridspec_kw={'height_ratios': [4,1,1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05},  figsize = (16, 9), constrained_layout=True)
 
     # sns.set()
-    sns.heatmap(firing_rate_final , ax=ax[0] ,vmax=5, cbar_kws=cbar_kws_attention, xticklabels=False)
+    sns.heatmap(firing_rate_final ,cmap='YlGnBu_r', ax=ax[0] ,vmax=5, cbar_kws=cbar_kws_attention, xticklabels=False)
     ax[0].yaxis.set_major_locator(ticker.MultipleLocator(50))
     ax[0].yaxis.set_major_formatter(ticker.ScalarFormatter())
     ax[0].set_title('Session '+session_name, fontsize=my_fontsize)
@@ -104,6 +104,7 @@ for session_k in range(len(session_file_list)):
     ax[2].legend(loc='upper center', fontsize=my_fontsize*0.5)
     ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90, fontsize=my_fontsize*0.5)
     ax[2].set_xlabel( 'Time (second)', fontsize=my_fontsize*0.8)
+    ax[2].set_ylim([-30,30])
 
     # plt.show()
     plt.savefig('firing_rate_heatmap_and_kinematic_variable_session_'+session_name+'.png')

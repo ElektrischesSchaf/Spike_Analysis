@@ -184,6 +184,7 @@ class regular_modules():
         plt.title('performance', fontsize=30)
         plt.plot(train_R_square, label='train')
         plt.plot(valid_R_square, label='test')
+        plt.ylim([0,1])
         plt.xlabel('Epoch', fontsize=30)
         plt.ylabel('R square', fontsize=30)
         plt.legend()

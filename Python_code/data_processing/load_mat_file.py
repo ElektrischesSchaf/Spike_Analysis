@@ -279,10 +279,10 @@ class mat_file_processing():
         return [time_stamp_64ms, x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label,  z_acceleration_label, x_position_target, y_position_target]
 
     def cross_session_data_concatenation(self, session_name, feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
-    x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label, x_position_target, y_position_target,
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_label, y_position_label,  x_velocity_label, y_velocity_label,  x_acceleration_label, y_acceleration_label,  x_position_target, y_position_target,
+    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing,  
+    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing,  
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing):
       
         print('feature_numbers_of_firing_rate= ', feature_numbers_of_firing_rate, '\n')
@@ -296,8 +296,8 @@ class mat_file_processing():
         y_position_label_training =  np.concatenate((y_position_label_training, y_position_label[:testing_data_index ]), axis=0)
         y_position_label_testing = np.concatenate((y_position_label_testing, y_position_label[testing_data_index:]), axis=0)
 
-        z_position_label_training = np.concatenate((z_position_label_training, z_position_label[:testing_data_index ]), axis=0)
-        z_position_label_testing = np.concatenate((z_position_label_testing, z_position_label[testing_data_index:]), axis=0)
+        # z_position_label_training = np.concatenate((z_position_label_training, z_position_label[:testing_data_index ]), axis=0)
+        # z_position_label_testing = np.concatenate((z_position_label_testing, z_position_label[testing_data_index:]), axis=0)
     
         x_velocity_label_training = np.concatenate((x_velocity_label_training, x_velocity_label[:testing_data_index ]), axis=0)
         x_velocity_label_testing = np.concatenate((x_velocity_label_testing, x_velocity_label[testing_data_index:]), axis=0)
@@ -305,8 +305,8 @@ class mat_file_processing():
         y_velocity_label_training = np.concatenate((y_velocity_label_training, y_velocity_label[:testing_data_index ] ), axis=0)
         y_velocity_label_testing = np.concatenate((y_velocity_label_testing, y_velocity_label[testing_data_index:]), axis=0)
 
-        z_velocity_label_training = np.concatenate((z_velocity_label_training, z_velocity_label[:testing_data_index ]), axis=0)
-        z_velocity_label_testing = np.concatenate((z_velocity_label_testing, z_velocity_label[testing_data_index:]), axis=0)
+        # z_velocity_label_training = np.concatenate((z_velocity_label_training, z_velocity_label[:testing_data_index ]), axis=0)
+        # z_velocity_label_testing = np.concatenate((z_velocity_label_testing, z_velocity_label[testing_data_index:]), axis=0)
 
         x_acceleration_label_training = np.concatenate((x_acceleration_label_training, x_acceleration_label[:testing_data_index ]), axis=0)
         x_acceleration_label_testing = np.concatenate((x_acceleration_label_testing, x_acceleration_label[testing_data_index:]), axis=0)
@@ -314,8 +314,8 @@ class mat_file_processing():
         y_acceleration_label_training = np.concatenate((y_acceleration_label_training, y_acceleration_label[:testing_data_index ]), axis=0)
         y_acceleration_label_testing = np.concatenate((y_acceleration_label_testing, y_acceleration_label[testing_data_index:]), axis=0)
 
-        z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[:testing_data_index ]), axis=0)
-        z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index:]), axis=0)
+        # z_acceleration_label_training = np.concatenate((z_acceleration_label_training, z_acceleration_label[:testing_data_index ]), axis=0)
+        # z_acceleration_label_testing = np.concatenate((z_acceleration_label_testing, z_acceleration_label[testing_data_index:]), axis=0)
 
         x_position_target_training = np.concatenate((x_position_target_training, x_position_target[:testing_data_index]), axis=0)
         x_position_target_testing = np.concatenate((x_position_target_testing, x_position_target[testing_data_index:]), axis=0)
@@ -324,16 +324,16 @@ class mat_file_processing():
         y_position_target_testing = np.concatenate((y_position_target_testing, y_position_target[testing_data_index:]), axis=0)
 
         return [X_for_training, X_for_prediction, \
-        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,\
-        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,\
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,\
+        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing,  
+        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing,  
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,
         x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing]
 
     def max_order_preparation(self, session_name, order_num, feature_numbers_per_sample, 
     X_for_training, X_for_prediction,
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing,  
+    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing,  
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing):
 
         if order_num >= 2:
@@ -358,22 +358,22 @@ class mat_file_processing():
             x_position_label_testing = x_position_label_testing[order_num:]
             y_position_label_training = y_position_label_training[order_num:]
             y_position_label_testing = y_position_label_testing[order_num:]
-            z_position_label_training = z_position_label_training[order_num:]
-            z_position_label_testing = z_position_label_testing[order_num:]
+            # z_position_label_training = z_position_label_training[order_num:]
+            # z_position_label_testing = z_position_label_testing[order_num:]
 
             x_velocity_label_training = x_velocity_label_training[order_num:]
             x_velocity_label_testing = x_velocity_label_testing[order_num:]
             y_velocity_label_training = y_velocity_label_training[order_num:]
             y_velocity_label_testing = y_velocity_label_testing[order_num:]
-            z_velocity_label_training = z_velocity_label_training[order_num:]
-            z_velocity_label_testing = z_velocity_label_testing[order_num:]
+            # z_velocity_label_training = z_velocity_label_training[order_num:]
+            # z_velocity_label_testing = z_velocity_label_testing[order_num:]
 
             x_acceleration_label_training = x_acceleration_label_training[order_num:]
             x_acceleration_label_testing = x_acceleration_label_testing[order_num:]
             y_acceleration_label_training = y_acceleration_label_training[order_num:]
             y_acceleration_label_testing = y_acceleration_label_testing[order_num:]
-            z_acceleration_label_training = z_acceleration_label_training[order_num:]
-            z_acceleration_label_testing = z_acceleration_label_testing[order_num:]
+            # z_acceleration_label_training = z_acceleration_label_training[order_num:]
+            # z_acceleration_label_testing = z_acceleration_label_testing[order_num:]
 
             x_position_target_training = x_position_target_training[order_num:]
             x_position_target_testing = x_position_target_testing[order_num:]
@@ -451,7 +451,7 @@ class mat_file_processing():
                 break
 
         return [X_for_training, X_for_prediction, \
-        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,\
-        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,\
-        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,\
+        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, 
+        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, 
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, 
         x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing]
