@@ -35,8 +35,10 @@ import sys
 sys.path.append("../../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
+import data_processing.load_chewie_mat_file as load_chewie_mat_file
 my_parameters = my_parameters.my_parameters()
 mat_file_processing = load_mat_file.mat_file_processing()
+chewie_file_processing = load_chewie_mat_file.mat_file_processing()
 
 import data_processing.some_modules as some_modules
 regular_modules = some_modules.regular_modules()
@@ -59,7 +61,7 @@ List_FILE = ALL_List_FILE[:]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'GRU_with_Spike_Single_37_Session_2_outputs_one_way_real_LN_two_stream'
+model_name = 'GRU_with_Spike_Single_49_Session_2_outputs_one_way_real_LN_two_stream'
 MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
@@ -86,8 +88,7 @@ def epoch_handle(session_name):
     "indy_20160418_01": 28,
     "indy_20160419_01": 62,
     "indy_20160420_01": 13,
-    "indy_20160426_01": 49,
-    "indy_20160630_01": 31,
+    "indy_20160426_01": 49, # remove indy session 11
     "loco_20170210_03": 20,
     "loco_20170213_02": 24,
     "loco_20170214_02": 85,
