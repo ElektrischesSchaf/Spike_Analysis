@@ -1,6 +1,6 @@
 \section{Dataset}
 \label{sec:dataset}
-\subsection{Monkey Indy and Loco}
+\subsection{Sabes Lab Dataset: Monkey Indy, Loco}
 The first dataset, \textbf{Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology} is provided by \cite{makin2018} and made public available at \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
 It containes the recordings from two Rhesus macaque monkeys, named Indy and Loco.
 Each monkey performed a number of sessions, and in our research, a session means a consecutive experiment recording within several minutes.
@@ -44,19 +44,19 @@ and for monky Loco square grid of size $6 \times 6$ was used.
 \begin{figure}[H]
 	\begin{center}
         \centering
-        \begin{subfigure}{0.6\textwidth}
+        \begin{subfigure}{0.8\textwidth}
             \centering\includegraphics[width=1\textwidth]{indy_20160411_02_panel.png}
             \label{fig:8_times_17}
 			\caption{$8 \times 17$ rectangular grid} 
         \end{subfigure}
 
         \medskip
-		\begin{subfigure}{0.3\textwidth}
+		\begin{subfigure}{0.4\textwidth}
             \centering\includegraphics[width=1\textwidth]{indy_20161025_04_panel.png}
             \label{fig:8_times_8}
 			\caption{$8 \times 8 $ square grid} 
 		\end{subfigure}
-        \begin{subfigure}{0.3\textwidth}
+        \begin{subfigure}{0.4\textwidth}
             \centering\includegraphics[width=1\textwidth]{loco_20170214_02_panel.png}
             \label{fig:6_times_6}
 			\caption{$6 \times 6$ square grid} 
@@ -122,8 +122,36 @@ The fingertip velocity and acceleration were then computed afterwards by discret
     \end{center}
 \end{figure}
 
-\subsection{Moneky Chewie}
+\newpage
+\subsection{Kording Lab Dataset: Monkey Chewie}
 The second dataset is provided by \cite{dyer2017cryptography} and available at \url{https://github.com/KordingLab/DAD}.
+Only 2 sessions from monkey C was considered in \cite{makin2018}, both of them are center out movements as showed in Figure~\ref{fig:xy_plane_trajectory_chewie}.
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{xy_plane_tragectory_session_Chewie_10032013.png}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{xy_plane_tragectory_session_Chewie_12192013.png}
+        \end{subfigure}
+        \caption{2D trajectories of monkey C}
+        \label{fig:xy_plane_trajectory_chewie}
+    \end{center}
+\end{figure}
+
+\noindent 8 magenta squares are the targets for the monkey to reach, and black dots are the actual recordings.
+The monkey held a handle to control a computer cursor in a 2D virtual plane.
+Unlike grid reaching task experiments, this dataset is constituted by trials.
+At the beginning of each trail the subject must move the cursor into the center area of size $2cm \times 2cm$.
+After holding for 500 to 1500 ms, another 2cm target in the outer position will appear.
+8 outer targets are at a 8cm radial distance from the center.
+For monkey C, an auditory 'Go' cue was provided right after the outer target showed up.
+
+Apparently there exists a deviation between the targets coordinate and the cursors.
+The center point of the cursor's coordinate in these two sessions are inconsistent as well.
+However, the transition matrix is not provided.
+Fortunately the target points are not required when implementing hand movement decoders.
 
 \section{Data Preprocessing}
 The electrode arrays' sampling rate was 24.4kHz, as mentioned in Section \ref{sec:dataset}, and their recordings were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
@@ -464,3 +492,7 @@ enabling each vector be focused on a single aspect.
 
 \subsection{Visualization}
 Interpretation of the neural signals is one of the main topic in our study.
+The term \textit{tap size} refer to the past time bins used to decode the current sample point.
+In our main result, 20 tap size was used in decoding position and 10 tap size in decoding velocity and acceleration.
+With the aid of annotation matrix from the attention mechanism,
+it is possible to depict the importance of the past time bins under 

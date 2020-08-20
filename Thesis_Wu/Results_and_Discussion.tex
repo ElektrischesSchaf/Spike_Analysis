@@ -19,6 +19,7 @@ These sessions contained intervals when monkeys fingertip stayed still for a con
 As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated the discarded intervals.
 
 \newpage
+\todo{10個session剛好一整頁}
 \begin{figure}[H]
     \foreach \i in {loco_20170210_03,loco_20170213_02,loco_20170214_02,loco_20170215_02,loco_20170216_02,loco_20170217_02,loco_20170227_04,loco_20170228_02,loco_20170301_05,loco_20170302_02}
         {
@@ -92,22 +93,16 @@ with the weights equal to the testing data length.
 \begin{landscape}
 \begin{table}
     \centering
-    \begin{tabular}{ccccccccccc}
-        \hline
-        \multicolumn{2}{c}{}                                         & \multicolumn{1}{c}{ \multirow{4}{*}{ \cite{makin2018} }}  & \multicolumn{8}{c}{ \multirow{1}{*}{ \textbf{GRU} }} \\ \cline{4-11}
-        \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{Kinematic }}}    & \multicolumn{1}{c}{}                                     & \multicolumn{4}{c|}{ \multirow{1}{*}{ \textbf{w/ attention}}}   & \multicolumn{4}{c}{ \multirow{1}{*}{ \textbf{w/o attention}}} \\ \cline{4-11}
-        \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{Variable }}} &     \multicolumn{1}{c}{}                                 & \multicolumn{2}{c|}{ \multirow{1}{*}{ \textbf{w/ LN}} }         & \multicolumn{2}{c|}{ \multirow{1}{*}{ \textbf{w/o LN}} }  & \multicolumn{2}{c|}{ \multirow{1}{*}{ \textbf{w/ LN}} }  & \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{w/o LN}} }  \\ \cline{4-11}
-        \multicolumn{2}{c}{}                                         &     \multicolumn{1}{c}{}                                 & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{one-way}} }         & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{bidir.}} }     & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{one-way}} }         & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{bidir.}} }    & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{one-way}} }    & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{bidir.}} }    & \multicolumn{1}{c|}{ \multirow{1}{*}{ \textbf{ one-way }} }         & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ bidir. }} }    \\
-        \hline
-        \multicolumn{1}{c}{\multirow{2}{*}{Position}} & x &  &  &  &  &  &  &  &  & \\
-                                                      & y &  &  &  &  &  &  &  &  & \\ \\
-        \multicolumn{1}{c}{\multirow{2}{*}{Velocity} }& x &  &  &  &  &  &  &  &  & \\
-                                                       & y &  &  &  &  &  &  &  &  & \\ \\
-        \multicolumn{1}{c}{\multirow{2}{*}{Acceleration}}& x &  &  &  &  &  &  &  &  & \\
-                                                        & y &  &  &  &  &  &  &  &  & \\
-        \hline
-    \end{tabular}
     \caption{Performances Weighted Average $R^2$}
+    \begin{tabular}{cccccccccc}
+        \hline
+        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Attention}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{LN}}}    & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{Penalization}}}  & \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{GRU}}}  & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{\quad Position \quad}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{\quad Velocity \quad}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{\quad Acceleration \quad}}} \\
+        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Mechanism}}}  & \multicolumn{1}{c}{}                                & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{Term}}}          & \multicolumn{1}{c|}{}                               & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{\quad x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y \quad}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{\quad x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y \quad}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{\quad x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y \quad}}} \\
+        \hline
+        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & oneway &  &  &  &  &  &  \\ \\
+        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & oneway &  &  &  &  &  &  \\ \\
+        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & bidirectional &  &  &  &  &  &  \\ \\
+    \end{tabular}
     \label{tab:weighted_average_with_makin}
 \end{table}
 \end{landscape}
@@ -137,9 +132,7 @@ However, for acceleration decoders, the loss dropped drastically with the aid of
     \end{center}
 \end{figure}
 
-The failure for original GRU to the play a good role on decoding hand acceleration is likely caused by the wide range of this kinematic variable.
-When it comes to decoding hand position, the labels are distributed mainly between 100~-50.
-But for velotiy the distribution is between 200~-200 and acceleration 2000~-2000, whereas most values are approximately close to zero.
-
-
-
+The reason for ordinary GRU failed to decode the acceleration is mainly caused by the wide range of this kinematic variable.
+When it comes to decoding fingertip position, the labels are distributed mainly between $100\sim-50$.
+But for velotiy the distribution is between $200\sim-200$ and acceleration $2000\sim-2000$, whereas most values are approximately zero.
+It is unlikely for a deep learing network to adapt to th
