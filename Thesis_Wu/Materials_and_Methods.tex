@@ -14,9 +14,9 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.6\textwidth}
-            \captionsetup{width=0.6\textwidth}
+            \captionsetup{width=0.5\textwidth}
             \includegraphics[width=1\textwidth]{Utah_array.jpg}
-            \caption{ Utah Array }
+            \caption{Utah Array}
             \caption*{\small{source by \url{ https://commons.wikimedia.org/wiki/File:Utah_array_pat5215088.jpg }}}
             \medskip
         \end{subfigure}
@@ -30,8 +30,8 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
             \includegraphics[width=1\textwidth]{channel_array_2.png}
             \caption{ Indy S1 }
         \end{subfigure}
-        \captionsetup{width=0.7\textwidth}
-        \caption{ The Electrode Array and the Spatial Arrangement of 96 Channels }
+        \captionsetup{width=0.5\textwidth}
+        \caption{The Electrode Array and the Spatial Arrangement of 96 Channels}
         \label{fig:utah_array}
     \end{center}
 \end{figure}
@@ -73,6 +73,7 @@ Figure \ref{fig:X-Y_trajectory_in_VR_panel}
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.6\textwidth]{X-Y_trajectory_in_VR_panel.png}
+        \captionsetup{width=0.5\textwidth}
         \caption{Fingertip Trajectory in 2D Virtual Panel}
         \label{fig:X-Y_trajectory_in_VR_panel}
     \end{center}
@@ -85,6 +86,7 @@ where the solid lines indicate the actual tragectory of the fingertip and the da
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
+        \captionsetup{width=0.5\textwidth}
         \caption{Fingertip trajectory with respect to time}
         \label{fig:x_and_y_trajectory_and_cue}
     \end{center}
@@ -160,6 +162,7 @@ In Figure \ref{fig:raw_to_spike}, the upper subplot is the raw broadband signal 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{raw_to_spike.png}
+        \captionsetup{width=0.5\textwidth}
         \caption{Raw Data Waveform and the Detected Spikes}
         \fontsize{10}{12}
         \label{fig:raw_to_spike}
@@ -199,8 +202,8 @@ The heatmap is showing an relationship between the occurrance of movements and t
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{firing_rate_and_kinematic_variable.png}
+        \captionsetup{width=0.5\textwidth}
         \caption{Firing Rate and Kinematic Variables}
-        \fontsize{10}{12}
         \label{fig:firing_rate_and_kinematic_variable}
     \end{center}
 \end{figure}
@@ -210,8 +213,23 @@ Empty units in this session have been removed, as actual number of sorted units 
 \newpage
 \section{Deep Neural Network}
 \subsection{Recurrent Neural Network}
+\label{sec:RNN}
+Figure~\ref{fig:unfold_rnn} illustrates how basic RNNs actual \textit{recur}.
+The weights inside one RNN cell is consistant during a sequence.
+The unfold diagram simply indicates how the input and output from the same RNN cell differs in each timestep.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{unfold_rnn.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Unfolded basic recurrent neural network}
+        \caption*{\small{source by \url{https://en.wikipedia.org/wiki/File:Recurrent_neural_network_unfold.svg} licensed under \href{https://creativecommons.org/licenses/by-sa/4.0/deed.en}{CC BY-SA 4.0} }}
+        \label{fig:unfold_rnn}
+	\end{center}
+\end{figure}
+
 In our study, we used the model name Gated Recurrent Unit (GRU) as neural decoder.
-The structure in each cell is showed in Figure \ref{fig:GRU_cell}.
+The structure inside a GRU cell is showed in Figure \ref{fig:GRU_cell}.
 
 \begin{figure}[H]
     \begin{center}
@@ -227,7 +245,7 @@ The structure in each cell is showed in Figure \ref{fig:GRU_cell}.
     h_t &= g^{GRU} \left(  h_{t-1}, \ x_t  \right)
 \end{align}
 
-The four equations in the GRU cell:
+\noindent and the four equations in the GRU cell:
 
 \begin{align}
     % \label{eq:gru_cell}
@@ -248,27 +266,19 @@ The four equations in the GRU cell:
 
 Where $r_t$ is the \textbf{Reset Gate} and $z_t$ is the \textbf{Update Gate}.
 Notation $\circ$ means elementwise multiplication for two tensors of same shape.
-Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}), which maps the input value to (0,1).
-$\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}), mapping the input value to (-1,1).
-Illustrated in Figure \ref{fig:GRU_activations}.
+Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}), which squashes the input value from ($-\infty$, $\infty$) to (0,1).
+$\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}), squashing the input value from ($-\infty$, $\infty$) to (-1,1).
+Two functions plotted in Figure \ref{fig:sigmoid_and_tanh}.
+However, both of them have drawbacks of saturation problem, e.g., input value outside the range [-4, +4] will be nearly 0 after activations, 
+making its gradient vanish and slowing down learninig process.
+The solution about this issue will be addressed in Section~\ref{sec:layer_norm}.
 
 \begin{figure}[H]
 	\begin{center}
-		\centering
-        \begin{subfigure}{0.48\textwidth}
-            \captionsetup{width=0.5\textwidth}
-            \centering\includegraphics[width=1\textwidth]{sigmoid.png}
-            \caption{ Sigmoid function} 
-            \caption*{\small{source by \url{https://commons.wikimedia.org/wiki/File:Sigmoid-function-2.svg} licensed under \href{https://creativecommons.org/publicdomain/zero/1.0/deed.en}{CC0 1.0}}}
-		\end{subfigure}
-        \begin{subfigure}{0.48\textwidth}
-            \captionsetup{width=0.5\textwidth}
-            \centering\includegraphics[width=1\textwidth]{tanh.png}
-            \caption{ Tanh function } 
-            \caption*{\small{source by \url{https://commons.wikimedia.org/wiki/File:Hyperbolic_Tangent.svg} licensed under \href{https://creativecommons.org/licenses/by-sa/3.0/deed.en}{CC BY-SA 3.0}}}
-        \end{subfigure}
-        \caption{}
-        \label{fig:GRU_activations}		
+        \includegraphics[width=0.6\textwidth]{sigmoid_and_tanh.jpg}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Sigmoid and hyperbolic tangent}
+        \label{fig:sigmoid_and_tanh}
 	\end{center}	
 \end{figure}
 
@@ -292,7 +302,8 @@ The corrosponding outputs of our model are the kinematic variables at time $t$.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{two_layer_GRU.png}
+        \includegraphics[width=0.7\textwidth]{two_layer_GRU.png}
+        \captionsetup{width=0.5\textwidth}
         \caption{Architecture of One-way Two-layer GRU}
         \fontsize{10}{12}
         \label{fig:two_layer_GRU}
@@ -318,7 +329,8 @@ since the first half of the this vector contains the information by feeding inpu
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{two-way_two-layer_GRU.png}
+        \includegraphics[width=0.7\textwidth]{two-way_two-layer_GRU.png}
+        \captionsetup{width=0.5\textwidth}
         \caption{Architecture of Bidirectional Two-layer GRU}
         \fontsize{10}{12}
         \label{fig:Bi_two_layer_GRU}
@@ -328,9 +340,13 @@ since the first half of the this vector contains the information by feeding inpu
 It is the internal dynamics of the GRU to determine the degree of forget and keep the previous information in every timestep.
 
 \subsection{Layer Normalization}
-With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the drawbacks of batch normalization.
+\label{sec:layer_norm}
+With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the setbacks of batch normalization, 
+when it is implemented in RNNs.
 The covariate shift problem can be reduced by fixing the mean and the variance of the summed inputs with each layer.
-By compute the hidden units in the same layer 
+By the means of normalization it can also provent the gradient vanishing problem from happening, which was brought up in Section~\ref{sec:RNN}.
+
+Computing the hidden units in the same layer:
 
 \begin{align}
     \begin{split}
@@ -495,4 +511,4 @@ Interpretation of the neural signals is one of the main topic in our study.
 The term \textit{tap size} refer to the past time bins used to decode the current sample point.
 In our main result, 20 tap size was used in decoding position and 10 tap size in decoding velocity and acceleration.
 With the aid of annotation matrix from the attention mechanism,
-it is possible to depict the importance of the past time bins under
+it is possible to depict the importance of the past time bins with annotations.
