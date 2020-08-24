@@ -466,6 +466,7 @@ the first layer reduces the dimension from $u$ to $d_a$, or in bidirectional cas
 The second layer reduces the dimension from $d_a$ to $r$.
 
 \subsection{Penalization Term}
+The purpose of developing such loss function specifically for our attention mechanism is to avoid repetitive information.
 The embedding matrix $M$ should contains $r$ different parts of aspects from the same sequence.
 But without further constraints, the attention mechanism might always provide similar summation weights for all the $r$ hops.
 \cite{lin2017structured} also proposed an approach to optimize the distribution of the annotations across sequence,
@@ -508,6 +509,7 @@ enabling each vector be focused on a single aspect.
 
 \subsection{Visualization}
 Interpretation of the neural signals is one of the main topic in our study.
+By taking advantage of attention mechanism, we can visualize what the model \textit{sees.} \citep{xu2015show}
 The term \textit{tap size} refer to the past time bins used to decode the current sample point.
 In our main result, 20 tap size was used in decoding position and 10 tap size in decoding velocity and acceleration.
 With the aid of annotation matrix from the attention mechanism,
