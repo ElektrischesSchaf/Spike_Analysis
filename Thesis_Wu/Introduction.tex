@@ -38,7 +38,6 @@ In Table~\ref{tab:spike_research}
     \begin{center}
         \includegraphics[width=0.48\textwidth]{monkey.jpg}
         \caption{Monkey's Experiment}
-        \fontsize{10}{12}
         \label{fig:intro_monkey}
     \end{center}
 \end{figure}
@@ -111,17 +110,32 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 
 \section{Attention Mechanism}
 \label{sec:atten}
-When it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
+Ever since \cite{sutskever2014sequence} implemented the encoder-decoder machanism to machine translation realm, 
+this structure has gained enormous popularity.
+Encoder-decoder RNN illustrated in Figure~\ref{fig:rnn_encoder_decoder},
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{rnn_encoder_decoder.png}
+        \caption{RNN encoder-decoder}
+        \label{fig:rnn_encoder_decoder}
+    \end{center}
+\end{figure}
+
+But when it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
 This is primarily due to the fact that the longer the sequence lenght, 
 the higher the possibility of gradient vanishing might occur in RNNs \citep{chandar2019towards}. 
-Especially in neural machine translation researches, where long input sentences are apt to cause translation errors. 
-Thus, the a novel architecture for neural machine translation, 
-named \textit{alignment model}, is proposed in \cite{bahdanau2014neural}, 
-which put an additional weights on the original outputs of an RNN. 
+Especially in neural machine translation researches, where long input sentences are apt to cause translation errors.
+Thus a novel architecture for neural machine translation customed to machine translation was invented, named \textit{alignment model}
+It was proposed in \cite{bahdanau2014neural}, which they put an additional weights on the original outputs of an RNN. 
 The alighment model scores how well the inputs around one position matches the output on another position, 
 such that model is capable of focusing on the information relevant part of the input sentence, 
 and leave a major positive impact on the ability of the neural machine translation system. 
 Furthermore, by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
+
+Apart form alignment model, \textit{self-attention} works quiet differently.
+The alighment model calculate the relationship between source and target sequences, 
+while self-attention only consider relationship beteen the elements from the same input sequence.
 
 Similar attention techniques can be seen in sentiment classification research \citep{wang2016attention}, 
 where they appended the attention mechanism right after the LSTM outputs and named it attention-based LSTM.
@@ -141,7 +155,7 @@ The proposed method, convolutional recurrent attention model outperformed other 
     \cite{bahdanau2014neural} & \makecell{Alignment\\Model} & \makecell{Encoder-decoder\\(Seq2Seq)} & Machine Translation \\ \\
     \cite{xu2015show} & \makecell{Soft/Hard\\Attention} & RNN & Image Caption \\ \\
     \cite{luong2015effective} & \makecell{Global/Local\\ Attention} &  \makecell{Encoder-decoder\\(Seq2Seq)} & Machine Translation \\ \\
-    \cite{cheng2016long} \makecell{Intra-attention} & \makecell{Encoder-decoder\\(Seq2Seq)} & Setiment Analysis \\ \\
+    \cite{cheng2016long} & Intra-attention & \makecell{Encoder-decoder\\(Seq2Seq)} & Setiment Analysis \\ \\
     \cite{vaswani2017attention} & \makecell{Self-attention,\\Parallelization,\\remove RNN} & \makecell{Encoder-decoder\\(The Transformer)} & Machine Translation \\ \\
     \cite{lin2017structured} & \makecell{Self-attention} & RNN & Setiment Analysis \\ \\
     \hline
