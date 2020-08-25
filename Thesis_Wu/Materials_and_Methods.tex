@@ -37,7 +37,7 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
 \end{figure}
 
 
-The monkeys were trained to perform reaching tasks with their arms in a transverse plane, with targets showing up in a virtual reality environment.
+The monkeys were trained to perform reaching tasks with their arms in a transverse plane below their shoulder, with targets showing up in a virtual reality environment.
 Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
 and for monky Loco square grid of size $6 \times 6$ was used.
 
@@ -93,7 +93,8 @@ where the solid lines indicate the actual tragectory of the fingertip and the da
 \end{figure}
 
 
-They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand.
+They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
+so we must multiply $-10$ in both x-and y-axis recordings in order to transit the fingertip coordinate to the target coordinate with the unit in micrometer.
 An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
 The experimental environment is showed in Figure \ref{fig:monkey_experiment}.
 Fingertip position was recorded simultaneously with a six-axis electromagnetic position sensors, with a 250Hz sampling rate.
@@ -117,11 +118,17 @@ The fingertip velocity and acceleration were then computed afterwards by discret
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{monkey_experiment.png}
-        \caption{Experiment Environment}
+        \includegraphics[width=0.8\textwidth]{monkey_experiment.png}
+        \caption{Experimental setup}
         \label{fig:monkey_experiment}
     \end{center}
 \end{figure}
+
+Here I quote the e-mail response from the corresponding author, Joseph O'Doherty, of his explaination about the ICMS:
+\begin{displayquote}
+In these data ICMS was not used, so any signals in the data are putative single units/multiunits from Broadmann Area 1. In pilot sessions, I found that these neurons contained responses to touch but I have not quantitatively analyzed this.
+\end{displayquote}
+
 
 \newpage
 \subsection{Kording Lab Dataset: Monkey Chewie}
@@ -297,7 +304,7 @@ However, sophisticated models tend to overfit.
 Figure \ref{fig:two_layer_GRU} demonstrated how hidden states are passed from one layer to another.
 Where $n$ is the order of our input, representing how many the time bins to be fed into the model at a time for decoding the current kinematic states.
 The input data at a time contains the firing rate at this moment $x_t$ and the past firing rate from $x_{t-n+1}$ to $x_{t-1}$.
-The corrosponding outputs of our model are the kinematic variables at time $t$.
+The corresponding outputs of our model are the kinematic variables at time $t$.
 
 \begin{figure}[H]
     \begin{center}
