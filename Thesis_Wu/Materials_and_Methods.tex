@@ -95,7 +95,7 @@ where the solid lines indicate the actual tragectory of the fingertip and the da
 
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand.
 An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
-The experimental environment is showed in Figure \ref{fig:monkey_exp_2}.
+The experimental environment is showed in Figure \ref{fig:monkey_experiment}.
 Fingertip position was recorded simultaneously with a six-axis electromagnetic position sensors, with a 250Hz sampling rate.
 The fingertip velocity and acceleration were then computed afterwards by discrete derivative, which is simply the differeces divided by the sampling period.
 
@@ -117,10 +117,9 @@ The fingertip velocity and acceleration were then computed afterwards by discret
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.48\textwidth]{monkey2.jpg}
+        \includegraphics[width=1\textwidth]{monkey_experiment.png}
         \caption{Experiment Environment}
-        \fontsize{10}{12}
-        \label{fig:monkey_exp_2}
+        \label{fig:monkey_experiment}
     \end{center}
 \end{figure}
 
@@ -341,13 +340,15 @@ It is the internal dynamics of the GRU to determine the degree of forget and kee
 
 \subsection{Layer Normalization}
 \label{sec:layer_norm}
+% https://towardsdatascience.com/understanding-dataset-shift-f2a5a262a766
 With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the setbacks of batch normalization, 
 when it is implemented in RNNs.
-The covariate shift problem can be reduced by fixing the mean and the variance of the summed inputs with each layer.
+Internal covariate shift is a problem caused by the variant distribution of the output of a previous layer,
+which are used to be the input of its following layer.
+It can be mitigated by fixing the mean and the variance of the summed inputs within each layer.
 By the means of normalization it can also provent the gradient vanishing problem from happening, which was brought up in Section~\ref{sec:RNN}.
 
-Computing the hidden units in the same layer:
-
+Here is the computation of mean and variance from all the hidden units in the same layer:
 \begin{align}
     \begin{split}
         \label{eq:normalization_term}

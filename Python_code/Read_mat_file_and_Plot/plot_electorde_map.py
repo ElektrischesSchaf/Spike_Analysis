@@ -46,7 +46,7 @@ ax = plt.subplot(111)
 for i in range(96):
     plt.title('M1 electrodes from session '+session_name, fontsize=my_fontsize)
     plt.scatter( m1[i][0], m1[i][1] , s=80)
-    plt.annotate( str( int( m1[i][2] ) ), xy=(m1[i][0], m1[i][1]) , fontsize=my_fontsize*0.6)
+    plt.annotate( str( int( m1[i][2] ) ), xy=(m1[i][0], m1[i][1]) , fontsize=my_fontsize)
     plt.ylim([-1.5,-1.5+4])
     plt.xlabel('mm', fontsize=my_fontsize)
     plt.xticks( fontsize=my_fontsize*0.8)
