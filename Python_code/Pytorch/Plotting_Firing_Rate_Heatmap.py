@@ -151,15 +151,15 @@ print('\n')
 
 # Cross Session Data Concatenation
 [X_for_training, X_for_prediction,
-x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, 
+x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, 
+x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,
 x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.cross_session_data_concatenation(
 session_name, feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
-x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label, x_position_target, y_position_target,
-x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+x_position_label, y_position_label,  x_velocity_label, y_velocity_label,  x_acceleration_label, y_acceleration_label,  x_position_target, y_position_target,
+x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, 
+x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, 
+x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,
 x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
 print('shape of X_for_training before', X_for_training.shape)
 
@@ -308,7 +308,7 @@ testing_y_6 = testing_y_6.float()
 shutil.rmtree(Firing_Rate_Visualization)
 
 # Start plotting
-reduce_time_bin = 50
+reduce_time_bin = 70
 my_fontsize = 30
 my_plot_width = 30
 my_plot_height = 20
@@ -373,7 +373,7 @@ plt.close()
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
 sns.set(font_scale=3)
 
-f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [12, 1, 1, 1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, figsize=(my_plot_width, my_plot_height*1.2))
+f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [12, 1, 1, 1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, constrained_layout=True , figsize=(my_plot_width, my_plot_height*1.2))
 
 cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), 4 ]}
 sns.heatmap( data=data, vmax=4 ,xticklabels=False, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', ax=ax[0]) # important, not ax[0] = sns.heatmap(...)
