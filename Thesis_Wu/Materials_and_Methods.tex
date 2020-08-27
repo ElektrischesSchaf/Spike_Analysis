@@ -294,19 +294,26 @@ Notation $\circ$ means elementwise multiplication for two tensors of same shape.
 Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}), which squashes the input value from ($-\infty$, $\infty$) to (0,1).
 $\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}), squashing the input value from ($-\infty$, $\infty$) to (-1,1).
 Two functions plotted in Figure \ref{fig:sigmoid_and_tanh}.
-However, both of them have drawbacks of saturation problem, e.g., input value outside the range [-4, +4] will be nearly 0 after activations, 
+However, both of them have drawbacks of saturation problem, e.g., the derivative of input value outside the range [-4, +4] will be nearly 0 after activations, 
 making its gradient vanish and slowing down learninig process.
 The solution about this issue will be addressed in Section~\ref{sec:layer_norm}.
 
 \begin{figure}[H]
-	\begin{center}
-        \includegraphics[width=0.6\textwidth]{sigmoid_and_tanh.jpg}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Sigmoid and hyperbolic tangent}
+    \begin{center}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{sigmoid_and_tanh.png}
+            \captionsetup{width=1\textwidth}
+            \caption{Sigmoid and hyperbolic tangent}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{derivative_sigmoid_and_tanh.png}
+            \captionsetup{width=1\textwidth}
+            \caption{First derivative of sigmoid and hyperbolic tangent}
+        \end{subfigure}
+        \caption{Activation functions}
         \label{fig:sigmoid_and_tanh}
-	\end{center}	
+	\end{center}
 \end{figure}
-
 
 At each timestep, a single GRU cell can take in two tensors, one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, which is the output from last timestep.
 In the process of calculating each gate value (Equation \ref{eq:reset_gate}, \ref{eq:update_gate}) and $\hat{h_t}$ (Equation \ref{eq:h_hat}),
@@ -441,6 +448,30 @@ When implementing it on GRU,
 \end{align}
 
 \noindent where $\alpha_i$ and $\beta_i$ are initialized as vector of zeros and ones, respectively.
+
+The affect of the layer normalization is illustrated in Figure~\ref{fig:layer_norm_before_after},
+whicih we simulate two extreme cases of hidden state distributions.
+First one has a dense distribution but the mean is deviated from zero, making most of its values above $+4$, and will be mapped approximately to zero no matter in both activation.
+The second case has the mean of zero, but its wild distribution makes only a portion of its elements have gradient other than zero, after activations.
+
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.48\textwidth}
+            \captionsetup{width=1\textwidth}
+            \includegraphics[width=1\textwidth]{activation_histogram_before.png}
+            \caption{Before LN}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \captionsetup{width=1\textwidth}
+            \includegraphics[width=1\textwidth]{activation_histogram_after.png}
+            \caption{After LN}
+        \end{subfigure}
+        \captionsetup{width=0.5\textwidth}
+        \caption{LN comparison}
+        \label{fig:layer_norm_before_after}
+    \end{center}
+\end{figure}
 
 \subsection{Attention Mechanism}
 \cite{lin2017structured} proposed a concise but effective attention mechanism.
