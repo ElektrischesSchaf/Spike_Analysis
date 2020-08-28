@@ -124,10 +124,6 @@ The fingertip velocity and acceleration were then computed afterwards by discret
     \end{center}
 \end{figure}
 
-Here I quote the e-mail response from the corresponding author, Joseph O'Doherty, of his explaination about the ICMS:
-\begin{displayquote}
-"In these data ICMS was not used, so any signals in the data are putative single units/multiunits from Broadmann Area 1. In pilot sessions, I found that these neurons contained responses to touch but I have not quantitatively analyzed this."
-\end{displayquote}
 
 
 \newpage
@@ -316,7 +312,7 @@ The solution about this issue will be addressed in Section~\ref{sec:layer_norm}.
 \end{figure}
 
 At each timestep, a single GRU cell can take in two tensors, one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, which is the output from last timestep.
-In the process of calculating each gate value (Equation \ref{eq:reset_gate}, \ref{eq:update_gate}) and $\hat{h_t}$ (Equation \ref{eq:h_hat}),
+In the process of calculating each gate value (Equation \ref{eq:reset_gate}, \ref{eq:update_gate}) and $\tilde{h_t}$ (Equation \ref{eq:h_hat}),
 hidden state from last timestep ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
 and so does the input tensor ($x_t$) will be multiplied by its own weights ($U_r$, $U_z$, $U$).
 After the multiplication, 3 biases ($b_r$, $b_z$, $b$) will be added to the results before entering the activation functions
@@ -429,8 +425,8 @@ When implementing it on GRU,
             z_t \\
             r_t
         \end{pmatrix} &= W_h h_{t-1} + W_x x_t \\
-        \hat{ h_t } &= \tanh( W x_t + \sigma (r_t) \odot \left( U h_{t-1} \right) ) \\
-        h_t &= \left( 1- \sigma(z_t) \right) h_{t-1} + \sigma(z_t) \hat{h_t}
+        \tilde{ h_t } &= \tanh( W x_t + \sigma (r_t) \odot \left( U h_{t-1} \right) ) \\
+        h_t &= \left( 1- \sigma(z_t) \right) h_{t-1} + \sigma(z_t) \tilde{h_t}
     \end{split}
 \end{align}
 
@@ -442,8 +438,8 @@ When implementing it on GRU,
             z_t \\
             r_t
         \end{pmatrix} &=  LN( W_h h_{t-1} ; \ \alpha_1, \ \beta_1 ) + LN(  W_x x_t ; \ \alpha_2 , \ \beta_2 ) \\
-        \hat{ h_t } &= \tanh(  LN( W x_t ; \ \alpha_3, \ \beta_3 ) + \sigma (r_t) \odot LN( U h_{t-1} ; \ \alpha_4, \beta_4 ) ) \\
-        h_t &= \left( 1- \sigma(z_t) \right) h_{t-1} + \sigma(z_t) \hat{h_t}
+        \tilde{ h_t } &= \tanh(  LN( W x_t ; \ \alpha_3, \ \beta_3 ) + \sigma (r_t) \odot LN( U h_{t-1} ; \ \alpha_4, \beta_4 ) ) \\
+        h_t &= \left( 1- \sigma(z_t) \right) h_{t-1} + \sigma(z_t) \tilde{h_t}
     \end{split}
 \end{align}
 

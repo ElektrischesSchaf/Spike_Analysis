@@ -120,7 +120,7 @@ class Plotting():
         if type_name=='vel':
             ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
-            ax[2].set_ylabel( 'Acceleration (mm/s^2)', rotation=90)
+            ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
         ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
         ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 
@@ -207,7 +207,7 @@ class Plotting():
         if type_name=='vel':
             ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
-            ax[2].set_ylabel( 'Acceleration (mm/s^2)', rotation=90)
+            ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
         ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
         ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 
@@ -325,7 +325,7 @@ class Plotting():
         if type_name=='vel':
             ax[3].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
-            ax[3].set_ylabel( 'Acceleration (mm/s^2)', rotation=90)
+            ax[3].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
         ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
         ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 
@@ -426,7 +426,7 @@ class Plotting():
         if type_name=='vel':
             ax[3].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
-            ax[3].set_ylabel( 'Acceleration (mm/s^2)', rotation=90)
+            ax[3].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
         ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
         ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 
@@ -544,7 +544,7 @@ class Plotting():
         if type_name=='vel':
             ax[3].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
-            ax[3].set_ylabel( 'Acceleration (mm/s^2)', rotation=90)
+            ax[3].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
         ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
         ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 
