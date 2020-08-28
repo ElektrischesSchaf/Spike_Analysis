@@ -424,9 +424,9 @@ When implementing it on GRU,
         \begin{pmatrix}
             z_t \\
             r_t
-        \end{pmatrix} &= W_h h_{t-1} + W_x x_t \\
-        \tilde{ h_t } &= \tanh( W x_t + \sigma (r_t) \odot \left( U h_{t-1} \right) ) \\
-        h_t &= \left( 1- \sigma(z_t) \right) h_{t-1} + \sigma(z_t) \tilde{h_t}
+        \end{pmatrix} &=  \sigma( W_h h_{t-1} ) + \sigma( W_x x_t ) \\
+        \tilde{ h_t } &= \tanh( W x_t +  r_t \odot \left( U h_{t-1} \right) ) \\
+        h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h_t}
     \end{split}
 \end{align}
 
@@ -437,9 +437,9 @@ When implementing it on GRU,
         \begin{pmatrix}
             z_t \\
             r_t
-        \end{pmatrix} &=  LN( W_h h_{t-1} ; \ \alpha_1, \ \beta_1 ) + LN(  W_x x_t ; \ \alpha_2 , \ \beta_2 ) \\
-        \tilde{ h_t } &= \tanh(  LN( W x_t ; \ \alpha_3, \ \beta_3 ) + \sigma (r_t) \odot LN( U h_{t-1} ; \ \alpha_4, \beta_4 ) ) \\
-        h_t &= \left( 1- \sigma(z_t) \right) h_{t-1} + \sigma(z_t) \tilde{h_t}
+        \end{pmatrix} &=   \sigma( LN( W_h h_{t-1} ; \ \alpha_1, \ \beta_1 ) ) + \sigma( LN(  W_x x_t ; \ \alpha_2 , \ \beta_2 ) ) \\
+        \tilde{ h_t } &= \tanh(  LN( W x_t ; \ \alpha_3, \ \beta_3 ) +  r_t \odot LN( U h_{t-1} ; \ \alpha_4, \ \beta_4 ) ) \\
+        h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h_t}
     \end{split}
 \end{align}
 
