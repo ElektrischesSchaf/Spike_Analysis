@@ -296,7 +296,7 @@ class regular_modules():
         if kinematic_variable_type == 'x_and_y_vel':
             plt.ylabel('Velocity (mm/s)', fontsize=25)
         if kinematic_variable_type == 'x_and_y_acc':
-            plt.ylabel('Acceleration (mm/s^2)', fontsize=25)
+            plt.ylabel('Acceleration (mm/$s^2$)', fontsize=25)
 
         plt.xticks(fontsize=25, color="black")
         plt.yticks(fontsize=25, color="black")
