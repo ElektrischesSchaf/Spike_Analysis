@@ -62,7 +62,7 @@ session_file_list = List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRU_with_Spike_Single_49_Session_2_outputs_one_way_real_LN'
-MAX_EPOCH = 75
+MAX_EPOCH = 100
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
@@ -220,7 +220,8 @@ for session_k in range(len(session_file_list)):
         print('\n')
 
     if session_name.startswith('Chewie'):
-
+        pass
+        '''
         file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'    
         time_stamp_64ms=[]
 
@@ -264,7 +265,7 @@ for session_k in range(len(session_file_list)):
         x_velocity_label, y_velocity_label,  
         x_acceleration_label, y_acceleration_label, 
         x_position_target, y_position_target] = chewie_file_processing.get_labels(file_name_1, the_sampling_rate)
-
+        '''
 
     # Cross Session Data Concatenation
     [X_for_training, X_for_prediction,
@@ -372,7 +373,8 @@ for session_k in range(len(session_file_list)):
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    max_epoch = epoch_handle(session_name) + 30
+    # max_epoch = epoch_handle(session_name) + 30
+    max_epoch = MAX_EPOCH
 
     # GRU Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
