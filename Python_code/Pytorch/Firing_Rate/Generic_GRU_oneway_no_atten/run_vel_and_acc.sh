@@ -1,3 +1,3 @@
 #! /bin/bash
-python single_37_sess_spike_GRU_vel_one_way_real_LN.py &&
-python single_37_sess_spike_GRU_acc_one_way_real_LN.py
+python GRU_vel_one_way_no_LN_no_atten.py &&
+python GRU_acc_one_way_no_LN_no_atten.py
