@@ -98,12 +98,16 @@ with the weights equal to the testing data length.
     \caption{Performances Weighted Average $R^2$}
     \begin{tabular}{cccccccccc}
         \hline
-        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Attention}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{LN}}}    & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{Penalization}}}  & \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{GRU}}}  & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
-        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Mechanism}}}  & \multicolumn{1}{c}{}                                & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{Term}}}          & \multicolumn{1}{c|}{}                               & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} \\
+        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Attention}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{LN}}}    & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{Penalization}}}  & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{GRU}}}          & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
+        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Mechanism}}}  & \multicolumn{1}{c}{}                                & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{Term}}}          & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{Direction(s)}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} \\
         \hline
-        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & oneway & 0.52 & 0.68  & 0.65 & 0.76 & 0.35 & 0.40 \\ \\
-        \textcolor{red}{\xmark} & \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & oneway & 0.52 & 0.69 & 0.65 & 0.76  & 0.38 & 0.47 \\ \\
-        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & bidirectional & 0.55 & 0.71 &  &  &  &  \\ \\
+        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & $\longrightarrow$ & 0.52 & 0.68  & 0.65 & 0.76 & 0.35 & 0.40 \\
+        \textcolor{red}{\xmark} & \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & $\longrightarrow$ & 0.52 & 0.69 & 0.65 & 0.76  & 0.38 & 0.47 \\ 
+        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & $\longleftrightarrow$ & 0.55 & 0.71 &  &  & 0.41 & 0.48 \\
+        \\
+        \hline
+        \multicolumn{4}{c}{ \cite{makin2018} } & 0.46 & 0.70  & 0.58 & 0.74 & 0.29 & 0.40 \\
+        \hline
     \end{tabular}
     \label{tab:weighted_average_with_makin}
 \end{table}
