@@ -61,7 +61,7 @@ List_FILE = ALL_List_FILE[:]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'GRU_with_Spike_Single_49_Session_2_outputs_bidir_LN'
+model_name = 'GRU_Single_Session_2_outputs_bidir_LN_self_atten'
 MAX_EPOCH = 100
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2

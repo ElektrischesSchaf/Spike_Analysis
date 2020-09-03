@@ -61,7 +61,7 @@ List_FILE = ALL_List_FILE[:]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'Single_session_GRU_outputs_one_way_real_LN_no_atten_no_atten'
+model_name = 'GRU_Single_session_2_outputs_one_way_no_LN_no_atten'
 MAX_EPOCH = 100
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
