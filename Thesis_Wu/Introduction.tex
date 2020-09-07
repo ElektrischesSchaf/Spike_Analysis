@@ -49,16 +49,20 @@ In Table~\ref{tab:spike_research}
     \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
     \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        \\
     \hline
-    \cite{georgopoulos1986neuronal} & Linear & Rhesus Monkey & \makecell{ Movement\\direction } \\ \\
-    \cite{jwo2007practical}     & \multirow{10}{*}{Kalman filter}   & & \\ \\
-    \cite{homer2013mixing}      &                                   & & \\ \\
-    \cite{li2016improved}       &                                   & & \\ \\
-    \cite{vaskov2018cortical}   &                                   & & \\ \\
-    \cite{shaikh2019towards}    &                                   & & \\ \\
-    \cite{tampuu2019efficient}  & LSTM                              & Rodent & \makecell{2D\\trajectory} \\ \\
-    \hline
-    \label{tab:spike_research}
     \endhead
+    \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
+    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & Macaque monkeys &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
+    \cite{dethier2013design}    & \makecell{Kalman filter\\Spiking neural setworks} & Monkeys & \makecell{Center-out\\Pinball task\\by computer cursors} \\ \\
+    \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
+    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & Rhesus monkeys & \makecell{ Center-out reaching\\Point-to-point pursuit\\by joystick } \\ \\
+    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & Rhesus monkeys & \makecell{ Center-out reaching\\by virtual hand} \\ \\
+    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
+    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ 2D\\trajectory } \\
+    \hline
+    % some as dethier2013design \cite{dethier2011brain}     & & & \\ \\
+    % some as dethier2013design \cite{dethier2011spiking} & & & \\ \\
+    % no decoder \cite{jwo2007practical}     & \multirow{10}{*}{Kalman filter}   & & \\ \\
+    \label{tab:spike_research}
 \end{longtable}
 
 However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
@@ -77,14 +81,19 @@ Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and th
         \multicolumn{1}{c}{}                                      &  \multicolumn{1}{c}{}                                           & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                           \\
         \hline
         \endhead
+        \cite{quiroga2009}          & \makecell{Instantaneous\\phase\\1-4Hz}     & Bayesian      & Rodent    & \makecell{ Heading predictions} \\ \\
+        \cite{kumar2018eeg}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{ Motor Imagery\\classification} \\ \\
+        \cite{ahmadi2019decoding}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & Rhesus Monkey    & \makecell{ Hand movement\\reconstruction } \\ \\
+        \cite{scherberger2005cortical} & \makecell{Magnitude\\0-5Hz\\5-15Hz\\$\vdots$\\95-105Hz} & \makecell{Bayesian\\classifier} & Macaque monkeys & \makecell{Arm reaching\\Saccade} \\ \\
+        \cite{ince2010high} & \makecell{Magnitude\\0.3-4Hz\\4-10Hz\\$\vdots$\\48-200Hz} & \makecell{Binary\\linear\\classifiers} & Rhesus monkeys & \makecell{ Center-out reaching\\by manipulandum} \\ \\
+        \cite{tan2016decoding} & \makecell{Magnitude\\13-30Hz\\55-90Hz} & \makecell{Linear\\dynamic\\model} & Human  & \makecell{Dynamometer\\gripping}　\\ \\
+        \cite{flint2012accurate} & & & & \\ \\
+        \cite{tseng2019decoding} & & & & \\ \\
+        \hline
         % no decoder \makecell{\cite{siapas2005}}            & theta (4-10Hz)                        & \makecell{Instantaneous\\phase}   &   & Place cells  \\ \\
-        \makecell{\cite{quiroga2009}}          & \makecell{Instantaneous\\phase\\1-4Hz}     & Bayesian      & Rodent    & \makecell{ Heading predictions} \\ \\
         % no decoder \makecell{\cite{einevoll2013}}          & LFP                                   & Magnitude                         & \makecell{Current\\source\\density}  & \makecell{  Sensory stimuli } \\ \\
         % no decoder\makecell{\cite{coude2014}}             & \makecell{7-13Hz\\13-19Hz\\19-25Hz}   & Magnitude                         &   & \makecell{Monkey\\ } \\ \\
         % no decoder\makecell{\cite{cattani2015}}           &\makecell{Delta (1-4Hz)\\Theta (4-8Hz)}& \makecell{Instantaneous\\phase}   &   & \makecell{ Monkeys \\ binocularly presented \\ a color movie}  \\ \\
-        \makecell{\cite{kumar2018eeg}}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{ Motor Imagery\\classification} \\ \\
-        \makecell{\cite{ahmadi2019decoding}}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & Rhesus Monkey    & \makecell{ Hand movement\\reconstruction } \\ \\
-        \hline
     \label{tab:LFP_research}
 \end{longtable}
 
