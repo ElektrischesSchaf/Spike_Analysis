@@ -219,6 +219,7 @@ For other experiments, different width of time bins were used to acquire differe
 The heatmap of the firing rate within 50 time bins and the 6 kinematic variables are showed in Figure \ref{fig:firing_rate_and_kinematic_variable}.
 For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x- and y-axis, but omitting the z-axis.
 The heatmap is showing an relationship between the occurrance of movements and the intensity of spike firing.
+Empty units in this session have been removed, as actual number of sorted units in each session is listed in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
 
 \begin{figure}[H]
     \begin{center}
@@ -229,7 +230,20 @@ The heatmap is showing an relationship between the occurrance of movements and t
     \end{center}
 \end{figure}
 
-Empty units in this session have been removed, as actual number of sorted units in each session is listed in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
+To boost the accuracy of the decoders, many researches used several past BMI signal samples to predict the kinematic of the right next time step. 
+The term \textit{tap size} indicates the number of the past input neural signal samples \citep{nakagome2020empirical}, which in our case, is the number of past time bins.
+As an example illustrated in Figure~\ref{fig:time_bin_and_prediction}, the input dimension is the number of sorted units, and the model has the tap size of 3.
+Since it performs a continuous decoding senario, every kinematic variables in each time bin expect for the first 3 ones will be predicted.
+And the input 
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{time_bin_and_prediction.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Tap sizes}
+        \label{fig:time_bin_and_prediction}
+    \end{center}
+\end{figure}
 
 \newpage
 \section{Deep Neural Network}
