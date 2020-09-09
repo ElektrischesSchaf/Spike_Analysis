@@ -51,13 +51,15 @@ In Table~\ref{tab:spike_research}
     \hline
     \endhead
     \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
-    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & Macaque monkeys &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
+    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
     \cite{dethier2013design}    & \makecell{Kalman filter\\Spiking neural setworks} & Monkeys & \makecell{Center-out\\Pinball task\\by computer cursors} \\ \\
     \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
-    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & Rhesus monkeys & \makecell{ Center-out reaching\\Point-to-point pursuit\\by joystick } \\ \\
-    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & Rhesus monkeys & \makecell{ Center-out reaching\\by virtual hand} \\ \\
+    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\Point-to-point pursuit\\by joystick } \\ \\
+    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} \\ \\
+    \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} \\ \\
     \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
-    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ 2D\\trajectory } \\
+    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ 2D\\trajectory } \\ \\
+    \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Center-out reaching\\by joystick} \\ 
     \hline
     % some as dethier2013design \cite{dethier2011brain}     & & & \\ \\
     % some as dethier2013design \cite{dethier2011spiking} & & & \\ \\
@@ -81,14 +83,13 @@ Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and th
         \multicolumn{1}{c}{}                                      &  \multicolumn{1}{c}{}                                           & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                           \\
         \hline
         \endhead
+        \cite{scherberger2005cortical} & \makecell{Magnitude\\0-5Hz\\5-15Hz\\$\vdots$\\95-105Hz} & \makecell{Bayesian\\classifier} & \makecell{Macaque\\monkeys} & \makecell{Arm reaching\\Saccade} \\ \\
         \cite{quiroga2009}          & \makecell{Instantaneous\\phase\\1-4Hz}     & Bayesian      & Rodent    & \makecell{ Heading predictions} \\ \\
-        \cite{kumar2018eeg}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{ Motor Imagery\\classification} \\ \\
-        \cite{ahmadi2019decoding}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & Rhesus Monkey    & \makecell{ Hand movement\\reconstruction } \\ \\
-        \cite{scherberger2005cortical} & \makecell{Magnitude\\0-5Hz\\5-15Hz\\$\vdots$\\95-105Hz} & \makecell{Bayesian\\classifier} & Macaque monkeys & \makecell{Arm reaching\\Saccade} \\ \\
-        \cite{ince2010high} & \makecell{Magnitude\\0.3-4Hz\\4-10Hz\\$\vdots$\\48-200Hz} & \makecell{Binary\\linear\\classifiers} & Rhesus monkeys & \makecell{ Center-out reaching\\by manipulandum} \\ \\
+        \cite{ince2010high} & \makecell{Magnitude\\0.3-4Hz\\4-10Hz\\$\vdots$\\48-200Hz} & \makecell{Binary\\linear\\classifiers} & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by manipulandum} \\ \\
+        \cite{flint2012accurate} & \makecell{Magnitude\\0-4Hz\\7-20Hz\\$\vdots$\\200-300Hz} & Wiener cascade & \makecell{Rhesus\\monkeys} & \makecell{Random-traget task\\by hands} \\ \\
         \cite{tan2016decoding} & \makecell{Magnitude\\13-30Hz\\55-90Hz} & \makecell{Linear\\dynamic\\model} & Human  & \makecell{Dynamometer\\gripping}　\\ \\
-        \cite{flint2012accurate} & & & & \\ \\
-        \cite{tseng2019decoding} & & & & \\ \\
+        \cite{kumar2018eeg}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{ Motor Imagery\\classification} \\ \\
+        \cite{ahmadi2019decoding}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & \makecell{Rhesus\\Monkey}    & \makecell{ Hand movement\\reconstruction } \\
         \hline
         % no decoder \makecell{\cite{siapas2005}}            & theta (4-10Hz)                        & \makecell{Instantaneous\\phase}   &   & Place cells  \\ \\
         % no decoder \makecell{\cite{einevoll2013}}          & LFP                                   & Magnitude                         & \makecell{Current\\source\\density}  & \makecell{  Sensory stimuli } \\ \\
