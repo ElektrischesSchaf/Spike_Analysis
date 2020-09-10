@@ -231,10 +231,14 @@ Empty units in this session have been removed, as actual number of sorted units 
 \end{figure}
 
 To boost the accuracy of the decoders, many researches used several past BMI signal samples to predict the kinematic of the right next time step. 
-The term \textit{tap size} indicates the number of the past input neural signal samples \citep{nakagome2020empirical}, which in our case, is the number of past time bins.
-As an example illustrated in Figure~\ref{fig:time_bin_and_prediction}, the input dimension is the number of sorted units, and the model has the tap size of 3.
-Since it performs a continuous decoding senario, every kinematic variables in each time bin expect for the first 3 ones will be predicted.
-And the input 
+The term \textit{tap size} indicates the number of the past input neural signal samples \citep{nakagome2020empirical}, 
+which in our case, is the number of past time bins.
+As an example illustrated in Figure~\ref{fig:time_bin_and_prediction}, 
+the input dimension is the number of sorted units, and the model has the tap size of 3.
+Since it performs a continuous decoding senario, 
+every kinematic variables in each time bin expect for the first 3 ones will be predicted.
+And the input time bins used to predict the kinematic variable at time $t$ and its previous time step $t-1$ happens to overlap,
+and in this case with the tap size is 3, the overlapping time bins are 2.
 
 \begin{figure}[H]
     \begin{center}
