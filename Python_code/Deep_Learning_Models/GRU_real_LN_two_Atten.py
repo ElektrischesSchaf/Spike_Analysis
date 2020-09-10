@@ -8,7 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from .GRU_layernorm_cell import LayerNormGRUCell
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
+'''
 class Real_Layer_GRU_bidir(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
         super(Real_Layer_GRU_bidir, self).__init__()
@@ -137,7 +137,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         out = self.label( out )
 
         return out, attn_weight_matrix
-
+'''
 class  Real_Layer_GRU_one_way(torch.nn.Module):
 
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
@@ -159,16 +159,19 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         r = int( max_timestep/4 )
         da= int( hidden_dim/2 )
 
+        da_hidden_units = 5
+        r_hidden_units = 10
+
         self.W_s1_1 = torch.nn.Linear( hidden_dim, da )
         self.W_s2_1 = torch.nn.Linear( da, r )
 
-        self.W_s1_2 = torch.nn.Linear( max_timestep, da )
-        self.W_s2_2 = torch.nn.Linear( da, r )
+        self.W_s1_2 = torch.nn.Linear( max_timestep, da_hidden_units )
+        self.W_s2_2 = torch.nn.Linear( da_hidden_units, r_hidden_units )
 
         self.fc_layer_1 = torch.nn.Linear( r*hidden_dim, int(r*hidden_dim/2))
-        self.fc_layer_2 = torch.nn.Linear( r*max_timestep, int(r*max_timestep/2))
+        self.fc_layer_2 = torch.nn.Linear( r*max_timestep, int(r_hidden_units*max_timestep/2))
 
-        self.label = torch.nn.Linear( int(r*hidden_dim/2)+int(r*max_timestep/2), output_dim )
+        self.label = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), output_dim )
 
     def attention_net_temporal(self, gru_output):
         attn_weight_matrix = self.W_s2_1(torch.tanh(self.W_s1_1(gru_output)))
