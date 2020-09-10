@@ -253,9 +253,9 @@ and in this case with the tap size is 3, the overlapping time bins are 2.
 \section{Deep Neural Network}
 \subsection{Recurrent Neural Network}
 \label{sec:RNN}
-Figure~\ref{fig:unfold_rnn} illustrates how basic RNNs actual \textit{recur}.
-The weights inside one RNN cell is consistant during a sequence.
-The unfold diagram simply indicates how the input and output from the same RNN cell differs in each timestep.
+Figure~\ref{fig:unfold_rnn} illustrates how basic RNNs \textit{recur}.
+The weights inside one RNN cell is consistant when it processes a sequence.
+This diagram indicates how the input and output from the same RNN cell differs in each timestep.
 
 \begin{figure}[H]
     \begin{center}
@@ -517,6 +517,9 @@ The function $ softmax: \mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
 \end{align}
 \noindent such that the summation of the vector $\vec{a}$ is $1$.
 The embedding vector $\vec{m}$ is the new feature of size $(1 \times u)$, and can be fed into the next layer.
+
+\todo[inline]{explain fc in 2D matrix form}
+\todo[inline]{https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer}
 
 The vector representation may focues on only one specific part of the input sequence, 
 and is expected to reflect an aspect in the sequence.
