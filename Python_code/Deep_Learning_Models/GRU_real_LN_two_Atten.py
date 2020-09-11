@@ -169,7 +169,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         self.W_s2_2 = torch.nn.Linear( da_hidden_units, r_hidden_units )
 
         self.fc_layer_1 = torch.nn.Linear( r*hidden_dim, int(r*hidden_dim/2))
-        self.fc_layer_2 = torch.nn.Linear( r*max_timestep, int(r_hidden_units*max_timestep/2))
+        self.fc_layer_2 = torch.nn.Linear( r_hidden_units*max_timestep, int(r_hidden_units*max_timestep/2))
 
         self.label = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), output_dim )
 
