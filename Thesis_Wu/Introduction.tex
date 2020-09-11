@@ -52,13 +52,13 @@ In Table~\ref{tab:spike_research}
     \endhead
     \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
     \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
-    \cite{dethier2013design}    & \makecell{Kalman filter\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\Pinball task\\by computer cursors} \\ \\
+    \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\Pinball task\\by computer cursors} \\ \\
     \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
     \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } \\ \\
     \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} \\ \\
     \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} \\ \\
     \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
-    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ 2D\\trajectory } \\ \\
+    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } \\ \\
     \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\Center-out reaching\\by joystick} \\ 
     \hline
     % some as dethier2013design \cite{dethier2011brain}     & & & \\ \\
@@ -192,9 +192,13 @@ Similar attention techniques can be seen in sentiment classification research \c
 where they appended the attention mechanism right after the LSTM outputs and named it attention-based LSTM.
 They also visualized the aspect in each sentence, e.g., the term "service" or "food" by showing the weights in attention vectors.
 They can tell the important words from the whole sentence.
-In EEG signal processing, \cite{zhang2019convolutional} used both CNN and RNN to extract the spatio and temporal dynamics.
+
+Several different means of attention mechanism were also implemented in BCI field.
+\cite{zhang2020motor} used both CNN and RNN to extract the spatio and temporal dynamics in EEG signal processing, 
+and its mechanism named \textit{Convolutional Recurrent Attention Model}.
 The self-attention module was placed in the last layer, after the raw signal was first processed by CNN and then RNN.
 The proposed method, convolutional recurrent attention model outperformed other state-of-the-art methods in EEG classification tasks.
+
 
 
 \section{Normalization}
