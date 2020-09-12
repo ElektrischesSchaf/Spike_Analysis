@@ -156,11 +156,11 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # Layer Normalization
         self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
 
-        r = int( max_timestep/4 )
         da= int( hidden_dim/2 )
+        r = int( max_timestep/4 )
 
         da_hidden_units = 5
-        r_hidden_units = 10
+        r_hidden_units = 2
 
         self.W_s1_1 = torch.nn.Linear( hidden_dim, da )
         self.W_s2_1 = torch.nn.Linear( da, r )
