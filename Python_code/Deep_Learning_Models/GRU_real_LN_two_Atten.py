@@ -8,7 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from .GRU_layernorm_cell import LayerNormGRUCell
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-'''
+
 class Real_Layer_GRU_bidir(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
         super(Real_Layer_GRU_bidir, self).__init__()
@@ -33,23 +33,36 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         # self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-        r = int( max_timestep/4 )
         da= int( hidden_dim/2 )
+        r = int( max_timestep/4 )
+
+        da_hidden_units = 5
+        r_hidden_units = 2
 
         self.W_s1_1 = torch.nn.Linear( 2*hidden_dim, da )
         self.W_s2_1 = torch.nn.Linear( da, r )
-        self.fc_layer_1 = torch.nn.Linear( 2*r*hidden_dim, int(hidden_dim))
 
-        self.label = torch.nn.Linear( int(hidden_dim), output_dim )
+        self.W_s1_2 = torch.nn.Linear( max_timestep, da_hidden_units )
+        self.W_s2_2 = torch.nn.Linear( da_hidden_units, r_hidden_units )
 
-    def attention_net(self, gru_output):
-        # GRU_output=GRU_output.permute(0, 2, 1)
+        self.fc_layer_1 = torch.nn.Linear( 2*r*hidden_dim, int(r*hidden_dim/2))
+        self.fc_layer_2 = torch.nn.Linear( r_hidden_units*max_timestep, int(r_hidden_units*max_timestep/2))
+
+        self.label = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), output_dim )
+
+
+    def attention_net_temporal(self, gru_output):
         attn_weight_matrix = self.W_s2_1(torch.tanh(self.W_s1_1(gru_output)))
         attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
 
         attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
-        # print('shape of attn_weight_matrix= ', attn_weight_matrix.size())
-        # print(attn_weight_matrix)
+        return attn_weight_matrix
+
+    def attention_net_hidden_units(self, gru_output):
+        attn_weight_matrix = self.W_s2_2(torch.tanh(self.W_s1_2(gru_output)))
+        attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
+
+        attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
         return attn_weight_matrix
 
     def forward(self, x):
@@ -128,16 +141,23 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
         hidden_state_list_2_result = self.outside_layer_norm(hidden_state_list_2_result)
 
-        attn_weight_matrix = self.attention_net( hidden_state_list_2_result )
-        hidden_matrix_ = torch.bmm( attn_weight_matrix, hidden_state_list_2_result )
+        attn_weight_matrix_temporal = self.attention_net_temporal( hidden_state_list_2_result )
+
+        hidden_state_list_2_result_transpose = hidden_state_list_2_result.clone().permute(0,2,1)
+        attn_weight_matrix_hidden_units = self.attention_net_hidden_units( hidden_state_list_2_result_transpose )
+
+        hidden_matrix_temporal = torch.bmm( attn_weight_matrix_temporal, hidden_state_list_2_result )
+        hidden_matrix_units = torch.bmm( attn_weight_matrix_hidden_units, hidden_state_list_2_result_transpose )
+
+        out_forward = torch.relu( self.fc_layer_1( hidden_matrix_temporal.view( -1 , hidden_matrix_temporal.size()[1]*hidden_matrix_temporal.size()[2] ) ) )
+        out_hidden_units = torch.relu( self.fc_layer_2( hidden_matrix_units.view( -1 , hidden_matrix_units.size()[1]*hidden_matrix_units.size()[2] ) ) )
 
 
-        out = torch.relu( self.fc_layer_1( hidden_matrix_.view( -1 , hidden_matrix_.size()[1]*hidden_matrix_.size()[2] ) ) )
+        out = self.label(  torch.cat( (out_forward, out_hidden_units), 1) )
 
-        out = self.label( out )
+        return out, attn_weight_matrix_temporal, attn_weight_matrix_hidden_units
 
-        return out, attn_weight_matrix
-'''
+
 class  Real_Layer_GRU_one_way(torch.nn.Module):
 
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
