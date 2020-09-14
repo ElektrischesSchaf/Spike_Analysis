@@ -538,7 +538,30 @@ and the embedding vector $\vec{m}$ becomes a $(r \times 2u)$ or $(r \times u)$ m
 
 Eqation \ref{eq:annotation_matrix_calculation} is equivalent to a 2-layer MLP,
 the first layer reduces the dimension from $u$ to $d_a$, or in bidirectional case, reduces $2u$ to $d_a$.
-The second layer reduces the dimension from $d_a$ to $r$.
+The second layer reduces the dimension from $d_a$ to $r$, as Figure~\ref{fig:temporal_attention_in_matrix_diagram} illustrated,
+and Figure~\ref{fig:temporal_attention_in_matrix_diagram_2}.
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.3\textwidth]{temporal_attention_in_matrix_diagram.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Attention mechanism 1}
+        \fontsize{10}{12}
+        \label{fig:temporal_attention_in_matrix_diagram}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{temporal_attention_in_matrix_diagram_2.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Attention mechanism 2}
+        \fontsize{10}{12}
+        \label{fig:temporal_attention_in_matrix_diagram_2}
+    \end{center}
+\end{figure}
+
 
 \subsection{Penalization Term}
 The purpose of developing such loss function specifically for our attention mechanism is to avoid repetitive information.
@@ -558,6 +581,18 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined 
     \label{eq:frobenius_norm}
     \norm{X}_F &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|x_{ij}|}_2 }
 \end{align}
+
+\noindent illustrated in Figure~\ref{fig:penalization_term}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{penalization_term.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Penalization term}
+        \fontsize{10}{12}
+        \label{fig:penalization_term}
+    \end{center}
+\end{figure}
 
 \noindent indicates that the summation of the squared value of every element in the matrix $A A^T - I$ should be closed to $0$.
 The term $P$ itself is a kind of loss function, and the value, which is an error,
@@ -580,7 +615,8 @@ will always be $1$ since they are the dot products of two identity vectors ($ \v
 That's why substracting an identity matrix from $A A^T$ is needed when calculating $P$.
 The author of \cite{lin2017structured} claimed that in this way, 
 each annotation vector $a^i$ is encouraged to focus on fewer parts of the sequence,
-enabling each vector be focused on a single aspect.
+enabling each vector be focused on a single aspect. 
+
 
 \subsection{Visualization}
 Interpretation of the neural signals is one of the main topic in our study.
@@ -589,3 +625,14 @@ The term \textit{tap size} refer to the past time bins used to decode the curren
 In our main result, 20 tap size was used in decoding position and 10 tap size in decoding velocity and acceleration.
 With the aid of annotation matrix from the attention mechanism,
 it is possible to depict the importance of the past time bins with annotations.
+As showed in Figure~\ref{fig:visualization_vector}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{visualization_vector.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Annotation visualization}
+        \fontsize{10}{12}
+        \label{fig:visualization_vector}
+    \end{center}
+\end{figure}

@@ -143,4 +143,5 @@ However, for acceleration decoders, the loss dropped drastically with the aid of
 The reason for ordinary GRU failed to decode the acceleration is mainly caused by the wide range of this kinematic variable.
 When it comes to decoding fingertip position, the labels are distributed mainly between $100\sim-50$.
 But for velotiy the distribution is between $200\sim-200$ and acceleration $2000\sim-2000$, whereas most values are approximately zero.
-It is unlikely for a deep learing network to adapt to th
+It is unlikely for a deep learing network to adapt to this drastic range of distribution.
+\todo[inline]{here}
