@@ -52,6 +52,8 @@ First we compute the mean of the observed data:
 \noindent and since the length of the testing data varied, weighted average is used to compute the mean performance across sessions,
 with the weights equal to the testing data length.
 
+\section{Decodeing results from dataset Indy and Loco}
+
 \newpage
 \todo{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
@@ -91,30 +93,12 @@ with the weights equal to the testing data length.
     \label{fig:acceleration_prediction}
 \end{figure}
 
-\newpage
-% \begin{landscape}
-\begin{table}
-    \centering
-    \caption{Performances Weighted Average $R^2$}
-    \begin{tabular}{cccccccccc}
-        \hline
-        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Temp.}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{L.N.}}}    & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{P.T.}}} & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{GRU}}}          & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
-        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Atten.}}}  & \multicolumn{1}{c}{}                                & \multicolumn{1}{c}{}                              & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{Direction(s)}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} \\
-        \hline
-        \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & $\rightarrow$ & 0.48 & 0.68 & 0.63 & 0.69  & 0.28 & 0.26  \\ 
-        \textcolor{red}{\xmark} & \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & $\rightarrow$ & 0.52 & 0.69 & 0.65 & 0.76  & 0.38 & 0.47 \\ 
-        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & $\rightarrow$ & 0.52 & 0.68  & 0.65 & 0.76 & 0.35 & 0.40 \\
-        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & $\rightleftarrows$ & 0.55 & 0.71 & 0.65 & 0.76 & 0.41 & 0.48 \\
-        \\
-        \hline
-        \multicolumn{4}{c}{ \cite{makin2018} } & 0.46 & 0.70  & 0.58 & 0.74 & 0.29 & 0.40 \\
-        \hline
-    \end{tabular}
-    \label{tab:weighted_average_with_makin}
-\end{table}
-% \end{landscape}
 
-\section{Model Comparison}
+\section{Decodeing results from dataset Chewie}
+
+\todo[inline]{input figures here}
+
+\section{Model comparison and ablation study}
 \subsection{Effect of layer normalization}
 The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
 These diagrams help us analysis the model based on the how many epoch numbers are required for the testing loss to converge.
@@ -146,6 +130,35 @@ When it comes to decoding fingertip position, the labels are distributed mainly 
 But for velotiy the distribution is between $200\sim-200$ and acceleration $2000\sim-2000$, whereas most values are approximately zero.
 It is unlikely for a deep learing network to adapt to this drastic range of distribution.
 \todo[inline]{here}
+
+\subsection{Effect of temporal self-attention}
+
+\todo[inline]{input figures here}
+
+
+\newpage
+% \begin{landscape}
+\begin{table}
+    \centering
+    \caption{Performances Weighted Average $R^2$}
+    \begin{tabular}{cccccccccc}
+        \hline
+        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Temp.}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{L.N.}}}    & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{P.T.}}} & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{GRU}}}          & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
+        \multicolumn{1}{c}{ \multirow{1}{*}{\textbf{Atten.}}}  & \multicolumn{1}{c}{}                                & \multicolumn{1}{c}{}                              & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{Direction(s)}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} \\
+        \hline
+        \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & $\rightarrow$ & 0.48 & 0.68 & 0.63 & 0.69  & 0.28 & 0.26  \\ 
+        \textcolor{red}{\xmark} & \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & $\rightarrow$ & 0.52 & 0.69 & 0.65 & 0.76  & 0.38 & 0.47 \\ 
+        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & $\rightarrow$ & 0.52 & 0.68  & 0.65 & 0.76 & 0.35 & 0.40 \\
+        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & $\rightleftarrows$ & 0.55 & 0.71 & 0.65 & 0.76 & 0.41 & 0.48 \\
+        \\
+        \hline
+        \multicolumn{4}{c}{ \cite{makin2018} } & 0.46 & 0.70  & 0.58 & 0.74 & 0.29 & 0.40 \\
+        \hline
+    \end{tabular}
+    \label{tab:weighted_average_with_makin}
+\end{table}
+% \end{landscape}
+
 
 \section{y-axis outperforms x-axis}
 
