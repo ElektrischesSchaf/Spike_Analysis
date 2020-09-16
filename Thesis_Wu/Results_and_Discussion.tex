@@ -129,6 +129,9 @@ The reason for ordinary GRU failed to decode the acceleration is mainly caused b
 When it comes to decoding fingertip position, the labels are distributed mainly between $100\sim-50$.
 But for velotiy the distribution is between $200\sim-200$ and acceleration $2000\sim-2000$, whereas most values are approximately zero.
 It is unlikely for a deep learing network to adapt to this drastic range of distribution.
+But with the help of layer normalization to optimize the distribution of inner GRU tensors,
+The 
+
 \todo[inline]{here}
 
 \subsection{Effect of temporal self-attention}
@@ -167,3 +170,5 @@ the prediction of y-axis always exceed x-axis.
 The module of this tool is available on \url{https://github.com/robince/gcmi}.
 
 \section{Difficulty in position decoder}
+
+\cite{goodman2019postural} has mentioned similar disadvatages in hand absolute position decoding.
