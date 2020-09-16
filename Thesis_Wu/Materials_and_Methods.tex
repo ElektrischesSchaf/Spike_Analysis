@@ -348,7 +348,7 @@ The corresponding outputs of our model are the kinematic variables at time $t$.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{1-way_2-layer_GRU.png}
+        \includegraphics[width=0.7\textwidth]{1-way_2-layer_GRU.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Architecture of One-way Two-layer GRU}
         \fontsize{10}{12}
@@ -544,7 +544,7 @@ and Figure~\ref{fig:temporal_attention_in_matrix_diagram_2}.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.3\textwidth]{temporal_attention_in_matrix_diagram.png}
+        \includegraphics[height=0.4\textheight]{temporal_attention_in_matrix_diagram.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Attention mechanism 1}
         \fontsize{10}{12}
@@ -629,10 +629,46 @@ As showed in Figure~\ref{fig:visualization_vector}
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{visualization_vector.png}
+        \includegraphics[height=0.2\textheight]{visualization_vector.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Annotation visualization}
         \fontsize{10}{12}
         \label{fig:visualization_vector}
+    \end{center}
+\end{figure}
+
+
+\subsection{Architecture of our models}
+We have combined the self-attention mechanism, layer normalization and bidirectional GRU together, 
+and proposed a new aspect of using the same self-attention mechanism to conduct hidden unit attention.
+Figure~\ref{fig:Lin_Attention} showed the model with temporal attention only.
+Where $n$ is the tap size, $u$ is the GRU hyperparameter and is 256 if one-directional, 512 if bidirectional.
+Since this model only perform self-attention along temporal dimension, the dimension of $u$ will be reduced to $d_a$, is choosed to be 125, no matter one/bidirection GRU.
+$r$ is the hops of attention we intend to extract from the same sequence, and it is set as 5 in decoding position and 2 in decoding velocity and acceleration.
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[height=0.4\textheight]{Lin_Attention.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Model with temporal attention}
+        \fontsize{10}{12}
+        \label{fig:Lin_Attention}
+    \end{center}
+\end{figure}
+
+Another model is proposed in order to capture and visualize the attention among the output hidden units from GRU layers.
+After the 2-layer GRU processed the spike firing rate input tensors, we constructed 2-stream structure to seperate the path of processing temporal and unit attention.
+Simply be transposing the all the outpout hidden states from all $n$ timesteps, 
+
+\todo[line]{here}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[height=0.4\textheight]{Two_Attention.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Model with temporal attention and unit attention}
+        \fontsize{10}{12}
+        \label{fig:Two_Attention}
     \end{center}
 \end{figure}

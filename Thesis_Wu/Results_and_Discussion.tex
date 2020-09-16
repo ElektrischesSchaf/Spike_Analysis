@@ -115,6 +115,7 @@ with the weights equal to the testing data length.
 % \end{landscape}
 
 \section{Model Comparison}
+\subsection{Effect of layer normalization}
 The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
 These diagrams help us analysis the model based on the how many epoch numbers are required for the testing loss to converge.
 In the position and velocity decoders, it seems that implementing layer normalization does not contribute to a better convergence significantly since two classes of curve overlap.
@@ -145,3 +146,11 @@ When it comes to decoding fingertip position, the labels are distributed mainly 
 But for velotiy the distribution is between $200\sim-200$ and acceleration $2000\sim-2000$, whereas most values are approximately zero.
 It is unlikely for a deep learing network to adapt to this drastic range of distribution.
 \todo[inline]{here}
+
+\section{y-axis outperforms x-axis}
+
+Where we used the tool from \cite{ince2017statistical} named  Gaussian-copula mutual information (GCMI) to analysis the reason why in three kinds of kinematic variables,
+the prediction of y-axis always exceed x-axis.
+The module of this tool is available on \url{https://github.com/robince/gcmi}.
+
+\section{Difficulty in position decoder}
