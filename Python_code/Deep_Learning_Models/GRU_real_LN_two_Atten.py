@@ -28,11 +28,6 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         # Layer Normalization
         self.outside_layer_norm = torch.nn.LayerNorm( [max_timestep, 2*hidden_dim], elementwise_affine=True)
         
-
-        # Readout layer
-        # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
-        # self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
-
         da= int( hidden_dim/2 )
         r = int( max_timestep/4 )
 
@@ -45,10 +40,14 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         self.W_s1_2 = torch.nn.Linear( max_timestep, da_hidden_units )
         self.W_s2_2 = torch.nn.Linear( da_hidden_units, r_hidden_units )
 
-        self.fc_layer_1 = torch.nn.Linear( 2*r*hidden_dim, int(r*hidden_dim/2))
-        self.fc_layer_2 = torch.nn.Linear( r_hidden_units*max_timestep, int(r_hidden_units*max_timestep/2))
+        self.fc_layer_1_x = torch.nn.Linear( 2*r*hidden_dim, int(r*hidden_dim/2))
+        self.fc_layer_2_x = torch.nn.Linear( r_hidden_units*max_timestep, int(r_hidden_units*max_timestep/2))
 
-        self.label = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), output_dim )
+        self.fc_layer_1_y = torch.nn.Linear( 2*r*hidden_dim, int(r*hidden_dim/2))
+        self.fc_layer_2_y = torch.nn.Linear( r_hidden_units*max_timestep, int(r_hidden_units*max_timestep/2))
+
+        self.label_x = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), 1 )
+        self.label_y = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), 1 )
 
 
     def attention_net_temporal(self, gru_output):
