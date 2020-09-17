@@ -28,9 +28,11 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         # Layer Normalization
         self.outside_layer_norm = torch.nn.LayerNorm( [max_timestep, 2*hidden_dim], elementwise_affine=True)
 
-        self.fc_layer_1 = torch.nn.Linear( 2*hidden_dim, int(hidden_dim))
+        self.fc_layer_x = torch.nn.Linear( 2*hidden_dim, int(hidden_dim))
+        self.fc_layer_y = torch.nn.Linear( 2*hidden_dim, int(hidden_dim))
 
-        self.label = torch.nn.Linear( int(hidden_dim), output_dim )
+        self.label_x = torch.nn.Linear( int(hidden_dim), 1 )
+        self.label_y = torch.nn.Linear( int(hidden_dim), 1 )
 
     def forward(self, x):
         x=x.view(x.size(0), -1, self.input_dim)
@@ -107,12 +109,19 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
         hidden_state_list_2_result = self.outside_layer_norm(hidden_state_list_2_result)
 
-        hidden_state_list_2_result=hidden_state_list_2_result[:,-1:]
-        hidden_state_list_2_result=hidden_state_list_2_result.squeeze(1)
+        hidden_state_list_2_result = hidden_state_list_2_result[:,-1:]
+        hidden_state_list_2_result = hidden_state_list_2_result.squeeze(1)
 
-        out = torch.relu( self.fc_layer_1( hidden_state_list_2_result ))
+        hidden_state_list_2_result_x = hidden_state_list_2_result.clone()
+        hidden_state_list_2_result_y = hidden_state_list_2_result.clone()
 
-        out = self.label( out )
+        out_x = torch.relu( self.fc_layer_x( hidden_state_list_2_result_x ))
+        out_y = torch.relu( self.fc_layer_y( hidden_state_list_2_result_y ))
+
+        out_x = self.label_x( out_x )
+        out_y = self.label_y( out_y )
+
+        out = torch.cat( (out_x, out_y) ,1)
 
         return out
 
@@ -134,8 +143,11 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # Layer Normalization
         self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
 
-        self.fc_layer_1 = torch.nn.Linear( hidden_dim, int(hidden_dim/2))
-        self.label = torch.nn.Linear( int(hidden_dim/2), output_dim )
+        self.fc_layer_x = torch.nn.Linear( hidden_dim, int(hidden_dim/2))
+        self.label_x = torch.nn.Linear( int(hidden_dim/2), 1 )
+
+        self.fc_layer_y = torch.nn.Linear( hidden_dim, int(hidden_dim/2))
+        self.label_y = torch.nn.Linear( int(hidden_dim/2), 1 )
 
     
     def forward(self, x):
@@ -183,12 +195,20 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         hidden_state_list=hidden_state_list.squeeze(1)
 
-        out_forward = torch.relu( self.fc_layer_1( hidden_state_list))
+        hidden_state_list_x = hidden_state_list.clone()
+        hidden_state_list_y = hidden_state_list.clone()
 
-        out = self.label( out_forward )
+        out_x = torch.relu( self.fc_layer_x( hidden_state_list_x))
+        out_y = torch.relu( self.fc_layer_y( hidden_state_list_y))
+
+        out_x = self.label_x( out_x )
+        out_y = self.label_y( out_y )
+
+        out = torch.cat( (out_x, out_y) ,1)
 
         return out
 
+'''
 class Real_Layer_GRU_one_way_two_stream(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim, sorted_unit_numbers):
         super(Real_Layer_GRU_one_way_two_stream, self).__init__()
@@ -286,3 +306,4 @@ class Real_Layer_GRU_one_way_two_stream(torch.nn.Module):
         out = self.label( torch.cat( (out_forward_M1, out_forward_S1), 1 ) )
 
         return out
+'''

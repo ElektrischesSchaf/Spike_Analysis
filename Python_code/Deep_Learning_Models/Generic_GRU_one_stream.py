@@ -22,8 +22,11 @@ class  GRUModel(torch.nn.Module):
         self.GRU = torch.nn.GRU(input_dim, hidden_dim, layer_dim, batch_first=True, bidirectional=False)
         
         # Readout layer
-        self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
-        self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
+        self.fc1_x = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
+        self.fc2_x = torch.nn.Linear(int(hidden_dim/2), 1) # one-directional
+
+        self.fc1_y = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
+        self.fc2_y = torch.nn.Linear(int(hidden_dim/2), 1) # one-directional
 
         # self.fc1 = torch.nn.Linear(hidden_dim*2, hidden_dim) # bidirectional
         # self.fc2 = torch.nn.Linear(hidden_dim, output_dim) # bidirectional
@@ -43,11 +46,20 @@ class  GRUModel(torch.nn.Module):
         # print('real input shape= ', x.size(), '\n')
         out, _ = self.GRU(x)
         # print('out size 1= ', out.size())
-        out = torch.relu(self.fc1(out[:,-1,:] ))
+
+        out_x = out.clone()
+        out_y = out.clone()
+
+        out_x = torch.relu( self.fc1_x( out_x[:,-1,:] ) )
+        out_y = torch.relu( self.fc1_y( out_y[:,-1,:] ) )
+
         # print('out size 2= ', out.size())
-        out = self.fc2(out)
+        out_x = self.fc2_x(out_x)
+        out_y = self.fc2_y(out_y)
+
         # print('out size 3= ', out.size())
 
+        out = torch.cat( (out_x, out_y), 1)
 
         return out
 
