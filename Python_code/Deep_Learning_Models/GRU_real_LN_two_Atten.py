@@ -9,7 +9,7 @@ from .GRU_layernorm_cell import LayerNormGRUCell
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-class Real_Layer_GRU_bidir(torch.nn.Module):
+class Real_Layer_GRU_bidir_parallel(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
         super(Real_Layer_GRU_bidir, self).__init__()
         # Hidden dimensions
@@ -27,7 +27,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         
         # Layer Normalization
         self.outside_layer_norm = torch.nn.LayerNorm( [max_timestep, 2*hidden_dim], elementwise_affine=True)
-        
+
         da= int( hidden_dim/2 )
         r = int( max_timestep/4 )
 
@@ -40,14 +40,10 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         self.W_s1_2 = torch.nn.Linear( max_timestep, da_hidden_units )
         self.W_s2_2 = torch.nn.Linear( da_hidden_units, r_hidden_units )
 
-        self.fc_layer_1_x = torch.nn.Linear( 2*r*hidden_dim, int(r*hidden_dim/2))
-        self.fc_layer_2_x = torch.nn.Linear( r_hidden_units*max_timestep, int(r_hidden_units*max_timestep/2))
+        self.fc_layer_1 = torch.nn.Linear( 2*r*hidden_dim, int(r*hidden_dim/2))
+        self.fc_layer_2 = torch.nn.Linear( r_hidden_units*max_timestep, int(r_hidden_units*max_timestep/2))
 
-        self.fc_layer_1_y = torch.nn.Linear( 2*r*hidden_dim, int(r*hidden_dim/2))
-        self.fc_layer_2_y = torch.nn.Linear( r_hidden_units*max_timestep, int(r_hidden_units*max_timestep/2))
-
-        self.label_x = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), 1 )
-        self.label_y = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), 1 )
+        self.label = torch.nn.Linear( int(r*hidden_dim/2) + int(r_hidden_units*max_timestep/2), output_dim )
 
 
     def attention_net_temporal(self, gru_output):
@@ -157,7 +153,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         return out, attn_weight_matrix_temporal, attn_weight_matrix_hidden_units
 
 
-class  Real_Layer_GRU_one_way(torch.nn.Module):
+class  Real_Layer_GRU_one_way_parallel(torch.nn.Module):
 
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
         super(Real_Layer_GRU_one_way, self).__init__()
@@ -262,3 +258,120 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         out = self.label(  torch.cat( (out_forward, out_hidden_units), 1) )
 
         return out, attn_weight_matrix_temporal, attn_weight_matrix_hidden_units
+
+
+class  Real_Layer_GRU_one_way_sequential_1(torch.nn.Module):
+
+    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
+        super(Real_Layer_GRU_one_way_sequential_1, self).__init__()
+        # Hidden dimensions
+        self.hidden_dim = hidden_dim
+        self.input_dim=input_dim
+        # Number of hidden layers
+        self.layer_dim = layer_dim
+
+        # batch_first=True causes input/output tensors to be of shape
+        # (batch_dim, seq_dim, feature_dim)
+        self.GRU_Cell_forward_1 = LayerNormGRUCell( input_dim      , hidden_dim    ,  bias=True )
+        self.GRU_Cell_forward_2 = LayerNormGRUCell( hidden_dim      , hidden_dim    ,  bias=True )
+
+        # Layer Normalization
+        self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
+
+        da= int( hidden_dim/2 )
+        r =  max_timestep # int(max_timestep/2)
+
+        da_hidden_units = int( hidden_dim/2 )
+        r_hidden_units = int( hidden_dim/1 )
+
+        self.W_s1_1 = torch.nn.Linear( hidden_dim, da )
+        self.W_s2_1 = torch.nn.Linear( da, r )
+
+        self.W_s1_2 = torch.nn.Linear( r, da_hidden_units )
+        self.W_s2_2 = torch.nn.Linear( da_hidden_units, r_hidden_units )
+
+        self.fc_layer_1_x = torch.nn.Linear( r*r_hidden_units, int(r*r_hidden_units/2))
+        self.fc_layer_1_y = torch.nn.Linear( r*r_hidden_units, int(r*r_hidden_units/2))
+
+        self.label_x = torch.nn.Linear( int(r*r_hidden_units/2) , 1 )
+        self.label_y = torch.nn.Linear( int(r*r_hidden_units/2) , 1 )
+
+    def attention_net_temporal(self, gru_output):
+        attn_weight_matrix = self.W_s2_1(torch.tanh(self.W_s1_1(gru_output)))
+        attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
+
+        attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
+        return attn_weight_matrix
+
+    def attention_net_hidden_units( self, last_output ):
+        attn_weight_matrix = self.W_s2_2(torch.tanh(self.W_s1_2(last_output)))
+        attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
+
+        attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
+        return attn_weight_matrix
+    
+    def forward(self, x):
+
+        x=x.view(x.size(0), -1, self.input_dim)
+
+        # Initialize hidden state with zeros
+        h0 = torch.zeros( x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        h0=h0.to(device)
+
+        hidden_state_list=[]
+        out_list=[]
+        # time steps
+        for i , input_t in enumerate( x.chunk( x.size(1), dim=1 )):
+            input_t = input_t.squeeze(1)
+            # print('shape of input_t= ', input_t.size(), '\n')
+            h0 = self.GRU_Cell_forward_1(input_t, h0)
+            hidden_state_list += [h0]
+
+        hidden_state_list_1 = torch.stack(hidden_state_list, 0)
+
+        hidden_state_list_1 = hidden_state_list_1.permute(1,0,2)
+
+        # Initialize hidden state with zeros
+        h0 = torch.zeros( x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        h0=h0.to(device)
+
+
+        hidden_state_list=[]
+        out_list=[]
+        # time steps
+        for i , input_t in enumerate( hidden_state_list_1.chunk( hidden_state_list_1.size(1), dim=1 )):
+            input_t=input_t.squeeze(1)
+            # print('shape of input_t= ', input_t.size(), '\n')
+            h0 = self.GRU_Cell_forward_2(input_t, h0)
+            hidden_state_list+=[h0]
+
+        hidden_state_list = torch.stack(hidden_state_list, 0)
+
+        hidden_state_list = hidden_state_list.permute(1,0,2)
+
+        hidden_state_list = self.input_LN_forward(hidden_state_list)
+
+        # print('size of hidden_state_list: ', hidden_state_list.size(), '\n' )
+
+        attn_weight_matrix_temporal = self.attention_net_temporal( hidden_state_list )
+        hidden_matrix_temporal = torch.bmm( attn_weight_matrix_temporal, hidden_state_list )
+
+        hidden_matrix_temporal = hidden_matrix_temporal.permute(0, 2, 1)
+        # print('size of hidden_matrix_temporal: ', hidden_matrix_temporal.size(), '\n' )
+        
+        attn_weight_matrix_units = self.attention_net_hidden_units( hidden_matrix_temporal )
+        hidden_matrix = torch.bmm( attn_weight_matrix_units, hidden_matrix_temporal )
+
+        hidden_matrix_x = hidden_matrix.clone()
+        hidden_matrix_y = hidden_matrix.clone()
+
+        out_x = torch.relu( self.fc_layer_1_x( hidden_matrix_x.view( -1 , hidden_matrix_x.size()[1]*hidden_matrix_x.size()[2] ) ) )
+        out_y = torch.relu( self.fc_layer_1_y( hidden_matrix_y.view( -1 , hidden_matrix_y.size()[1]*hidden_matrix_y.size()[2] ) ) )
+
+
+        out_x = self.label_x( out_x )
+        out_y = self.label_y( out_y )
+
+        out = torch.cat( (out_x, out_y) ,1)
+
+        return out, attn_weight_matrix_temporal, attn_weight_matrix_units
