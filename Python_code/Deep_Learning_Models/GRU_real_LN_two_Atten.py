@@ -522,26 +522,33 @@ class  Real_Layer_GRU_one_way_sequential_3(torch.nn.Module):
         # (batch_dim, seq_dim, feature_dim)
 
 
-        da_temporal = int( hidden_dim/8 )
-        r_temporal  = int( max_timestep/5 )
+        da_temporal = int( hidden_dim/2 )
+        r_temporal  = int( hidden_dim/1 )
 
-        da_hidden_units = int( hidden_dim/2 )
-        r_hidden_units = int( hidden_dim/4 )
+        da_hidden_units = int( max_timestep/2 )
+        r_hidden_units = int( max_timestep/1 )
 
         self.GRU_Cell_forward_1 = LayerNormGRUCell( r_hidden_units      , hidden_dim    ,  bias=True )
         self.GRU_Cell_forward_2 = LayerNormGRUCell( hidden_dim      , hidden_dim    ,  bias=True )
 
-        self.W_s1_u = torch.nn.Linear( input_dim, da_hidden_units )
+        self.W_s1_u = torch.nn.Linear( max_timestep, da_hidden_units )
         self.W_s2_u = torch.nn.Linear( da_hidden_units, r_hidden_units )
 
         self.W_s1_t = torch.nn.Linear( hidden_dim, da_temporal )
         self.W_s2_t = torch.nn.Linear( da_temporal, r_temporal )
 
-        self.fc_layer_x = torch.nn.Linear( int(r_temporal*r_hidden_units), int((r_temporal*r_hidden_units)/2)  )
-        self.fc_layer_y = torch.nn.Linear( int(r_temporal*r_hidden_units), int((r_temporal*r_hidden_units)/2)  ) 
+        self.fc_layer_x = torch.nn.Linear( int(r_temporal*hidden_dim), int((r_temporal*hidden_dim)/2)  )
+        self.fc_layer_y = torch.nn.Linear( int(r_temporal*hidden_dim), int((r_temporal*hidden_dim)/2)  ) 
 
-        self.label_x = torch.nn.Linear( int((r_temporal*r_hidden_units)/2) , 1 )
-        self.label_y = torch.nn.Linear( int((r_temporal*r_hidden_units)/2) , 1 )
+        self.label_x = torch.nn.Linear( int((r_temporal*hidden_dim)/2) , 1 )
+        self.label_y = torch.nn.Linear( int((r_temporal*hidden_dim)/2) , 1 )
+
+    def attention_net_hidden_units( self, last_output ):
+        attn_weight_matrix = self.W_s2_u(torch.tanh(self.W_s1_u(last_output)))
+        attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
+
+        attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
+        return attn_weight_matrix
 
     def attention_net_temporal(self, gru_output):
         attn_weight_matrix = self.W_s2_t(torch.tanh(self.W_s1_t(gru_output)))
@@ -550,12 +557,7 @@ class  Real_Layer_GRU_one_way_sequential_3(torch.nn.Module):
         attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
         return attn_weight_matrix
 
-    def attention_net_hidden_units( self, last_output ):
-        attn_weight_matrix = self.W_s2_u(torch.tanh(self.W_s1_u(last_output)))
-        attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
 
-        attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
-        return attn_weight_matrix
     
     def forward(self, x):
 
@@ -564,12 +566,17 @@ class  Real_Layer_GRU_one_way_sequential_3(torch.nn.Module):
 
         # attention map on the units
 
-        #TODO fix dimension
-        
+        x = x.permute(0,2,1)
+        # print('shape of x= ', x.size(),  '\n')
+                        
         attn_weight_matrix_units = self.attention_net_hidden_units( x )
+
+        # print('shape of attn_weight_matrix_units= ', attn_weight_matrix_units.size(),  '\n')
+
         hidden_matrix_units = torch.bmm( attn_weight_matrix_units, x )
 
-        print('shape of hidden_matrix_units= ', hidden_matrix_units.size(),  '\n')
+        hidden_matrix_units=hidden_matrix_units.permute(0,2,1)
+        # print('shape of hidden_matrix_units= ', hidden_matrix_units.size(),  '\n')
 
         # Initialize hidden state with zeros
         h0 = torch.zeros( hidden_matrix_units.size(0), self.hidden_dim).requires_grad_() # one-directional
@@ -607,16 +614,16 @@ class  Real_Layer_GRU_one_way_sequential_3(torch.nn.Module):
         hidden_state_list = hidden_state_list.permute(1,0,2)
 
 
+        # hidden_state_list=hidden_state_list.permute(0,2,1)
+
         # print('size of hidden_state_list: ', hidden_state_list.size(), '\n' )
 
         attn_weight_matrix_temporal = self.attention_net_temporal( hidden_state_list )
         hidden_matrix_temporal = torch.bmm( attn_weight_matrix_temporal, hidden_state_list )
-        
-        attn_weight_matrix_units = self.attention_net_hidden_units( hidden_matrix_temporal )
-        hidden_matrix = torch.bmm( attn_weight_matrix_units, hidden_matrix_temporal )
 
-        hidden_matrix_x = hidden_matrix.clone()
-        hidden_matrix_y = hidden_matrix.clone()
+
+        hidden_matrix_x = hidden_matrix_temporal.clone()
+        hidden_matrix_y = hidden_matrix_temporal.clone()
 
         flatten_x = hidden_matrix_x.view( -1 , hidden_matrix_x.size()[1]*hidden_matrix_x.size()[2] )
         flatten_y = hidden_matrix_y.view( -1 , hidden_matrix_y.size()[1]*hidden_matrix_y.size()[2] )
