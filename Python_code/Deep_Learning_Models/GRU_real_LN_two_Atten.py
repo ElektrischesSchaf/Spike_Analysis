@@ -11,7 +11,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class Real_Layer_GRU_bidir_parallel(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
-        super(Real_Layer_GRU_bidir, self).__init__()
+        super(Real_Layer_GRU_bidir_parallel, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
         self.input_dim=input_dim
@@ -156,7 +156,7 @@ class Real_Layer_GRU_bidir_parallel(torch.nn.Module):
 class  Real_Layer_GRU_one_way_parallel(torch.nn.Module):
 
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
-        super(Real_Layer_GRU_one_way, self).__init__()
+        super(Real_Layer_GRU_one_way_parallel, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
         self.input_dim=input_dim
