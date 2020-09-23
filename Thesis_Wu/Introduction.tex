@@ -143,7 +143,7 @@ or create a better RNN model \citep{alom2018history}.
             \includegraphics[height=0.4\textheight]{jordan_network.png}
             \caption{Jordan network}
         \end{subfigure}
-        \caption{}
+        \caption{Early developed RNNs}
         \label{fig:elman_and_jordan}
     \end{center}
 \end{figure}
@@ -160,8 +160,8 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 
 \section{Attention Mechanism}
 \label{sec:atten}
-
 \begin{multicols}{2}
+\todo[inline]{Temporal attetion 的演進從 seq2seq model 開始，將輸入與輸出的語句找到對應的關係，再進展的 self-attention 只考慮同一個輸入語句內詞彙間的彼此關係。 }
 \cite{sutskever2014sequence} is the first research which implemented the encoder-decoder machanism (or called sequence to sequence, seq2seq) to machine translation realm.
 This structure has gained popularity also in sentiment analysis ever since.
 The structure of encoder-decoder RNN illustrated in Figure~\ref{fig:rnn_encoder_decoder}, 
@@ -177,6 +177,7 @@ the output from previous timestep will be the input of current timestep.
         \label{fig:rnn_encoder_decoder}
     \end{center}
 \end{figure}
+\todo[inline]{這張是網路上的圖，之後會重畫}
 
 \begin{multicols}{2}
 But when it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
@@ -270,4 +271,6 @@ then feed them input the self-attention mechanism.
 
 \section{Organization of This Thesis}
 \label{sec:org}
+\begin{multicols}{2}
 \todo[inline]{跳過}
+\end{multicols}

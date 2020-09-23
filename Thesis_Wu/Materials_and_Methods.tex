@@ -39,10 +39,11 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
     \end{center}
 \end{figure}
 
+
 \begin{multicols}{2}
 The monkeys were trained to perform reaching tasks with their arms in a transverse plane below their shoulder, with targets showing up in a virtual reality environment.
 Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
-and for monky Loco square grid of size $6 \times 6$ was used.
+and for monkey Loco square grid of size $6 \times 6$ was used.
 \end{multicols}
 
 \begin{figure}[H]
@@ -69,6 +70,7 @@ and for monky Loco square grid of size $6 \times 6$ was used.
         \label{fig:panels}		
 	\end{center}	
 \end{figure}
+\todo[inline]{ 三個panel的長寬尺寸還沒調成一致 }
 
 \begin{multicols}{2}
 Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
@@ -89,7 +91,6 @@ The recorded tragectory in the x- and y-axis as well as the target cue for both 
 where the solid lines indicate the actual tragectory of the fingertip and the dash lines indicate the target cue.
 \end{multicols}
 
-\todo{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟之後有包含 prediction、actual 的圖保持一致}
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
@@ -98,6 +99,7 @@ where the solid lines indicate the actual tragectory of the fingertip and the da
         \label{fig:x_and_y_trajectory_and_cue}
     \end{center}
 \end{figure}
+\todo[inline]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:decoder_performance} 章 prediction、actual 軌跡對時間作圖保持一致， }
 
 \begin{multicols}{2}
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
@@ -108,21 +110,6 @@ Fingertip position was recorded simultaneously with a six-axis electromagnetic p
 The fingertip velocity and acceleration were then computed afterwards by discrete derivative, which is simply the differeces divided by the sampling period.
 \end{multicols}
 
-% \begin{figure}[H]
-%     \centering
-%         \begin{minipage}[t]{0.48\textwidth}
-%             \centering
-%             \includegraphics[width=6cm]{monkey.jpg}
-%             \caption{Animal Experiment}
-%             \label{fig:monkey_exp_1}
-%         \end{minipage}
-%         \begin{minipage}[t]{0.48\textwidth}
-%             \centering
-%             \includegraphics[width=6cm]{monkey2.jpg}
-%             \caption{Experiment Environment}
-%             \label{fig:monkey_exp_2}
-%         \end{minipage}
-% \end{figure}
 
 \begin{figure}[H]
     \begin{center}
@@ -188,6 +175,28 @@ In Figure \ref{fig:raw_to_spike}, the upper subplot is the raw broadband signal 
 \end{figure}
 
 \begin{multicols}{2}
+To boost the accuracy of the decoders, many researches used several past BMI signal samples to predict the kinematic of the right next time step. 
+The term \textit{tap size} indicates the number of the past input neural signal samples \citep{nakagome2020empirical}, 
+which in our case, is the number of past time bins.
+As an example illustrated in Figure~\ref{fig:time_bin_and_prediction}, 
+the input dimension is the number of sorted units, and the model has the tap size of 4.
+Since it performs a continuous decoding senario, 
+every kinematic variables in each time bin expect for the first 4 ones will be predicted.
+And the input time bins used to predict the kinematic variable at time $t$ and the time bins used to predict at time $t-1$ happens to overlap,
+and since in this case the tap size is 4, the overlapping time bins are 3.
+\end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{time_bin_and_prediction.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Tap sizes}
+        \label{fig:time_bin_and_prediction}
+    \end{center}
+\end{figure}
+\todo[inline]{ 先說明 tap size ，time bin 的使用方式  }
+
+\begin{multicols}{2}
 Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session varied from 2 to 4.
 For all sessions preserved an unsorted \textit{hash} unit for each recording channel.
 Theses units contained all events which surpass the threshold on a channel but which did not match any of the operator defined templates.
@@ -212,6 +221,7 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode 
             \label{fig:indy_20160407_02_S1_ch_60}
         \end{minipage}
 \end{figure}
+\todo[inline]{ 再說明有些 session 有 M1 S1 兩個電極的資訊 }
 
 \begin{multicols}{2}
 Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms bins.
@@ -236,6 +246,8 @@ For other experiments, different width of time bins were used to acquire differe
             \label{fig:the_result_heatmap}
         \end{minipage}
 \end{figure}
+\todo[inline]{ 如何將 M1 與 S1 電極收到的 spike train 轉換成 firing rate，從 raster plot 變 heatmap。同時解釋 M1 與 S1 的 firing rate 是直接 concatenate 在一起。 }
+
 
 \begin{multicols}{2}
 The heatmap of the firing rate within 50 time bins and the 6 kinematic variables are showed in Figure \ref{fig:firing_rate_and_kinematic_variable}.
@@ -253,27 +265,8 @@ Empty units in this session have been removed, as actual number of sorted units 
         \label{fig:firing_rate_and_kinematic_variable}
     \end{center}
 \end{figure}
+\todo[inline]{最後在將 firing rate heatmap 與 運動資訊疊圖比較 }
 
-\begin{multicols}{2}
-To boost the accuracy of the decoders, many researches used several past BMI signal samples to predict the kinematic of the right next time step. 
-The term \textit{tap size} indicates the number of the past input neural signal samples \citep{nakagome2020empirical}, 
-which in our case, is the number of past time bins.
-As an example illustrated in Figure~\ref{fig:time_bin_and_prediction}, 
-the input dimension is the number of sorted units, and the model has the tap size of 3.
-Since it performs a continuous decoding senario, 
-every kinematic variables in each time bin expect for the first 3 ones will be predicted.
-And the input time bins used to predict the kinematic variable at time $t$ and its previous time step $t-1$ happens to overlap,
-and in this case with the tap size is 3, the overlapping time bins are 2.
-\end{multicols}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{time_bin_and_prediction.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Tap sizes}
-        \label{fig:time_bin_and_prediction}
-    \end{center}
-\end{figure}
 
 \newpage
 \section{Deep Neural Network}
@@ -430,9 +423,10 @@ when it is implemented in RNNs.
 Internal covariate shift is a problem caused by the variant distribution of the output of a previous layer,
 which are used to be the input of its following layer.
 It can be mitigated by fixing the mean and the variance of the summed inputs within each layer.
-By the means of normalization it can also provent the gradient vanishing problem from happening, which was brought up in Section~\ref{sec:RNN}.
+By the approach of normalization it can also provent the gradient vanishing problem from happening, which was brought up in Section~\ref{sec:RNN}.
 
 Here is the computation of mean and variance from all the hidden units in the same layer:
+
 \begin{align}
     \begin{split}
         \label{eq:normalization_term}
@@ -441,18 +435,18 @@ Here is the computation of mean and variance from all the hidden units in the sa
     \end{split}
 \end{align}
 
-\end{multicols}
-
-\begin{multicols}{2}
-\noindent where $H$ denotes the number of hidden units in a layer, all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
-Unlike batch normalization, layer normalization does not impose any constraint on the size of a mini-batch and can be used with batch size 1.
+\noindent where $H$ denotes the number of hidden units in a layer, 
+all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
+Unlike batch normalization, 
+layer normalization does not impose any constraint on the size of a mini-batch,
+such that it cam be implemented to the model with batch size 1.
 
 The original layer normalization methods is computed within a RNN cell.
-In a standard RNN, the summed inputs in the recurrent layer are computed from the current input $x_t$ and previous vector of hidden states $h^{t-1}$, 
+In a standard RNN, 
+the summed inputs in the recurrent layer are computed from the current input $x_t$ and previous vector of hidden states $h^{t-1}$, 
 which are computed as $a^t = W_{hh} h^{t-1} + W_{xh} x^{t} $. 
 Where $W_{hh}$ is the recurrent hidden to hidden weights and $W_{xh}$ are the input to hidden weights.
 The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalization terms similar to Equation \ref{eq:normalization_term}:
-
 
 \begin{align}
     \begin{split}
@@ -462,15 +456,13 @@ The layer normalizationed recurrent layer re-centers and re-scales its activatio
     \end{split}
 \end{align}
 
-\end{multicols}
 
-\begin{multicols}{2}
-\noindent where $\odot$ is the elementwise multiplication, and $b$, $g$ are defined as the bias and gain parameters of the same dimension as $h^t$.
+\noindent where $\odot$ is the elementwise multiplication, 
+and $b$, $g$ are defined as the bias and gain parameters of the same dimension as $h^t$.
 $f$ is the activation function in the RNN cell, it could be a sigmoid or hyperbolic tangent function.
 
 We define layer normalization as a function mapping $LN: \mathbb{R}^D \rightarrow \mathbb{R}^D$ with two set of adaptive parameters,
 gains $\alpha$ and biases $\beta$:
-
 
 \begin{align}
     \begin{split}

@@ -55,6 +55,10 @@ with the weights equal to the testing data length.
 \end{multicols}
 
 \section{Decodeing results from dataset Indy and Loco}
+\label{sec:decoder_performance}
+\begin{multicols}{2}
+\todo[inline]{ 同時做 temporal 與 unit attention 的 Model decoding 結果，分別畫出位置、速度、加速度對時間的預測圖。位置的解碼結果可以畫出 2D 平面軌跡圖。 }
+\end{multicols}
 
 \newpage
 \todo{ 位置、速度、加速度 各一頁 }
@@ -97,13 +101,14 @@ with the weights equal to the testing data length.
 
 
 \section{Decodeing results from dataset Chewie}
-
-\todo[inline]{input figures here}
+\begin{multicols}{2}
+\todo[inline]{ 猴子C的Decoding 結果單獨一個子章節顯示，並不列入與 Makin 的比較 }
+\end{multicols}
 
 \section{Model comparison and ablation study}
 \subsection{Effect of layer normalization}
-
 \begin{multicols}{2}
+\todo[inline]{LN 對於訓練模型收斂速度的提升}
 The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
 These diagrams help us analysis the model based on the how many epoch numbers are required for the testing loss to converge.
 In the position and velocity decoders, it seems that implementing layer normalization does not contribute to a better convergence significantly since two classes of curve overlap.
@@ -137,14 +142,14 @@ But for velotiy the distribution is between $200\sim-200$ and acceleration $2000
 It is unlikely for a deep learing network to adapt to this drastic range of distribution.
 But with the help of layer normalization to optimize the distribution of inner GRU tensors,
 The
-\todo[inline]{here}
+\todo[inline]{未完}
 
 \end{multicols}
 
 \subsection{Effect of temporal self-attention}
-
-\todo[inline]{input figures here}
-
+\begin{multicols}{2}
+\todo[inline]{ 比較有/無 attention 的預測軌跡 }
+\end{multicols}
 
 \newpage
 % \begin{landscape}
@@ -169,10 +174,9 @@ The
 \end{table}
 % \end{landscape}
 
-
 \section{y-axis outperforms x-axis}
-
 \begin{multicols}{2}
+\todo[inline]{用 Mutual Information 解釋 y 方向解碼比 x 方向 解碼還要好的現象}
 Where we used the tool from \cite{ince2017statistical} named  Gaussian-copula mutual information (GCMI) to analysis the reason why in three kinds of kinematic variables,
 the prediction of y-axis always exceed x-axis.
 The module of this tool is available on \url{https://github.com/robince/gcmi}.
@@ -180,5 +184,6 @@ The module of this tool is available on \url{https://github.com/robince/gcmi}.
 
 \section{Difficulty in position decoder}
 \begin{multicols}{2}
+\todo[inline]{解釋為什麼解碼位置要使用 tap size 20}
 \cite{goodman2019postural} has mentioned similar disadvatages in hand absolute position decoding.
 \end{multicols}
