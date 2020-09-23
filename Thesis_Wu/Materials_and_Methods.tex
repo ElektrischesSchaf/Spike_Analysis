@@ -1,6 +1,8 @@
 \section{Dataset}
 \label{sec:dataset}
 \subsection{Sabes Lab Dataset: Monkey Indy, Loco}
+
+\begin{multicols}{2}
 The first dataset, \textbf{Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology} is provided by \cite{makin2018} and made public available at \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
 It containes the recordings from two Rhesus macaque monkeys, named Indy and Loco.
 Each monkey performed a number of sessions, and in our research, a session means a consecutive experiment recording within several minutes.
@@ -10,6 +12,7 @@ Each array consisted of 96 electrodes, and the distance between two adjacent ele
 For each monkey two arrays were implanted, one was in primary motor cortex (M1) and the other was in primary somatosensory cortex (S1).
 Some sessions of the dataset were made with the recording from both arrays, whereas most of the sessions only consisted of the recording from the M1 array.
 The sampling rate of both arrays is 24.4kHz. More details regarding array type, sorted units numbers, and duration of each session can be found in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -36,10 +39,11 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
     \end{center}
 \end{figure}
 
-
+\begin{multicols}{2}
 The monkeys were trained to perform reaching tasks with their arms in a transverse plane below their shoulder, with targets showing up in a virtual reality environment.
 Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
 and for monky Loco square grid of size $6 \times 6$ was used.
+\end{multicols}
 
 \begin{figure}[H]
 	\begin{center}
@@ -66,9 +70,10 @@ and for monky Loco square grid of size $6 \times 6$ was used.
 	\end{center}	
 \end{figure}
 
-
+\begin{multicols}{2}
 Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
 Figure \ref{fig:X-Y_trajectory_in_VR_panel} 
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -79,8 +84,10 @@ Figure \ref{fig:X-Y_trajectory_in_VR_panel}
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 The recorded tragectory in the x- and y-axis as well as the target cue for both directions is in Figure \ref{fig:x_and_y_trajectory_and_cue},
 where the solid lines indicate the actual tragectory of the fingertip and the dash lines indicate the target cue.
+\end{multicols}
 
 \todo{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟之後有包含 prediction、actual 的圖保持一致}
 \begin{figure}[H]
@@ -92,13 +99,14 @@ where the solid lines indicate the actual tragectory of the fingertip and the da
     \end{center}
 \end{figure}
 
-
+\begin{multicols}{2}
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
 so we must multiply $-10$ in both x-and y-axis recordings in order to transit the fingertip coordinate to the target coordinate with the unit in micrometer.
 An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
 The experimental environment is showed in Figure \ref{fig:monkey_experiment}.
 Fingertip position was recorded simultaneously with a six-axis electromagnetic position sensors, with a 250Hz sampling rate.
 The fingertip velocity and acceleration were then computed afterwards by discrete derivative, which is simply the differeces divided by the sampling period.
+\end{multicols}
 
 % \begin{figure}[H]
 %     \centering
@@ -125,11 +133,13 @@ The fingertip velocity and acceleration were then computed afterwards by discret
 \end{figure}
 
 
-
 \newpage
 \subsection{Kording Lab Dataset: Monkey Chewie}
+
+\begin{multicols}{2}
 The second dataset is provided by \cite{dyer2017cryptography} and available at \url{https://github.com/KordingLab/DAD}.
 Only 2 sessions from monkey C was considered in \cite{makin2018}, both of them are center out movements as showed in Figure~\ref{fig:xy_plane_trajectory_chewie}.
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -144,6 +154,7 @@ Only 2 sessions from monkey C was considered in \cite{makin2018}, both of them a
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 \noindent 8 magenta squares are the targets for the monkey to reach, and black dots are the actual recordings.
 The monkey held a handle to control a computer cursor in a 2D virtual plane.
 Unlike grid reaching task experiments, this dataset is constituted by trials.
@@ -156,11 +167,16 @@ Apparently there exists a deviation between the targets coordinate and the curso
 The center point of the cursor's coordinate in these two sessions are inconsistent as well.
 However, the transition matrix is not provided.
 Fortunately the target points are not required when implementing hand movement decoders.
+\end{multicols}
 
 \section{Data Preprocessing}
+
+\begin{multicols}{2}
 The electrode arrays' sampling rate was 24.4kHz, as mentioned in Section \ref{sec:dataset}, and their recordings were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
 Spikes were detected and sorted online by \cite{makin2018} with a custom software written in C++.
 In Figure \ref{fig:raw_to_spike}, the upper subplot is the raw broadband signal and the bottom subplot is the filtered high-frequency signal and the detected spikes.
+\end{multicols}
+
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{raw_to_spike.png}
@@ -171,6 +187,7 @@ In Figure \ref{fig:raw_to_spike}, the upper subplot is the raw broadband signal 
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session varied from 2 to 4.
 For all sessions preserved an unsorted \textit{hash} unit for each recording channel.
 Theses units contained all events which surpass the threshold on a channel but which did not match any of the operator defined templates.
@@ -178,6 +195,7 @@ However, \cite{todorova2014sort} showed that there exists some information in th
 As showed in Figure \ref{fig:indy_20160407_02_M1_ch_60}, which visualized the M1 spike train in channel 60 from session \textbf{indy\_20160407\_02}.
 The black rasters are the spikes classified as hash unit, and this session has two more sorted units, marked in red and blue respectively.
 Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode array in the same session and same time interval.
+\end{multicols}
 
 \begin{figure}[H]
     \centering
@@ -195,10 +213,13 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode 
         \end{minipage}
 \end{figure}
 
+\begin{multicols}{2}
 Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms bins.
 For sessions contain both M1 and S1 electrode array, we simply concatenate the two spike trains.
 As from Figure~\ref{fig:s1_and_m1_spike_train} the spike trains turned into firing rate in Figure~\ref{fig:the_result_heatmap}.
 For other experiments, different width of time bins were used to acquire different firing rates.
+\end{multicols}
+
 
 \begin{figure}[H]
     \centering
@@ -216,10 +237,13 @@ For other experiments, different width of time bins were used to acquire differe
         \end{minipage}
 \end{figure}
 
+\begin{multicols}{2}
 The heatmap of the firing rate within 50 time bins and the 6 kinematic variables are showed in Figure \ref{fig:firing_rate_and_kinematic_variable}.
 For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x- and y-axis, but omitting the z-axis.
 The heatmap is showing an relationship between the occurrance of movements and the intensity of spike firing.
 Empty units in this session have been removed, as actual number of sorted units in each session is listed in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
+\end{multicols}
+
 
 \begin{figure}[H]
     \begin{center}
@@ -230,6 +254,7 @@ Empty units in this session have been removed, as actual number of sorted units 
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 To boost the accuracy of the decoders, many researches used several past BMI signal samples to predict the kinematic of the right next time step. 
 The term \textit{tap size} indicates the number of the past input neural signal samples \citep{nakagome2020empirical}, 
 which in our case, is the number of past time bins.
@@ -239,6 +264,7 @@ Since it performs a continuous decoding senario,
 every kinematic variables in each time bin expect for the first 3 ones will be predicted.
 And the input time bins used to predict the kinematic variable at time $t$ and its previous time step $t-1$ happens to overlap,
 and in this case with the tap size is 3, the overlapping time bins are 2.
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -256,6 +282,7 @@ and in this case with the tap size is 3, the overlapping time bins are 2.
 Figure~\ref{fig:unfold_rnn} illustrates how basic RNNs \textit{recur}.
 The weights inside one RNN cell is consistant when it processes a sequence.
 This diagram indicates how the input and output from the same RNN cell differs in each timestep.
+
 
 \begin{figure}[H]
     \begin{center}
@@ -279,6 +306,8 @@ The structure inside a GRU cell is showed in Figure \ref{fig:GRU_cell}.
         \label{fig:GRU_cell}
     \end{center}
 \end{figure}
+
+\begin{multicols}{2}
 
 \begin{align}
     h_t &= g^{GRU} \left(  h_{t-1}, \ x_t  \right)
@@ -311,6 +340,7 @@ Two functions plotted in Figure \ref{fig:sigmoid_and_tanh}.
 However, both of them have drawbacks of saturation problem, e.g., the derivative of input value outside the range [-4, +4] will be nearly 0 after activations, 
 making its gradient vanish and slowing down learninig process.
 The solution about this issue will be addressed in Section~\ref{sec:layer_norm}.
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -329,6 +359,7 @@ The solution about this issue will be addressed in Section~\ref{sec:layer_norm}.
 	\end{center}
 \end{figure}
 
+\begin{multicols}{2}
 At each timestep, a single GRU cell can take in two tensors, one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, which is the output from last timestep.
 In the process of calculating each gate value (Equation \ref{eq:reset_gate}, \ref{eq:update_gate}) and $\tilde{h_t}$ (Equation \ref{eq:h_hat}),
 hidden state from last timestep ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
@@ -345,6 +376,7 @@ Figure \ref{fig:two_layer_GRU} demonstrated how hidden states are passed from on
 Where $n$ is the order of our input, representing how many the time bins to be fed into the model at a time for decoding the current kinematic states.
 The input data at a time contains the firing rate at this moment $x_t$ and the past firing rate from $x_{t-n+1}$ to $x_{t-1}$.
 The corresponding outputs of our model are the kinematic variables at time $t$.
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -356,6 +388,7 @@ The corresponding outputs of our model are the kinematic variables at time $t$.
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 In the first GRU layer, $n$ bins of firing rate are fed chronologically.
 Hidden state $h^{j}_{i}$ denotes the output tensor from the cell in timestep $i$ and layer $j$, and will be the input to the cell in timestep $i+1$ and layer $j+1$.
 The size of $h^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined parameter.
@@ -365,6 +398,7 @@ The so called bidirectional RNN is made by simply adding another feeding of the 
 As in Figure \ref{fig:Bi_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$,
 since the first half of the this vector contains the information by feeding input sequence forward the last half by feeding backward.
 
+
 \begin{align}
     \begin{split}
     \overrightarrow{h_t} &= g^{GRU} \left(  \overrightarrow{h_{t-1}}, \ x_t  \right) \\
@@ -372,6 +406,8 @@ since the first half of the this vector contains the information by feeding inpu
     h_t &= \overrightarrow{h_t} \oplus \overleftarrow{h_t}
     \end{split}
 \end{align}
+
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -388,6 +424,7 @@ It is the internal dynamics of the GRU to determine the degree of forget and kee
 \subsection{Layer Normalization}
 \label{sec:layer_norm}
 % https://towardsdatascience.com/understanding-dataset-shift-f2a5a262a766
+\begin{multicols}{2}
 With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the setbacks of batch normalization, 
 when it is implemented in RNNs.
 Internal covariate shift is a problem caused by the variant distribution of the output of a previous layer,
@@ -404,6 +441,9 @@ Here is the computation of mean and variance from all the hidden units in the sa
     \end{split}
 \end{align}
 
+\end{multicols}
+
+\begin{multicols}{2}
 \noindent where $H$ denotes the number of hidden units in a layer, all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
 Unlike batch normalization, layer normalization does not impose any constraint on the size of a mini-batch and can be used with batch size 1.
 
@@ -413,6 +453,7 @@ which are computed as $a^t = W_{hh} h^{t-1} + W_{xh} x^{t} $.
 Where $W_{hh}$ is the recurrent hidden to hidden weights and $W_{xh}$ are the input to hidden weights.
 The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalization terms similar to Equation \ref{eq:normalization_term}:
 
+
 \begin{align}
     \begin{split}
         h^{t} &= f \left[ \frac{g}{\sigma^t} \odot \left( a^t- \mu^t \right) +b \right] \\
@@ -421,11 +462,15 @@ The layer normalizationed recurrent layer re-centers and re-scales its activatio
     \end{split}
 \end{align}
 
+\end{multicols}
+
+\begin{multicols}{2}
 \noindent where $\odot$ is the elementwise multiplication, and $b$, $g$ are defined as the bias and gain parameters of the same dimension as $h^t$.
 $f$ is the activation function in the RNN cell, it could be a sigmoid or hyperbolic tangent function.
 
 We define layer normalization as a function mapping $LN: \mathbb{R}^D \rightarrow \mathbb{R}^D$ with two set of adaptive parameters,
 gains $\alpha$ and biases $\beta$:
+
 
 \begin{align}
     \begin{split}
@@ -467,7 +512,7 @@ The affect of the layer normalization is illustrated in Figure~\ref{fig:layer_no
 whicih we simulate two extreme cases of hidden state distributions.
 First one has a dense distribution but the mean is deviated from zero, making most of its values above $+4$, and will be mapped approximately to zero no matter in both activation.
 The second case has the mean of zero, but its wild distribution makes only a portion of its elements have gradient other than zero, after activations.
-
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -488,6 +533,8 @@ The second case has the mean of zero, but its wild distribution makes only a por
 \end{figure}
 
 \subsection{Attention Mechanism}
+
+\begin{multicols}{2}
 \cite{lin2017structured} proposed a concise but effective attention mechanism.
 The output hidden states from the last layer of GRU will be the input of our attention mechanism.
 The hidden states matrix,
@@ -513,13 +560,16 @@ The size of the annotation vector $\vec{a}$ is $(1 \times n)$, which is the leng
 The number of past time bins used to decode the current kinematic variables.
 The function $ softmax: \mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
 \begin{align}
-    softmax(z)_i &= \frac{e^{z_i}}{ \sum^{K}_{j=1} e^{z_j} } \qquad \text{for} \ i=1, \cdots , K \ \text{and} \ z=\left( z_1, \cdots,z_K \right) \in \mathbb{R}^K
+    \begin{split}
+    softmax(z)_i &= \frac{e^{z_i}}{ \sum^{K}_{j=1} e^{z_j} } \\ 
+    \text{for} \ i &=1, \cdots , K \\ 
+    \text{and} \ z&= \left( z_1, \cdots,z_K \right) \in \mathbb{R}^K
+    \end{split}
 \end{align}
 \noindent such that the summation of the vector $\vec{a}$ is $1$.
 The embedding vector $\vec{m}$ is the new feature of size $(1 \times u)$, and can be fed into the next layer.
 
-\todo[inline]{explain fc in 2D matrix form}
-\todo[inline]{https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer}
+% This explain fc in matrix form https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer
 
 The vector representation may focues on only one specific part of the input sequence, 
 and is expected to reflect an aspect in the sequence.
@@ -538,32 +588,24 @@ and the embedding vector $\vec{m}$ becomes a $(r \times 2u)$ or $(r \times u)$ m
 
 Eqation \ref{eq:annotation_matrix_calculation} is equivalent to a 2-layer MLP,
 the first layer reduces the dimension from $u$ to $d_a$, or in bidirectional case, reduces $2u$ to $d_a$.
-The second layer reduces the dimension from $d_a$ to $r$, as Figure~\ref{fig:temporal_attention_in_matrix_diagram} illustrated,
-and Figure~\ref{fig:temporal_attention_in_matrix_diagram_2}.
+The second layer reduces the dimension from $d_a$ to $r$, as Figure~\ref{fig:multiply_attetion_vecotr_to_hidden_states} illustrated,
+
+\end{multicols}
 
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[height=0.4\textheight]{temporal_attention_in_matrix_diagram.png}
+        \includegraphics[width=1\textwidth]{multiply_attetion_vecotr_to_hidden_states.png}
         \captionsetup{width=0.5\textwidth}
-        \caption{Attention mechanism 1}
+        \caption{Multiply attention vectors to hidden states}
         \fontsize{10}{12}
-        \label{fig:temporal_attention_in_matrix_diagram}
-    \end{center}
-\end{figure}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{temporal_attention_in_matrix_diagram_2.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Attention mechanism 2}
-        \fontsize{10}{12}
-        \label{fig:temporal_attention_in_matrix_diagram_2}
+        \label{fig:multiply_attetion_vecotr_to_hidden_states}
     \end{center}
 \end{figure}
 
 
 \subsection{Penalization Term}
+\begin{multicols}{2}
 The purpose of developing such loss function specifically for our attention mechanism is to avoid repetitive information.
 The embedding matrix $M$ should contains $r$ different parts of aspects from the same sequence.
 But without further constraints, the attention mechanism might always provide similar summation weights for all the $r$ hops.
@@ -584,6 +626,8 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined 
 
 \noindent illustrated in Figure~\ref{fig:penalization_term}
 
+\end{multicols}
+
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{penalization_term.png}
@@ -594,6 +638,7 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined 
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 \noindent indicates that the summation of the squared value of every element in the matrix $A A^T - I$ should be closed to $0$.
 The term $P$ itself is a kind of loss function, and the value, which is an error,
 should be multipled by a coefficient and then propagate backwards to modify the weights in the our attention mechanism.
@@ -617,8 +662,10 @@ The author of \cite{lin2017structured} claimed that in this way,
 each annotation vector $a^i$ is encouraged to focus on fewer parts of the sequence,
 enabling each vector be focused on a single aspect. 
 
+\end{multicols}
 
 \subsection{Visualization}
+\begin{multicols}{2}
 Interpretation of the neural signals is one of the main topic in our study.
 By taking advantage of attention mechanism, we can visualize what the model \textit{sees.} \citep{xu2015show}
 The term \textit{tap size} refer to the past time bins used to decode the current sample point.
@@ -626,6 +673,7 @@ In our main result, 20 tap size was used in decoding position and 10 tap size in
 With the aid of annotation matrix from the attention mechanism,
 it is possible to depict the importance of the past time bins with annotations.
 As showed in Figure~\ref{fig:visualization_vector}
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -639,17 +687,18 @@ As showed in Figure~\ref{fig:visualization_vector}
 
 
 \subsection{Architecture of our models}
+\begin{multicols}{2}
 We have combined the self-attention mechanism, layer normalization and bidirectional GRU together, 
 and proposed a new aspect of using the same self-attention mechanism to conduct hidden unit attention.
 Figure~\ref{fig:Lin_Attention} showed the model with temporal attention only.
 Where $n$ is the tap size, $u$ is the GRU hyperparameter and is 256 if one-directional, 512 if bidirectional.
 Since this model only perform self-attention along temporal dimension, the dimension of $u$ will be reduced to $d_a$, is choosed to be 125, no matter one/bidirection GRU.
 $r$ is the hops of attention we intend to extract from the same sequence, and it is set as 5 in decoding position and 2 in decoding velocity and acceleration.
-
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[height=0.4\textheight]{Lin_Attention.png}
+        \includegraphics[height=0.5\textheight]{Lin_Attention.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Model with temporal attention}
         \fontsize{10}{12}
@@ -657,15 +706,17 @@ $r$ is the hops of attention we intend to extract from the same sequence, and it
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 Another model is proposed in order to capture and visualize the attention among the output hidden units from GRU layers.
 After the 2-layer GRU processed the spike firing rate input tensors, we constructed 2-stream structure to seperate the path of processing temporal and unit attention.
 Simply be transposing the all the outpout hidden states from all $n$ timesteps, 
 
 \todo[line]{here}
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[height=0.4\textheight]{Two_Attention.png}
+        \includegraphics[height=0.5\textheight]{Two_Attention.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Model with temporal attention and unit attention}
         \fontsize{10}{12}

@@ -26,6 +26,7 @@
 \usepackage{longtable}
 \usepackage{lscape}
 \usepackage{multirow}
+\usepackage{multicol}
 \usepackage{makecell}
 \usepackage[titletoc]{appendix}
 \usepackage{csquotes}
@@ -102,7 +103,7 @@
 \usepackage{breakcites}
 \usepackage{../macros_tn} %Loads all my macros
 \usepackage{geometry}
-\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}   % notes showed
+\usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes}   % notes showed
 % \usepackage[disable]{todonotes} % hide all todos
 \usepackage{enumitem}
 \usepackage{indentfirst}
@@ -172,13 +173,13 @@
 	\newgeometry{
 		a4paper,
 		total={210mm,296mm},
-		left=30mm,
-		right=25mm,
-		top=23mm,
-		bottom=35mm,
+		left = 10mm, %30
+		right = 25mm, %25
+		top = 23mm,  %23
+		bottom = 35mm,  %35
 	}
 	% \CenterWallPaper{.325}{watermark.jpg}
-	\begin{spacing}{1.5}
+	\begin{spacing}{1.0} %1.5
 		\frontmatter
 		\addcontentsline{toc}{chapter}{Chinese abstract}
 		\chapter*{\centering Chinese abstract}

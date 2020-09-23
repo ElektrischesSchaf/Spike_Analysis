@@ -1,13 +1,18 @@
 \section{Decoder Evaluation}
 
+\begin{multicols}{2}
 The training data of each session are the first 5000 time bins, and the rest is the testing data.
 Figure \ref{fig:full_testing_data} visualized the complete testing data from a few sessions,
+whereas some sessions, had their testing data trimmed by \cite{makin2018} due to the abnormal recording periods.
+These sessions contained intervals when monkeys fingertip stayed still for a considerable long while.
+As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated the discarded intervals.
+\end{multicols}
 
 \begin{figure}[H]
     \foreach \i in {indy_20160622_01,indy_20160624_03,indy_20160627_01}
         {
             \begin{subfigure}{1\textwidth}
-                \includegraphics[width=1\textwidth]{../Figures_2/\i_x_y_testing_data_trajectory.png}
+                \includegraphics[height=0.09\textheight]{../Figures_2/\i_x_y_testing_data_trajectory.png}
             \end{subfigure}
         }
         \captionsetup{width=0.5\textwidth}
@@ -15,17 +20,13 @@ Figure \ref{fig:full_testing_data} visualized the complete testing data from a f
         \label{fig:full_testing_data}
 \end{figure}
 
-\noindent whereas some sessions, had their testing data trimmed by \cite{makin2018} due to the abnormal recording periods.
-These sessions contained intervals when monkeys fingertip stayed still for a considerable long while.
-As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated the discarded intervals.
-
 \newpage
 \todo{10個session剛好一整頁}
 \begin{figure}[H]
     \foreach \i in {loco_20170210_03,loco_20170213_02,loco_20170214_02,loco_20170215_02,loco_20170216_02,loco_20170217_02,loco_20170227_04,loco_20170228_02,loco_20170301_05,loco_20170302_02}
         {
             \begin{subfigure}{1\textwidth}
-                \includegraphics[width=1\textwidth]{../Figures_2/\i_x_y_testing_data_trajectory.png}
+                \includegraphics[height=0.09\textheight]{../Figures_2/\i_x_y_testing_data_trajectory.png}
             \end{subfigure}
         }
         \captionsetup{width=0.5\textwidth}
@@ -33,7 +34,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
         \label{fig:trimmed_testing_data}
 \end{figure}
 
-
+\begin{multicols}{2}
 To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR), 
 two vectors are required which are the observed value $ \vec{y} = \left[ y_1, \cdots , y_n  \right]^{T} $ and predicted value $ \vec{f} = \left[ f_1, \cdots , f_n \right]^{T} $.
 First we compute the mean of the observed data:
@@ -51,6 +52,7 @@ First we compute the mean of the observed data:
 
 \noindent and since the length of the testing data varied, weighted average is used to compute the mean performance across sessions,
 with the weights equal to the testing data length.
+\end{multicols}
 
 \section{Decodeing results from dataset Indy and Loco}
 
@@ -60,7 +62,7 @@ with the weights equal to the testing data length.
     \foreach \i in {2,3,4,5,6}
     {
         \begin{subfigure}{1\textwidth}
-            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
+            \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
     \caption{Position Prediction}
@@ -73,7 +75,7 @@ with the weights equal to the testing data length.
     \foreach \i in {7,8,9,10,11}
     {
         \begin{subfigure}{1\textwidth}
-            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
+            \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
     \caption{Velocity Prediction}
@@ -86,7 +88,7 @@ with the weights equal to the testing data length.
     \foreach \i in {12,13,14,15,16}
     {
         \begin{subfigure}{1\textwidth}
-            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
+            \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
     \caption{Acceleration Prediction}
@@ -100,10 +102,13 @@ with the weights equal to the testing data length.
 
 \section{Model comparison and ablation study}
 \subsection{Effect of layer normalization}
+
+\begin{multicols}{2}
 The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
 These diagrams help us analysis the model based on the how many epoch numbers are required for the testing loss to converge.
 In the position and velocity decoders, it seems that implementing layer normalization does not contribute to a better convergence significantly since two classes of curve overlap.
 However, for acceleration decoders, the loss dropped drastically with the aid of layer normalization compared to original GRU.
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -125,14 +130,16 @@ However, for acceleration decoders, the loss dropped drastically with the aid of
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 The reason for ordinary GRU failed to decode the acceleration is mainly caused by the wide range of this kinematic variable.
 When it comes to decoding fingertip position, the labels are distributed mainly between $100\sim-50$.
 But for velotiy the distribution is between $200\sim-200$ and acceleration $2000\sim-2000$, whereas most values are approximately zero.
 It is unlikely for a deep learing network to adapt to this drastic range of distribution.
 But with the help of layer normalization to optimize the distribution of inner GRU tensors,
-The 
-
+The
 \todo[inline]{here}
+
+\end{multicols}
 
 \subsection{Effect of temporal self-attention}
 
@@ -165,10 +172,13 @@ The
 
 \section{y-axis outperforms x-axis}
 
+\begin{multicols}{2}
 Where we used the tool from \cite{ince2017statistical} named  Gaussian-copula mutual information (GCMI) to analysis the reason why in three kinds of kinematic variables,
 the prediction of y-axis always exceed x-axis.
 The module of this tool is available on \url{https://github.com/robince/gcmi}.
+\end{multicols}
 
 \section{Difficulty in position decoder}
-
+\begin{multicols}{2}
 \cite{goodman2019postural} has mentioned similar disadvatages in hand absolute position decoding.
+\end{multicols}
