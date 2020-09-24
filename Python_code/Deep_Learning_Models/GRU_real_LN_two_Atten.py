@@ -326,7 +326,7 @@ class Real_Layer_GRU_one_way_parallel_2(torch.nn.Module):
         # attention map on the units
 
         firing_rate_for_attention = x.permute(0,2,1).clone().detach_()
-        # print('shape of x= ', x.size(),  '\n')
+        # print('shape of firing_rate_for_attention= ', firing_rate_for_attention.size(),  '\n')
                         
         attn_weight_matrix_units = self.attention_net_hidden_units( firing_rate_for_attention )
 
