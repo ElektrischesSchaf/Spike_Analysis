@@ -169,7 +169,7 @@ for session_k in range(len(session_file_list)):
         units_numbers_in_this_dataset = unit_number
 
 
-        # Extract firing_rate_cell with rows have length bigger than zero
+        # Eliniate empty firing rate row
         firing_rate_final=[] # not[[]]
         for row_index in range( len( firing_rate_cell) ):   
             if len(firing_rate_cell[row_index]):
@@ -189,7 +189,7 @@ for session_k in range(len(session_file_list)):
         print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
         print('\n')
 
-
+        # get the correct sorted units number
         if with_sorted_spikes==True:
             feature_numbers = int(firing_rate_matrix.shape[0])
         else:

@@ -45,7 +45,7 @@ regular_modules = some_modules.regular_modules()
 
 # Deep leaning module
 # from  Deep_Learning_Models.GRU_one_stream import GRUModel
-from  Deep_Learning_Models.GRU_real_LN_self_Atten import Real_Layer_GRU_one_way
+from  Deep_Learning_Models.GRU_real_LN_two_Atten import Real_Layer_GRU_one_way_parallel_2
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # attention map plotting module
@@ -82,9 +82,7 @@ my_best_epoch_dict={}
 # epoch optimizer
 def epoch_handle(session_name):
     epoch_dict={
-    "Chewie_10032013": 0,
-    "Chewie_12192013": 0,
-    "indy_20160407_02": 34,
+    "indy_20160407_02": 0,#34,
     "indy_20160411_01": 38,
     "indy_20160411_02": 39,
     "indy_20160418_01": 54,
@@ -151,7 +149,7 @@ for session_k in range(len(session_file_list)):
         # Auto-assigned parameters
         testing_data_index=0
         channel_number=0
-        units_have_value=0
+        rows_not_empty=0
 
         # Parameters should be assigned
         the_sampling_rate = my_parameters.the_sampling_rate
@@ -170,10 +168,33 @@ for session_k in range(len(session_file_list)):
         channel_numbers_in_this_dataset = channel_number
         units_numbers_in_this_dataset = unit_number
 
+
+        # Eliniate empty firing rate row
+        firing_rate_final=[] # not[[]]
+        for row_index in range( len( firing_rate_cell) ):   
+            if len(firing_rate_cell[row_index]):
+                firing_rate_final.append( firing_rate_cell[row_index] )
+                rows_not_empty+=1
+        print('rows_not_empty = ', rows_not_empty, '\n')
+
+        firing_rate_matrix=np.array(firing_rate_final)
+
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_matrix.shape[0]):
+            if not np.all( firing_rate_matrix[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_matrix = firing_rate_matrix[valid_rows,:]
+
+        print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
+        print('\n')
+
+        # get the correct sorted units number
         if with_sorted_spikes==True:
-            feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
+            feature_numbers = int(firing_rate_matrix.shape[0])
         else:
-            feature_numbers=channel_numbers_in_this_dataset
+            feature_numbers = channel_numbers_in_this_dataset
+
 
         # Create empty arrrays from data
         [X_for_training, X_for_prediction, 
@@ -188,24 +209,7 @@ for session_k in range(len(session_file_list)):
         x_acceleration_label, y_acceleration_label, z_acceleration_label,
         x_position_target, y_position_target] = mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
 
-        # Extract firing_rate_cell with rows have length bigger than zero
-        firing_rate_final=[] # not[[]]
-        for row_index in range( len( firing_rate_cell) ):   
-            if len(firing_rate_cell[row_index]):
-                firing_rate_final.append( firing_rate_cell[row_index] )
-                units_have_value+=1
 
-        '''
-        for row_index in range( len( firing_rate_final) ):            
-            print('length of firing_rate_final['+ str(row_index) +']: ',end='')
-            print(len(firing_rate_final[row_index]))
-        '''
-
-        print('\n')
-
-        firing_rate_matrix=np.array(firing_rate_final)
-        print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
-        print('\n')
 
 
         # New Without spike sorting:
@@ -386,7 +390,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = Real_Layer_GRU_one_way(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
+    net = Real_Layer_GRU_one_way_parallel_2(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
 
     for n, p in net.named_parameters():
         print(n, p.shape)
@@ -456,13 +460,17 @@ for session_k in range(len(session_file_list)):
         feature = x.to(device)
         labels = y.to(device)
 
-        o_labels, attn_weight_matrix_forward = net(feature)
+        o_labels, attn_weight_matrix_forward ,attn_weight_matrix_hidden_units = net(feature)
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
         attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)        
-        penality_loss_forward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
+        penality_loss_temporal = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
 
-        l_loss = loss_func(o_labels, labels) + penality_loss_forward
+        attn_weight_matrix_hidden_units = attn_weight_matrix_hidden_units.to(device)        
+        penality_loss_hidden_units = torch.norm(  input = (torch.bmm(  attn_weight_matrix_hidden_units, torch.transpose(attn_weight_matrix_hidden_units, 1, 2) ) - torch.eye( attn_weight_matrix_hidden_units.size(1) )), p = 'fro')
+
+
+        l_loss = loss_func(o_labels, labels) + penality_loss_temporal + penality_loss_hidden_units
 
         return o_labels, l_loss
 
@@ -527,12 +535,13 @@ for session_k in range(len(session_file_list)):
         # if(x.size()[0] is not batch_size):
         #     continue
 
-        o_labels, attn_weight_matrix_forward = net(x.to(device))
+        o_labels, attn_weight_matrix_forward , attn_weight_matrix_hidden_units = net(x.to(device))
 
         # attention map
-        # attn_weight_matrix = attn_weight_matrix.squeeze(1)
-        attn_weight_matrix = torch.sum(attn_weight_matrix_forward, dim=1)
-        # print('shape of attn_weight_matrix =  ', attn_weight_matrix.size(), '\n')
+
+        # attn_weight_matrix = torch.sum(attn_weight_matrix_forward, dim=1)
+        attn_weight_matrix = torch.sum(attn_weight_matrix_hidden_units, dim=1)
+
         attn_weight_matrix = attn_weight_matrix.cpu().detach().numpy()
 
         # collect firing rate
@@ -577,8 +586,8 @@ for session_k in range(len(session_file_list)):
     attn_weight_matrix_all = np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
 
-    df = pd.DataFrame( attn_weight_matrix_all )
-    df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
+    # df = pd.DataFrame( attn_weight_matrix_all )
+    # df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
 
     # collected firing rate
     firing_rate_collector = np.asarray(firing_rate_collector)
@@ -619,7 +628,7 @@ for session_k in range(len(session_file_list)):
     # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
 
     while time_bin_index < (testing_data_length -plottin_duration_time_bin*2 ):
-        Plotting.attention_map_2_outputs_with_target_cue(session_name=session_name, type_name='vel', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
+        Plotting.attention_map_2_outputs_with_target_cue_unit_attention(session_name=session_name, type_name='vel', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
         time_bin_index = time_bin_index + plottin_duration_time_bin
 
 # session control end
