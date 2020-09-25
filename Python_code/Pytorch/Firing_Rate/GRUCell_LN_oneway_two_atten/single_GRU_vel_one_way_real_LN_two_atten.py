@@ -82,7 +82,7 @@ my_best_epoch_dict={}
 # epoch optimizer
 def epoch_handle(session_name):
     epoch_dict={
-    "indy_20160407_02": 0,#34,
+    "indy_20160407_02": 34,
     "indy_20160411_01": 38,
     "indy_20160411_02": 39,
     "indy_20160418_01": 54,
