@@ -53,7 +53,7 @@ import Deep_Learning_Models.Attention_Map_Plotting as Attention_Map_Plotting
 Plotting = Attention_Map_Plotting.Plotting()
 
 # Make file list
-kinematic_variable_type = 'x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type = 'x_and_y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
