@@ -53,7 +53,7 @@ import Deep_Learning_Models.Attention_Map_Plotting as Attention_Map_Plotting
 Plotting = Attention_Map_Plotting.Plotting()
 
 # Make file list
-kinematic_variable_type = 'x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type = 'x_and_y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -62,13 +62,13 @@ session_file_list = List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'Single_session_2_outputs_bidir_no_LN_no_atten'
-MAX_EPOCH = 125
+MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
 BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
-max_timestep = 20
+max_timestep = 10
 
 # Model Performance Lists
 R_square_across_all_sessions=[]
@@ -340,21 +340,21 @@ for session_k in range(len(session_file_list)):
 
 
     # x_pos
-    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype=float)    
+    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
     training_y_1  = torch.from_numpy(training_y_1.values)    
     training_y_1  = training_y_1.float()
 
     # y_pos
-    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_training.csv'), dtype=float)    
+    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
     training_y_2 = torch.from_numpy(training_y_2.values)    
     training_y_2 = training_y_2.float()
 
 
-    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)    
+    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
     testing_y_1 = torch.from_numpy(testing_y_1.values)    
     testing_y_1 = testing_y_1.float()
 
-    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)
+    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)
     testing_y_2 = torch.from_numpy(testing_y_2.values)    
     testing_y_2 = testing_y_2.float()
 
