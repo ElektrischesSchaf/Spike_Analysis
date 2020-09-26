@@ -82,8 +82,6 @@ my_best_epoch_dict={}
 # epoch optimizer
 def epoch_handle(session_name):
     epoch_dict={
-    "Chewie_10032013": 0,
-    "Chewie_12192013": 0,
     "indy_20160407_02": 34,
     "indy_20160411_01": 21,
     "indy_20160411_02": 13,
@@ -145,13 +143,14 @@ for session_k in range(len(session_file_list)):
 
     if session_name.startswith('indy') or session_name.startswith('loco'):
 
+
         file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'    
         time_stamp_64ms=[]
 
         # Auto-assigned parameters
         testing_data_index=0
         channel_number=0
-        units_have_value=0
+        rows_not_empty=0
 
         # Parameters should be assigned
         the_sampling_rate = my_parameters.the_sampling_rate
@@ -170,10 +169,33 @@ for session_k in range(len(session_file_list)):
         channel_numbers_in_this_dataset = channel_number
         units_numbers_in_this_dataset = unit_number
 
+
+        # Eliniate empty firing rate row
+        firing_rate_final=[] # not[[]]
+        for row_index in range( len( firing_rate_cell) ):   
+            if len(firing_rate_cell[row_index]):
+                firing_rate_final.append( firing_rate_cell[row_index] )
+                rows_not_empty+=1
+        print('rows_not_empty = ', rows_not_empty, '\n')
+
+        firing_rate_matrix=np.array(firing_rate_final)
+
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_matrix.shape[0]):
+            if not np.all( firing_rate_matrix[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_matrix = firing_rate_matrix[valid_rows,:]
+
+        print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
+        print('\n')
+
+        # get the correct sorted units number
         if with_sorted_spikes==True:
-            feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
+            feature_numbers = int(firing_rate_matrix.shape[0])
         else:
-            feature_numbers=channel_numbers_in_this_dataset
+            feature_numbers = channel_numbers_in_this_dataset
+
 
         # Create empty arrrays from data
         [X_for_training, X_for_prediction, 
@@ -188,24 +210,7 @@ for session_k in range(len(session_file_list)):
         x_acceleration_label, y_acceleration_label, z_acceleration_label,
         x_position_target, y_position_target] = mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
 
-        # Extract firing_rate_cell with rows have length bigger than zero
-        firing_rate_final=[] # not[[]]
-        for row_index in range( len( firing_rate_cell) ):   
-            if len(firing_rate_cell[row_index]):
-                firing_rate_final.append( firing_rate_cell[row_index] )
-                units_have_value+=1
 
-        '''
-        for row_index in range( len( firing_rate_final) ):            
-            print('length of firing_rate_final['+ str(row_index) +']: ',end='')
-            print(len(firing_rate_final[row_index]))
-        '''
-
-        print('\n')
-
-        firing_rate_matrix=np.array(firing_rate_final)
-        print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
-        print('\n')
 
 
         # New Without spike sorting:
@@ -218,6 +223,7 @@ for session_k in range(len(session_file_list)):
         print('features list shape: ',end='')
         print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
         print('\n')
+
 
     if session_name.startswith('Chewie'):
 
@@ -577,8 +583,8 @@ for session_k in range(len(session_file_list)):
     attn_weight_matrix_all = np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
 
-    df = pd.DataFrame( attn_weight_matrix_all )
-    df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
+    # df = pd.DataFrame( attn_weight_matrix_all )
+    # df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
 
     # collected firing rate
     firing_rate_collector = np.asarray(firing_rate_collector)
