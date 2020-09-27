@@ -199,8 +199,14 @@
 		\chapter*{\centering Acknowledgment}
 		\addcontentsline{toc}{chapter}{Acknowledgment}
 		\label{chap:acknowledgment}
-		% \lipsum[5-6]
 		\input{../Acknowledgment.tex}
+		%% Editing_notes start
+		\newpage
+		\chapter*{\centering Editing notes}
+		\addcontentsline{toc}{chapter}{Editing notes}
+		\label{chap:Editing_notes}
+		\input{../Editing_notes.tex}
+		%%	Editing_notes end
 		\newpage
 		%% Table of contents
 		\dominitoc 
@@ -230,19 +236,19 @@
 		\mainmatter
 		\chapter{Introduction}
 		\label{chap:Introduction}
-		% \lipsum[7]
 		\input{../Introduction.tex}
-		\chapter{Materials and Methods}
-		\label{chap:Materials_and_Methods}
-		% \lipsum[8]
-		\input{../Materials_and_Methods.tex}
-		\chapter{Results and Discussion}
-		\label{chap:Results_and_Discussion}
-		% \lipsum[9]
-		\input{../Results_and_Discussion.tex}
-		\chapter{Conclusion}
-		\label{chap:Conclusion}
-		\input{../Conclusion.tex}
+		\chapter{Related Work}
+		\label{chap:Related_work}
+		\input{../Related_work.tex}
+		\chapter{Neural Decoder Design}
+		\label{chap:Neural_decoder_design}
+		\input{../Neural_decoder_design.tex}
+		\chapter{Experimental Results}
+		\label{chap:Experimental_results}
+		\input{../Experimental_results.tex}
+		\chapter{Discussion}
+		\label{chap:Discussion}
+		\input{../Discussion.tex}
 		\begin{singlespace}
 			\clearpage
 			%% References (bibliography)
