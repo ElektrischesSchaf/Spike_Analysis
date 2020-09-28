@@ -2,37 +2,7 @@
 
 
 \section{Data acquisition}
-\begin{multicols}{2}
 \todo[inline]{(換句話說Makin論文)包含訊號處理、擷取spike的部分}
-\end{multicols}
-
-\section{Animal Pursuit task with point-to-point trajectory}
-\begin{multicols}{2}
-\todo[inline]{(換句話說Makin論文)，包含運動軌跡、experimental setup}
-\end{multicols}
-
-\section{Network architecture}
-\begin{multicols}{2}
-\todo[inline]{Figure 2.8與tap size參考以下論文的Figure 3
-Inhibition of Long-Term Variability in Decoding Forelimb Trajectory Using Evolutionary Neural Networks With Error-Correction Learning}
-\end{multicols}
-
-\section{Layer normalization}
-
-
-\section{Attention module}
-
-
-\section{Loss function and optimizer}
-
-\section{Performance evaluation}
-\begin{multicols}{2}
-\todo[inline]{描述SNR、R2、single session}
-\end{multicols}
-
-\section{Dataset}
-\label{sec:dataset}
-\subsection{Sabes Lab Dataset: Monkey Indy, Loco}
 
 \begin{multicols}{2}
 The first dataset, \textbf{Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology} is provided by \cite{makin2018} and made public available at \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
@@ -71,127 +41,8 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
     \end{center}
 \end{figure}
 
-
 \begin{multicols}{2}
-The monkeys were trained to perform reaching tasks with their arms in a transverse plane below their shoulder, with targets showing up in a virtual reality environment.
-Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
-and for monkey Loco square grid of size $6 \times 6$ was used.
-\end{multicols}
-
-\begin{figure}[H]
-	\begin{center}
-        \centering
-        \begin{subfigure}{0.8\textwidth}
-            \centering\includegraphics[width=1\textwidth]{indy_20160411_02_panel.png}
-            \label{fig:8_times_17}
-			\caption{$8 \times 17$ rectangular grid} 
-        \end{subfigure}
-
-        \medskip
-		\begin{subfigure}{0.4\textwidth}
-            \centering\includegraphics[width=1\textwidth]{indy_20161025_04_panel.png}
-            \label{fig:8_times_8}
-			\caption{$8 \times 8 $ square grid} 
-		\end{subfigure}
-        \begin{subfigure}{0.4\textwidth}
-            \centering\includegraphics[width=1\textwidth]{loco_20170214_02_panel.png}
-            \label{fig:6_times_6}
-			\caption{$6 \times 6$ square grid} 
-        \end{subfigure}
-        \caption[Three sizes of the panel]{Three sizes of the panel}
-        \label{fig:panels}		
-	\end{center}	
-\end{figure}
-\todo[inline]{ 三個panel的長寬尺寸還沒調成一致 }
-
-\begin{multicols}{2}
-Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
-Figure \ref{fig:X-Y_trajectory_in_VR_panel} 
-\end{multicols}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.6\textwidth]{X-Y_trajectory_in_VR_panel.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Fingertip Trajectory in 2D Virtual Panel}
-        \label{fig:X-Y_trajectory_in_VR_panel}
-    \end{center}
-\end{figure}
-
-\begin{multicols}{2}
-The recorded tragectory in the x- and y-axis as well as the target cue for both directions is in Figure \ref{fig:x_and_y_trajectory_and_cue},
-where the solid lines indicate the actual tragectory of the fingertip and the dash lines indicate the target cue.
-\end{multicols}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Fingertip trajectory with respect to time}
-        \label{fig:x_and_y_trajectory_and_cue}
-    \end{center}
-\end{figure}
-\todo[inline]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:decoder_performance} 章 prediction、actual 軌跡對時間作圖保持一致， }
-
-\begin{multicols}{2}
-They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
-so we must multiply $-10$ in both x-and y-axis recordings in order to transit the fingertip coordinate to the target coordinate with the unit in micrometer.
-An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
-The experimental environment is showed in Figure \ref{fig:monkey_experiment}.
-Fingertip position was recorded simultaneously with a six-axis electromagnetic position sensors, with a 250Hz sampling rate.
-The fingertip velocity and acceleration were then computed afterwards by discrete derivative, which is simply the differeces divided by the sampling period.
-\end{multicols}
-
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.8\textwidth]{monkey_experiment.png}
-        \caption{Experimental setup}
-        \label{fig:monkey_experiment}
-    \end{center}
-\end{figure}
-
-
-\newpage
-\subsection{Kording Lab Dataset: Monkey Chewie}
-
-\begin{multicols}{2}
-The second dataset is provided by \cite{dyer2017cryptography} and available at \url{https://github.com/KordingLab/DAD}.
-Only 2 sessions from monkey C was considered in \cite{makin2018}, both of them are center out movements as showed in Figure~\ref{fig:xy_plane_trajectory_chewie}.
-\end{multicols}
-
-\begin{figure}[H]
-    \begin{center}
-        \begin{subfigure}{0.48\textwidth}
-            \includegraphics[width=1\textwidth]{xy_plane_tragectory_session_Chewie_10032013.png}
-        \end{subfigure}
-        \begin{subfigure}{0.48\textwidth}
-            \includegraphics[width=1\textwidth]{xy_plane_tragectory_session_Chewie_12192013.png}
-        \end{subfigure}
-        \caption{2D trajectories of monkey C}
-        \label{fig:xy_plane_trajectory_chewie}
-    \end{center}
-\end{figure}
-
-\begin{multicols}{2}
-\noindent 8 magenta squares are the targets for the monkey to reach, and black dots are the actual recordings.
-The monkey held a handle to control a computer cursor in a 2D virtual plane.
-Unlike grid reaching task experiments, this dataset is constituted by trials.
-At the beginning of each trail the subject must move the cursor into the center area of size $2cm \times 2cm$.
-After holding for 500 to 1500 ms, another 2cm target in the outer position will appear.
-8 outer targets are at a 8cm radial distance from the center.
-For monkey C, an auditory 'Go' cue was provided right after the outer target showed up.
-
-Apparently there exists a deviation between the targets coordinate and the cursors.
-The center point of the cursor's coordinate in these two sessions are inconsistent as well.
-However, the transition matrix is not provided.
-Fortunately the target points are not required when implementing hand movement decoders.
-\end{multicols}
-
-\section{Data Preprocessing}
-
-\begin{multicols}{2}
-The electrode arrays' sampling rate was 24.4kHz, as mentioned in Section \ref{sec:dataset}, and their recordings were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
+The electrode arrays' sampling rate was 24.4kHz, as mentioned in Section , and their recordings were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
 Spikes were detected and sorted online by \cite{makin2018} with a custom software written in C++.
 In Figure \ref{fig:raw_to_spike}, the upper subplot is the raw broadband signal and the bottom subplot is the filtered high-frequency signal and the detected spikes.
 \end{multicols}
@@ -300,7 +151,143 @@ Empty units in this session have been removed, as actual number of sorted units 
 \todo[inline]{最後在將 firing rate heatmap 與 運動資訊疊圖比較 }
 
 
-\newpage
+\section{Animal Pursuit task with point-to-point trajectory}
+\begin{multicols}{2}
+\todo[inline]{(換句話說Makin論文)，包含運動軌跡、experimental setup}
+
+The monkeys were trained to perform reaching tasks with their arms in a transverse plane below their shoulder, with targets showing up in a virtual reality environment.
+Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
+and for monkey Loco square grid of size $6 \times 6$ was used.
+\end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \centering
+        \begin{subfigure}{0.8\textwidth}
+            \centering\includegraphics[width=1\textwidth]{indy_20160411_02_panel.png}
+            \label{fig:8_times_17}
+            \caption{$8 \times 17$ rectangular grid} 
+        \end{subfigure}
+
+        \medskip
+        \begin{subfigure}{0.4\textwidth}
+            \centering\includegraphics[width=1\textwidth]{indy_20161025_04_panel.png}
+            \label{fig:8_times_8}
+            \caption{$8 \times 8 $ square grid} 
+        \end{subfigure}
+        \begin{subfigure}{0.4\textwidth}
+            \centering\includegraphics[width=1\textwidth]{loco_20170214_02_panel.png}
+            \label{fig:6_times_6}
+            \caption{$6 \times 6$ square grid} 
+        \end{subfigure}
+        \caption[Three sizes of the panel]{Three sizes of the panel}
+        \label{fig:panels}		
+    \end{center}	
+\end{figure}
+\todo[inline]{ 三個panel的長寬尺寸還沒調成一致 }
+
+\begin{multicols}{2}
+Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
+Figure \ref{fig:X-Y_trajectory_in_VR_panel} 
+\end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.6\textwidth]{X-Y_trajectory_in_VR_panel.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Fingertip Trajectory in 2D Virtual Panel}
+        \label{fig:X-Y_trajectory_in_VR_panel}
+    \end{center}
+\end{figure}
+
+\begin{multicols}{2}
+The recorded tragectory in the x- and y-axis as well as the target cue for both directions is in Figure \ref{fig:x_and_y_trajectory_and_cue},
+where the solid lines indicate the actual tragectory of the fingertip and the dash lines indicate the target cue.
+\end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Fingertip trajectory with respect to time}
+        \label{fig:x_and_y_trajectory_and_cue}
+    \end{center}
+\end{figure}
+\todo[inline]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:decoder_performance} 章 prediction、actual 軌跡對時間作圖保持一致， }
+
+\begin{multicols}{2}
+They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
+so we must multiply $-10$ in both x-and y-axis recordings in order to transit the fingertip coordinate to the target coordinate with the unit in micrometer.
+An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
+The experimental environment is showed in Figure \ref{fig:monkey_experiment}.
+Fingertip position was recorded simultaneously with a six-axis electromagnetic position sensors, with a 250Hz sampling rate.
+The fingertip velocity and acceleration were then computed afterwards by discrete derivative, which is simply the differeces divided by the sampling period.
+\end{multicols}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{monkey_experiment.png}
+        \caption{Experimental setup}
+        \label{fig:monkey_experiment}
+    \end{center}
+\end{figure}
+
+
+\section{Animal center-out task}
+
+\begin{multicols}{2}
+    We have the second dataset is provided by \cite{dyer2017cryptography} and available at \url{https://github.com/KordingLab/DAD}.
+    Only 2 sessions from monkey C was considered in \cite{makin2018}, both of them are center out movements as showed in Figure~\ref{fig:xy_plane_trajectory_chewie}.
+\end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{xy_plane_tragectory_session_Chewie_10032013.png}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{xy_plane_tragectory_session_Chewie_12192013.png}
+        \end{subfigure}
+        \caption{2D trajectories of monkey C}
+        \label{fig:xy_plane_trajectory_chewie}
+    \end{center}
+\end{figure}
+
+\begin{multicols}{2}
+\noindent 8 magenta squares are the targets for the monkey to reach, and black dots are the actual recordings.
+The monkey held a handle to control a computer cursor in a 2D virtual plane.
+Unlike grid reaching task experiments, this dataset is constituted by trials.
+At the beginning of each trail the subject must move the cursor into the center area of size $2cm \times 2cm$.
+After holding for 500 to 1500 ms, another 2cm target in the outer position will appear.
+8 outer targets are at a 8cm radial distance from the center.
+For monkey C, an auditory 'Go' cue was provided right after the outer target showed up.
+
+Apparently there exists a deviation between the targets coordinate and the cursors.
+The center point of the cursor's coordinate in these two sessions are inconsistent as well.
+However, the transition matrix is not provided.
+Fortunately the target points are not required when implementing hand movement decoders.
+\end{multicols}
+
+
+\section{Network architecture}
+\begin{multicols}{2}
+\todo[inline]{Figure 2.8與tap size參考以下論文的Figure 3 Inhibition of Long-Term Variability in Decoding Forelimb Trajectory Using Evolutionary Neural Networks With Error-Correction Learning}
+\end{multicols}
+
+\section{Layer normalization}
+
+
+\section{Attention module}
+
+
+\section{Loss function and optimizer}
+
+\section{Performance evaluation}
+\begin{multicols}{2}
+\todo[inline]{描述SNR、R2、single session}
+\end{multicols}
+
 \section{Deep Neural Network}
 \subsection{Recurrent Neural Network}
 \label{sec:RNN}
