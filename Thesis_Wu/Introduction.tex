@@ -1,22 +1,43 @@
-\begin{multicols}{2}
-In this capter we will briefly introduce several topics related to our research. 
-First we mention the motivation for why we decided to dive into the domain of brain-machine interface in Section \ref{sec: motivation}. 
-Then, the delimitation of our reseach in Section \ref{sec:delimitation}. 
-The following Section \ref{sec:signal} is about the neural signal and some other brain-machine interfaces research topics. 
-The the primary methods for developing the neural activity decoder in Section \ref{sec:rnn} and the state-of-the-art self-attention machanism in Section \ref{sec:atten}. 
-Also, a couple of normalization techniques will be discussed in Section \ref{sec:norm}, since it is an important factor to optimize the training of the deep learning models. 
-The last paragraph is the organization of this thesis in Section \ref{sec:org}.
-\end{multicols}
+\begin{comment}
+    \begin{multicols}{2}
+    In this capter we will briefly introduce several topics related to our research. 
+    First we mention the motivation for why we decided to dive into the domain of brain-machine interface in Section \ref{sec: motivation}. 
+    Then, the delimitation of our reseach in Section \ref{sec:delimitation}. 
+    The following Section \ref{sec:signal} is about the neural signal and some other brain-machine interfaces research topics. 
+    The the primary methods for developing the neural activity decoder in Section \ref{sec:rnn} and the state-of-the-art self-attention machanism in Section \ref{sec:atten}. 
+    Also, a couple of normalization techniques will be discussed in Section \ref{sec:norm}, since it is an important factor to optimize the training of the deep learning models. 
+    The last paragraph is the organization of this thesis in Section \ref{sec:org}.
+    \end{multicols}
+\end{comment}
 
-\section{Why, what and how about the invasive BCI}
+\section{Why, what and how is invasive BCI?}
+\label{sec:why_what_how_is_invasive_BCI}
 \begin{multicols}{2}
 \todo[inline]{為什麼需要侵入式腦機介面、侵入式腦機介面的用途?}
+\begin{multicols}{2}
+    Intractorticical microelectrode arrays are widely used in motor brain-machine interfaces (BMIs), 
+    by recording spike activities as input signals \citep{stavisky2015high}. 
+    Spikes are a group of neural action potentials, and can be discriminated as single neuron activity, 
+    since different neurons fire with different patterns. 
+    These extracellular recordings have enabled non-human primates to accurately control computer cursors \citep{serruya2002instant, makin2018}, illustrated in Figure \ref{fig:intro_monkey},
+    or robotic limbs \citep{carmena2003learning} or its own musulature \citep{ethier2012restoration}. 
+    Except from motor cortex signals, a research about the self-location ability of rodents, 
+    also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
+    to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}.
+    \end{multicols}
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=0.48\textwidth]{monkey.jpg}
+            \caption{Monkey's Experiment}
+            \label{fig:intro_monkey}
+        \end{center}
+    \end{figure}
 \end{multicols}
 
-\section{Difference between center-out task, pursuit task and point-to-point trajectory}
+\section{Difference between center-out task and pursuit task with point-to-point trajectory}
 \begin{multicols}{2}
-\todo[inline]{center-out task and pursuit task的差異，Pursuit task with point-to-point trajectory，可參考以下論文，搜尋pursuit
-An Improved Unscented Kalman Filter Based Decoder for Cortical Brain-Machine Interfaces}
+\todo[inline]{center-out task and pursuit task的差異，Pursuit task with point-to-point trajectory，可參考以下論文，搜尋 An Improved Unscented Kalman Filter Based Decoder for Cortical Brain-Machine Interfaces}
+\cite{li2016improved}
 \end{multicols}
 
 \section{Unsolved problems related to pursuit task with point-to-point trajectory}
@@ -29,16 +50,22 @@ An Improved Unscented Kalman Filter Based Decoder for Cortical Brain-Machine Int
 \todo[inline]{碩士論文受到哪些論文的啟發? 有了甚麼想法? 想解決哪些問題?}
 \end{multicols}
 
-\section{Lists of the our contribution to BCI}
+\section{Our contributions to invasive BCI research}
+\label{sec:our_contributions}
 \begin{multicols}{2}
 \todo[inline]{條列碩士論文的貢獻}
+\begin{itemize}
+    \item Proposed neural decoder in our reseach outperforms the one by \cite{makin2018}, with higher weighted average $R^{2}$ and lower standard deviation among all sessions.
+    \item Analysed the reciprocal effects of layer normalization in GRU, temporal attention and neural units attention mechanism.
+    \item Visualized the distribution of attention among past time bins when model decoding position, velocity and acceleration.
+    \item Visualized the distribution of attention among sorted units when our models perform decoding.
+\end{itemize}
 \end{multicols}
 
 \section{Motivation and Objective}
 \label{sec: motivation}
 
 \begin{multicols}{2}
-\todo[inline]{章節內文為雙欄}
 This research is aimed for developing algorithms that can convert neural signals into actual movement of the limbs. 
 For those who suffer from motor disability, there exist softwares that allow people to move or control a computer cursor using imagined or attempted movents \citep{hosman2019bci}, 
 or driving an exoskeleton to perform motro-related task for stroke rehabitation, as \cite{chowdhury2018active} successfully developed such EEG-based BCI supported neurorehabilitation system. 
@@ -46,250 +73,11 @@ By implementing the advanced techniques of deep learning and exerting all possib
 \end{multicols}
 
 \section{Delimitation}
-\todo{子章節標題單欄}
 \label{sec:delimitation}
 
 \begin{multicols}{2}
-\todo[inline]{章節內文為雙欄}
 In order to reduce the difficulty of data acquisition, we only consider neural signal from monkeys instead of human or other kinds of animal. 
 Furthermore, no animal experiments were conducted in this reseach. All of hand movement decoding were computed off-line.
-\end{multicols}
-
-\section{Neural Signals}
-\label{sec:signal}
-
-\begin{multicols}{2}
-Intractorticical microelectrode arrays are widely used in motor brain-machine interfaces (BMIs), 
-by recording spike activities as input signals \citep{stavisky2015high}. 
-Spikes are a group of neural action potentials, and can be discriminated as single neuron activity, 
-since different neurons fire with different patterns. 
-These extracellular recordings have enabled non-human primates to accurately control computer cursors \citep{serruya2002instant, makin2018}, illustrated in Figure \ref{fig:intro_monkey},
-or robotic limbs \citep{carmena2003learning} or its own musulature \citep{ethier2012restoration}. 
-Except from motor cortex signals, a research about the self-location ability of rodents, 
-also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
-to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}.
-In Table~\ref{tab:spike_research}
-\end{multicols}
-
-\todo{圖片單欄顯示}
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.48\textwidth]{monkey.jpg}
-        \caption{Monkey's Experiment}
-        \label{fig:intro_monkey}
-    \end{center}
-\end{figure}
-
-\todo{表格單欄顯示}
-\begin{longtable}{cccc}
-    \caption{Researches involved spikes} \\
-    \hline
-    \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
-    \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        \\
-    \hline
-    \endhead
-    \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
-    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
-    \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\Pinball task\\by computer cursors} \\ \\
-    \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
-    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } \\ \\
-    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} \\ \\
-    \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} \\ \\
-    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
-    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } \\ \\
-    \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\Center-out reaching\\by joystick} \\ 
-    \hline
-    % some as dethier2013design \cite{dethier2011brain}     & & & \\ \\
-    % some as dethier2013design \cite{dethier2011spiking} & & & \\ \\
-    % no decoder \cite{jwo2007practical}     & \multirow{10}{*}{Kalman filter}   & & \\ \\
-    \label{tab:spike_research}
-\end{longtable}
-
-
-\begin{multicols}{2}
-However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
-Therefore several studies adopted local filed potentials (LFPs), which stand for the low frequency part (<~300Hz) of neural signal. 
-And also local motor potentials (LMPs), which are the moving average of LFPs. 
-Due to the considerably low frequency of LFPs, they can be sampled, processed, and transmitted with lower power consuption \citep{flint2012accurate}.
-These studies show that low frequency signals are also informative regarding neural signal decoding \citep{wang2014long}. 
-As for human, the LFPs can be obtained by electroencephalography (EEG), and some studies consider the phase of LFPs from a specific frequency band, 
-instead of the amplitude of the signal, to be the only feature in decoding motor imagery tasks \citep{kumar2018eeg} or to proof the correlation between spatial updating process and the rhythmic process in the brain \citep{mclelland2016phase}.
-Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and the frequency bands they were using the perform specific tasks.
-\end{multicols}
-
-
-\begin{longtable}{ccccc}
-    \caption{Researches involved LFPs}\\
-        \hline
-        \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Aritcle }}}  &  \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{LFP Feature}}}    & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Model}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
-        \multicolumn{1}{c}{}                                      &  \multicolumn{1}{c}{}                                           & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                           \\
-        \hline
-        \endhead
-        \cite{scherberger2005cortical} & \makecell{Magnitude\\0-5Hz\\5-15Hz\\$\vdots$\\95-105Hz} & \makecell{Bayesian\\classifier} & \makecell{Macaque\\monkeys} & \makecell{Arm reaching\\Saccade} \\ \\
-        \cite{quiroga2009}          & \makecell{Instantaneous\\phase\\1-4Hz}     & Bayesian      & Rodent    & \makecell{ Heading predictions} \\ \\
-        \cite{ince2010high} & \makecell{Magnitude\\0.3-4Hz\\4-10Hz\\$\vdots$\\48-200Hz} & \makecell{Binary\\linear\\classifiers} & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by manipulandum} \\ \\
-        \cite{flint2012accurate} & \makecell{Magnitude\\0-4Hz\\7-20Hz\\$\vdots$\\200-300Hz} & Wiener cascade & \makecell{Rhesus\\monkeys} & \makecell{Random-traget task\\by hands} \\ \\
-        \cite{tan2016decoding} & \makecell{Magnitude\\13-30Hz\\55-90Hz} & \makecell{Linear\\dynamic\\model} & Human  & \makecell{Dynamometer\\gripping}　\\ \\
-        \cite{kumar2018eeg}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{2-class\\motor imagery} \\ \\
-        \cite{ahmadi2019decoding}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & \makecell{Rhesus\\Monkey}    & \makecell{Point-to-point\\reaching\\by hands} \\
-        \hline
-        % no decoder \makecell{\cite{siapas2005}}            & theta (4-10Hz)                        & \makecell{Instantaneous\\phase}   &   & Place cells  \\ \\
-        % no decoder \makecell{\cite{einevoll2013}}          & LFP                                   & Magnitude                         & \makecell{Current\\source\\density}  & \makecell{  Sensory stimuli } \\ \\
-        % no decoder\makecell{\cite{coude2014}}             & \makecell{7-13Hz\\13-19Hz\\19-25Hz}   & Magnitude                         &   & \makecell{Monkey\\ } \\ \\
-        % no decoder\makecell{\cite{cattani2015}}           &\makecell{Delta (1-4Hz)\\Theta (4-8Hz)}& \makecell{Instantaneous\\phase}   &   & \makecell{ Monkeys \\ binocularly presented \\ a color movie}  \\ \\
-    \label{tab:LFP_research}
-\end{longtable}
-
-% In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
-% Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
-% On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
- 
-
-
-\section{Recurrent Neural Networks}
-\label{sec:rnn}
-
-\begin{multicols}{2}
-The first idea of recurrent neural networks (RNN), which is called the Hopfield networks, was introduced in 1980s \citep{hopfield1982neural}, 
-and the following different versions of RNN have been developed afterwards \citep{elman1990finding, jordan1997serial}, as showed in Figure~\ref{fig:elman_and_jordan}. 
-But the these RNN models face the same gradient vanishing problem, and the two effective approaches to solve this problem is either clip and scale the gradient if the norm is too large, 
-or create a better RNN model \citep{alom2018history}. 
-\end{multicols}
-
- % https://developer.ibm.com/articles/cc-cognitive-recurrent-neural-networks/
-\begin{figure}[H]
-    \begin{center}
-        \begin{subfigure}{0.4\textwidth}
-            \includegraphics[height=0.4\textheight]{elman_network.png}
-            \caption{Elman network}
-        \end{subfigure}
-        \begin{subfigure}{0.4\textwidth}
-            \includegraphics[height=0.4\textheight]{jordan_network.png}
-            \caption{Jordan network}
-        \end{subfigure}
-        \caption{Early developed RNNs}
-        \label{fig:elman_and_jordan}
-    \end{center}
-\end{figure}
-
-\begin{multicols}{2}
-Therefore, \cite{hochreiter1997long} created a well-known model named Long Short-Term Memory (LSTM), solved the gradient vanishing problem of the original RNNs. LSTM quipped with three gates to learn how to forget or keep the memory from previous states. 
-Followed by the work of \cite{chung2014empirical}, a new model named Gated Recurrent Unit (GRU) which is similar to LSTM, was introduced. 
-It is has gained popularity in the community due to its efficiency in training and the high performance sometimes even outdoes the LSTM. 
-
-Nowadays, RNNs come with various architectures have benn widely used in BMI reseachers \citep{ahmadi2020impact}, \cite{tuleuov2019deep} even developed a hybrid deep leaning model which combined RNN with convolution neural network (CNN). 
-These preceding works manifest the uprising potentials of RNNs in computational neural science.
-\end{multicols}
-
-
-\section{Attention Mechanism}
-\label{sec:atten}
-\begin{multicols}{2}
-\todo[inline]{Temporal attetion 的演進從 seq2seq model 開始，將輸入與輸出的語句找到對應的關係，再進展的 self-attention 只考慮同一個輸入語句內詞彙間的彼此關係。 }
-\cite{sutskever2014sequence} is the first research which implemented the encoder-decoder machanism (or called sequence to sequence, seq2seq) to machine translation realm.
-This structure has gained popularity also in sentiment analysis ever since.
-The structure of encoder-decoder RNN illustrated in Figure~\ref{fig:rnn_encoder_decoder}, 
-where the encoder turns a source sequence into a contex vector, then the decoder will use contex vector as the first hidden state to start translation.
-In the traning phase, decoder will be provided the actual target sequence wheras in testing phase, 
-the output from previous timestep will be the input of current timestep.
-\end{multicols}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{rnn_encoder_decoder.png}
-        \caption{RNN encoder-decoder}
-        \label{fig:rnn_encoder_decoder}
-    \end{center}
-\end{figure}
-\todo[inline]{這張是網路上的圖，之後會重畫}
-
-\begin{multicols}{2}
-But when it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
-This is primarily due to the fact that the longer the sequence lenght, 
-the higher the possibility of gradient vanishing might occur in RNNs \citep{chandar2019towards}. 
-Especially in neural machine translation researches, where long input sentences are apt to cause translation errors.
-Thus a novel architecture for neural machine translation customed to machine translation was invented, named \textit{alignment model}
-It was proposed in \cite{bahdanau2014neural}, which they put an additional weights on the original outputs of an RNN. 
-The alighment model scores how well the inputs around one position matches the output on another position, 
-such that model is capable of focusing on the information relevant part of the input sentence, 
-and leave a major positive impact on the ability of the neural machine translation system. 
-Furthermore, by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
-
-Apart form alignment model, \textit{self-attention} of \textit{intra-attention} works quiet differently.
-The alighment model calculate the relationship between source and target sequences, 
-while self-attention only consider relationship beteen the elements from the same input sequence.
-It was \cite{cheng2016long} which first proposed the \textit{intra-attention} mechanism, and followed by the work of \cite{parikh2016decomposable,paulus2017deep}.
-Then \cite{vaswani2017attention} adapted similar idea but discarded the RNN architecture, making its \textit{Transformer} model has the advantage of parallelization.
-\end{multicols}
-
-\begin{longtable}{cccc}
-    \caption{Development of sequence attention}\\
-    \hline
-    \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Aritcle}}} & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Novelty} }}   & \multicolumn{1}{c}{  \multirow{1}{*}{\textbf{Applicable}}} & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Objective}}} \\
-    \multicolumn{1}{c}{}                                    & \multicolumn{1}{c}{}                                              & \multicolumn{1}{c}{  \multirow{1}{*}{\textbf{Model}}}      & \multicolumn{1}{c}{}                                       \\
-    \hline
-    \endhead
-    \cite{bahdanau2014neural} & \makecell{Alignment\\Model} & \makecell{Encoder-decoder\\(Seq2Seq)} & Machine translation \\ \\
-    \cite{xu2015show} & \makecell{Soft/Hard\\Attention} & RNN & Image Caption \\ \\
-    \cite{luong2015effective} & \makecell{Global/Local\\ Attention} &  \makecell{Encoder-decoder\\(Seq2Seq)} & Machine translation \\ \\
-    \cite{cheng2016long} & Intra-attention & \makecell{Encoder-decoder\\(Seq2Seq)} & Setiment analysis \\ \\
-    \cite{parikh2016decomposable} & \makecell{Intra-sentence\\attention} & \makecell{Encoder-decoder\\(Seq2Seq)} & Setiment analysis \\ \\
-    \cite{paulus2017deep} & Intra-attention & \makecell{Encoder-decoder\\(Seq2Seq)} & Text summarization \\ \\
-    \cite{vaswani2017attention} & \makecell{Self-attention,\\Parallelization,\\remove RNN} & \makecell{Encoder-decoder\\(The Transformer)} & Machine Translation \\ \\
-    \cite{lin2017structured} & \makecell{Self-attention} & RNN & Setiment analysis \\ \\
-    \hline
-    \label{tab:atten_dev}
-\end{longtable}
-
-\begin{multicols}{2}
-Similar attention techniques can be seen in sentiment classification research \citep{wang2016attention}, 
-where they appended the attention mechanism right after the LSTM outputs and named it attention-based LSTM.
-They also visualized the aspect in each sentence, e.g., the term "service" or "food" by showing the weights in attention vectors.
-They can tell the important words from the whole sentence.
-
-Several different means of attention mechanism were also implemented in BCI field.
-\cite{zhang2020motor} used both CNN and RNN to extract the spatio and temporal dynamics in EEG signal processing, 
-and its mechanism named \textit{Convolutional Recurrent Attention Model}.
-The self-attention module was placed in the last layer, after the raw signal was first processed by CNN and then RNN.
-The proposed method, convolutional recurrent attention model outperformed other state-of-the-art methods in EEG classification tasks.
-\end{multicols}
-
-
-\section{Normalization}
-\label{sec:norm}
-
-\begin{multicols}{2}
-When training a deep learning model, \textit{internal covariate shift} as the change in distribution of network activations, is an issue that hinders the loss of the model to converge and sometimes incurs poor performances. 
-Several novel approaches related to data normalization were designed to cope with this problem, showed in Table \ref{tab:six_types_of_norm}. 
-Most of the measures calculate the means and variances from layer inputs. 
-But due to the design, the effect of a normalization measure might vary in different deep learning models, e.g. batch normalization is not suitable for RNNs. 
-Also in the field of image processing, generative adversarial network (GAN) thrives as well as its own normalization methods. 
-\end{multicols}
-
-\begin{table}[H]
-    % https://medium.com/@ZhengLungWu/normalization-in-pytorch-84519d8b4fe1
-    \centering
-    \caption{Six Approaches of Normalization}
-    \begin{tabular}{cccc}
-        \hline
-        \multicolumn{1}{c}{ \multirow{2}{*}{ \textbf{Article} } }    &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Normalization \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Applicable }}}  \\ 
-        \multicolumn{1}{c}{}                                         &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Approaches    \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Models     }}}  \\
-        \hline \\
-        \cite{ioffe2015batch}       & Batch       & \multirow{11}{*}{Normalization}     & CNN \\ \\
-        \cite{ba2016layer}          & Layer       &                                     & RNN \\ \\ 
-        \cite{salimans2016weight}   & Weight      &                                     & CNN \& RNN \\ \\
-        \cite{ulyanov2016instance}  & Instance    &                                     & GAN \\ \\
-        \cite{wu2018group}          & Group       &                                     & CNN \\ \\
-        \cite{miyato2018spectral}   & Spectral    &                                     & GAN \\ \\
-        \hline
-    \end{tabular}
-    \label{tab:six_types_of_norm}
-\end{table}
-
-\begin{multicols}{2}
-Since this research primarily used RNN, the best methods to facilitate our model is layer normalization, 
-In a recent sentiment classification reseach \cite{li2020bidirectional} used layer normalization to regulate the values the outputs of bidirectional LSTM, 
-then feed them input the self-attention mechanism.
 \end{multicols}
 
 
