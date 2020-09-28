@@ -2,7 +2,7 @@
 
 
 \section{Data acquisition}
-\todo[inline]{(換句話說Makin論文)包含訊號處理、擷取spike的部分}
+\todo[inline]{ (換句話說Makin論文)包含訊號處理、擷取spike的部分，放入 Figure~\ref{fig:s1_and_m1_spike_train} }
 
 \begin{multicols}{2}
 The first dataset, \textbf{Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology} is provided by \cite{makin2018} and made public available at \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
@@ -184,7 +184,7 @@ and for monkey Loco square grid of size $6 \times 6$ was used.
         \label{fig:panels}		
     \end{center}	
 \end{figure}
-\todo[inline]{ 三個panel的長寬尺寸還沒調成一致 }
+\todo[inline]{ 3個panel的長寬尺寸還沒調成一致 }
 
 \begin{multicols}{2}
 Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
@@ -272,25 +272,45 @@ Fortunately the target points are not required when implementing hand movement d
 
 \section{Network architecture}
 \begin{multicols}{2}
-\todo[inline]{Figure 2.8與tap size參考以下論文的Figure 3 Inhibition of Long-Term Variability in Decoding Forelimb Trajectory Using Evolutionary Neural Networks With Error-Correction Learning}
+\todo[inline]{ Figure~\ref{fig:time_bin_and_prediction} 與tap size參考以下論文的Figure 3 Inhibition of Long-Term Variability in Decoding Forelimb Trajectory Using Evolutionary Neural Networks With Error-Correction Learning}
+
+We have combined the self-attention mechanism, layer normalization and bidirectional GRU together, 
+and proposed a new aspect of using the same self-attention mechanism to conduct hidden unit attention.
+Figure~\ref{fig:Lin_Attention} showed the model with temporal attention only.
+Where $n$ is the tap size, $u$ is the GRU hyperparameter and is 256 if one-directional, 512 if bidirectional.
+Since this model only perform self-attention along temporal dimension, the dimension of $u$ will be reduced to $d_a$, is choosed to be 125, no matter one/bidirection GRU.
+$r$ is the hops of attention we intend to extract from the same sequence, and it is set as 5 in decoding position and 2 in decoding velocity and acceleration.
 \end{multicols}
 
-\section{Layer normalization}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[height=0.5\textheight]{Lin_Attention.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Model with temporal attention}
+        \fontsize{10}{12}
+        \label{fig:Lin_Attention}
+    \end{center}
+\end{figure}
 
-
-\section{Attention module}
-
-
-\section{Loss function and optimizer}
-
-\section{Performance evaluation}
 \begin{multicols}{2}
-\todo[inline]{描述SNR、R2、single session}
+Another model is proposed in order to capture and visualize the attention among the output hidden units from GRU layers.
+After the 2-layer GRU processed the spike firing rate input tensors, we constructed 2-stream structure to seperate the path of processing temporal and unit attention.
+Simply be transposing the all the outpout hidden states from all $n$ timesteps, 
+
+\todo[line]{here}
 \end{multicols}
 
-\section{Deep Neural Network}
-\subsection{Recurrent Neural Network}
-\label{sec:RNN}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[height=0.5\textheight]{Two_Attention.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Model with temporal attention and unit attention}
+        \fontsize{10}{12}
+        \label{fig:Two_Attention}
+    \end{center}
+\end{figure}
+
+\subsection{Recurrent Neural Networks}
 Figure~\ref{fig:unfold_rnn} illustrates how basic RNNs \textit{recur}.
 The weights inside one RNN cell is consistant when it processes a sequence.
 This diagram indicates how the input and output from the same RNN cell differs in each timestep.
@@ -433,8 +453,9 @@ since the first half of the this vector contains the information by feeding inpu
 
 It is the internal dynamics of the GRU to determine the degree of forget and keep the previous information in every timestep.
 
-\subsection{Layer Normalization}
-\label{sec:layer_norm}
+
+\subsection{Layer normalization}
+
 % https://towardsdatascience.com/understanding-dataset-shift-f2a5a262a766
 \begin{multicols}{2}
 With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the setbacks of batch normalization, 
@@ -696,41 +717,28 @@ As showed in Figure~\ref{fig:visualization_vector}
     \end{center}
 \end{figure}
 
+\section{Loss function and optimizer}
 
-\subsection{Architecture of our models}
+
+\section{Performance evaluation}
 \begin{multicols}{2}
-We have combined the self-attention mechanism, layer normalization and bidirectional GRU together, 
-and proposed a new aspect of using the same self-attention mechanism to conduct hidden unit attention.
-Figure~\ref{fig:Lin_Attention} showed the model with temporal attention only.
-Where $n$ is the tap size, $u$ is the GRU hyperparameter and is 256 if one-directional, 512 if bidirectional.
-Since this model only perform self-attention along temporal dimension, the dimension of $u$ will be reduced to $d_a$, is choosed to be 125, no matter one/bidirection GRU.
-$r$ is the hops of attention we intend to extract from the same sequence, and it is set as 5 in decoding position and 2 in decoding velocity and acceleration.
+\todo[inline]{描述SNR、R2、single session}
+
+To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR), 
+two vectors are required which are the observed value $ \vec{y} = \left[ y_1, \cdots , y_n  \right]^{T} $ and predicted value $ \vec{f} = \left[ f_1, \cdots , f_n \right]^{T} $.
+First we compute the mean of the observed data:
+\begin{align}
+    \bar{y} &= \frac{1}{n} \sum^{n}_{i=1} y_i
+    \intertext{ then the total sum of squares, }
+    SS_{tot} &= \sum^{n}_{i=1} \left( y_i - \bar{y} \right)^{2}
+    \intertext{ the residual sum of squares, }
+    SS_{res} &= \sum^{n}_{i=1} \left( y_i - f_i \right)^{2}
+    \intertext{ with that the coefficient of determination will be }
+    R^{2} &\equiv 1 - \frac{ SS_{res} }{ SS_{tot} } \label{eq:r_square}
+    \intertext{ the SNR is defined by:}
+    \text{SNR} &\equiv -10 \log_{10} (1 - R^{2})
+\end{align}
+
+\noindent and since the length of the testing data varied, weighted average is used to compute the mean performance across sessions,
+with the weights equal to the testing data length.
 \end{multicols}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[height=0.5\textheight]{Lin_Attention.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Model with temporal attention}
-        \fontsize{10}{12}
-        \label{fig:Lin_Attention}
-    \end{center}
-\end{figure}
-
-\begin{multicols}{2}
-Another model is proposed in order to capture and visualize the attention among the output hidden units from GRU layers.
-After the 2-layer GRU processed the spike firing rate input tensors, we constructed 2-stream structure to seperate the path of processing temporal and unit attention.
-Simply be transposing the all the outpout hidden states from all $n$ timesteps, 
-
-\todo[line]{here}
-\end{multicols}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[height=0.5\textheight]{Two_Attention.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Model with temporal attention and unit attention}
-        \fontsize{10}{12}
-        \label{fig:Two_Attention}
-    \end{center}
-\end{figure}

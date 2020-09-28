@@ -5,6 +5,51 @@
 \todo[inline]{探討neural decoder的每個元件的貢獻}
 \end{multicols}
 
+\subsection{Effect of layer normalization}
+\begin{multicols}{2}
+\todo[inline]{LN 對於訓練模型收斂速度的提升}
+The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
+These diagrams help us analysis the model based on the how many epoch numbers are required for the testing loss to converge.
+In the position and velocity decoders, it seems that implementing layer normalization does not contribute to a better convergence significantly since two classes of curve overlap.
+However, for acceleration decoders, the loss dropped drastically with the aid of layer normalization compared to original GRU.
+\end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{loss_to_epoch_position.png}
+            \caption{Position}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{loss_to_epoch_velocity.png}
+            \caption{Velocity}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{loss_to_epoch_acceleration.png}
+            \caption{Acceleration}
+        \end{subfigure}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Epoch vs Loss Graphs from 3 different kinematic variable decoders}
+        \label{fig:loss_vs_epoch}
+    \end{center}
+\end{figure}
+
+\begin{multicols}{2}
+The reason for ordinary GRU failed to decode the acceleration is mainly caused by the wide range of this kinematic variable.
+When it comes to decoding fingertip position, the labels are distributed mainly between $100\sim-50$.
+But for velotiy the distribution is between $200\sim-200$ and acceleration $2000\sim-2000$, whereas most values are approximately zero.
+It is unlikely for a deep learing network to adapt to this drastic range of distribution.
+But with the help of layer normalization to optimize the distribution of inner GRU tensors,
+The
+\todo[inline]{未完}
+
+\end{multicols}
+
+\subsection{Effect of temporal self-attention}
+\begin{multicols}{2}
+\todo[inline]{ 比較有/無 attention 的預測軌跡 }
+\end{multicols}
+
 
 \section{The reason why our neural decoder surpass others}
 \begin{multicols}{2}
