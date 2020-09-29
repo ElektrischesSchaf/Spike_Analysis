@@ -213,7 +213,7 @@ where the solid lines indicate the actual tragectory of the fingertip and the da
         \label{fig:x_and_y_trajectory_and_cue}
     \end{center}
 \end{figure}
-\todo[inline]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:decoder_performance} 章 prediction、actual 軌跡對時間作圖保持一致， }
+\todo[inline]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:qualitative_analysis} 章 prediction、actual 軌跡對時間作圖保持一致， }
 
 \begin{multicols}{2}
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
@@ -311,6 +311,7 @@ Simply be transposing the all the outpout hidden states from all $n$ timesteps,
 \end{figure}
 
 \subsection{Recurrent Neural Networks}
+\label{sec:RNN}
 Figure~\ref{fig:unfold_rnn} illustrates how basic RNNs \textit{recur}.
 The weights inside one RNN cell is consistant when it processes a sequence.
 This diagram indicates how the input and output from the same RNN cell differs in each timestep.
@@ -455,7 +456,7 @@ It is the internal dynamics of the GRU to determine the degree of forget and kee
 
 
 \subsection{Layer normalization}
-
+\label{sec:layer_normalization}
 % https://towardsdatascience.com/understanding-dataset-shift-f2a5a262a766
 \begin{multicols}{2}
 With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the setbacks of batch normalization, 

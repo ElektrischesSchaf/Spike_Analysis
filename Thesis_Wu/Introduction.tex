@@ -1,53 +1,68 @@
-\begin{comment}
-    \begin{multicols}{2}
-    In this capter we will briefly introduce several topics related to our research. 
-    First we mention the motivation for why we decided to dive into the domain of brain-machine interface in Section \ref{sec: motivation}. 
-    Then, the delimitation of our reseach in Section \ref{sec:delimitation}. 
-    The following Section \ref{sec:signal} is about the neural signal and some other brain-machine interfaces research topics. 
-    The the primary methods for developing the neural activity decoder in Section \ref{sec:rnn} and the state-of-the-art self-attention machanism in Section \ref{sec:atten}. 
-    Also, a couple of normalization techniques will be discussed in Section \ref{sec:norm}, since it is an important factor to optimize the training of the deep learning models. 
-    The last paragraph is the organization of this thesis in Section \ref{sec:org}.
-    \end{multicols}
-\end{comment}
+% \begin{comment}
+%     \begin{multicols}{2}
+%     In this capter we will briefly introduce several topics related to our research. 
+%     First we mention the motivation for why we decided to dive into the domain of brain-machine interface in Section \ref{sec: motivation}. 
+%     Then, the delimitation of our reseach in Section \ref{sec:delimitation}. 
+%     The following Section \ref{sec:signal} is about the neural signal and some other brain-machine interfaces research topics. 
+%     The the primary methods for developing the neural activity decoder in Section \ref{sec:rnn} and the state-of-the-art self-attention machanism in Section \ref{sec:atten}. 
+%     Also, a couple of normalization techniques will be discussed in Section \ref{sec:norm}, since it is an important factor to optimize the training of the deep learning models. 
+%     The last paragraph is the organization of this thesis in Section \ref{sec:org}.
+%     \end{multicols}
+% \end{comment}
 
 \section{Why, what and how is invasive BCI?}
 \label{sec:why_what_how_is_invasive_BCI}
 \begin{multicols}{2}
 \todo[inline]{為什麼需要侵入式腦機介面、侵入式腦機介面的用途?}
 \begin{multicols}{2}
-    Intractorticical microelectrode arrays are widely used in motor brain-machine interfaces (BMIs), 
-    by recording spike activities as input signals \citep{stavisky2015high}. 
-    Spikes are a group of neural action potentials, and can be discriminated as single neuron activity, 
-    since different neurons fire with different patterns. 
-    These extracellular recordings have enabled non-human primates to accurately control computer cursors \citep{serruya2002instant, makin2018}, illustrated in Figure \ref{fig:intro_monkey},
-    or robotic limbs \citep{carmena2003learning} or its own musulature \citep{ethier2012restoration}. 
-    Except from motor cortex signals, a research about the self-location ability of rodents, 
-    also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
-    to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}.
-    \end{multicols}
-    \begin{figure}[H]
-        \begin{center}
-            \includegraphics[width=0.48\textwidth]{monkey.jpg}
-            \caption{Monkey's Experiment}
-            \label{fig:intro_monkey}
-        \end{center}
-    \end{figure}
+Intractorticical microelectrode arrays are widely used in motor brain-machine interfaces (BMIs), 
+by recording spike activities as input signals \citep{stavisky2015high}. 
+Spikes are a group of neural action potentials, and can be discriminated as single neuron activity, 
+since different neurons fire with different patterns. 
+These extracellular recordings have enabled non-human primates to accurately control computer cursors \citep{serruya2002instant, makin2018}, illustrated in Figure \ref{fig:intro_monkey},
+or robotic limbs \citep{carmena2003learning} or its own musulature \citep{ethier2012restoration}. 
+Except from motor cortex signals, a research about the self-location ability of rodents, 
+also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
+to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}.
+\end{multicols}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.48\textwidth]{monkey.jpg}
+        \caption{Monkey's Experiment}
+        \label{fig:intro_monkey}
+    \end{center}
+\end{figure}
 \end{multicols}
 
 \section{Difference between center-out task and pursuit task with point-to-point trajectory}
+\label{sec:difference_between_center_out_and_pursuit}
 \begin{multicols}{2}
-\todo[inline]{center-out task and pursuit task的差異，Pursuit task with point-to-point trajectory，可參考以下論文，搜尋 An Improved Unscented Kalman Filter Based Decoder for Cortical Brain-Machine Interfaces}
-\cite{li2016improved}
+\todo[inline]{center-out task and pursuit task的差異，Pursuit task with point-to-point trajectory，可參考以下論文，搜尋An Improved Unscented Kalman Filter Based Decoder for Cortical Brain-Machine Interfaces}
+\cite{li2016improved} is one of a few researches that has conducted both two kinds of movement.
+\begin{itemize}
+    \item Center-out task requires subjects to move the cursor from center target to peripheral targets, normally located at a fix radial distance between the center.
+    \item Center-out task limites the variety of movement diretions, researches typically use 8 outer targets.
+    \item The movement from pursuit task with point-to-point trajectory is more comlex than center-out task, since there are more combinations to select two random targets in a 2D plane.
+    \item The cursor in pursuit task moves continuously by the subject, there is no need of returning back to origin after completing a target reach.
+    \item Finding two similar movements from two randomly selected targets in pursuit tasks is verly unlikely, wheras 
+\end{itemize}
 \end{multicols}
 
 \section{Unsolved problems related to pursuit task with point-to-point trajectory}
 \begin{multicols}{2}
 \todo[inline]{侵入式腦機介面在Pursuit task with point-to-point trajectory有甚麼問題還沒被解決?}
+
 \end{multicols}
 
 \section{Inspirations and goals of our research}
 \begin{multicols}{2}
 \todo[inline]{碩士論文受到哪些論文的啟發? 有了甚麼想法? 想解決哪些問題?}
+Since neural signals are non-linear sequential data \citep{brezina2000neuromuscular}, and firing pattern in motor cortex neurons have a lot to do with the movement direction \citep{hatsopoulos1998information},
+it is practical to use RNNs as the backbone of neural decoders \citep{buonomano2011population}.
+New technique has been created for RNNs \citep{ba2016layer}, it gives us chance to boost decoding accuracy.
+However, previous BCI researches involved RNNs have not focus on the internal dynamics of their models and explain how the model actually learn from the neural signal.
+Inspired by the developement of attention module in natural language processing, 
+we believe it can provide potent reasons for us to explain our the design of our model and brand new insight to neural science by showing the attention map of neural signals.
 \end{multicols}
 
 \section{Our contributions to invasive BCI research}
@@ -55,10 +70,10 @@
 \begin{multicols}{2}
 \todo[inline]{條列碩士論文的貢獻}
 \begin{itemize}
-    \item Proposed neural decoder in our reseach outperforms the one by \cite{makin2018}, with higher weighted average $R^{2}$ and lower standard deviation among all sessions.
+    \item Proposed neural decoder in our reseach outperforms the results from \cite{makin2018}, with higher weighted average $R^{2}$ and lower standard deviation among all sessions, all 6 types of kinematic variables (position, velocity, acceleration each in x- and y-axis).
+    \item Visualized the distribution of attention among past time bins when model decoding different types of kinematic variables.
+    \item Visualized the distribution of attention among sorted units when decoding.
     \item Analysed the reciprocal effects of layer normalization in GRU, temporal attention and neural units attention mechanism.
-    \item Visualized the distribution of attention among past time bins when model decoding position, velocity and acceleration.
-    \item Visualized the distribution of attention among sorted units when our models perform decoding.
 \end{itemize}
 \end{multicols}
 
