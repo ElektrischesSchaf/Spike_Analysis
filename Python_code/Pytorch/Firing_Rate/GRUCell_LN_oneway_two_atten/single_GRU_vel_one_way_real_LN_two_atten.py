@@ -45,7 +45,7 @@ regular_modules = some_modules.regular_modules()
 
 # Deep leaning module
 # from  Deep_Learning_Models.GRU_one_stream import GRUModel
-from  Deep_Learning_Models.GRU_real_LN_two_Atten import Real_Layer_GRU_one_way_parallel_2
+from  Deep_Learning_Models.GRU_real_LN_two_Atten import Real_Layer_GRU_one_way_parallel_3
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # attention map plotting module
@@ -391,7 +391,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = Real_Layer_GRU_one_way_parallel_2(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
+    net = Real_Layer_GRU_one_way_parallel_3(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
 
     for n, p in net.named_parameters():
         print(n, p.shape)
