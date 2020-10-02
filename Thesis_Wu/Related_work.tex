@@ -1,6 +1,8 @@
-\section{Development and traditional measures of invasive BCI}
+\section{Development and traditional measures of invasive BCIs}
 \begin{multicols}{2}
 \todo[inline]{侵入式腦機介面的發展，傳統侵入式腦機介面用哪些方法?}
+Table~\ref{tab:traditional_invasive} listed traditional machine learning decoders in invasive BCIs.
+
 \end{multicols}
 
 \begin{longtable}{cccc}
@@ -71,6 +73,7 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 \label{sec:development_of_deep_learning_in_invasive_BCI}
 \begin{multicols}{2}
 \todo[inline]{使用深度學習於侵入式腦機介面的發展}
+Table~\ref{tab:deep_leaning_in_invasive_BCI} listed decoders involved deep leaning in invasive BCIs.
 \end{multicols}
 
 \begin{longtable}{cccc}
@@ -155,6 +158,8 @@ Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and th
 \section{Unsolved problems and drawbacks in preceding deep learning invasive BCI researches}
 \begin{multicols}{2}
 \todo[inline]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
+Deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
+by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since 
 \end{multicols}
 
 \section{Development of normalization in deep learning}
@@ -226,7 +231,7 @@ It was proposed in \cite{bahdanau2014neural}, which they put an additional weigh
 The alighment model scores how well the inputs around one position matches the output on another position, 
 such that model is capable of focusing on the information relevant part of the input sentence, 
 and leave a major positive impact on the ability of the neural machine translation system. 
-Furthermore, by pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning, since deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
+
 
 Apart form alignment model, \textit{self-attention} of \textit{intra-attention} works quiet differently.
 The alighment model calculate the relationship between source and target sequences, 
