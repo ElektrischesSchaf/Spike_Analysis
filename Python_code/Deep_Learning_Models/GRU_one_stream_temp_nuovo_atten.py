@@ -218,9 +218,12 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         result_for_all_r = torch.stack(result_for_all_r, 0)
         result_for_all_r = result_for_all_r.permute(1,0,2,3)
-        
 
         result_for_all_r = torch.sum(result_for_all_r, 1, keepdim = True)
+
+        # result_for_all_r = torch.max(result_for_all_r, 1, keepdim = True) # Returns a namedtuple (values, indices) where values is the maximum value of each row of the input tensor in the given dimension dim
+        # result_for_all_r = result_for_all_r[0]
+
         # print('size of result_for_all_r = ', result_for_all_r.size(), '\n')
 
         return result_for_all_r
