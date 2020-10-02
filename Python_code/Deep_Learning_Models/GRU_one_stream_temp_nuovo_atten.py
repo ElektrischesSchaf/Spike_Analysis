@@ -166,6 +166,9 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # Layer Normalization
         self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
 
+        # Layer Normalization inside atten
+        self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, da], elementwise_affine=False)
+
         r = int( max_timestep/4 )
         da= int( hidden_dim/2 )
 
@@ -186,7 +189,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # LN inside atten
         # attn_weight_matrix = self.W_s2_1( torch.tanh( self.LN_in_atten( self.W_s1_1(gru_output) )  ))
 
-        attn_weight_matrix = self.W_s2_1( torch.tanh( self.W_s1_1(gru_output) ) )
+        attn_weight_matrix = self.W_s2_1( torch.tanh( self.input_LN_forward(self.W_s1_1(gru_output))) )
         attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
 
         attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
@@ -269,7 +272,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         hidden_state_list = self.input_LN_forward(hidden_state_list)
 
-        attn_weight_matrix_forward = self.attention_net_1( hidden_state_list )
+        # attn_weight_matrix_forward = self.attention_net_1( hidden_state_list )
         
 
         # hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, hidden_state_list )
