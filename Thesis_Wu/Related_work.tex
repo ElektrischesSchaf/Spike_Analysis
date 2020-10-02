@@ -3,6 +3,23 @@
 \todo[inline]{侵入式腦機介面的發展，傳統侵入式腦機介面用哪些方法?}
 \end{multicols}
 
+\begin{longtable}{cccc}
+    \caption{ Traditional decoder in invasive BCIs } \\
+    \hline
+    \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
+    \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        \\
+    \hline
+    \endhead
+    \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
+    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
+    \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
+    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } \\ \\
+    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} \\ \\
+    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
+    \hline
+    \label{tab:traditional_invasive}
+\end{longtable}
+
 
 \section{Limitations of invasive BCI}
 \begin{multicols}{2}
@@ -11,7 +28,12 @@
 
 \section{Merits of deep learning in BCI}
 \begin{multicols}{2}
-\todo[inline]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?}
+\todo[inline]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?} % hosman2019bci has emphasized the merit of RNN over KF
+
+\cite{hosman2019bci} has mentioned the improvement of deep leaning in BCIs.
+Linear Kalman decoders have been widely applied to intracortical brain computer interfaces \citep{jarosiewicz2015virtual, pandarinath2017high,nuyujukian2018cortical}.
+Thanks to the development of non-linear decoders, more promising performances have been reached both in work in humans and non-human primates \citep{shanechi2017rapid, sussillo2016making, milstein2017multiscale, pandarinath2018inferring}.
+Especially in \cite{sussillo2016making}, the RNN has outperformed the Kalman filter.
 
 The first idea of recurrent neural networks (RNN), which is called the Hopfield networks, was introduced in 1980s \citep{hopfield1982neural}, 
 and the following different versions of RNN have been developed afterwards \citep{elman1990finding, jordan1997serial}, as showed in Figure~\ref{fig:elman_and_jordan}. 
@@ -19,7 +41,7 @@ But the these RNN models face the same gradient vanishing problem, and the two e
 or create a better RNN model \citep{alom2018history}. 
 \end{multicols}
 
-    % https://developer.ibm.com/articles/cc-cognitive-recurrent-neural-networks/
+% https://developer.ibm.com/articles/cc-cognitive-recurrent-neural-networks/
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.4\textwidth}
@@ -52,28 +74,43 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 \end{multicols}
 
 \begin{longtable}{cccc}
-    \caption{Researches involved spikes} \\
+    \caption{ Deep leaning decoder in invasive BCIs } \\
     \hline
     \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
     \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        \\
     \hline
     \endhead
-    \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
-    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
     \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\Pinball task\\by computer cursors} \\ \\
-    \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
-    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } \\ \\
-    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} \\ \\
     \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} \\ \\
-    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
     \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } \\ \\
     \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\Center-out reaching\\by joystick} \\ 
     \hline
-    % some as dethier2013design \cite{dethier2011brain}     & & & \\ \\
-    % some as dethier2013design \cite{dethier2011spiking} & & & \\ \\
-    % no decoder \cite{jwo2007practical}     & \multirow{10}{*}{Kalman filter}   & & \\ \\
-    \label{tab:spike_research}
+    \label{tab:deep_leaning_in_invasive_BCI}
 \end{longtable}
+
+% \begin{longtable}{cccc}
+%     \caption{Researches involved spikes} \\
+%     \hline
+%     \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
+%     \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        \\
+%     \hline
+%     \endhead
+%     \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
+%     \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
+%     \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\Pinball task\\by computer cursors} \\ \\
+%     \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
+%     \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } \\ \\
+%     \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} \\ \\
+%     \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} \\ \\
+%     \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
+%     \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } \\ \\
+%     \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\Center-out reaching\\by joystick} \\ 
+%     \hline
+%     % some as dethier2013design \cite{dethier2011brain}     & & & \\ \\
+%     % some as dethier2013design \cite{dethier2011spiking} & & & \\ \\
+%     % no decoder \cite{jwo2007practical}     & \multirow{10}{*}{Kalman filter}   & & \\ \\
+%     \label{tab:spike_research}
+% \end{longtable}
 
 
 \begin{multicols}{2}
@@ -105,8 +142,8 @@ Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and th
         \hline
         % no decoder \makecell{\cite{siapas2005}}            & theta (4-10Hz)                        & \makecell{Instantaneous\\phase}   &   & Place cells  \\ \\
         % no decoder \makecell{\cite{einevoll2013}}          & LFP                                   & Magnitude                         & \makecell{Current\\source\\density}  & \makecell{  Sensory stimuli } \\ \\
-        % no decoder\makecell{\cite{coude2014}}             & \makecell{7-13Hz\\13-19Hz\\19-25Hz}   & Magnitude                         &   & \makecell{Monkey\\ } \\ \\
-        % no decoder\makecell{\cite{cattani2015}}           &\makecell{Delta (1-4Hz)\\Theta (4-8Hz)}& \makecell{Instantaneous\\phase}   &   & \makecell{ Monkeys \\ binocularly presented \\ a color movie}  \\ \\
+        % no decoder \makecell{\cite{coude2014}}             & \makecell{7-13Hz\\13-19Hz\\19-25Hz}   & Magnitude                         &   & \makecell{Monkey\\ } \\ \\
+        % no decoder \makecell{\cite{cattani2015}}           &\makecell{Delta (1-4Hz)\\Theta (4-8Hz)}& \makecell{Instantaneous\\phase}   &   & \makecell{ Monkeys \\ binocularly presented \\ a color movie}  \\ \\
     \label{tab:LFP_research}
 \end{longtable}
 

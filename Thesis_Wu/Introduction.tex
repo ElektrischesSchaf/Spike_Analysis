@@ -24,6 +24,8 @@ or robotic limbs \citep{carmena2003learning} or its own musulature \citep{ethier
 Except from motor cortex signals, a research about the self-location ability of rodents, 
 also used spike signals from the place cells and pyramidal neurons found in mammalian hippocampus, 
 to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square \citep{tampuu2019efficient}.
+
+
 \end{multicols}
 \begin{figure}[H]
     \begin{center}
@@ -58,7 +60,7 @@ to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square 
 \begin{multicols}{2}
 \todo[inline]{碩士論文受到哪些論文的啟發? 有了甚麼想法? 想解決哪些問題?}
 Since neural signals are non-linear sequential data \citep{brezina2000neuromuscular}, and firing pattern in motor cortex neurons have a lot to do with the movement direction \citep{hatsopoulos1998information},
-it is practical to use RNNs as the backbone of neural decoders \citep{buonomano2011population}.
+It is practical to use RNNs as the backbone of neural decoders \citep{buonomano2011population}, for RNN has outperformed traditional linear decoder \citep{sussillo2016making}.
 New technique has been created for RNNs \citep{ba2016layer}, it gives us chance to boost decoding accuracy.
 However, previous BCI researches involved RNNs have not focus on the internal dynamics of their models and explain how the model actually learn from the neural signal.
 Inspired by the developement of attention module in natural language processing, 
