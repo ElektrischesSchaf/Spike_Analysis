@@ -266,9 +266,9 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         hidden_state_list = hidden_state_list.permute(1,0,2)
 
-        hidden_state_list = self.input_LN_forward(hidden_state_list)
+        # hidden_state_list = self.input_LN_forward(hidden_state_list)
 
-        # attn_weight_matrix_forward = self.attention_net_1( hidden_state_list )
+        attn_weight_matrix_forward = self.attention_net_1( hidden_state_list )
         
 
         # hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, hidden_state_list )
