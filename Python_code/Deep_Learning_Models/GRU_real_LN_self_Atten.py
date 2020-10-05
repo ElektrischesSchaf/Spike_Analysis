@@ -130,7 +130,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
         hidden_state_list_2_result = torch.cat((hidden_state_list_2_forward, hidden_state_list_2_backward), 2)
 
-        hidden_state_list_2_result = self.outside_layer_norm(hidden_state_list_2_result)
+        # hidden_state_list_2_result = self.outside_layer_norm(hidden_state_list_2_result)
 
         attn_weight_matrix = self.attention_net( hidden_state_list_2_result )
         hidden_matrix = torch.bmm( attn_weight_matrix, hidden_state_list_2_result )
@@ -231,7 +231,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         hidden_state_list = hidden_state_list.permute(1,0,2)
 
-        hidden_state_list = self.input_LN_forward(hidden_state_list)
+        # hidden_state_list = self.input_LN_forward(hidden_state_list)
 
         # print( 'size of hidden_state_list= ', hidden_state_list.size(), '\n' )
 
