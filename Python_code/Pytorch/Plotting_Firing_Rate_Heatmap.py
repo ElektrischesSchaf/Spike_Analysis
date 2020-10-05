@@ -332,6 +332,9 @@ plt.figure(figsize=(my_plot_width, my_plot_height))
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
 # plt.title('test')
 sns.set(font_scale=3)
+sns.set_style("white")
+sns.color_palette(palette=None)
+
 data = torch.transpose( testing_x[reduce_time_bin:reduce_time_bin*3,:], 0, 1)
 
 # Eliminate empty units
@@ -371,8 +374,12 @@ plt.close()
 # plt.rc('font', family='serif')
 
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
+
 sns.set(font_scale=3)
-f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [12, 1, 1, 1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, constrained_layout=True , figsize=(my_plot_width, my_plot_height*1.2))
+sns.set_style("white")
+sns.color_palette(palette=None)
+
+f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [3, 1, 1, 1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, constrained_layout=True , figsize=(my_plot_width, my_plot_height*1.2))
 
 cbar_kws={"orientation": "horizontal", "shrink": 0.2, "aspect":20,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), 4 ]}
 sns.heatmap( data=data, vmax=4 ,xticklabels=False, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', ax=ax[0]) # important, not ax[0] = sns.heatmap(...)
@@ -391,33 +398,37 @@ ax[0].set_ylabel('Units', fontsize=my_fontsize, color="black")
 
 
 
-ax[1].set_title('Position', fontsize=my_fontsize)
-ax[1].plot( testing_y_1[reduce_time_bin:reduce_time_bin*3], 'b', linewidth=3, label='x-axis', alpha=0.8 )
-ax[1].plot( testing_y_2[reduce_time_bin:reduce_time_bin*3], 'g', linewidth=3, label='y-axis', alpha=0.8 )
-ax[1].set_ylabel('mm', fontsize=my_fontsize, rotation=90)
+# ax[1].set_title( 'Position', fontsize=my_fontsize)
+ax[1].plot(time_stamp_64ms[reduce_time_bin:reduce_time_bin*3], testing_y_1[reduce_time_bin:reduce_time_bin*3], 'b', linewidth=3, label='x-axis', alpha=0.8 )
+ax[1].plot(time_stamp_64ms[reduce_time_bin:reduce_time_bin*3], testing_y_2[reduce_time_bin:reduce_time_bin*3], 'g', linewidth=3, label='y-axis', alpha=0.8 )
+ax[1].set_ylabel( 'Position ($mm$)', fontsize=my_fontsize, rotation=90)
 ax[1].get_xaxis().set_ticks([])
-ax[1].legend(loc='upper right', fontsize=my_fontsize*0.5)
-ax[1].set_xlim([ 0, len( testing_y_2[reduce_time_bin:reduce_time_bin*3] ) ])
+ax[1].legend(loc='upper right', fontsize=my_fontsize)
+# ax[1].set_xlim([ 0, len( testing_y_2[reduce_time_bin:reduce_time_bin*3] ) ])
+ax[1].set_xlim([ time_stamp_64ms[reduce_time_bin] ,  time_stamp_64ms[reduce_time_bin*3]  ])
 
 
-ax[2].set_title('Velocity', fontsize=my_fontsize)
-ax[2].plot( testing_y_3[reduce_time_bin:reduce_time_bin*3], 'b', linewidth=3, label='x-axis', alpha=0.8 )
-ax[2].plot( testing_y_4[reduce_time_bin:reduce_time_bin*3], 'g', linewidth=3, label='y-axis', alpha=0.8 )
-ax[2].set_ylabel('mm/s', fontsize=my_fontsize, rotation=90)
+# ax[2].set_title( 'Velocity', fontsize=my_fontsize)
+ax[2].plot(time_stamp_64ms[reduce_time_bin:reduce_time_bin*3], testing_y_3[reduce_time_bin:reduce_time_bin*3], 'b', linewidth=3, label='x-axis', alpha=0.8 )
+ax[2].plot(time_stamp_64ms[reduce_time_bin:reduce_time_bin*3], testing_y_4[reduce_time_bin:reduce_time_bin*3], 'g', linewidth=3, label='y-axis', alpha=0.8 )
+ax[2].set_ylabel( 'Velocity ($mm/s$)', fontsize=my_fontsize, rotation=90)
 ax[2].get_xaxis().set_ticks([])
-ax[2].legend(loc='upper right', fontsize=my_fontsize*0.5)
-ax[2].set_xlim([ 0, len( testing_y_4[reduce_time_bin:reduce_time_bin*3] ) ])
+ax[2].legend(loc='upper right', fontsize=my_fontsize)
+# ax[2].set_xlim([ 0, len( testing_y_4[reduce_time_bin:reduce_time_bin*3] ) ])
+ax[2].set_xlim([ time_stamp_64ms[reduce_time_bin] ,  time_stamp_64ms[reduce_time_bin*3]  ])
 
 
 
-ax[3].set_title('Acceleration', fontsize=my_fontsize)
-ax[3].plot( testing_y_5[reduce_time_bin:reduce_time_bin*3], 'b', linewidth=3, label='x-axis', alpha=0.8 )
-ax[3].plot( testing_y_6[reduce_time_bin:reduce_time_bin*3], 'g', linewidth=3, label='y-axis', alpha=0.8 )
-ax[3].set_ylabel( 'mm/$s^2$', fontsize=my_fontsize, rotation=90)
+# ax[3].set_title( 'Acceleration', fontsize=my_fontsize)
+ax[3].plot(time_stamp_64ms[reduce_time_bin:reduce_time_bin*3], testing_y_5[reduce_time_bin:reduce_time_bin*3], 'b', linewidth=3, label='x-axis', alpha=0.8 )
+ax[3].plot(time_stamp_64ms[reduce_time_bin:reduce_time_bin*3], testing_y_6[reduce_time_bin:reduce_time_bin*3], 'g', linewidth=3, label='y-axis', alpha=0.8 )
+ax[3].set_ylabel( 'Acceleration ($mm/s^2$)', fontsize=my_fontsize, rotation=90)
 # ax[3].get_xaxis().set_ticks([])
-ax[3].set_xlabel('Time Bins', fontsize=my_fontsize)
-ax[3].legend(loc='upper right', fontsize=my_fontsize*0.5)
-ax[3].set_xlim([ 0, len( testing_y_6[reduce_time_bin:reduce_time_bin*3] ) ])
+# ax[3].set_xlabel('Time Bins', fontsize=my_fontsize)
+ax[3].set_xlabel('Time (Seconds)', fontsize=my_fontsize)
+ax[3].legend(loc='upper right', fontsize=my_fontsize)
+# ax[3].set_xlim([ 0, len( testing_y_6[reduce_time_bin:reduce_time_bin*3] ) ])
+ax[3].set_xlim([ time_stamp_64ms[reduce_time_bin] ,  time_stamp_64ms[reduce_time_bin*3]  ])
 
 
 
