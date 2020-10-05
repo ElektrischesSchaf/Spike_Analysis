@@ -20,6 +20,9 @@ class Plotting():
         attn_weight_matrix_all=attn_weight_matrix_all[:end_time_bin,:]
 
         sns.set(font_scale=1.5)
+        sns.set_style("white")
+        sns.color_palette(palette=None)
+
         plt.rcParams["figure.figsize"] = (16,9)
 
         # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
@@ -46,20 +49,26 @@ class Plotting():
         plt.xlabel('Time Bin', fontsize=25)
         plt.tight_layout()
         plt.savefig( plot_path+'/'+ 'attention_map' +'.png' )
+
         plt.cla()
         plt.clf()
         plt.close()
+
+        
 
         return
 
 
     # for 2-output GRU model
-    def attention_map_2_outputs( self, session_name, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, firing_rate_collector):
+    def attention_map_2_outputs( self, session_name, time_step, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, firing_rate_collector):
 
         firing_rate_collector=firing_rate_collector[start_time_bin:end_time_bin,:]
         attn_weight_matrix_all=attn_weight_matrix_all[start_time_bin:end_time_bin,:]
 
         sns.set(font_scale=3)
+        sns.set_style("white")
+        sns.color_palette(palette=None)
+
         plt.rcParams["figure.figsize"] = (30,30)
 
         time=[]
@@ -138,20 +147,29 @@ class Plotting():
         plt.clf()
         plt.close()
 
+        
+
         return
 
     # for 2-output GRU model
-    def attention_map_2_outputs_with_target_cue( self, session_name, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, x_target_cue, y_target_cue, firing_rate_collector):
+    def attention_map_2_outputs_with_target_cue( self, session_name, time_step, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, x_target_cue, y_target_cue, firing_rate_collector):
 
-        firing_rate_collector=firing_rate_collector[start_time_bin:end_time_bin,:]
-        attn_weight_matrix_all=attn_weight_matrix_all[start_time_bin:end_time_bin,:]
+        firing_rate_collector = firing_rate_collector[start_time_bin:end_time_bin,:]
+        attn_weight_matrix_all = attn_weight_matrix_all[start_time_bin:end_time_bin,:]
 
         sns.set(font_scale=3)
+        sns.set_style("white")
+        sns.color_palette(palette=None)
+
         plt.rcParams["figure.figsize"] = (30,30)
 
-        time=[]
-        for i in range(start_time_bin, end_time_bin):
-            time+=[i]
+        # this is use actual second in the time axes
+        time_step = time_step[start_time_bin:end_time_bin]
+
+        # This is show time bin in the time axes, not actual seconds
+        # time=[]
+        # for i in range(start_time_bin, end_time_bin):
+        #     time+=[i]
 
         f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [4,3,2],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} , constrained_layout=True)
 
@@ -208,11 +226,11 @@ class Plotting():
             ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
             ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+        ax[2].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
+        ax[2].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 
-        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[2].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
+        ax[2].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -223,23 +241,33 @@ class Plotting():
         change_points_x_set = set(change_points_x)
         change_points_y_set = set(change_points_y)
         
+        # seconds version
         for ele in list(change_points_x_set.union( change_points_y_set )):
-            ax[2].axvline( time[0]+ele , color='black' , linewidth=5, alpha=0.3 )
+            ax[2].axvline( time_step[ele] , color='black' , linewidth=5, alpha=0.3 )
         
-        # this is for target cue checking
+        # time bin version
+        # for ele in list(change_points_x_set.union( change_points_y_set )):
+        #     ax[2].axvline( time[0]+ele , color='black' , linewidth=5, alpha=0.3 )
+
+        # this is for target cue checking, time bin version
         # ax[2].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
         # ax[2].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-axis cue', alpha=0.8)
 
+
         ax[2].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
-        ax[2].set_xlim([ time[0], time[-1] ])
-        ax[2].set_xlabel('Time Bins', fontsize=my_fontsize, color="black")
+
+        # ax[2].set_xlim([ time[0], time[-1] ])
+        # ax[2].set_xlabel('Time Bins', fontsize=my_fontsize, color="black")
+
+        ax[2].set_xlim([ time_step[0], time_step[-1] ])
+        ax[2].set_xlabel('Time (seconds)', fontsize=my_fontsize, color="black")
 
         plt.savefig( plot_path+'/'+ 'attention_map_' +str(start_time_bin)+ '_to_'+str(end_time_bin) +'.png' )
 
         plt.cla()
         plt.clf()
-        plt.close()
+        plt.close()        
 
         return
 
@@ -249,6 +277,8 @@ class Plotting():
         attn_weight_matrix_all=attn_weight_matrix_all[start_time_bin:end_time_bin,:]
 
         sns.set(font_scale=3)
+        sns.set_style("white")
+
         plt.rcParams["figure.figsize"] = (30,30)
 
         time=[]
@@ -346,8 +376,12 @@ class Plotting():
         plt.clf()
         plt.close()
 
+        
+
         return
         
+    ''' Obsolete
+
     def attention_map_2_outputs_bidir_sep( self, session_name, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all_forward, attn_weight_matrix_all_backward, firing_rate_collector):
         firing_rate_collector = firing_rate_collector[start_time_bin:end_time_bin,:]
         attn_weight_matrix_all_forward = attn_weight_matrix_all_forward[start_time_bin:end_time_bin,:]
@@ -707,3 +741,5 @@ class Plotting():
         plt.clf()
         plt.close()
         return
+
+    '''

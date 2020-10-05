@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import time
 import h5py
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 width_two=0.2
 import math
