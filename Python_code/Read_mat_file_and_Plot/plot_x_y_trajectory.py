@@ -102,8 +102,8 @@ plot.close()
 
 
 # Plot trajectory in VR panel
-plot_start_sample_time = 10100
-plot_end_sample_time = plot_start_sample_time + 1830 # 1750
+plot_start_sample_time = 10125 #10100
+plot_end_sample_time = plot_start_sample_time + 650 # 1830 before for more trials
 
 plot.figure(figsize=(9,9))
 plot.scatter( target_x_coor, target_y_coor, color='black', s=80)
@@ -112,8 +112,8 @@ plot.scatter( target_x_coor[plot_start_sample_time:plot_end_sample_time], target
 
 plot.scatter( finger_x_coor[plot_start_sample_time:plot_end_sample_time], finger_y_coor[plot_start_sample_time:plot_end_sample_time], marker='.', color='#006039', s=50, alpha=0.6)
 
-plot.scatter( finger_x_coor[plot_start_sample_time], finger_y_coor[plot_start_sample_time], marker='$A$', color='#006039', s=400, alpha=1)
-plot.scatter( finger_x_coor[plot_end_sample_time], finger_y_coor[plot_end_sample_time], marker='$B$', color='#006039', s=400, alpha=1)
+plot.scatter( finger_x_coor[plot_start_sample_time], finger_y_coor[plot_start_sample_time], marker='$A$', color='black', s=700, alpha=1)
+plot.scatter( finger_x_coor[plot_end_sample_time], finger_y_coor[plot_end_sample_time], marker='$B$', color='black', s=700, alpha=1)
 
 plot.title('Session ' + session_name, fontsize=my_fontsize*0.8, color='black')
 plot.xlabel('mm', fontsize=my_fontsize*0.8, color='black')
@@ -159,6 +159,6 @@ plot.xlabel('Time (second)', fontsize=my_fontsize*0.8)
 plot.xticks(fontsize=my_fontsize*0.8)
 plot.yticks(fontsize=my_fontsize*0.8)
 # plot.xlim([ numpy_time_stamp[0,plot_start_sample_time], numpy_time_stamp[0,plot_end_sample_time]])
-plot.legend(loc='upper center', fontsize=my_fontsize*0.8)
+plot.legend(loc='upper right', fontsize=my_fontsize*0.8)
 plot.tight_layout()
 plot.savefig(path+'x_and_y_trajectory_and_cue.png')
