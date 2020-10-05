@@ -325,12 +325,10 @@ if not os.path.exists(plot_path):
     os.mkdir(plot_path)
 
 
-# Figure firing rate only
+# Figure firing rate only with time bins
 plt.figure(figsize=(my_plot_width, my_plot_height))
 
-# plt.subplot(211)
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
-# plt.title('test')
 sns.set(font_scale=3)
 sns.set_style("white")
 sns.color_palette(palette=None)
@@ -362,17 +360,70 @@ plt.ylabel('Units', fontsize=my_fontsize, color="black")
 
 plt.tight_layout()
 
-plt.savefig(plot_path+'/' +'Firing Rate'+'.png')
+plt.savefig(plot_path+'/' +'firing_rate_in_time_bins'+'.png')
 
 plt.clf()
 plt.cla()
 plt.close()
 
+
+# Figure firing rate only with seconds
+plt.figure(figsize=(my_plot_width, my_plot_height))
+
+plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
+sns.set(font_scale=3)
+sns.set_style("white")
+sns.color_palette(palette=None)
+
+data = torch.transpose( testing_x[reduce_time_bin:reduce_time_bin*3,:], 0, 1)
+
+# Eliminate empty units
+valid_rows=[]
+for row_idx in range(data.size(0)):
+    if not torch.all( data[row_idx,:] ==0 ):
+        valid_rows.append(row_idx)
+data = data[valid_rows,:]
+
+my_second_labels=[]
+for second_label in range( len( time_stamp_64ms[reduce_time_bin:reduce_time_bin*3] ) ):
+    my_second_labels.append( time_stamp_64ms[second_label] )
+
+# https://stackoverflow.com/questions/47784215/seaborn-heatmap-custom-tick-values
+num_ticks = 5
+# the index of the position of yticks
+xticks = np.linspace(0, len(my_second_labels) - 1, num_ticks, dtype=np.int)
+# the content of labels of these yticks
+xticklabels = [ my_second_labels[idx] for idx in xticks ]
+
+# https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.pyplot.colorbar.html
+cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.07, 'ticks' : [ torch.min(data), torch.max(data) ]}
+
+ax = sns.heatmap( data=data, vmin=0, vmax=4, xticklabels=xticklabels, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', cbar=False)
+ax.set_xticks(xticks)
+
+ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = my_fontsize, rotation)
+ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = my_fontsize)
+
+
+
+
+ax.yaxis.set_major_locator(ticker.MultipleLocator(50))
+ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
+
+plt.xlabel('Time (Seconds)', fontsize=my_fontsize, color="black")
+plt.ylabel('Units', fontsize=my_fontsize, color="black")
+
+plt.tight_layout()
+
+plt.savefig(plot_path+'/' +'firing_rate_in_seconds'+'.png')
+
+plt.clf()
+plt.cla()
+plt.close()
+
+
+
 # Figure firing rate and all kinematic variables
-
-# plt.rc('text', usetex=True)
-# plt.rc('font', family='serif')
-
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
 
 sns.set(font_scale=3)
