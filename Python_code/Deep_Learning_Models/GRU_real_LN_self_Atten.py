@@ -34,7 +34,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         # self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-        r = int( max_timestep/4 )
+        r = int( max_timestep/2 )
         da= int( hidden_dim/2 )
 
         self.W_s1_1 = torch.nn.Linear( 2*hidden_dim, da )
@@ -166,7 +166,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # Layer Normalization
         self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
 
-        r = int( max_timestep/4 )
+        r = int( max_timestep/2 )
         da= int( hidden_dim/2 )
 
         self.W_s1_1 = torch.nn.Linear( hidden_dim, da )
