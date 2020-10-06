@@ -401,7 +401,7 @@ cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec"
 ax = sns.heatmap( data=data, vmin=0, vmax=4, xticklabels=xticklabels, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', cbar=False)
 ax.set_xticks(xticks)
 
-ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = my_fontsize, rotation)
+ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
 ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = my_fontsize)
 
 

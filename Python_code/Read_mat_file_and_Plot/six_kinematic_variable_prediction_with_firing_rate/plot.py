@@ -42,7 +42,7 @@ import seaborn as sns
 
 # My module
 import sys
-sys.path.append("..") # Adds higher directory to python modules path.
+sys.path.append("../..") # Adds higher directory to python modules path.
 import data_processing.parameters as my_parameters
 import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
@@ -313,7 +313,7 @@ if not os.path.exists(plot_path):
     os.mkdir(plot_path)
 
 
-# Figure firing rate only with time bins
+# Figure firing rate only with seconds
 plt.figure(figsize=(my_plot_width, my_plot_height))
 
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
@@ -330,26 +330,57 @@ for row_idx in range(data.size(0)):
         valid_rows.append(row_idx)
 data = data[valid_rows,:]
 
+my_second_labels=[]
+for second_label in range( len( time_stamp_64ms[reduce_time_bin:reduce_time_bin*3] ) ):
+    my_second_labels.append( time_stamp_64ms[second_label] )
+
+# https://stackoverflow.com/questions/47784215/seaborn-heatmap-custom-tick-values
+num_ticks = 5
+# the index of the position of yticks
+xticks = np.linspace(0, len(my_second_labels) - 1, num_ticks, dtype=np.int)
+# the content of labels of these yticks
+xticklabels = [ my_second_labels[idx] for idx in xticks ]
+
 # https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.pyplot.colorbar.html
 cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.07, 'ticks' : [ torch.min(data), torch.max(data) ]}
 
-ax = sns.heatmap( data=data, xticklabels=True, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r')
-ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = my_fontsize)
+ax = sns.heatmap( data=data, vmin=0, vmax=4, xticklabels=xticklabels, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', cbar=False)
+ax.set_xticks(xticks)
+
+ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
 ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = my_fontsize)
 
-ax.xaxis.set_major_locator(ticker.MultipleLocator(5))
-ax.xaxis.set_major_formatter(ticker.ScalarFormatter())
+
+
 
 ax.yaxis.set_major_locator(ticker.MultipleLocator(50))
 ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
 
-plt.xlabel('Time Bins', fontsize=my_fontsize, color="black")
+plt.xlabel('Time (Seconds)', fontsize=my_fontsize, color="black")
 plt.ylabel('Units', fontsize=my_fontsize, color="black")
 
 plt.tight_layout()
 
-plt.savefig(plot_path+'/' +'firing_rate_in_time_bins'+'.png')
+plt.savefig(plot_path+'/' +'firing_rate_in_seconds'+'.png')
 
 plt.clf()
 plt.cla()
 plt.close()
+
+# Official one
+plt.figure(figsize=(my_plot_width, my_plot_height))
+
+plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
+sns.set(font_scale=3)
+sns.set_style("white")
+sns.color_palette(palette=None)
+
+plotting_time_bins = 100
+start_seconds = time_stamp_64ms[20] # 20 is the margin
+end_seconds = time_stamp_64ms[20 + plotting_time_bins]
+
+
+
+
+data = torch.transpose( testing_x[reduce_time_bin:reduce_time_bin*3,:], 0, 1)
+

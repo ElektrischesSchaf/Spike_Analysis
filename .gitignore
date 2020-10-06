@@ -10,7 +10,9 @@ csv_files/
 __pycache__/
 Spectrogram_all_Channels/
 PCA_plot/
-
+Python_code/Read_mat_file_and_Plot/six_kinematic_variable_prediction_with_firing_rate/position_data
+Python_code/Read_mat_file_and_Plot/six_kinematic_variable_prediction_with_firing_rate/velocity_data
+Python_code/Read_mat_file_and_Plot/six_kinematic_variable_prediction_with_firing_rate/acceleration_data
 # Latex
 *.aux
 *.bbl
