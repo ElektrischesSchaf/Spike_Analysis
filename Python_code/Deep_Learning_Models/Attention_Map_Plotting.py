@@ -125,16 +125,16 @@ class Plotting():
 
         ax[2].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
         if type_name=='pos':
-            ax[2].set_ylabel( 'Position (mm)', rotation=90)
+            ax[2].set_ylabel( 'Position ($mm$)', rotation=90)
         if type_name=='vel':
-            ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
+            ax[2].set_ylabel( 'Velocity ($mm/s$)', rotation=90)
         if type_name=='acc':
-            ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+            ax[2].set_ylabel( 'Acceleration ($mm/s^2$)', rotation=90)
+        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
+        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
 
-        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.8 )
+        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.9 )
     
         ax[2].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
@@ -221,16 +221,16 @@ class Plotting():
 
         ax[2].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
         if type_name=='pos':
-            ax[2].set_ylabel( 'Position (mm)', rotation=90)
+            ax[2].set_ylabel( 'Position ($mm$)', rotation=90)
         if type_name=='vel':
-            ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
+            ax[2].set_ylabel( 'Velocity ($mm/s$)', rotation=90)
         if type_name=='acc':
-            ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[2].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[2].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+            ax[2].set_ylabel( 'Acceleration ($mm/s^2$)', rotation=90)
+        ax[2].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
+        ax[2].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
 
-        ax[2].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[2].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[2].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.8 )
+        ax[2].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.9 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -338,16 +338,16 @@ class Plotting():
 
         ax[2].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
         if type_name=='pos':
-            ax[2].set_ylabel( 'Position (mm)', rotation=90)
+            ax[2].set_ylabel( 'Position ($mm$)', rotation=90)
         if type_name=='vel':
-            ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
+            ax[2].set_ylabel( 'Velocity ($mm/s$)', rotation=90)
         if type_name=='acc':
-            ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+            ax[2].set_ylabel( 'Acceleration ($mm/s^2$)', rotation=90)
+        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
+        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
 
-        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.8 )
+        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.9 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
