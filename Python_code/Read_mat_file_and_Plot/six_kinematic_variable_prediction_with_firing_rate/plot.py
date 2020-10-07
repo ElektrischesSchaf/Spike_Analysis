@@ -296,15 +296,16 @@ testing_y_6 = testing_y_6.float()
 shutil.rmtree(Firing_Rate_Visualization)
 
 # Start plotting
-reduce_time_bin = 50
+start_time_bin = 200
+end_time_bin = 400
 my_fontsize = 30
 my_plot_width = 30
 my_plot_height = 20
 
 CWD = os.getcwd()
 
-if 'The_plot' not in CWD:
-    CWD = os.path.join(CWD, 'The_plot')
+if 'my_plot' not in CWD:
+    CWD = os.path.join(CWD, 'my_plot')
     if not os.path.exists(CWD):
         os.mkdir(CWD)
 
@@ -322,7 +323,7 @@ sns.set(font_scale=3)
 sns.set_style("white")
 sns.color_palette(palette=None)
 
-data = torch.transpose( testing_x[reduce_time_bin:reduce_time_bin*3,:], 0, 1)
+data = torch.transpose( testing_x[start_time_bin:end_time_bin,:], 0, 1)
 
 # Eliminate empty units
 valid_rows=[]
@@ -332,7 +333,7 @@ for row_idx in range(data.size(0)):
 data = data[valid_rows,:]
 
 my_second_labels=[]
-for second_label in range( len( time_stamp_64ms[reduce_time_bin:reduce_time_bin*3] ) ):
+for second_label in range( len( time_stamp_64ms[start_time_bin:end_time_bin] ) ):
     my_second_labels.append( time_stamp_64ms[second_label] )
 
 # https://stackoverflow.com/questions/47784215/seaborn-heatmap-custom-tick-values
@@ -370,16 +371,6 @@ plt.close()
 '''
 
 # Official one
-plt.figure(figsize=(my_plot_width, my_plot_height))
-
-plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
-sns.set(font_scale=3)
-sns.set_style("white")
-sns.color_palette(palette=None)
-
-plotting_time_bins = 100
-start_seconds = time_stamp_64ms[20] # 20 is the margin
-end_seconds = time_stamp_64ms[20 + plotting_time_bins]
 
 position_path = './position_data/'+session_name+'/csv_files'
 velocity_path = './velocity_data/'+session_name+'/csv_files'
@@ -405,7 +396,7 @@ print('shape of position_timestamp= ', position_timestamp.shape , '\n')
 velocity_x_predction = pd.read_csv(os.path.join(velocity_path,'my_prediction_x_vel.csv'), dtype=float, header=None)
 velocity_x_predction = velocity_x_predction.to_numpy()
 print('shape of velocity_x_predction= ', velocity_x_predction.shape , '\n')
-velocity_y_predction = pd.read_csv(os.path.join(velocity_path,'my_prediction_x_vel.csv'), dtype=float, header=None)
+velocity_y_predction = pd.read_csv(os.path.join(velocity_path,'my_predictiony_y_vel.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
 velocity_y_predction = velocity_y_predction.to_numpy()
 print('shape of velocity_y_predction= ', velocity_y_predction.shape , '\n')
 velocity_x_actual = pd.read_csv(os.path.join(velocity_path,'Ground_Truth_x_vel.csv'), dtype=float, header=None)
@@ -421,7 +412,7 @@ print('shape of velocity_timestamp= ', velocity_timestamp.shape , '\n')
 acceleration_x_predction = pd.read_csv(os.path.join(acceleration_path,'my_prediction_x_acc.csv'), dtype=float, header=None)
 acceleration_x_predction = acceleration_x_predction.to_numpy()
 print('shape of acceleration_x_predction= ', acceleration_x_predction.shape , '\n')
-acceleration_y_predction = pd.read_csv(os.path.join(acceleration_path,'my_prediction_x_acc.csv'), dtype=float, header=None)
+acceleration_y_predction = pd.read_csv(os.path.join(acceleration_path,'my_predictiony_y_acc.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
 acceleration_y_predction = acceleration_y_predction.to_numpy()
 print('shape of acceleration_y_predction= ', acceleration_y_predction.shape , '\n')
 acceleration_x_actual = pd.read_csv(os.path.join(acceleration_path,'Ground_Truth_x_acc.csv'), dtype=float, header=None)
@@ -460,5 +451,81 @@ else:
     exit()
 
 
-data = torch.transpose( testing_x[reduce_time_bin:reduce_time_bin*3,:], 0, 1)
+# Figure firing rate and all kinematic variables
+plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
+
+sns.set(font_scale=3)
+sns.set_style("white")
+sns.color_palette(palette=None)
+
+f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [3, 1, 1, 1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, constrained_layout=True , figsize=(my_plot_width, my_plot_height*1.2))
+
+
+data = torch.transpose( testing_x[start_time_bin:end_time_bin,:], 0, 1)
+# Eliminate empty units
+valid_rows=[]
+for row_idx in range(data.size(0)):
+    if not torch.all( data[row_idx,:] ==0 ):
+        valid_rows.append(row_idx)
+data = data[valid_rows,:]
+
+cbar_kws={"orientation": "horizontal", "shrink": 0.2, "aspect":20,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), 4 ]}
+sns.heatmap( data=data, vmax=4 ,xticklabels=False, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', ax=ax[0]) # important, not ax[0] = sns.heatmap(...)
+# ax[0].set_xticklabels(ax[0].get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
+ax[0].set_title('Firing rate from session '+ session_name, fontsize=my_fontsize)
+ax[0].set_yticklabels(ax[0].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0)
+
+# ax[0].xaxis.set_major_locator(ticker.MultipleLocator(5))
+# ax[0].xaxis.set_major_formatter(ticker.ScalarFormatter())
+
+ax[0].yaxis.set_major_locator(ticker.MultipleLocator(50))
+ax[0].yaxis.set_major_formatter(ticker.ScalarFormatter())
+
+ax[0].set_ylabel('Units', fontsize=my_fontsize, color="black")
+
+
+
+# ax[1].set_title( 'Position', fontsize=my_fontsize)
+ax[1].plot( position_timestamp[start_time_bin:end_time_bin], position_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
+ax[1].plot(position_timestamp[start_time_bin:end_time_bin], position_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
+ax[1].plot( position_timestamp[start_time_bin:end_time_bin], position_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+ax[1].plot(position_timestamp[start_time_bin:end_time_bin], position_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+ax[1].set_ylabel( 'pos ($mm$)', fontsize=my_fontsize, rotation=90)
+ax[1].get_xaxis().set_ticks([])
+# ax[1].legend(loc='upper right', fontsize=my_fontsize)
+ax[1].set_xlim([ position_timestamp[start_time_bin] ,  position_timestamp[end_time_bin]  ])
+ax[1].set_ylim([ -150, 150  ])
+
+
+# ax[2].set_title( 'Velocity', fontsize=my_fontsize)
+ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
+ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
+ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+ax[2].set_ylabel( 'vel ($mm/s$)', fontsize=my_fontsize, rotation=90)
+ax[2].get_xaxis().set_ticks([])
+# ax[2].legend(loc='upper right', fontsize=my_fontsize)
+ax[2].set_xlim([ velocity_timestamp[start_time_bin] ,  velocity_timestamp[end_time_bin]  ])
+ax[2].set_ylim([ -350, 350  ])
+
+
+# ax[3].set_title( 'Acceleration', fontsize=my_fontsize)
+ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
+ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
+ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+ax[3].set_ylabel( 'acc ($mm/s^2$)', fontsize=my_fontsize, rotation=90)
+ax[3].set_xlabel('Time (Seconds)', fontsize=my_fontsize)
+# ax[3].legend(loc='upper right', fontsize=my_fontsize)
+ax[3].set_xlim([ acceleration_timestamp[start_time_bin] ,  acceleration_timestamp[end_time_bin]  ])
+ax[3].set_ylim([ -2500, 2500  ])
+
+
+# plt.tight_layout()
+plt.savefig( plot_path+'/'+ 'Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_wit_color_bar' +'.png' )
+
+
+plt.cla()
+plt.clf()
+plt.close()
 
