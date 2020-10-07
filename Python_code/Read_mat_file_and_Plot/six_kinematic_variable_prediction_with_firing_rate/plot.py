@@ -314,6 +314,7 @@ if not os.path.exists(plot_path):
 
 
 # Figure firing rate only with seconds
+'''
 plt.figure(figsize=(my_plot_width, my_plot_height))
 
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
@@ -366,6 +367,7 @@ plt.savefig(plot_path+'/' +'firing_rate_in_seconds'+'.png')
 plt.clf()
 plt.cla()
 plt.close()
+'''
 
 # Official one
 plt.figure(figsize=(my_plot_width, my_plot_height))
@@ -379,7 +381,83 @@ plotting_time_bins = 100
 start_seconds = time_stamp_64ms[20] # 20 is the margin
 end_seconds = time_stamp_64ms[20 + plotting_time_bins]
 
+position_path = './position_data/'+session_name+'/csv_files'
+velocity_path = './velocity_data/'+session_name+'/csv_files'
+acceleration_path = './acceleration_data/'+session_name+'/csv_files'
 
+position_x_predction = pd.read_csv(os.path.join(position_path,'my_prediction_x_pos.csv'), dtype=float, header=None)
+position_x_predction = position_x_predction.to_numpy()
+print('shape of position_x_predction= ', position_x_predction.shape , '\n')
+position_y_predction = pd.read_csv(os.path.join(position_path,'my_predictiony_y_pos.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
+position_y_predction = position_y_predction.to_numpy()
+print('shape of position_y_predction= ', position_y_predction.shape , '\n')
+position_x_actual = pd.read_csv(os.path.join(position_path,'Ground_Truth_x_pos.csv'), dtype=float, header=None)
+position_x_actual = position_x_actual.to_numpy()
+print('shape of position_x_actual= ', position_x_actual.shape , '\n')
+position_y_actual = pd.read_csv(os.path.join(position_path,'Ground_Truth_y_pos.csv'), dtype=float, header=None)
+position_y_actual = position_y_actual.to_numpy()
+print('shape of position_y_actual= ', position_y_actual.shape , '\n')
+position_timestamp = pd.read_csv(os.path.join(position_path,'plotting_time_elapsed.csv'), dtype=float, header=None)
+position_timestamp = position_timestamp.to_numpy()
+print('shape of position_timestamp= ', position_timestamp.shape , '\n')
+
+
+velocity_x_predction = pd.read_csv(os.path.join(velocity_path,'my_prediction_x_vel.csv'), dtype=float, header=None)
+velocity_x_predction = velocity_x_predction.to_numpy()
+print('shape of velocity_x_predction= ', velocity_x_predction.shape , '\n')
+velocity_y_predction = pd.read_csv(os.path.join(velocity_path,'my_prediction_x_vel.csv'), dtype=float, header=None)
+velocity_y_predction = velocity_y_predction.to_numpy()
+print('shape of velocity_y_predction= ', velocity_y_predction.shape , '\n')
+velocity_x_actual = pd.read_csv(os.path.join(velocity_path,'Ground_Truth_x_vel.csv'), dtype=float, header=None)
+velocity_x_actual = velocity_x_actual.to_numpy()
+print('shape of velocity_x_actual= ', velocity_x_actual.shape , '\n')
+velocity_y_actual = pd.read_csv(os.path.join(velocity_path,'Ground_Truth_y_vel.csv'), dtype=float, header=None)
+velocity_y_actual = velocity_y_actual.to_numpy()
+print('shape of velocity_y_actual= ', velocity_y_actual.shape , '\n')
+velocity_timestamp = pd.read_csv(os.path.join(velocity_path,'plotting_time_elapsed.csv'), dtype=float, header=None)
+velocity_timestamp = velocity_timestamp.to_numpy()
+print('shape of velocity_timestamp= ', velocity_timestamp.shape , '\n')
+
+acceleration_x_predction = pd.read_csv(os.path.join(acceleration_path,'my_prediction_x_acc.csv'), dtype=float, header=None)
+acceleration_x_predction = acceleration_x_predction.to_numpy()
+print('shape of acceleration_x_predction= ', acceleration_x_predction.shape , '\n')
+acceleration_y_predction = pd.read_csv(os.path.join(acceleration_path,'my_prediction_x_acc.csv'), dtype=float, header=None)
+acceleration_y_predction = acceleration_y_predction.to_numpy()
+print('shape of acceleration_y_predction= ', acceleration_y_predction.shape , '\n')
+acceleration_x_actual = pd.read_csv(os.path.join(acceleration_path,'Ground_Truth_x_acc.csv'), dtype=float, header=None)
+acceleration_x_actual = acceleration_x_actual.to_numpy()
+print('shape of acceleration_x_actual= ', acceleration_x_actual.shape , '\n')
+acceleration_y_actual = pd.read_csv(os.path.join(acceleration_path,'Ground_Truth_y_acc.csv'), dtype=float, header=None)
+acceleration_y_actual = acceleration_y_actual.to_numpy()
+print('shape of acceleration_y_actual= ', acceleration_y_actual.shape , '\n')
+acceleration_timestamp = pd.read_csv(os.path.join(acceleration_path,'plotting_time_elapsed.csv'), dtype=float, header=None)
+acceleration_timestamp = acceleration_timestamp.to_numpy()
+print('shape of acceleration_timestamp= ', acceleration_timestamp.shape , '\n')
+
+if ( position_timestamp.shape[0] < velocity_timestamp.shape[0]  ) and ( position_timestamp.shape[0]<acceleration_timestamp.shape[0] ) and (position_timestamp.shape[0]<time_stamp_64ms.shape[0]):
+
+    a = np.where( velocity_timestamp==position_timestamp[0][0] )
+    # position_timestamp[0][0] is eqal to velocity_timestamp[a]
+    velocity_x_predction = velocity_x_predction[int(a[0]):]
+    velocity_y_predction = velocity_y_predction[int(a[0]):]
+    velocity_x_actual = velocity_x_actual[int(a[0]):]
+    velocity_y_actual = velocity_y_actual[int(a[0]):]
+    velocity_timestamp = velocity_timestamp[int(a[0]):]
+
+    a = np.where( acceleration_timestamp==position_timestamp[0][0] )
+    # position_timestamp[0][0] is eqal to acceleration_timestamp[a]
+    acceleration_x_predction = acceleration_x_predction[int(a[0]):]
+    acceleration_y_predction = acceleration_y_predction[int(a[0]):]
+    acceleration_x_actual = acceleration_x_actual[int(a[0]):]
+    acceleration_y_actual = acceleration_y_actual[int(a[0]):]
+    acceleration_timestamp = acceleration_timestamp[int(a[0]):]
+
+    a = np.where( time_stamp_64ms==position_timestamp[0][0] )
+    time_stamp_64ms = time_stamp_64ms[int(a[0]):]
+    testing_x = testing_x[int(a[0]):]
+
+else:
+    exit()
 
 
 data = torch.transpose( testing_x[reduce_time_bin:reduce_time_bin*3,:], 0, 1)

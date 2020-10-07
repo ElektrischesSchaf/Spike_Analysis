@@ -252,7 +252,7 @@ class regular_modules():
             df.to_csv(os.path.join(csv_path, 'my_prediction_x_vel.csv'), index=False, header=False)
 
             df = pd.DataFrame( my_prediction_2 )
-            df.to_csv(os.path.join(csv_path, 'my_predictiony_y_vel.csv'), index=False, header=False)
+            df.to_csv(os.path.join(csv_path, 'my_prediction_y_vel.csv'), index=False, header=False)
 
             plt.plot( plotting_time_elapsed, my_prediction_1, 'b', linewidth=5, label='x-vel prediction', alpha=0.7 )
             plt.plot( plotting_time_elapsed, Ground_Truth_1, 'b--', linewidth=5, label='x-vel actual', alpha=0.8 )
