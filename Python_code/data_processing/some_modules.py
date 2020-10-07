@@ -306,6 +306,13 @@ class regular_modules():
         # axes.set_xlim( [   time_stamp_64ms[testing_data_index], time_stamp_64ms[testing_data_index + 230 ]  ] )
         axes.set_xlim([ plotting_time_elapsed[0], plotting_time_elapsed[0+230] ])
 
+        if kinematic_variable_type == 'x_and_y_pos':
+            axes.set_ylim([ -150, 150 ])
+        if kinematic_variable_type == 'x_and_y_vel':
+            axes.set_ylim([ -350, 350 ])
+        if kinematic_variable_type == 'x_and_y_acc':
+            axes.set_ylim([  -2500, 2500  ])
+
         plt.tight_layout()
 
         plt.savefig( plot_path + '/' +model_name + file_name ) # file_name 
