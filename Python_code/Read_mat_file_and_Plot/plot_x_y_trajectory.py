@@ -102,8 +102,8 @@ plot.close()
 
 
 # Plot trajectory in VR panel
-plot_start_sample_time = 10125 #10100
-plot_end_sample_time = plot_start_sample_time + 650 # 1830 before for more trials
+plot_start_sample_time = 9840 #10125
+plot_end_sample_time = plot_start_sample_time + 590 # 1830 before for more trials
 
 plot.figure(figsize=(9,9))
 plot.scatter( target_x_coor, target_y_coor, color='black', s=80)
