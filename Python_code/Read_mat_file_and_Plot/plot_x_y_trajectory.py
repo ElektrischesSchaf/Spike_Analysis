@@ -105,7 +105,7 @@ plot.close()
 plot_start_sample_time = 9840 #10125
 plot_end_sample_time = plot_start_sample_time + 590 # 1830 before for more trials
 
-plot.figure(figsize=(9,9))
+plot.figure(figsize=(10,8))
 plot.scatter( target_x_coor, target_y_coor, color='black', s=80)
 # for i in range(plot_start_sample_time, plot_end_sample_time+1):
 plot.scatter( target_x_coor[plot_start_sample_time:plot_end_sample_time], target_y_coor[plot_start_sample_time:plot_end_sample_time], marker='D', color='#A37E2C', s=300)
