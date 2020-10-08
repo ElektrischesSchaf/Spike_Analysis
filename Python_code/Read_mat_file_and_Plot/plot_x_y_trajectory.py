@@ -112,8 +112,8 @@ plot.scatter( target_x_coor[plot_start_sample_time:plot_end_sample_time], target
 
 plot.scatter( finger_x_coor[plot_start_sample_time:plot_end_sample_time], finger_y_coor[plot_start_sample_time:plot_end_sample_time], marker='.', color='#006039', s=50, alpha=0.6)
 
-plot.scatter( finger_x_coor[plot_start_sample_time], finger_y_coor[plot_start_sample_time], marker='$A$', color='black', s=700, alpha=1)
-plot.scatter( finger_x_coor[plot_end_sample_time], finger_y_coor[plot_end_sample_time], marker='$B$', color='black', s=700, alpha=1)
+plot.scatter( finger_x_coor[plot_start_sample_time], finger_y_coor[plot_start_sample_time], marker='$A$', color='green', s=700, alpha=1)
+plot.scatter( finger_x_coor[plot_end_sample_time], finger_y_coor[plot_end_sample_time], marker='$B$', color='green', s=700, alpha=1)
 
 plot.title('Session ' + session_name, fontsize=my_fontsize*0.8, color='black')
 plot.xlabel('mm', fontsize=my_fontsize*0.8, color='black')
