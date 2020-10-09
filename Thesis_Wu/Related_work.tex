@@ -5,19 +5,19 @@ Table~\ref{tab:traditional_invasive} listed traditional machine learning decoder
 
 \end{multicols}
 
-\begin{longtable}{cccc}
+\begin{longtable}{ccccc}
     \caption{ Traditional decoder in invasive BCIs } \\
     \hline
-    \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
-    \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        \\
+    \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    & \multicolumn{1}{c}{  \multirow{1}{*}{ \textbf{ Decoding }}}\\
+    \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Variable(s) }}}\\
     \hline
     \endhead
-    \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
-    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
-    \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
-    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } \\ \\
-    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} \\ \\
-    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
+    \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand}  & \makecell{Directions\\of movement} \\ \\
+    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} & \makecell{Position,\\velocity,\\acceleration} \\ \\
+    \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors} & \makecell{Position,\\velocity}  \\ \\
+    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } & \makecell{Position,\\velocity} \\ \\
+    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} & \makecell{Position,\\velocity} \\ \\
+    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} & Velocity \\ \\
     \hline
     \label{tab:traditional_invasive}
 \end{longtable}
@@ -76,17 +76,17 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 Table~\ref{tab:deep_leaning_in_invasive_BCI} listed decoders involved deep leaning in invasive BCIs.
 \end{multicols}
 
-\begin{longtable}{cccc}
+\begin{longtable}{ccccc}
     \caption{ Deep leaning decoder in invasive BCIs } \\
     \hline
-    \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
-    \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        \\
+    \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}  & \multicolumn{1}{c}{  \multirow{1}{*}{ \textbf{ Decoding }}}  \\
+    \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Variable(s) }}} \\
     \hline
     \endhead
-    \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\Pinball task\\by computer cursors} \\ \\
-    \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} \\ \\
-    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } \\ \\
-    \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\Center-out reaching\\by joystick} \\ 
+    \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\Pinball task\\by computer cursors} & \makecell{Position,\\velocity}  \\ \\
+    \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} & \makecell{Position,\\velocity,\\acceleration} \\ \\
+    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } & \makecell{Location} \\ \\
+    \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\Center-out reaching\\by joystick} & \makecell{Position,\\velocity,\\acceleration} \\ 
     \hline
     \label{tab:deep_leaning_in_invasive_BCI}
 \end{longtable}
@@ -128,20 +128,20 @@ Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and th
 \end{multicols}
 
 
-\begin{longtable}{ccccc}
+\begin{longtable}{cccccc}
     \caption{Researches involved LFPs}\\
         \hline
-        \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Aritcle }}}  &  \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{LFP Feature}}}    & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Model}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
-        \multicolumn{1}{c}{}                                      &  \multicolumn{1}{c}{}                                           & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                           \\
+        \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Aritcle }}}  &  \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{LFP Feature}}}    & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Model}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Tasks}}}    & \multicolumn{1}{c}{  \multirow{1}{*}{ \textbf{ Decoding }}}  \\
+        \multicolumn{1}{c}{}                                      &  \multicolumn{1}{c}{}                                           & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Variable(s) }}} \\
         \hline
         \endhead
-        \cite{scherberger2005cortical} & \makecell{Magnitude\\0-5Hz\\5-15Hz\\$\vdots$\\95-105Hz} & \makecell{Bayesian\\classifier} & \makecell{Macaque\\monkeys} & \makecell{Arm reaching\\Saccade} \\ \\
-        \cite{quiroga2009}          & \makecell{Instantaneous\\phase\\1-4Hz}     & Bayesian      & Rodent    & \makecell{ Heading predictions} \\ \\
-        \cite{ince2010high} & \makecell{Magnitude\\0.3-4Hz\\4-10Hz\\$\vdots$\\48-200Hz} & \makecell{Binary\\linear\\classifiers} & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by manipulandum} \\ \\
-        \cite{flint2012accurate} & \makecell{Magnitude\\0-4Hz\\7-20Hz\\$\vdots$\\200-300Hz} & Wiener cascade & \makecell{Rhesus\\monkeys} & \makecell{Random-traget task\\by hands} \\ \\
-        \cite{tan2016decoding} & \makecell{Magnitude\\13-30Hz\\55-90Hz} & \makecell{Linear\\dynamic\\model} & Human  & \makecell{Dynamometer\\gripping}　\\ \\
-        \cite{kumar2018eeg}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{2-class\\motor imagery} \\ \\
-        \cite{ahmadi2019decoding}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & \makecell{Rhesus\\Monkey}    & \makecell{Point-to-point\\reaching\\by hands} \\
+        \cite{scherberger2005cortical} & \makecell{Magnitude\\0-5Hz\\5-15Hz\\$\vdots$\\95-105Hz} & \makecell{Bayesian\\classifier} & \makecell{Macaque\\monkeys} & \makecell{Arm reaching\\Saccade} & \makecell{Directions\\of movement} \\ \\        
+        \cite{quiroga2009}          & \makecell{Instantaneous\\phase\\1-4Hz}     & Bayesian      & Rodent    & \makecell{ Heading predictions} & \makecell{Directions\\of headings} \\ \\
+        \cite{ince2010high} & \makecell{Magnitude\\0.3-4Hz\\4-10Hz\\$\vdots$\\48-200Hz} & \makecell{Binary\\linear\\classifiers} & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by manipulandum} & \makecell{Directions\\of movement} \\ \\
+        \cite{flint2012accurate} & \makecell{Magnitude\\0-4Hz\\7-20Hz\\$\vdots$\\200-300Hz} & Wiener cascade & \makecell{Rhesus\\monkeys} & \makecell{Random-traget task\\by hands} & \makecell{Position,\\velocity} \\ \\
+        \cite{tan2016decoding} & \makecell{Magnitude\\13-30Hz\\55-90Hz} & \makecell{Linear\\dynamic\\model} & Human  & \makecell{Dynamometer\\gripping} & \makecell{Gripping\\force}　\\ \\
+        \cite{kumar2018eeg}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{2-class\\motor imagery} & None \\ \\
+        \cite{ahmadi2019decoding}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & \makecell{Rhesus\\Monkey}    & \makecell{Point-to-point\\reaching\\by hands} & \makecell{Velocity} \\
         \hline
         % no decoder \makecell{\cite{siapas2005}}            & theta (4-10Hz)                        & \makecell{Instantaneous\\phase}   &   & Place cells  \\ \\
         % no decoder \makecell{\cite{einevoll2013}}          & LFP                                   & Magnitude                         & \makecell{Current\\source\\density}  & \makecell{  Sensory stimuli } \\ \\
