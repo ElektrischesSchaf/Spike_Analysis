@@ -164,7 +164,9 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         self.GRU_Cell_forward_2 = LayerNormGRUCell( hidden_dim      , hidden_dim    ,  bias=True )
 
         # Layer Normalization
-        self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
+        # self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
+
+        self.conv1 = torch.nn.Conv2d( 1, 1, ( 1, hidden_dim), 1 , padding=0)
 
 
         r = int( max_timestep/2 )
@@ -176,11 +178,21 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # LN inside atten
         self.LN_in_atten = torch.nn.LayerNorm([max_timestep, da], elementwise_affine=False)
 
+        # big
+        '''
         self.fc_layer_x = torch.nn.Linear( hidden_dim*max_timestep, int( (hidden_dim*max_timestep)/2) )
         self.label_x = torch.nn.Linear( int( (hidden_dim*max_timestep)/2), 1 )
 
         self.fc_layer_y = torch.nn.Linear( hidden_dim*max_timestep, int( (hidden_dim*max_timestep)/2))
         self.label_y = torch.nn.Linear( int( (hidden_dim*max_timestep)/2), 1 )
+        '''
+
+        # new small
+        self.fc_layer_x = torch.nn.Linear( max_timestep, int( (max_timestep)/2) )
+        self.label_x = torch.nn.Linear( int( (max_timestep)/2), 1 )
+
+        self.fc_layer_y = torch.nn.Linear( max_timestep, int( (max_timestep)/2))
+        self.label_y = torch.nn.Linear( int( (max_timestep)/2), 1 )
 
     def attention_net_1(self, gru_output):
 
@@ -195,23 +207,19 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         
         result_for_all_r = []
         # how many r's
-        for i in range( attn_weight_matrix.size()[1] ):
-            # print('shape attn_weight_matrix = ', attn_weight_matrix.size(), '\n')
-            
+        for i in range( attn_weight_matrix.size()[1] ):          
             the_attention_vector = torch.transpose( attn_weight_matrix[:,i,:].unsqueeze(1) , 1, 2)
 
             result_for_one_r = []
             # how many units to be conducted temp atten            
             for j in range( hidden_matrix.size()[2] ):
                 the_vector = hidden_matrix[:,:,j].unsqueeze(2)
-                # print(the_attention_vector.size(), ' ', the_vector.size(), '\n')
                 output = torch.mul( the_attention_vector, the_vector )
                 result_for_one_r += [output]
 
             result_for_one_r = torch.stack(result_for_one_r, 0) # (num of GRU units, batch, time step, 1)
             result_for_one_r = result_for_one_r.permute(3,1,2,0)
             result_for_one_r = result_for_one_r.squeeze(0)
-            # print('size of result_for_one_r = ', result_for_one_r.size(), '\n')
 
             result_for_all_r += [result_for_one_r]
 
@@ -222,8 +230,6 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         # result_for_all_r = torch.max(result_for_all_r, 1, keepdim = True) # Returns a namedtuple (values, indices) where values is the maximum value of each row of the input tensor in the given dimension dim
         # result_for_all_r = result_for_all_r[0]
-
-        # print('size of result_for_all_r = ', result_for_all_r.size(), '\n')
 
         return result_for_all_r
 
@@ -238,7 +244,6 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
             # print('size of the_attention_matrix = ', the_attention_matrix.size(), '\n')
             # print('size of hidden_matrix = ', hidden_matrix.size(), '\n')
             result_for_one_r = torch.mul(the_attention_matrix, hidden_matrix)
-
             # print('size of result_for_one_r = ', result_for_one_r.size(), '\n')
             result_for_all_r += [result_for_one_r]
         result_for_all_r = torch.stack(result_for_all_r, 0)
@@ -246,10 +251,10 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         result_for_all_r = result_for_all_r.permute(1,0,2,3)
         # print('size of result_for_all_r 2 = ', result_for_all_r.size(), '\n')
         result_for_all_r = torch.sum(result_for_all_r, 1, keepdim = True)
-        result_for_all_r = result_for_all_r.squeeze(1)
+        # result_for_all_r = result_for_all_r.squeeze(1)
         # print('size of result_for_all_r = ', result_for_all_r.size(), '\n')
 
-        return result_for_all_r # size (batch, time step, hidden units)
+        return result_for_all_r # size (batch, 1, time step, hidden units)
 
     def forward(self, x):
 
@@ -299,11 +304,13 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # feature_map_after_atten = self.attention_map_conv(attn_weight_matrix_forward, hidden_state_list )        
         feature_map_after_atten = self.attention_map_and_hidden_states_mul(attn_weight_matrix_forward, hidden_state_list )
 
-        hidden_matrix_forward_x = feature_map_after_atten.clone()
-        hidden_matrix_forward_y = feature_map_after_atten.clone()
+        result = self.conv1(feature_map_after_atten)
 
-        out_x = torch.relu( self.fc_layer_x( hidden_matrix_forward_x.view( -1 , hidden_matrix_forward_x.size()[1]*hidden_matrix_forward_x.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
-        out_y = torch.relu( self.fc_layer_y( hidden_matrix_forward_y.view( -1 , hidden_matrix_forward_y.size()[1]*hidden_matrix_forward_y.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
+        hidden_matrix_forward_x = result.clone()
+        hidden_matrix_forward_y = result.clone()
+
+        out_x = ( self.fc_layer_x( hidden_matrix_forward_x.view( -1 , hidden_matrix_forward_x.size()[1]*hidden_matrix_forward_x.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
+        out_y = ( self.fc_layer_y( hidden_matrix_forward_y.view( -1 , hidden_matrix_forward_y.size()[1]*hidden_matrix_forward_y.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
 
         out_x = self.label_x( out_x )
         out_y = self.label_y( out_y )
