@@ -227,6 +227,30 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         return result_for_all_r
 
+    def attention_map_and_hidden_states_mul(self, attn_weight_matrix, hidden_matrix ):
+
+        result_for_all_r = []
+        # how many r's
+        for i in range( attn_weight_matrix.size()[1] ):
+            the_attention_vector = torch.transpose( attn_weight_matrix[:,i,:].unsqueeze(1) , 1, 2)
+            # print('size of the_attention_vector = ', the_attention_vector.size(), '\n')
+            the_attention_matrix = the_attention_vector.expand( hidden_matrix.size() )
+            # print('size of the_attention_matrix = ', the_attention_matrix.size(), '\n')
+            # print('size of hidden_matrix = ', hidden_matrix.size(), '\n')
+            result_for_one_r = torch.mul(the_attention_matrix, hidden_matrix)
+
+            # print('size of result_for_one_r = ', result_for_one_r.size(), '\n')
+            result_for_all_r += [result_for_one_r]
+        result_for_all_r = torch.stack(result_for_all_r, 0)
+        # print('size of result_for_all_r 1 = ', result_for_all_r.size(), '\n')
+        result_for_all_r = result_for_all_r.permute(1,0,2,3)
+        # print('size of result_for_all_r 2 = ', result_for_all_r.size(), '\n')
+        result_for_all_r = torch.sum(result_for_all_r, 1, keepdim = True)
+        result_for_all_r = result_for_all_r.squeeze(1)
+        # print('size of result_for_all_r = ', result_for_all_r.size(), '\n')
+
+        return result_for_all_r # size (batch, time step, hidden units)
+
     def forward(self, x):
 
         x=x.view(x.size(0), -1, self.input_dim)
@@ -272,7 +296,8 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         
 
         # hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, hidden_state_list )
-        feature_map_after_atten = self.attention_map_conv(attn_weight_matrix_forward, hidden_state_list )
+        # feature_map_after_atten = self.attention_map_conv(attn_weight_matrix_forward, hidden_state_list )        
+        feature_map_after_atten = self.attention_map_and_hidden_states_mul(attn_weight_matrix_forward, hidden_state_list )
 
         hidden_matrix_forward_x = feature_map_after_atten.clone()
         hidden_matrix_forward_y = feature_map_after_atten.clone()
