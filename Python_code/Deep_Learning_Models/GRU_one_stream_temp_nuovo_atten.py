@@ -166,7 +166,12 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # Layer Normalization
         # self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
 
+        # for CNN
+        '''
         self.conv1 = torch.nn.Conv2d( 1, 1, ( 1, hidden_dim), 1 , padding=0)
+        self.conv2 = torch.nn.Conv2d( 1, 1, ( 2, hidden_dim), 1 , padding=0)
+        self.conv3 = torch.nn.Conv2d( 1, 1, ( 3, hidden_dim), 1 , padding=0)
+        '''
 
 
         r = int( max_timestep/2 )
@@ -187,12 +192,30 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         self.label_y = torch.nn.Linear( int( (hidden_dim*max_timestep)/2), 1 )
         '''
 
-        # new small
+        # two stage
+        self.x_stage_1 = torch.nn.Linear( hidden_dim,  int(max_timestep/2) )
+        self.x_stage_2 = torch.nn.Linear( int(max_timestep*(max_timestep/2)), 1)
+
+        self.y_stage_1 = torch.nn.Linear( hidden_dim,  int(max_timestep/2) )
+        self.y_stage_2 = torch.nn.Linear( int(max_timestep*(max_timestep/2)), 1)
+
+        # max or sum
+        '''
         self.fc_layer_x = torch.nn.Linear( max_timestep, int( (max_timestep)/2) )
         self.label_x = torch.nn.Linear( int( (max_timestep)/2), 1 )
 
         self.fc_layer_y = torch.nn.Linear( max_timestep, int( (max_timestep)/2))
         self.label_y = torch.nn.Linear( int( (max_timestep)/2), 1 )
+        '''
+
+        # for CNN
+        '''
+        self.fc_layer_x = torch.nn.Linear( int(3*max_timestep-3), int( (max_timestep)/2) )
+        self.label_x = torch.nn.Linear( int( (max_timestep)/2), 1 )
+
+        self.fc_layer_y = torch.nn.Linear( int(3*max_timestep-3), int( (max_timestep)/2))
+        self.label_y = torch.nn.Linear( int( (max_timestep)/2), 1 )
+        '''
 
     def attention_net_1(self, gru_output):
 
@@ -304,10 +327,41 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # feature_map_after_atten = self.attention_map_conv(attn_weight_matrix_forward, hidden_state_list )        
         feature_map_after_atten = self.attention_map_and_hidden_states_mul(attn_weight_matrix_forward, hidden_state_list )
 
-        result = self.conv1(feature_map_after_atten)
 
-        hidden_matrix_forward_x = result.clone()
-        hidden_matrix_forward_y = result.clone()
+        # original
+        '''
+        hidden_matrix_forward_x = feature_map_after_atten.clone()
+        hidden_matrix_forward_y = feature_map_after_atten.clone()
+
+        out_x = torch.relu( self.fc_layer_x( hidden_matrix_forward_x.view( -1 , hidden_matrix_forward_x.size()[1]*hidden_matrix_forward_x.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
+        out_y = torch.relu( self.fc_layer_y( hidden_matrix_forward_y.view( -1 , hidden_matrix_forward_y.size()[1]*hidden_matrix_forward_y.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
+
+        out_x = self.label_x( out_x )
+        out_y = self.label_y( out_y )
+
+        out = torch.cat(  (out_x, out_y),1 )
+        '''
+        # two stage
+        out_x = torch.relu(self.x_stage_1( feature_map_after_atten.clone() ) )
+        out_y = torch.relu(self.y_stage_1( feature_map_after_atten.clone() ) )
+
+        out_x = out_x.view(-1, out_x.size()[1]*out_x.size()[2]*out_x.size()[3] )
+        out_y = out_y.view(-1, out_y.size()[1]*out_y.size()[2]*out_y.size()[3] )
+
+        out_x = self.x_stage_2(out_x)
+        out_y = self.y_stage_2(out_y)
+
+        out = torch.cat(  (out_x, out_y),1 )
+
+        # max or sum
+        '''
+        feature_map_after_atten = torch.sum(feature_map_after_atten, 3, keepdim = True)
+
+        # feature_map_after_atten = torch.max(feature_map_after_atten, 3, keepdim = True)
+        # feature_map_after_atten = feature_map_after_atten[0]
+
+        hidden_matrix_forward_x = feature_map_after_atten.clone()
+        hidden_matrix_forward_y = feature_map_after_atten.clone()
 
         out_x = ( self.fc_layer_x( hidden_matrix_forward_x.view( -1 , hidden_matrix_forward_x.size()[1]*hidden_matrix_forward_x.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
         out_y = ( self.fc_layer_y( hidden_matrix_forward_y.view( -1 , hidden_matrix_forward_y.size()[1]*hidden_matrix_forward_y.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
@@ -316,5 +370,33 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         out_y = self.label_y( out_y )
 
         out = torch.cat(  (out_x, out_y),1 )
+        '''
+
+        # two stage
+
+
+        # for CNN
+        '''
+        result_conv1 = self.conv1(feature_map_after_atten)
+        result_conv2 = self.conv2(feature_map_after_atten)
+        result_conv3 = self.conv3(feature_map_after_atten)
+
+        result_conv1 = result_conv1.view(-1, result_conv1.size()[1]*result_conv1.size()[2]*result_conv1.size()[3] )
+        result_conv2 = result_conv2.view(-1, result_conv2.size()[1]*result_conv2.size()[2]*result_conv2.size()[3] )
+        result_conv3 = result_conv3.view(-1, result_conv3.size()[1]*result_conv3.size()[2]*result_conv3.size()[3] )
+
+        result = torch.cat( (result_conv1, result_conv2, result_conv3) ,1)
+
+        hidden_matrix_forward_x = result.clone()
+        hidden_matrix_forward_y = result.clone()
+
+        out_x = torch.relu( self.fc_layer_x( hidden_matrix_forward_x ))
+        out_y = torch.relu( self.fc_layer_y( hidden_matrix_forward_y ))
+
+        out_x = self.label_x( out_x )
+        out_y = self.label_y( out_y )
+
+        out = torch.cat(  (out_x, out_y),1 )
+        '''
 
         return out, attn_weight_matrix_forward
