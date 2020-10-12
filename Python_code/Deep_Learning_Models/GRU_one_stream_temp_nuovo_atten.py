@@ -196,8 +196,8 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         self.x_stage_1 = torch.nn.Linear( hidden_dim,  int(max_timestep/2) )
         self.y_stage_1 = torch.nn.Linear( hidden_dim,  int(max_timestep/2) )
 
-        self.x_stage_2 = torch.nn.Linear( int(max_timestep*(max_timestep/2)), 1)        
-        self.y_stage_2 = torch.nn.Linear( int(max_timestep*(max_timestep/2)), 1)
+        self.x_stage_2 = torch.nn.Linear( int(max_timestep)*int(max_timestep/2), 1)        
+        self.y_stage_2 = torch.nn.Linear( int(max_timestep)*int(max_timestep/2), 1)
 
         # max or sum
         '''
