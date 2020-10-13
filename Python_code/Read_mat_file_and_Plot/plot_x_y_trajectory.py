@@ -47,7 +47,7 @@ with h5py.File('../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat', 'r')
     target_x_coor=numpy_finger_target[0][:]
     target_y_coor=numpy_finger_target[1][:]
 
-my_fontsize = 30
+my_fontsize = 40
 my_height = 9
 my_width = 25
 
@@ -115,11 +115,11 @@ plot.scatter( finger_x_coor[plot_start_sample_time:plot_end_sample_time], finger
 plot.scatter( finger_x_coor[plot_start_sample_time], finger_y_coor[plot_start_sample_time], marker='$A$', color='green', s=700, alpha=1)
 plot.scatter( finger_x_coor[plot_end_sample_time], finger_y_coor[plot_end_sample_time], marker='$B$', color='green', s=700, alpha=1)
 
-plot.title('Session ' + session_name, fontsize=my_fontsize*0.8, color='black')
-plot.xlabel('mm', fontsize=my_fontsize*0.8, color='black')
-plot.ylabel('mm', fontsize=my_fontsize*0.8, color='black')
-plot.xticks(fontsize=my_fontsize*0.8)
-plot.yticks(fontsize=my_fontsize*0.8)
+# plot.title('Session ' + session_name, fontsize=my_fontsize, color='black')
+plot.xlabel('mm', fontsize=my_fontsize, color='black')
+plot.ylabel('mm', fontsize=my_fontsize, color='black')
+plot.xticks(fontsize=my_fontsize)
+plot.yticks(fontsize=my_fontsize)
 plot.tight_layout()
 plot.savefig(path+'X-Y_trajectory_in_VR_panel.png')
 
@@ -129,7 +129,7 @@ plot.close()
 
 
 plot.figure( figsize=( my_width, my_height*0.7 ))
-plot.title('Session ' + session_name, fontsize=my_fontsize, color='black')
+# plot.title('Session ' + session_name, fontsize=my_fontsize, color='black')
 plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], finger_x_coor[plot_start_sample_time:plot_end_sample_time] ,'b--' , linewidth=5, alpha=0.7, label='x-axis recording')
 # plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], target_x_coor[plot_start_sample_time:plot_end_sample_time] ,'b', linewidth=5, alpha=0.8, label='x-axis target cue')
 plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], finger_y_coor[plot_start_sample_time:plot_end_sample_time] ,'g--' , linewidth=5, alpha=0.7, label='y-axis recording')
@@ -154,11 +154,11 @@ B_spot = (finger_x_coor[plot_end_sample_time] + finger_y_coor[plot_end_sample_ti
 plot.scatter( numpy_time_stamp[0,plot_start_sample_time], A_spot, marker='$A$', color='black', s= 1000, alpha=1)
 plot.scatter( numpy_time_stamp[0,plot_end_sample_time], B_spot, marker='$B$', color='black', s= 1000, alpha=1)
 
-plot.ylabel('Position (mm)', fontsize=my_fontsize*0.8)
-plot.xlabel('Time (second)', fontsize=my_fontsize*0.8)
-plot.xticks(fontsize=my_fontsize*0.8)
-plot.yticks(fontsize=my_fontsize*0.8)
+plot.ylabel('Position (mm)', fontsize=my_fontsize)
+plot.xlabel('Time (second)', fontsize=my_fontsize)
+plot.xticks(fontsize=my_fontsize)
+plot.yticks(fontsize=my_fontsize)
 # plot.xlim([ numpy_time_stamp[0,plot_start_sample_time], numpy_time_stamp[0,plot_end_sample_time]])
-plot.legend(loc='upper right', fontsize=my_fontsize*0.8)
+plot.legend(loc='upper right', fontsize=my_fontsize)
 plot.tight_layout()
 plot.savefig(path+'x_and_y_trajectory_and_cue.png')

@@ -298,7 +298,7 @@ shutil.rmtree(Firing_Rate_Visualization)
 # Start plotting
 start_time_bin = 200
 end_time_bin = 400
-my_fontsize = 35
+my_fontsize = 50
 my_plot_width = 30
 my_plot_height = 20
 
@@ -534,7 +534,7 @@ sns.set(font_scale=3)
 sns.set_style("white")
 sns.color_palette(palette=None)
 
-f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [1, 1, 1, 1],  "hspace":0 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.05}, constrained_layout=False , figsize=(my_plot_width, my_plot_height*1.2))
+f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [1, 1, 1, 1],  "hspace":0 ,"left":0.18, "right":0.95, "top":0.95, "bottom":0.1}, constrained_layout=False , figsize=(my_plot_width, my_plot_height*1.2))
 
 
 # ax[0].set_title( 'Position', fontsize=my_fontsize)
@@ -542,8 +542,9 @@ ax[0].plot( position_timestamp[start_time_bin:end_time_bin], position_x_predctio
 ax[0].plot(position_timestamp[start_time_bin:end_time_bin], position_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
 ax[0].plot( position_timestamp[start_time_bin:end_time_bin], position_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 ax[0].plot(position_timestamp[start_time_bin:end_time_bin], position_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[0].set_ylabel( 'pos ($mm$)', fontsize=my_fontsize, rotation=90)
+ax[0].set_ylabel( 'pos ($mm$)', fontsize=my_fontsize, rotation=90, color="black")
 ax[0].get_xaxis().set_ticks([])
+ax[0].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
 # ax[0].legend(loc='upper right', fontsize=my_fontsize)
 ax[0].set_xlim([ position_timestamp[start_time_bin] ,  position_timestamp[end_time_bin]  ])
 ax[0].set_ylim([ -150, 150  ])
@@ -554,8 +555,9 @@ ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_predction
 ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
 ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[1].set_ylabel( 'vel ($mm/s$)', fontsize=my_fontsize, rotation=90)
+ax[1].set_ylabel( 'vel ($mm/s$)', fontsize=my_fontsize, rotation=90, color="black")
 ax[1].get_xaxis().set_ticks([])
+ax[1].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
 # ax[1].legend(loc='upper right', fontsize=my_fontsize)
 ax[1].set_xlim([ velocity_timestamp[start_time_bin] ,  velocity_timestamp[end_time_bin]  ])
 ax[1].set_ylim([ -350, 350  ])
@@ -566,8 +568,9 @@ ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_p
 ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
 ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[2].set_ylabel( 'acc ($mm/s^2$)', fontsize=my_fontsize, rotation=90)
+ax[2].set_ylabel( 'acc ($mm/s^2$)', fontsize=my_fontsize, rotation=90, color="black")
 ax[2].get_xaxis().set_ticks([])
+ax[2].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
 # ax[2].legend(loc='upper right', fontsize=my_fontsize)
 ax[2].set_xlim([ acceleration_timestamp[start_time_bin] ,  acceleration_timestamp[end_time_bin]  ])
 ax[2].set_ylim([ -2500, 2500  ])
@@ -595,8 +598,8 @@ xticklabels = [ my_second_labels[idx] for idx in xticks ] # float version
 sns.heatmap( data=data, vmin=0, vmax=4 ,xticklabels=xticklabels, yticklabels=True, cmap='YlGnBu_r', ax=ax[3], cbar=False) # important, not ax[0] = sns.heatmap(...)
 
 # ax[3].set_title('Firing rate from session '+ session_name, fontsize=my_fontsize)
-ax[3].set_xticklabels(ax[3].get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
-ax[3].set_yticklabels(ax[3].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0)
+ax[3].set_xticklabels(ax[3].get_xmajorticklabels(), fontsize = my_fontsize*0.8, rotation=0, color="black")
+ax[3].set_yticklabels(ax[3].get_ymajorticklabels(), fontsize = my_fontsize*1, rotation=0)
 
 ax[3].set_xticks(xticks)
 
@@ -604,10 +607,9 @@ ax[3].yaxis.set_major_locator(ticker.MultipleLocator(100))
 ax[3].yaxis.set_major_formatter(ticker.ScalarFormatter())
 
 ax[3].set_ylabel('Sorted units', fontsize=my_fontsize, color="black")
-ax[3].set_xlabel('Time (Seconds)', fontsize=my_fontsize)
+ax[3].set_xlabel('Time (Seconds)', fontsize=my_fontsize, color="black")
 
 
-# f.tight_layout()
 
 plt.savefig( plot_path+'/'+ 'Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar' +'.png' )
 
