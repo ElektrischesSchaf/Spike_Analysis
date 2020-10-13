@@ -342,8 +342,8 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         out = torch.cat(  (out_x, out_y),1 )
         '''
         # two stage
-        out_x = self.x_stage_1( feature_map_after_atten.clone() ) 
-        out_y = self.y_stage_1( feature_map_after_atten.clone() )
+        out_x = torch.relu(self.x_stage_1( feature_map_after_atten.clone() ) )
+        out_y = torch.relu(self.y_stage_1( feature_map_after_atten.clone() ) )
 
         out_x = out_x.view(-1, out_x.size()[1]*out_x.size()[2]*out_x.size()[3] )
         out_y = out_y.view(-1, out_y.size()[1]*out_y.size()[2]*out_y.size()[3] )
