@@ -113,10 +113,50 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
     \label{fig:acceleration_prediction}
 \end{figure}
 
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Firing rate and decoding result}
+        \label{fig:Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar}
+    \end{center}
+\end{figure}
+
+
 \section{Visualization of attention process}
 \begin{multicols}{2}
 \todo[inline]{放入attention map}
 \end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[height=0.4\textheight]{oneway_pos_atten.png}
+        \captionsetup{width=0.5\textwidth}
+
+        \caption{Attention map for oneway GRU in decoding position}
+        \label{fig:oneway_pos_atten}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[height=0.4\textheight]{oneway_vel_atten.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Attention map for oneway GRU in decoding velocity}
+        \label{fig:oneway_vel_atten}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[height=0.4\textheight]{oneway_acc_atten.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Attention map for oneway GRU in decoding acceleration}
+        \label{fig:oneway_acc_atten}
+    \end{center}
+\end{figure}
+
 
 \section{Internal dynamics of network}
 \begin{multicols}{2}
