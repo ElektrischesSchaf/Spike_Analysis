@@ -68,7 +68,7 @@ NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
 BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
-max_timestep = 20
+max_timestep = 10
 
 # Model Performance Lists
 R_square_across_all_sessions=[]
@@ -337,22 +337,22 @@ for session_k in range(len(session_file_list)):
     testing_x=testing_x.float()
 
 
-    # x_pos
-    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype=float)    
+    # x acc
+    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_acceleration_label_training.csv'), dtype=float)    
     training_y_1  = torch.from_numpy(training_y_1.values)    
     training_y_1  = training_y_1.float()
 
-    # y_pos
-    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_training.csv'), dtype=float)    
+    # y acc
+    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_acceleration_label_training.csv'), dtype=float)    
     training_y_2 = torch.from_numpy(training_y_2.values)    
     training_y_2 = training_y_2.float()
 
 
-    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)    
+    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_acceleration_label_testing.csv'), dtype=float)    
     testing_y_1 = torch.from_numpy(testing_y_1.values)    
     testing_y_1 = testing_y_1.float()
 
-    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)
+    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_acceleration_label_testing.csv'), dtype=float)
     testing_y_2 = torch.from_numpy(testing_y_2.values)    
     testing_y_2 = testing_y_2.float()
 
