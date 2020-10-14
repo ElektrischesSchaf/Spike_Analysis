@@ -48,8 +48,7 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-
-session_name='indy_20160420_01'
+session_name='indy_20161007_02'  # indy_20160420_01 indy_20161007_02
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
@@ -376,7 +375,7 @@ acceleration_path = './acceleration_data/'+session_name+'/csv_files'
 position_x_predction = pd.read_csv(os.path.join(position_path,'my_prediction_x_pos.csv'), dtype=float, header=None)
 position_x_predction = position_x_predction.to_numpy()
 print('shape of position_x_predction= ', position_x_predction.shape , '\n')
-position_y_predction = pd.read_csv(os.path.join(position_path,'my_predictiony_y_pos.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
+position_y_predction = pd.read_csv(os.path.join(position_path,'my_prediction_y_pos.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
 position_y_predction = position_y_predction.to_numpy()
 print('shape of position_y_predction= ', position_y_predction.shape , '\n')
 position_x_actual = pd.read_csv(os.path.join(position_path,'Ground_Truth_x_pos.csv'), dtype=float, header=None)
@@ -393,7 +392,7 @@ print('shape of position_timestamp= ', position_timestamp.shape , '\n')
 velocity_x_predction = pd.read_csv(os.path.join(velocity_path,'my_prediction_x_vel.csv'), dtype=float, header=None)
 velocity_x_predction = velocity_x_predction.to_numpy()
 print('shape of velocity_x_predction= ', velocity_x_predction.shape , '\n')
-velocity_y_predction = pd.read_csv(os.path.join(velocity_path,'my_predictiony_y_vel.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
+velocity_y_predction = pd.read_csv(os.path.join(velocity_path,'my_prediction_y_vel.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
 velocity_y_predction = velocity_y_predction.to_numpy()
 print('shape of velocity_y_predction= ', velocity_y_predction.shape , '\n')
 velocity_x_actual = pd.read_csv(os.path.join(velocity_path,'Ground_Truth_x_vel.csv'), dtype=float, header=None)
@@ -409,7 +408,7 @@ print('shape of velocity_timestamp= ', velocity_timestamp.shape , '\n')
 acceleration_x_predction = pd.read_csv(os.path.join(acceleration_path,'my_prediction_x_acc.csv'), dtype=float, header=None)
 acceleration_x_predction = acceleration_x_predction.to_numpy()
 print('shape of acceleration_x_predction= ', acceleration_x_predction.shape , '\n')
-acceleration_y_predction = pd.read_csv(os.path.join(acceleration_path,'my_predictiony_y_acc.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
+acceleration_y_predction = pd.read_csv(os.path.join(acceleration_path,'my_prediction_y_acc.csv'), dtype=float, header=None) # TODO fix the typo my_predictiony_y_pos
 acceleration_y_predction = acceleration_y_predction.to_numpy()
 print('shape of acceleration_y_predction= ', acceleration_y_predction.shape , '\n')
 acceleration_x_actual = pd.read_csv(os.path.join(acceleration_path,'Ground_Truth_x_acc.csv'), dtype=float, header=None)
@@ -440,10 +439,13 @@ if ( position_timestamp.shape[0] < velocity_timestamp.shape[0]  ) and ( position
     acceleration_y_actual = acceleration_y_actual[int(a[0]):]
     acceleration_timestamp = acceleration_timestamp[int(a[0]):]
 
+    time_stamp_64ms=time_stamp_64ms[5001:] # TODO fix pd read_csv head=None
     a = np.where( time_stamp_64ms==position_timestamp[0][0] )
     time_stamp_64ms = time_stamp_64ms[int(a[0]):]
+    print('int(a[0])=', int(a[0]), '\n')
     testing_x = testing_x[int(a[0]):]
-
+    print('size of testing_x= ', testing_x.size() , '\n')
+    print('size of time_stamp_64ms= ', len(time_stamp_64ms) , '\n' )
 else:
     exit()
 
@@ -466,7 +468,9 @@ for row_idx in range(data.size(0)):
         valid_rows.append(row_idx)
 data = data[valid_rows,:]
 
-cbar_kws={"orientation": "horizontal", "shrink": 0.2, "aspect":20,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), 4 ]}
+print(data)
+
+cbar_kws = {"orientation": "horizontal", "shrink": 0.2, "aspect":20,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), 4 ] }
 sns.heatmap( data=data, vmax=4 ,xticklabels=False, yticklabels=True, cbar_kws=cbar_kws, cmap='YlGnBu_r', ax=ax[0]) # important, not ax[0] = sns.heatmap(...)
 # ax[0].set_xticklabels(ax[0].get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
 ax[0].set_title('Firing rate from session '+ session_name, fontsize=my_fontsize)
