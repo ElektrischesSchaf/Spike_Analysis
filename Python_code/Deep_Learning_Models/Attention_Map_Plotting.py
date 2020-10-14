@@ -11,7 +11,7 @@ from torch.utils.data import Dataset, DataLoader
 from matplotlib.colors import LogNorm
 import matplotlib.ticker as ticker
 
-my_fontsize=30
+my_fontsize=50
 
 class Plotting():
 
@@ -408,11 +408,11 @@ class Plotting():
 
         # ax[0].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
         if type_name=='pos':
-            ax[0].set_ylabel( 'Position ($mm$)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'Pos. ($mm$)', rotation=90, fontsize=my_fontsize, color="black")
         if type_name=='vel':
-            ax[0].set_ylabel( 'Velocity ($mm/s$)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'Vel. ($mm/s$)', rotation=90, fontsize=my_fontsize, color="black")
         if type_name=='acc':
-            ax[0].set_ylabel( 'Acceleration ($mm/s^2$)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'Acc. ($mm/s^2$)', rotation=90, fontsize=my_fontsize, color="black")
 
         ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
         ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
@@ -433,8 +433,8 @@ class Plotting():
         for ele in list(change_points_x_set.union( change_points_y_set )):
             ax[0].axvline( time_step[ele] , color='black' , linewidth=5, alpha=0.3 )
 
-        ax[0].legend(loc='upper right', fontsize=my_fontsize*0.8)
-
+        ax[0].legend(loc='upper right', fontsize=my_fontsize*0.7)
+        ax[0].tick_params(axis='both', which='major', labelsize=my_fontsize*0.7, color="black")
         ax[0].set_xlim([ time_step[0], time_step[-1] ])
         # ax[0].set_xlabel('Time (seconds)', fontsize=my_fontsize, color="black")
         ax[0].set_xticks([])
@@ -461,12 +461,10 @@ class Plotting():
         t -= 0.5 # Subtract 0.5 from the top
         ax[1].set_ylim(b, t) # update the ylim(bottom, top) values
 
-        ax[1].set_yticklabels(ax[1].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0)
+        ax[1].set_yticklabels(ax[1].get_ymajorticklabels(), fontsize = my_fontsize*0.7, rotation=0)
 
         # ax[1].set_title('Attention Map', fontsize=my_fontsize, color="black")
         ax[1].set_ylabel('Past Time Bins', fontsize=my_fontsize, color="black")
-
-
 
 
         num_ticks = 6
@@ -480,8 +478,8 @@ class Plotting():
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
         sns.heatmap( data=firing_rate_data , ax=ax[2], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=xticklabels, cbar=False ) # norm=LogNorm()
 
-        ax[2].set_xticklabels(ax[2].get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
-        ax[2].set_yticklabels(ax[2].get_ymajorticklabels(), fontsize = my_fontsize, rotation=0) # This will get correct row numbers of data matrix
+        ax[2].set_xticklabels(ax[2].get_xmajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0)
+        ax[2].set_yticklabels(ax[2].get_ymajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0) # This will get correct row numbers of data matrix
 
         ax[2].set_xticks(xticks)
 
