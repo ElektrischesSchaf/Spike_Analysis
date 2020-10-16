@@ -466,10 +466,10 @@ for session_k in range(len(session_file_list)):
         o_labels, attn_weight_matrix_forward = net(feature)
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
-        attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)        
+        attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)
         penality_loss_forward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
 
-        l_loss = loss_func(o_labels, labels) + penality_loss_forward
+        l_loss = loss_func(o_labels, labels) + penality_loss_forward*10
 
         return o_labels, l_loss
 
