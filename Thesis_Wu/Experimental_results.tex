@@ -35,9 +35,8 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
         \label{fig:trimmed_testing_data}
 \end{figure}
 
-
-\section{Ablation study}
 \begin{landscape}
+\section{Ablation study}
 \begin{table}[H]
     \centering
     \caption{Performances Weighted Average $R^2$}
@@ -166,6 +165,7 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \section{Failure case study}
 \begin{multicols}{2}
 \todo[inline]{放入失敗的例子}
+
 \end{multicols}
 
 
@@ -187,7 +187,13 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \section{Difficulty in position decoder}
 \begin{multicols}{2}
 \todo[inline]{解釋為什麼解碼位置要使用 tap size 20}
-\cite{goodman2019postural} has mentioned similar disadvatages in hand absolute position decoding.
+\cite{goodman2019postural} has presented that neurons in M1 are more related to velocity, rather than the time-varying posture.
+\cite{okorokova2020decoding} has found out that neurons in motor cortex are more prefereable to encode velocity than its position. 
+This is the main reason why velocity decoders outperform the position decoders.
 \cite{dethier2013design} \todo[inline]{ \cite{kim2008neural} compare position and velocity decoders and finds that velocity decoders tend to outperform position decoders in tetraplegic patients }
+\cite{kim2008neural} showed that the coorelation between firing rate and velocity is significantly higher than the correlation between firing rate and position, 
+in both random pursuit-tracking task and center-out-back task. This result suggested when developing the system for tetraplegia patients,
+the decoding method should be based on the cursor velocity instead of the cursor position.
+
 \cite{wu2003neural} 這篇論文提到傳統的linear filter[8,12]需要500ms到1500ms的神經訊號來解碼運動。最佳的time lag是140ms 這篇也是第一篇使用Kalman filter於運動解碼的論文
 \end{multicols}

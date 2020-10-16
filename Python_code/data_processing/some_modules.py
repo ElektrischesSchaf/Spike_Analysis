@@ -215,7 +215,7 @@ class regular_modules():
     time_stamp_64ms, testing_data_index, max_timestep, 
     my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2):
 
-        plt.figure(figsize=(32, 9))
+        plt.figure(figsize=(32, 7))
         plotting_time_elapsed = time_stamp_64ms[testing_data_index:]
         plotting_time_elapsed = plotting_time_elapsed[max_timestep:]
 
