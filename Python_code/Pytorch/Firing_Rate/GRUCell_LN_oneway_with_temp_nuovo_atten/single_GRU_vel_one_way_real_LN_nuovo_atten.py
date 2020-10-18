@@ -57,12 +57,12 @@ kinematic_variable_type = 'x_and_y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_v
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE = ALL_List_FILE[:]
+List_FILE = ALL_List_FILE[-1:]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRUCell_real_LN_2_outputs_one_way_nuovo_temp_atten'
-MAX_EPOCH = 75
+MAX_EPOCH = 100
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
