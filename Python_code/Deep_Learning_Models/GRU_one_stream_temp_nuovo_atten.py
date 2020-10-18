@@ -273,7 +273,10 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # print('size of result_for_all_r 1 = ', result_for_all_r.size(), '\n')
         result_for_all_r = result_for_all_r.permute(1,0,2,3)
         # print('size of result_for_all_r 2 = ', result_for_all_r.size(), '\n')
-        result_for_all_r = torch.sum(result_for_all_r, 1, keepdim = True)
+
+        # tried this 2020-10-18
+        # result_for_all_r = torch.sum(result_for_all_r, 1, keepdim = True)
+
         # result_for_all_r = result_for_all_r.squeeze(1)
         # print('size of result_for_all_r = ', result_for_all_r.size(), '\n')
 
