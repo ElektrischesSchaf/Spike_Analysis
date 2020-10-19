@@ -45,7 +45,7 @@ regular_modules = some_modules.regular_modules()
 
 # Deep leaning module
 # from  Deep_Learning_Models.GRU_one_stream import GRUModel
-from  Deep_Learning_Models.GRU_one_stream_temp_nuovo_atten import Real_Layer_GRU_one_way
+from  Deep_Learning_Models.GRU_one_stream_temp_nuovo_atten_brand import Real_Layer_GRU_one_way
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # attention map plotting module
