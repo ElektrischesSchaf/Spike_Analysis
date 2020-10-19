@@ -176,7 +176,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
 
         r = int( max_timestep/2 )
-        da= int( hidden_dim/2 )
+        da= int( max_timestep/2 )
 
         self.W_s1_1 = torch.nn.Linear( max_timestep, da )
         self.W_s2_1 = torch.nn.Linear( da, r )
