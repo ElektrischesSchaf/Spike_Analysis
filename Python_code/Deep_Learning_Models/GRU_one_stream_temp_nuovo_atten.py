@@ -193,14 +193,17 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         '''
 
         # two stage
-        self.x_stage_1 = torch.nn.Linear( hidden_dim,  int(max_timestep/2) )
-        self.y_stage_1 = torch.nn.Linear( hidden_dim,  int(max_timestep/2) )
+        self.x_stage_1 = torch.nn.Linear( hidden_dim, int(max_timestep/2) )
+        self.y_stage_1 = torch.nn.Linear( hidden_dim, int(max_timestep/2) )
 
-        # self.x_stage_2 = torch.nn.Linear( int(max_timestep)*int(max_timestep/2), 1)        
+        # Old
+        # self.x_stage_2 = torch.nn.Linear( int(max_timestep)*int(max_timestep/2), 1)
         # self.y_stage_2 = torch.nn.Linear( int(max_timestep)*int(max_timestep/2), 1)
+
         # 2020-10-18
-        self.x_stage_2 = torch.nn.Linear( int(max_timestep)*int(max_timestep/2)*r, 1)        
-        self.y_stage_2 = torch.nn.Linear( int(max_timestep)*int(max_timestep/2)*r, 1)
+        self.x_stage_2 = torch.nn.Linear( r*int(max_timestep)*int(max_timestep/2),  1)        
+        self.y_stage_2 = torch.nn.Linear( r*int(max_timestep)*int(max_timestep/2),  1)
+
 
         # max or sum
         '''
@@ -277,7 +280,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         result_for_all_r = result_for_all_r.permute(1,0,2,3)
         # print('size of result_for_all_r 2 = ', result_for_all_r.size(), '\n')
 
-        # tried this 2020-10-18
+        # Disable summing different attention together along dimension No.1
         # result_for_all_r = torch.sum(result_for_all_r, 1, keepdim = True)
 
         # result_for_all_r = result_for_all_r.squeeze(1)
