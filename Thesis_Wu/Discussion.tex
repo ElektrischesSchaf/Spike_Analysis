@@ -54,12 +54,20 @@ The
 \section{The reason why our neural decoder surpass others}
 \begin{multicols}{2}
 \todo[inline]{探討neural decoder比其他方法好的原因}
+Our attention mechanism modified the method of combining the attention map and the GRU output feature map together from \cite{lin2017structured}, 
+using the scaling technique similar to \cite{hu2018squeeze}.
+On the other hand we preserve the benefit of different attention aspects, similar to the \textit{Multi-head attention} ideal in \cite{vaswani2017attention}, 
+annotating the same sequence with multiple attention vectors.
+
+
 \end{multicols}
 
 
 \section{The insight our attention module provide}
 \begin{multicols}{2}
 \todo[inline]{探討attention找到了甚麼重點?}
+Our temporal attention mechanism can find the different pattern in different kinematic variables.
+
 \end{multicols}
 
 
@@ -72,5 +80,14 @@ The
 \section{Reason behind failure cases}
 \begin{multicols}{2}
 \todo[inline]{探討失敗例子的原因}
+\begin{itemize}
+    \item \textbf{Wrong weights for the two loss functions}\\
+    we have two types of loss functions, MSE and the penalization term.
+    MSE represents the error between the predicted kinematic variables and its observed value, 
+    The penalization term 
+    \item \textbf{Summing the feature map from different attention vectors together}\\
+    When we tried to cut the number of parameters in the fully connection layers,
+
+\end{itemize}
 \end{multicols}
 
