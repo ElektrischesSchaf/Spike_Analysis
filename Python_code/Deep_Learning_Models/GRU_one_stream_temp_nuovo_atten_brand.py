@@ -229,7 +229,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # print('yee = ', gru_output.size(), )
         gru_output_T = torch.transpose(gru_output, 1,2 )
         # LN inside atten
-        attn_weight_matrix = self.W_s2_1( torch.tanh( self.W_s1_1( torch.bmm(gru_output,gru_output_T) - torch.eye(self.max_timestep).to(device)  )))
+        attn_weight_matrix = self.W_s2_1( torch.tanh( self.LN_in_atten(self.W_s1_1( torch.bmm(gru_output,gru_output_T) - torch.eye(self.max_timestep).to(device)  ))))
         attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
 
         attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
