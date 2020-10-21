@@ -18,8 +18,7 @@ Table~\ref{tab:traditional_invasive} listed traditional machine learning decoder
     \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors} & \makecell{Position,\\velocity}  \\ \\
     \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } & \makecell{Position,\\velocity} \\ \\
     \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} & \makecell{Position,\\velocity} \\ \\
-    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} & Velocity \\ \\
-    \hline
+    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} & Velocity \\
     \label{tab:traditional_invasive}
 \end{longtable}
 
@@ -27,6 +26,9 @@ Table~\ref{tab:traditional_invasive} listed traditional machine learning decoder
 \section{Limitations of invasive BCI}
 \begin{multicols}{2}
 \todo[inline]{傳統侵入式腦機介面有哪些限制?}
+\cite{glaser2020machine} has analysed the performance of modern methods and traditional methods in BCI motor decoding.
+They take LSTM and ensemble models as the representative of modern methods, who a outperformed the traditional ones significantly such as Wiener filter, Wiener cascade and Kalman filter.
+
 \end{multicols}
 
 \section{Merits of deep learning in BCI}
@@ -120,7 +122,7 @@ Table~\ref{tab:deep_leaning_in_invasive_BCI} listed decoders involved deep leani
 \begin{multicols}{2}
 However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
 Therefore several studies adopted local filed potentials (LFPs), which stand for the low frequency part (<~300Hz) of neural signal. 
-And also local motor potentials (LMPs), which are the moving average of LFPs. 
+Along with local motor potentials (LMPs), which are the moving average of LFPs. 
 Due to the considerably low frequency of LFPs, they can be sampled, processed, and transmitted with lower power consuption \citep{flint2012accurate}.
 These studies show that low frequency signals are also informative regarding neural signal decoding \citep{wang2014long}. 
 As for human, the LFPs can be obtained by electroencephalography (EEG), and some studies consider the phase of LFPs from a specific frequency band, 
@@ -164,7 +166,9 @@ By pointing out the parts where the model cosider informative allows humans to h
 \cite{tseng2019decoding} intended to show in internal dynamics of the LSTM when decoding the movement of monkeys, 
 but by just showing the value of the gates in each LSTM timesteps simply does not informative enough.
 It seems that the internal dynamics of can not highlight the different movement patterns but only the changes of the input neural signal.
-In the field of natural language processing, people have successfully demonstrated the 
+In the field of natural language processing, people have successfully hightlighted the specific texts among a sentence or a paragraph, 
+which are the most relevant to the translation or classification tasks.
+Pointing out the dominant key words who contribute the most in their deep learning result makes it easier for human to evaluate the strength of the model.
 
 \end{multicols}
 
