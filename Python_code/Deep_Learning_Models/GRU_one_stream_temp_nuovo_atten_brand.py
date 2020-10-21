@@ -148,7 +148,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
         return out, attn_weight_matrix
 
-class  Real_Layer_GRU_one_way(torch.nn.Module):
+class  Real_Layer_GRU_one_way_Old(torch.nn.Module):
 
     def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
         super(Real_Layer_GRU_one_way, self).__init__()
@@ -362,6 +362,222 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         out_x = out_x.view(-1, out_x.size()[1]*out_x.size()[2]*out_x.size()[3] )
         out_y = out_y.view(-1, out_y.size()[1]*out_y.size()[2]*out_y.size()[3] )
+
+        out_x = self.x_stage_2(out_x)
+        out_y = self.y_stage_2(out_y)
+
+        out = torch.cat(  (out_x, out_y),1 )
+
+        # max or sum
+        '''
+        feature_map_after_atten = torch.sum(feature_map_after_atten, 3, keepdim = True)
+
+        # feature_map_after_atten = torch.max(feature_map_after_atten, 3, keepdim = True)
+        # feature_map_after_atten = feature_map_after_atten[0]
+
+        hidden_matrix_forward_x = feature_map_after_atten.clone()
+        hidden_matrix_forward_y = feature_map_after_atten.clone()
+
+        out_x = ( self.fc_layer_x( hidden_matrix_forward_x.view( -1 , hidden_matrix_forward_x.size()[1]*hidden_matrix_forward_x.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
+        out_y = ( self.fc_layer_y( hidden_matrix_forward_y.view( -1 , hidden_matrix_forward_y.size()[1]*hidden_matrix_forward_y.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
+
+        out_x = self.label_x( out_x )
+        out_y = self.label_y( out_y )
+
+        out = torch.cat(  (out_x, out_y),1 )
+        '''
+
+        # two stage
+
+
+        # for CNN
+        '''
+        result_conv1 = self.conv1(feature_map_after_atten)
+        result_conv2 = self.conv2(feature_map_after_atten)
+        result_conv3 = self.conv3(feature_map_after_atten)
+
+        result_conv1 = result_conv1.view(-1, result_conv1.size()[1]*result_conv1.size()[2]*result_conv1.size()[3] )
+        result_conv2 = result_conv2.view(-1, result_conv2.size()[1]*result_conv2.size()[2]*result_conv2.size()[3] )
+        result_conv3 = result_conv3.view(-1, result_conv3.size()[1]*result_conv3.size()[2]*result_conv3.size()[3] )
+
+        result = torch.cat( (result_conv1, result_conv2, result_conv3) ,1)
+
+        hidden_matrix_forward_x = result.clone()
+        hidden_matrix_forward_y = result.clone()
+
+        out_x = torch.relu( self.fc_layer_x( hidden_matrix_forward_x ))
+        out_y = torch.relu( self.fc_layer_y( hidden_matrix_forward_y ))
+
+        out_x = self.label_x( out_x )
+        out_y = self.label_y( out_y )
+
+        out = torch.cat(  (out_x, out_y),1 )
+        '''
+
+        return out, attn_weight_matrix_forward
+
+
+class  Real_Layer_GRU_one_way(torch.nn.Module):
+
+    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
+        super(Real_Layer_GRU_one_way, self).__init__()
+        # Hidden dimensions
+        self.hidden_dim = hidden_dim
+        self.input_dim=input_dim
+        # Number of hidden layers
+        self.layer_dim = layer_dim
+        self.max_timestep=max_timestep
+
+        # batch_first=True causes input/output tensors to be of shape
+        # (batch_dim, seq_dim, feature_dim)
+        self.GRU_Cell_forward_1 = LayerNormGRUCell( input_dim      , hidden_dim    ,  bias=True )
+        self.GRU_Cell_forward_2 = LayerNormGRUCell( hidden_dim      , hidden_dim    ,  bias=True )
+
+        # Layer Normalization
+        # self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
+
+        # for CNN
+        '''
+        self.conv1 = torch.nn.Conv2d( 1, 1, ( 1, hidden_dim), 1 , padding=0)
+        self.conv2 = torch.nn.Conv2d( 1, 1, ( 2, hidden_dim), 1 , padding=0)
+        self.conv3 = torch.nn.Conv2d( 1, 1, ( 3, hidden_dim), 1 , padding=0)
+        '''
+
+
+        r = int( max_timestep/2 )
+        da= int( max_timestep/2 )
+
+        self.W_s1_1 = torch.nn.Linear( max_timestep, da )
+        self.W_s2_1 = torch.nn.Linear( da, r )
+
+        # LN inside atten
+        self.LN_in_atten = torch.nn.LayerNorm([max_timestep, da], elementwise_affine=False)
+
+        # big
+        '''
+        self.fc_layer_x = torch.nn.Linear( hidden_dim*max_timestep, int( (hidden_dim*max_timestep)/2) )
+        self.label_x = torch.nn.Linear( int( (hidden_dim*max_timestep)/2), 1 )
+
+        self.fc_layer_y = torch.nn.Linear( hidden_dim*max_timestep, int( (hidden_dim*max_timestep)/2))
+        self.label_y = torch.nn.Linear( int( (hidden_dim*max_timestep)/2), 1 )
+        '''
+
+        # two stage
+        self.x_stage_1 = torch.nn.Linear( r*hidden_dim, int(r*hidden_dim/2) )
+        self.y_stage_1 = torch.nn.Linear( r*hidden_dim, int(r*hidden_dim/2) )
+
+        # Old
+        self.x_stage_2 = torch.nn.Linear( int(r*hidden_dim/2), 1)
+        self.y_stage_2 = torch.nn.Linear( int(r*hidden_dim/2), 1)
+
+        # 2020-10-18
+        # self.x_stage_2 = torch.nn.Linear( r*int(max_timestep)*int(max_timestep/2),  1)        
+        # self.y_stage_2 = torch.nn.Linear( r*int(max_timestep)*int(max_timestep/2),  1)
+
+
+        # max or sum
+        '''
+        self.fc_layer_x = torch.nn.Linear( max_timestep, int( (max_timestep)/2) )
+        self.label_x = torch.nn.Linear( int( (max_timestep)/2), 1 )
+
+        self.fc_layer_y = torch.nn.Linear( max_timestep, int( (max_timestep)/2))
+        self.label_y = torch.nn.Linear( int( (max_timestep)/2), 1 )
+        '''
+
+        # for CNN
+        '''
+        self.fc_layer_x = torch.nn.Linear( int(3*max_timestep-3), int( (max_timestep)/2) )
+        self.label_x = torch.nn.Linear( int( (max_timestep)/2), 1 )
+
+        self.fc_layer_y = torch.nn.Linear( int(3*max_timestep-3), int( (max_timestep)/2))
+        self.label_y = torch.nn.Linear( int( (max_timestep)/2), 1 )
+        '''
+
+    def attention_net_1(self, gru_output):
+
+        # print('yee = ', gru_output.size(), )
+        gru_output_T = torch.transpose(gru_output, 1,2 )
+        # LN inside atten
+        attn_weight_matrix = self.W_s2_1( torch.tanh( self.LN_in_atten(self.W_s1_1( torch.bmm(gru_output,gru_output_T) - torch.eye(self.max_timestep).to(device)  ))))
+        attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
+
+        attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
+        return attn_weight_matrix
+
+    def forward(self, x):
+
+        x=x.view(x.size(0), -1, self.input_dim)
+
+        # Initialize hidden state with zeros
+        h0 = torch.zeros( x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        h0=h0.to(device)
+
+        hidden_state_list=[]
+        out_list=[]
+        # time steps
+        for i , input_t in enumerate( x.chunk( x.size(1), dim=1 )):
+            input_t = input_t.squeeze(1)
+            # print('shape of input_t= ', input_t.size(), '\n')
+            h0 = self.GRU_Cell_forward_1(input_t, h0)
+            hidden_state_list += [h0]
+
+        hidden_state_list_1 = torch.stack(hidden_state_list, 0)
+
+        hidden_state_list_1 = hidden_state_list_1.permute(1,0,2)
+
+        # Initialize hidden state with zeros
+        h0 = torch.zeros( x.size(0), self.hidden_dim).requires_grad_() # one-directional
+        h0=h0.to(device)
+
+
+        hidden_state_list=[]
+        out_list=[]
+        # time steps
+        for i , input_t in enumerate( hidden_state_list_1.chunk( hidden_state_list_1.size(1), dim=1 )):
+            input_t=input_t.squeeze(1)
+            # print('shape of input_t= ', input_t.size(), '\n')
+            h0 = self.GRU_Cell_forward_2(input_t, h0)
+            hidden_state_list+=[h0]
+
+        hidden_state_list = torch.stack(hidden_state_list, 0)
+
+        hidden_state_list = hidden_state_list.permute(1,0,2)
+
+        # hidden_state_list = self.input_LN_forward(hidden_state_list)
+
+        attn_weight_matrix_forward = self.attention_net_1( hidden_state_list )
+        
+
+        hidden_matrix_forward = torch.bmm( attn_weight_matrix_forward, hidden_state_list )
+        # feature_map_after_atten = self.attention_map_conv(attn_weight_matrix_forward, hidden_state_list )        
+        # feature_map_after_atten = self.attention_map_and_hidden_states_mul(attn_weight_matrix_forward, hidden_state_list )
+
+
+        # original
+        '''
+        hidden_matrix_forward_x = feature_map_after_atten.clone()
+        hidden_matrix_forward_y = feature_map_after_atten.clone()
+
+        out_x = torch.relu( self.fc_layer_x( hidden_matrix_forward_x.view( -1 , hidden_matrix_forward_x.size()[1]*hidden_matrix_forward_x.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
+        out_y = torch.relu( self.fc_layer_y( hidden_matrix_forward_y.view( -1 , hidden_matrix_forward_y.size()[1]*hidden_matrix_forward_y.size()[2]*hidden_matrix_forward_x.size()[3] ) ) )
+
+        out_x = self.label_x( out_x )
+        out_y = self.label_y( out_y )
+
+        out = torch.cat(  (out_x, out_y),1 )
+        '''
+        # two stage
+        hidden_matrix_forward_x = hidden_matrix_forward.clone()
+        hidden_matrix_forward_y = hidden_matrix_forward.clone()
+
+        hidden_matrix_forward_x = hidden_matrix_forward_x.view(-1, hidden_matrix_forward_x.size()[1]*hidden_matrix_forward_x.size()[2] )
+        hidden_matrix_forward_y = hidden_matrix_forward_y.view(-1, hidden_matrix_forward_y.size()[1]*hidden_matrix_forward_y.size()[2] )
+
+        out_x = torch.relu(self.x_stage_1( hidden_matrix_forward_x ) )
+        out_y = torch.relu(self.y_stage_1( hidden_matrix_forward_y ) )
+
+        # out_x = out_x.view(-1, out_x.size()[1]*out_x.size()[2]*out_x.size()[3] )
+        # out_y = out_y.view(-1, out_y.size()[1]*out_y.size()[2]*out_y.size()[3] )
 
         out_x = self.x_stage_2(out_x)
         out_y = self.y_stage_2(out_y)
