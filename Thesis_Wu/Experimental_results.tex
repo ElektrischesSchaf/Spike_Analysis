@@ -194,7 +194,9 @@ This is the main reason why velocity decoders outperform the position decoders.
 in both random pursuit-tracking task and center-out-back task. This result suggested when developing the system for tetraplegia patients,
 the decoding method should be based on the cursor velocity instead of the cursor position.
 To compare the length of the past signals been used to decode the current kinematics in other researches, 
-and justify that it is legit to use 20 time bins in decoding position, and 10 time bins to decode velocity and acceleration,
-we noticed that \cite{wu2003neural} has analysed the optimal length
+and justify that it is legit to use 20 time bins (1280ms) in decoding position, and 10 time bins (640ms) to decode velocity and acceleration,
+we noticed that \cite{wu2003neural} has analysed the optimal length, which is between 500ms to 1500ms.
+That means our usage of the time bins is acceptable and reasonable.
+
 \cite{wu2003neural} 這篇論文提到傳統的linear filter[8,12]需要500ms到1500ms的神經訊號來解碼運動。最佳的time lag是140ms 這篇也是第一篇使用Kalman filter於運動解碼的論文
 \end{multicols}

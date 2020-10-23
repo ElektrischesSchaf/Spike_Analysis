@@ -54,17 +54,30 @@ to reconstruct the trajectory of the rodents in a $ 100cm \times 100cm $ square 
 \section{Unsolved problems related to pursuit task with point-to-point trajectory}
 \begin{multicols}{2}
 \todo[inline]{侵入式腦機介面在Pursuit task with point-to-point trajectory有甚麼問題還沒被解決?}
-The provider of the main nonhuman primate dataset used in our study, \cite{makin2018}, adopted the decoder based on Kalman filter.
-They have obtained high performances in the position and velocity decoding tasks, but failed to decode acceleration as good as the preceding two kinematic variables.
+The provider of the main nonhuman primate dataset used in our study, \cite{makin2018}, 
+adopted the decoder based on Kalman filter.
+They have obtained high performances in the position and velocity decoding tasks, 
+but failed to decode acceleration with the accuracy as good as the preceding two kinematic variables.
+Although they claimed that the prediction accuracy of velocity and acceleration benefited from their sophisticated model the most.
+We seek a decoder to make improvement on the precision of all variables - position, velocity, acceleration.
+
 
 \end{multicols}
 
 \section{Inspirations and goals of our research}
 \begin{multicols}{2}
 \todo[inline]{碩士論文受到哪些論文的啟發? 有了甚麼想法? 想解決哪些問題?}
-Since neural signals are non-linear sequential data \citep{brezina2000neuromuscular}, and firing pattern in motor cortex neurons have a lot to do with the movement direction \citep{hatsopoulos1998information},
-It is practical to use RNNs as the backbone of neural decoders \citep{buonomano2011population}, for RNN has outperformed traditional linear decoder \citep{sussillo2016making}.
-New technique has been created for RNNs \citep{ba2016layer}, it gives us chance to boost decoding accuracy.
+This research is aimed for developing algorithms that can convert neural signals into actual movement of the limbs. 
+For those who suffer from motor disability, there exist softwares that allow people to move or control a computer cursor using imagined or attempted movents \citep{hosman2019bci}, 
+or driving an exoskeleton to perform motro-related task for stroke rehabitation, as \cite{chowdhury2018active} successfully developed such EEG-based BCI supported neurorehabilitation system. 
+By implementing the advanced techniques of deep learning and exerting all possible computational resources, we stand great chance of developing an algorithm that outperforms current studies. 
+
+Since neural signals are non-linear sequential data \citep{brezina2000neuromuscular}, 
+and firing pattern in motor cortex neurons have a lot to do with the movement direction \citep{hatsopoulos1998information},
+It is practical to use RNNs as the backbone of neural decoders \citep{buonomano2011population}, 
+for RNN has outperformed traditional linear decoder \citep{sussillo2016making}.
+New technique has been created for RNNs \citep{ba2016layer}, 
+it gives us chance to boost decoding accuracy.
 However, previous BCI researches involved RNNs have not focus on the internal dynamics of their models and explain how the model actually learn from the neural signal.
 Inspired by the developement of attention module in natural language processing, 
 we believe it can provide potent reasons for us to explain our the design of our model and brand new insight to neural science by showing the attention map of neural signals.
@@ -76,30 +89,19 @@ we believe it can provide potent reasons for us to explain our the design of our
 \todo[inline]{條列碩士論文的貢獻}
 \begin{itemize}
     \item Proposed neural decoder in our reseach outperforms the results from \cite{makin2018}, with higher weighted average $R^{2}$ and lower standard deviation among all sessions, all 6 types of kinematic variables (position, velocity, acceleration each in x- and y-axis).
+    \item Dedicated to develop a \textit{interpretable} deep learning model, which can highlight the key patterns of the input data in an intuitive way.
     \item Visualized the distribution of attention among past time bins when model decoding different types of kinematic variables.
     \item Visualized the distribution of attention among sorted units when decoding.
     \item Analysed the reciprocal effects of layer normalization in GRU, temporal attention and neural units attention mechanism.
 \end{itemize}
 \end{multicols}
 
-\section{Motivation and Objective}
-\label{sec: motivation}
-
-\begin{multicols}{2}
-This research is aimed for developing algorithms that can convert neural signals into actual movement of the limbs. 
-For those who suffer from motor disability, there exist softwares that allow people to move or control a computer cursor using imagined or attempted movents \citep{hosman2019bci}, 
-or driving an exoskeleton to perform motro-related task for stroke rehabitation, as \cite{chowdhury2018active} successfully developed such EEG-based BCI supported neurorehabilitation system. 
-By implementing the advanced techniques of deep learning and exerting all possible computational resources, we stand great chance of developing an algorithm that outperforms current studies. 
-\end{multicols}
-
 \section{Delimitation}
 \label{sec:delimitation}
-
 \begin{multicols}{2}
 In order to reduce the difficulty of data acquisition, we only consider neural signal from monkeys instead of human or other kinds of animal. 
 Furthermore, no animal experiments were conducted in this reseach. All of hand movement decoding were computed off-line.
 \end{multicols}
-
 
 \section{Organization of This Thesis}
 \label{sec:org}
