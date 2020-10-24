@@ -379,7 +379,8 @@ for session_k in range(len(session_file_list)):
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    max_epoch = epoch_handle(session_name) + 10
+    # max_epoch = epoch_handle(session_name) + 10
+    max_epoch =  MAX_EPOCH
 
     # GRU Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
