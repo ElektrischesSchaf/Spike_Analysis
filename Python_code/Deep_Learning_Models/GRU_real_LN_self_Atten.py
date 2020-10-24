@@ -27,7 +27,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         self.GRU_Cell_backward_2 = LayerNormGRUCell( hidden_dim*2      , hidden_dim   ,  bias=True )
         
         # Layer Normalization
-        self.outside_layer_norm = torch.nn.LayerNorm( [max_timestep, 2*hidden_dim], elementwise_affine=True)
+        self.input_LN_forward = torch.nn.LayerNorm( [ max_timestep, hidden_dim*2 ], elementwise_affine=False)
         
 
         # Readout layer
@@ -130,7 +130,6 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
         hidden_state_list_2_result = torch.cat((hidden_state_list_2_forward, hidden_state_list_2_backward), 2)
 
-        # hidden_state_list_2_result = self.outside_layer_norm(hidden_state_list_2_result)
 
         attn_weight_matrix = self.attention_net( hidden_state_list_2_result )
         hidden_matrix = torch.bmm( attn_weight_matrix, hidden_state_list_2_result )
@@ -164,7 +163,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         self.GRU_Cell_forward_2 = LayerNormGRUCell( hidden_dim      , hidden_dim    ,  bias=True )
 
         # Layer Normalization
-        self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
+        self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=False)
 
         r = int( max_timestep/2 )
         da= int( hidden_dim/2 )
