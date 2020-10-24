@@ -173,7 +173,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         self.W_s2_1 = torch.nn.Linear( da, r )
 
         # LN inside atten
-        # self.LN_in_atten = torch.nn.LayerNorm([max_timestep, da], elementwise_affine=False)
+        self.LN_in_atten = torch.nn.LayerNorm([max_timestep, da], elementwise_affine=False)
 
         self.fc_layer_x = torch.nn.Linear( r*hidden_dim, int(hidden_dim/2))
         self.label_x = torch.nn.Linear( int(hidden_dim/2), 1 )
@@ -186,7 +186,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # LN inside atten
         # attn_weight_matrix = self.W_s2_1( torch.tanh( self.LN_in_atten( self.W_s1_1(gru_output) )  ))
 
-        attn_weight_matrix = self.W_s2_1( torch.tanh( self.W_s1_1(gru_output) ) )
+        attn_weight_matrix = self.W_s2_1( torch.tanh( self.LN_in_atten( self.W_s1_1(gru_output) ) ) )
         attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
 
         attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
