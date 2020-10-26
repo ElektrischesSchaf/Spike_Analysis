@@ -645,7 +645,7 @@ The second layer reduces the dimension from $d_a$ to $r$, as Figure~\ref{fig:mul
     \endhead
     \\
     \cite{bahdanau2014neural} & $\begin{aligned} sigmoid( a(s_{i-1},h_j) ) &= v_a^{T} tanh(W_a s_{i-1} + U_a h_j) \end{aligned}$  \\ \\
-    \cite{luong2015effective} & $ score(h_t, \bar{h}_s) = \left \{ \begin{aligned} &h^T_t \bar{h}_s   &dot \\  &h^T_t  W_a \bar{h}_s  &general \\  &v^T_a tanh(W_a[h_t;\bar{h}_s])  &concat \end{aligned} \right. $ \\ \\    
+    \cite{luong2015effective} & \makecell{ $ score(h_t, \bar{h}_s) = \left \{ \begin{aligned} &h^T_t \bar{h}_s   &dot \\  &h^T_t  W_a \bar{h}_s  &general \\  &v^T_a tanh(W_a[h_t;\bar{h}_s])  &concat  \end{aligned}  \right. $ \\ $\begin{aligned} a_t &= softmax(W_a h_t) &location  \end{aligned} $  } \\ \\
     \cite{cheng2016long} & $\begin{aligned} a^{t}_{i} &= v^T tanh(W_h h_i + W_x x_t + W_{\tilde{h}} \tilde{h}_{t-1} ) \\ s^t_i &= softmax(a^t_i)  \end{aligned}$ \\  \\
     \cite{yang2016hierarchical} & $\begin{aligned} u_{it} &= tanh(W_w h_{it} + b_w ) \\ \alpha_{it} &= \frac{exp(u_{it}^{T} u_w)}{ \sum_t exp( u_{it}^{T} u_w ) } \\ s_i &= \sum_t \alpha_{it} h_{it} \end{aligned}$ \\ \\
     \cite{wang2016attention} & $\begin{aligned} M &= tanh\left( \begin{bmatrix} W_h H \\ W_v v_a \otimes e_N \end{bmatrix} \right) \\  \alpha &= softmax( w^T M )  \\ r &= H \alpha^T  \end{aligned}$  \\ \\
