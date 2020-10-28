@@ -644,14 +644,14 @@ The second layer reduces the dimension from $d_a$ to $r$, as Figure~\ref{fig:mul
     \hline
     \endhead
     \\
-    \cite{bahdanau2014neural} & $\begin{aligned} \text{sigmoid}( \ba( \bs_{i-1}, \bh_j) ) &= v_a^{\intercal} \text{tanh}( \bW_a \bs_{i-1} + \bU_a \bh_j) \end{aligned}$  \\ \\
-    \cite{luong2015effective} & $ \begin{aligned} score( \bh_t, \bar{\bh}_s) &= \left \{ \begin{aligned} &\bh^{\intercal}_t \bar{\bh}_s   &&dot \\  &\bh^{\intercal}_t  \bW_a \bar{\bh}_s  &&general \\  &\bv^{\intercal}_a \text{tanh} ( \bW_a[h_t;\bar{\bh}_s])  &&concat  \end{aligned}  \right.  \\  \ba_t &= \text{softmax}( \bW_a \bh_t) &&location  \end{aligned} $  \\ \\
+    \cite{bahdanau2014neural} & $\begin{aligned} \text{sigmoid}( \ba( \bs_{i-1}, \bh_j) ) &= \bv_a^{\intercal} \text{tanh}( \bW_a \bs_{i-1} + \bU_a \bh_j) \end{aligned}$  \\ \\
+    \cite{luong2015effective} & $ \begin{aligned} score( \bh_t, \bar{\bh}_s) &= \left \{ \begin{aligned} &\bh^{\intercal}_t \bar{\bh}_s   &&dot \\  &\bh^{\intercal}_t  \bW_a \bar{\bh}_s  &&general \\  &\bv^{\intercal}_a \text{tanh} ( \bW_a[ \bh_t ; \bar{\bh}_s ])  &&concat  \end{aligned}  \right.  \\  \ba_t &= \text{softmax}( \bW_a \bh_t) \quad \quad \quad location \end{aligned} $  \\ \\
     \cite{cheng2016long} & $\begin{aligned} \ba^{t}_{i} &= \bv^{\intercal} \text{tanh}( \bW_h \bh_i + \bW_x \bx_t + \bW_{\tilde{\bh}} \tilde{\bh}_{t-1} ) \\ \bs^t_i &= \text{softmax}( \ba^t_i)  \end{aligned}$ \\  \\
     \cite{yang2016hierarchical} & $\begin{aligned} \bu_{it} &= \text{tanh}( \bW_w \bh_{it} + \bb_w ) \\ \alpha_{it} &= \frac{\text{exp}(\bu_{it}^{\intercal} \bu_w)}{ \sum_t \text{exp}( \bu_{it}^{\intercal} \bu_w ) } \\ \bs_i &= \sum_t \alpha_{it} h_{it} \end{aligned}$ \\ \\
-    \cite{wang2016attention} & $\begin{aligned} \bM &= \text{tanh} \left( \begin{bmatrix} \bW_h \bH \\ \bW_v \bv_a \otimes e_N \end{bmatrix} \right) \\  \alpha &= \text{softmax}( \bw^{\intercal} \bM )  \\ \br &= \bH \alpha^{\intercal}  \end{aligned}$  \\ \\
+    \cite{wang2016attention} & $\begin{aligned} \bM &= \text{tanh} \left( \begin{bmatrix} \bW_h \bH \\ \bW_v \bv_a \otimes e_N \end{bmatrix} \right) \\  \boldsymbol{\alpha} &= \text{softmax}( \bw^{\intercal} \bM )  \\ \br &= \bH \alpha^{\intercal}  \end{aligned}$  \\ \\
     \cite{lin2017structured} & $\begin{aligned} \bA &= \text{sigmoid}( \bW_{s2} \text{tanh}( \bW_{s1} \bH^{\intercal}) )   \end{aligned}$  \\ \\
     \cite{ma2017dipole} & $\begin{aligned} \alpha_{ti} &=  \bv^{\intercal}_{\alpha}  \text{tanh}( \bW_a [ \bh_t;\bh_i]) \\ \tilde{\bh_t} &= \text{tanh}( \bW_c [\bc_t;\bh_t]) \\ \tilde{\by_t}  &= \text{softmax}( \bW_s \tilde{\bh_t} +\bb_s) \end{aligned}$  \\ \\
-    \cite{hu2018novel} & $\begin{aligned} \bM_t &= \text{tanh}( \bW_h \bh_t) \\ \boldsymbol{\alpha}_r &= \text{softmax}( \bw^{\intercal} \bM_t) \\ r &= \sum^T_{t=1} \alpha_t \bh_t  \end{aligned}$  \\ \\
+    \cite{hu2018novel} & $\begin{aligned} \bM_t &= \text{tanh}( \bW_h \bh_t) \\ \boldsymbol{\alpha}_r &= \text{softmax}( \bw^{\intercal} \bM_t) \\ r &= \sum_{t} \alpha_t \bh_t  \end{aligned}$  \\ \\
     \cite{cui2019hierarchical} & $\begin{aligned} \bC^t_h &=  [ \bh^{t-W_h+1}, \cdots, \bh^t] \\ \be_h &= r^{\intercal}_h \text{tanh}( \bQ_h( \bC^t_h )^{\intercal} ) \\ \ba_h &= \text{softmax}(\be_h) \\ \bx^t_c &= ( \ba_h \bC^t_h)^{\intercal} \end{aligned}$ \\ \\
     % \cite{brown2018recurrent} & $\begin{aligned} K &= tanh( V W^a) \\ d &=  softmax( q K^T) \\ a &= d V \\ P(t)&=softmax([ h_{t-1} a_{t-1} W + b ])   \end{aligned}$ \\ \\
     % \cite{zhang2020motor} & $\begin{aligned} H_i &= tanh(W_i h^{'}_i + b_i), \quad H_i \in \mathbb{R}^{ha} \\ V_i &= \frac{exp(H^T_i V_i)}{\sum_i exp(H^T_i V_i)} \\ A &= \sum_i Vi h^{'}_i , \quad A \in \mathbb{R}^{l} \\ P &= softmax(WA+b)  \end{aligned}$  \\ \\
