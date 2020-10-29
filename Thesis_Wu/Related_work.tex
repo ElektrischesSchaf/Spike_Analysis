@@ -273,6 +273,46 @@ Then \cite{vaswani2017attention} adapted similar idea but discarded the RNN arch
     \label{tab:atten_dev}
 \end{longtable}
 
+
+\begin{longtable}{cc}
+    \caption{ Attention vectors for RNNs } \\
+    \hline
+    \textbf{Article} & \textbf{ \quad Equations for attention vectors \quad } \\
+    \hline
+    \endhead
+    \\
+    \cite{bahdanau2014neural} & $\begin{aligned} \text{softmax}( \ba( \bs_{i-1}, \bh_j) ) &= \bv_a^{\intercal} \text{tanh}( \bW_a \bs_{i-1} + \bU_a \bh_j) \end{aligned}$  \\ \\
+    \cite{luong2015effective} & $ \begin{aligned} score( \bh_t, \bar{\bh}_s) &= \left \{ \begin{aligned} &\bh^{\intercal}_t \bar{\bh}_s   &&dot \\  &\bh^{\intercal}_t  \bW_a \bar{\bh}_s  &&general \\  &\bv^{\intercal}_a \text{tanh} ( \bW_a[ \bh_t ; \bar{\bh}_s ])  &&concat  \end{aligned}  \right.  \\  \ba_t &= \text{softmax}( \bW_a \bh_t) \quad \quad \quad location \end{aligned} $  \\ \\
+    \cite{cheng2016long} & $\begin{aligned} \ba^{t}_{i} &= \bv^{\intercal} \text{tanh}( \bW_h \bh_i + \bW_x \bx_t + \bW_{\tilde{\bh}} \tilde{\bh}_{t-1} ) \\ \bs^t_i &= \text{softmax}( \ba^t_i)  \end{aligned}$ \\  \\
+    \cite{yang2016hierarchical} & $\begin{aligned} \bu_{it} &= \text{tanh}( \bW_w \bh_{it} + \bb_w ) \\ \alpha_{it} &= \frac{\text{exp}(\bu_{it}^{\intercal} \bu_w)}{ \sum_t \text{exp}( \bu_{it}^{\intercal} \bu_w ) } \\ \bs_i &= \sum_t \alpha_{it} \bh_{it} \end{aligned}$ \\ \\
+    \cite{wang2016attention} & $\begin{aligned} \bM &= \text{tanh} \left( \begin{bmatrix} \bW_h \bH \\ \bW_v \bv_a \otimes e_N \end{bmatrix} \right) \\  \boldsymbol{\alpha} &= \text{softmax}( \bw^{\intercal} \bM )  \\ \br &= \bH \alpha^{\intercal}  \end{aligned}$  \\ \\
+    \cite{lin2017structured} & $\begin{aligned} \bA &= \text{softmax}( \bW_{s2} \text{tanh}( \bW_{s1} \bH^{\intercal}) )   \end{aligned}$  \\ \\
+    \cite{ma2017dipole} & $\begin{aligned} \alpha_{ti} &=  \bv^{\intercal}_{\alpha}  \text{tanh}( \bW_a [ \bh_t;\bh_i]) \\ \tilde{\bh_t} &= \text{tanh}( \bW_c [\bc_t;\bh_t]) \\ \tilde{\by_t}  &= \text{softmax}( \bW_s \tilde{\bh_t} +\bb_s) \end{aligned}$  \\ \\
+    \cite{hu2018novel} & $\begin{aligned} \bM_t &= \text{tanh}( \bW_h \bh_t) \\ \alpha_r &= \text{softmax}( \bw^{\intercal} \bM_t) \\ \br &= \sum_{t=1}^{T} \alpha_t \bh_t  \end{aligned}$  \\ \\
+    \cite{cui2019hierarchical} & $\begin{aligned} \bC^t_h &=  [ \bh^{t-W_h+1}, \cdots, \bh^t] \\ \be_h &= r^{\intercal}_h \text{tanh}( \bQ_h( \bC^t_h )^{\intercal} ) \\ \ba_h &= \text{softmax}(\be_h) \\ \bx^t_c &= ( \ba_h \bC^t_h)^{\intercal} \end{aligned}$ \\ \\
+    % \cite{brown2018recurrent} & $\begin{aligned} K &= tanh( V W^a) \\ d &=  softmax( q K^T) \\ a &= d V \\ P(t)&=softmax([ h_{t-1} a_{t-1} W + b ])   \end{aligned}$ \\ \\
+    % \cite{zhang2020motor} & $\begin{aligned} H_i &= tanh(W_i h^{'}_i + b_i), \quad H_i \in \mathbb{R}^{ha} \\ V_i &= \frac{exp(H^T_i V_i)}{\sum_i exp(H^T_i V_i)} \\ A &= \sum_i Vi h^{'}_i , \quad A \in \mathbb{R}^{l} \\ P &= softmax(WA+b)  \end{aligned}$  \\ \\
+    % \cite{} & $\begin{aligned}  \end{aligned}$  \\ \\
+    \hline
+    \label{tab:rnn_attention_equations_study}
+\end{longtable}
+
+
+\begin{longtable}{cc}
+    \caption{ Attention vectors for image processing models } \\
+    \hline
+    \textbf{Article} & \textbf{ \quad Equations for attention vectors \quad } \\
+    \hline
+    \endhead
+    \\
+    \cite{hu2018squeeze} & $\begin{aligned} \bs &= \text{sigmoid}( \bW_2( \text{relu}( \bW_1 \bz )))    \end{aligned}$  \\ \\
+    \cite{woo2018cbam} & $\begin{aligned} \bM_c(F) &= \text{sigmoid}( \bW_1( \bW_0( F^c_{avg} )) +  \bW_1( \bW_0(F^c_{max} ))) \end{aligned}$  \\ \\
+    % \cite{} & $\begin{aligned}  \end{aligned}$  \\ \\
+    \hline
+    \label{tab:image_attention_equations_study}
+\end{longtable}
+
+
 \begin{multicols}{2}
 Similar attention techniques can be seen in sentiment classification research \citep{wang2016attention}, 
 where they appended the attention mechanism right after the LSTM outputs and named it attention-based LSTM.
