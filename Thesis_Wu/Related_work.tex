@@ -228,7 +228,7 @@ the output from previous timestep will be the input of current timestep.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{rnn_encoder_decoder.png}
+        \includegraphics[width=0.6\textwidth]{rnn_encoder_decoder.png}
         \caption{RNN encoder-decoder}
         \label{fig:rnn_encoder_decoder}
     \end{center}
@@ -274,22 +274,22 @@ Then \cite{vaswani2017attention} adapted similar idea but discarded the RNN arch
 \end{longtable}
 
 
-\begin{longtable}{cc}
-    \caption{ Attention vectors for RNNs } \\
+\begin{longtable}{ccc}
+    \caption{Attention vectors for RNNs} \\
     \hline
-    \textbf{Article} & \textbf{ \quad Equations for attention vectors \quad } \\
+    \textbf{Article} & \textbf{Equations for attention vectors} & \textbf{Tasks} \\
     \hline
     \endhead
     \\
-    \cite{bahdanau2014neural} & $\begin{aligned} \text{softmax}( \ba( \bs_{i-1}, \bh_j) ) &= \bv_a^{\intercal} \text{tanh}( \bW_a \bs_{i-1} + \bU_a \bh_j) \end{aligned}$  \\ \\
-    \cite{luong2015effective} & $ \begin{aligned} score( \bh_t, \bar{\bh}_s) &= \left \{ \begin{aligned} &\bh^{\intercal}_t \bar{\bh}_s   &&\text{dot} \\  &\bh^{\intercal}_t  \bW_a \bar{\bh}_s  &&\text{general} \\  &\bv^{\intercal}_a \text{tanh} ( \bW_a[ \bh_t ; \bar{\bh}_s ])  &&\text{concat}  \end{aligned}  \right.  \\  \ba_t &= \text{softmax}( \bW_a \bh_t) \quad \quad \quad \text{location} \end{aligned} $  \\ \\
-    \cite{cheng2016long} & $\begin{aligned} \ba^{t}_{i} &= \bv^{\intercal} \text{tanh}( \bW_h \bh_i + \bW_x \bx_t + \bW_{\tilde{\bh}} \tilde{\bh}_{t-1} ) \\ \bs^t_i &= \text{softmax}( \ba^t_i) \\ \begin{bmatrix} \hat{\bh}_t  \\ \hat{\bc}_t \end{bmatrix} &= \sum^{t-1}_{i=1} s^t_i \cdot \begin{bmatrix} \bh_i \\ \bc_i \end{bmatrix}   \end{aligned}$ \\  \\
-    \cite{yang2016hierarchical} & $\begin{aligned} \bu_{it} &= \text{tanh}( \bW_w \bh_{it} + \bb_w ) \\ \alpha_{it} &= \frac{\text{exp}(\bu_{it}^{\intercal} \bu_w)}{ \sum_t \text{exp}( \bu_{it}^{\intercal} \bu_w ) } \\ \bs_i &= \sum_t \alpha_{it} \bh_{it} \end{aligned}$ \\ \\
-    \cite{wang2016attention} & $\begin{aligned} \bM &= \text{tanh} \left( \begin{bmatrix} \bW_h \bH \\ \bW_v \bv_a \otimes e_N \end{bmatrix} \right) \\  \boldsymbol{\alpha} &= \text{softmax}( \bw^{\intercal} \bM )  \\ \br &= \bH \alpha^{\intercal}  \end{aligned}$  \\ \\
-    \cite{lin2017structured} & $\begin{aligned} \bA &= \text{softmax}( \bW_{s2} \text{tanh}( \bW_{s1} \bH^{\intercal}) )   \end{aligned}$  \\ \\
-    \cite{ma2017dipole}  & $ \begin{aligned} \alpha_{ti} &= \left \{ \begin{aligned} &\bW^{\intercal}_{\alpha} \bh_i + \bb_{\alpha} &&\text{local-base} \\ &\bh^{\intercal}_{t} \bW_a \bh_i &&\text{general}  \\ &\bv^{\intercal}_{\alpha} \text{tanh}( \bW_a [ \bh_t;\bh_i ]) &&\text{concate-base}  \end{aligned}  \right.  \\ \boldsymbol{\alpha}_t &= \text{softmax}([ \alpha_{t1}, \alpha_{t2} , \cdots, \alpha_{t(t-1)} ]) \\ \bc_t &= \sum^{t-1}_{i=1} \alpha_{ti} \bh_i \\ \tilde{\bh}_t &= \text{tanh}(\bW_c [\bc_t;\bh_t]) \\ \tilde{\by}_t &= \text{softmax}(\bW_s \tilde{\bh}_t + \bb_s )  \end{aligned} $  \\ \\
-    \cite{hu2018novel} & $\begin{aligned} \bM_t &= \text{tanh}( \bW_h \bh_t) \\ \alpha_r &= \text{softmax}( \bw^{\intercal} \bM_t) \\ \br &= \sum_{t=1}^{T} \alpha_t \bh_t  \end{aligned}$  \\ \\
-    \cite{cui2019hierarchical} & $\begin{aligned} \bC^t_h &=  [ \bh^{t-W_h+1}, \cdots, \bh^t] \\ \be_h &= r^{\intercal}_h \text{tanh}( \bQ_h( \bC^t_h )^{\intercal} ) \\ \ba_h &= \text{softmax}(\be_h) \\ \bx^t_c &= ( \ba_h \bC^t_h)^{\intercal} \end{aligned}$ \\ \\
+    \cite{bahdanau2014neural} & $\begin{aligned} \text{softmax}( \ba( \bs_{i-1}, \bh_j) ) &= \bv_a^{\intercal} \text{tanh}( \bW_a \bs_{i-1} + \bU_a \bh_j) \end{aligned}$  & \makecell{Machine\\translation} \\ \\
+    \cite{luong2015effective} & $ \begin{aligned} score( \bh_t, \bar{\bh}_s) &= \left \{ \begin{aligned} &\bh^{\intercal}_t \bar{\bh}_s   &&\text{dot} \\  &\bh^{\intercal}_t  \bW_a \bar{\bh}_s  &&\text{general} \\  &\bv^{\intercal}_a \text{tanh} ( \bW_a[ \bh_t ; \bar{\bh}_s ])  &&\text{concat}  \end{aligned}  \right.  \\  \ba_t &= \text{softmax}( \bW_a \bh_t) \quad \quad \quad \text{location} \end{aligned} $ & \makecell{Machine\\translation} \\ \\
+    \cite{cheng2016long} & $\begin{aligned} \ba^{t}_{i} &= \bv^{\intercal} \text{tanh}( \bW_h \bh_i + \bW_x \bx_t + \bW_{\tilde{\bh}} \tilde{\bh}_{t-1} ) \\ \bs^t_i &= \text{softmax}( \ba^t_i) \\ \begin{bmatrix} \hat{\bh}_t  \\ \hat{\bc}_t \end{bmatrix} &= \sum^{t-1}_{i=1} s^t_i \cdot \begin{bmatrix} \bh_i \\ \bc_i \end{bmatrix}   \end{aligned}$ & \makecell{Language modeling,\\Sentiment analysis} \\  \\
+    \cite{yang2016hierarchical} & $\begin{aligned} \bu_{it} &= \text{tanh}( \bW_w \bh_{it} + \bb_w ) \\ \alpha_{it} &= \frac{\text{exp}(\bu_{it}^{\intercal} \bu_w)}{ \sum_t \text{exp}( \bu_{it}^{\intercal} \bu_w ) } \\ \bs_i &= \sum_t \alpha_{it} \bh_{it} \end{aligned}$ & \makecell{Text\\classification} \\ \\
+    \cite{wang2016attention} & $\begin{aligned} \bM &= \text{tanh} \left( \begin{bmatrix} \bW_h \bH \\ \bW_v \bv_a \otimes e_N \end{bmatrix} \right) \\  \boldsymbol{\alpha} &= \text{softmax}( \bw^{\intercal} \bM )  \\ \br &= \bH \alpha^{\intercal}  \end{aligned}$ & \makecell{Sentiment\\classification} \\ \\
+    \cite{lin2017structured} & $\begin{aligned} \bA &= \text{softmax}( \bW_{s2} \text{tanh}( \bW_{s1} \bH^{\intercal}) )   \end{aligned}$ & \makecell{Setiment\\analysis}  \\ \\
+    \cite{ma2017dipole}  & $ \begin{aligned} \alpha_{ti} &= \left \{ \begin{aligned} &\bW^{\intercal}_{\alpha} \bh_i + \bb_{\alpha} &&\text{local-base} \\ &\bh^{\intercal}_{t} \bW_a \bh_i &&\text{general}  \\ &\bv^{\intercal}_{\alpha} \text{tanh}( \bW_a [ \bh_t;\bh_i ]) &&\text{concate-base}  \end{aligned}  \right.  \\ \boldsymbol{\alpha}_t &= \text{softmax}([ \alpha_{t1}, \alpha_{t2} , \cdots, \alpha_{t(t-1)} ]) \\ \bc_t &= \sum^{t-1}_{i=1} \alpha_{ti} \bh_i \\ \tilde{\bh}_t &= \text{tanh}(\bW_c [\bc_t;\bh_t]) \\ \tilde{\by}_t &= \text{softmax}(\bW_s \tilde{\bh}_t + \bb_s )  \end{aligned} $ & \makecell{Diagnoises\\prediction} \\ \\
+    \cite{hu2018novel} & $\begin{aligned} \bM_t &= \text{tanh}( \bW_h \bh_t) \\ \alpha_r &= \text{softmax}( \bw^{\intercal} \bM_t) \\ \br &= \sum_{t=1}^{T} \alpha_t \bh_t  \end{aligned} $ & \makecell{sEMG-based\\gesture recognition} \\ \\
+    \cite{cui2019hierarchical} & $\begin{aligned} \bC^t_h &=  [ \bh^{t-W_h+1}, \cdots, \bh^t] \\ \be_h &= r^{\intercal}_h \text{tanh}( \bQ_h( \bC^t_h )^{\intercal} ) \\ \ba_h &= \text{softmax}(\be_h) \\ \bx^t_c &= ( \ba_h \bC^t_h)^{\intercal} \end{aligned}$  & \makecell{Sequential\\recommendation} \\ \\
     % \cite{brown2018recurrent} & $\begin{aligned} K &= tanh( V W^a) \\ d &=  softmax( q K^T) \\ a &= d V \\ P(t)&=softmax([ h_{t-1} a_{t-1} W + b ])   \end{aligned}$ \\ \\
     % \cite{zhang2020motor} & $\begin{aligned} H_i &= tanh(W_i h^{'}_i + b_i), \quad H_i \in \mathbb{R}^{ha} \\ V_i &= \frac{exp(H^T_i V_i)}{\sum_i exp(H^T_i V_i)} \\ A &= \sum_i Vi h^{'}_i , \quad A \in \mathbb{R}^{l} \\ P &= softmax(WA+b)  \end{aligned}$  \\ \\
     % \cite{} & $\begin{aligned}  \end{aligned}$  \\ \\
@@ -320,9 +320,14 @@ They also visualized the aspect in each sentence, e.g., the term "service" or "f
 They can tell the important words from the whole sentence.
 
 Several different means of attention mechanism were also implemented in BCI field.
-\todo[inline]{目前找到唯一在 BCI 使用 attention 的論文}
 \cite{zhang2020motor} used both CNN and RNN to extract the spatio and temporal dynamics in EEG signal processing,
 and its mechanism named \textit{Convolutional Recurrent Attention Model}.
-The self-attention module was placed in the last layer, after the raw signal was first processed by CNN and then RNN.
+The self-attention module was placed in the last layer right before the classification layer, after the raw signal was first processed by CNN and then RNN.
 The proposed method, convolutional recurrent attention model outperformed other state-of-the-art methods in EEG classification tasks.
+\cite{hu2018novel} also constructed the hybrid CNN-RNN architecture.
+They feed the sEMG signal into CNN layer first, then the RNN layer. 
+Immediately followed by the the attention module, then after fully connected layers, is the final classification to show which geture the subject was executing.
+
 \end{multicols}
+
+
