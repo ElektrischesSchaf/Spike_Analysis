@@ -2,6 +2,9 @@
 \begin{multicols}{2}
 \todo[inline]{侵入式腦機介面的發展，傳統侵入式腦機介面用哪些方法?}
 Table~\ref{tab:traditional_invasive} listed traditional machine learning decoders in invasive BCIs.
+Kalman filter was dominant is this field before artificial neural networks.
+Most of the experiment conduced in the traditional BCI reseaches are either performed the center-out reaching tasker or the computer cursor manipulation with manipulandum.
+The decoders usually predicted only one or two kinematic variables, only a few of them are willing to predict and evaluat three variances: position, velocity and acceleration.
 
 \end{multicols}
 
@@ -18,7 +21,8 @@ Table~\ref{tab:traditional_invasive} listed traditional machine learning decoder
     \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors} & \makecell{Position,\\velocity}  \\ \\
     \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } & \makecell{Position,\\velocity} \\ \\
     \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} & \makecell{Position,\\velocity} \\ \\
-    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} & Velocity \\
+    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} & Velocity \\ 
+    \hline
     \label{tab:traditional_invasive}
 \end{longtable}
 
@@ -80,7 +84,8 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 \label{sec:development_of_deep_learning_in_invasive_BCI}
 \begin{multicols}{2}
 \todo[inline]{使用深度學習於侵入式腦機介面的發展}
-Table~\ref{tab:deep_leaning_in_invasive_BCI} listed decoders involved deep leaning in invasive BCIs.
+Table~\ref{tab:deep_leaning_in_invasive_BCI} showes decoders involved deep leaning in invasive BCIs.
+LSTM prevails in many state-of-the-art BCI decoders, and experiments of complex movements such as point-to-point fingertip trajetories or free moving have been conducted and decoded.
 \end{multicols}
 
 \begin{longtable}{ccccc}
@@ -163,6 +168,7 @@ Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and th
  
 
 \section{Unsolved problems and drawbacks in preceding deep learning invasive BCI researches}
+\label{sec:unsolved_problems_in_deep_learning_bci}
 \begin{multicols}{2}
 \todo[inline]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
 Deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
@@ -217,7 +223,6 @@ then feed them input the self-attention mechanism.
 \begin{multicols}{2}
 \todo[inline]{Attention module的發展，哪些腦機介面論文使用Attention module?}
 
-\todo[inline]{Temporal attetion 的演進從 seq2seq model 開始，將輸入與輸出的語句找到對應的關係，再進展的 self-attention 只考慮同一個輸入語句內詞彙間的彼此關係。 }
 \cite{sutskever2014sequence} is the first research which implemented the encoder-decoder machanism (or called sequence to sequence, seq2seq) to machine translation realm.
 This structure has gained popularity also in sentiment analysis ever since.
 The structure of encoder-decoder RNN illustrated in Figure~\ref{fig:rnn_encoder_decoder}, 
@@ -273,6 +278,21 @@ Then \cite{vaswani2017attention} adapted similar idea but discarded the RNN arch
     \label{tab:atten_dev}
 \end{longtable}
 
+\begin{multicols}{2}
+
+Table~\ref{tab:rnn_attention_equations_study} listed the mathematicle equations of the different kinds attention modules for RNNs.
+It showes how the sequential attention evolved from sequence to sequence models \citep{bahdanau2014neural, luong2015effective}
+into the ones for classification and sentiment analysis, by calculating the correlation from every two hidden states in the same sequence  \citep{cheng2016long, yang2016hierarchical}.
+However, this procedure costs considerably amount of computational time, thus a simplified version known as local attention as introduced \citep{luong2015effective}.
+Followed by the works of \cite{wang2016attention, lin2017structured, ma2017dipole, hu2018novel,cui2019hierarchical}, 
+which all implemented the similar local attention techniques.
+
+Unlike the attention methods used in image processing as Table~\ref{tab:image_attention_equations_study} showes, 
+attention in RNNs typically use hyperbolic tangent and softmax as activations, 
+and the dimension to be annotated remains constant during the calcuation, 
+wheras \cite{hu2018squeeze, woo2018cbam} used relu and sigmoid instead, also reduce and then expand the dimension which the attention annotates.
+
+\end{multicols}
 
 \begin{longtable}{ccc}
     \caption{Attention vectors for RNNs} \\
