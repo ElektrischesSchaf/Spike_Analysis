@@ -70,8 +70,13 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \label{sec:qualitative_analysis}
 \begin{multicols}{2}
 \todo[inline]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
+\todo[inline]{ bidirectional GRU + L.N. + attention  結果，分別畫出位置、速度、加速度對時間的預測圖。位置的解碼結果可以畫出 2D 平面軌跡圖。 }
+This section we show the result of our predicted variables. 
+Each figure represents a session, and here we selected 5 sessions for one type of variable.
+Since our models were designed to decode both x and y axis of a variable at the same time, 
+it is convenient to plot the predictions of the two axes in the same figure, 
+also easiler for us to compare their results.
 
-\todo[inline]{ 同時做 temporal 與 unit attention 的 Model decoding 結果，分別畫出位置、速度、加速度對時間的預測圖。位置的解碼結果可以畫出 2D 平面軌跡圖。 }
 \end{multicols}
 
 \newpage
@@ -127,6 +132,11 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \section{Visualization of attention process}
 \begin{multicols}{2}
 \todo[inline]{放入attention map}
+We have implemented the attention mechanism to both one-way and bidirectional GRUs.
+To maximize the information we can get form the attention map visualization,
+we 
+Figure~\ref{fig:position_decoder_with_attention}, \ref{fig:velocity_decoder_with_attention} and \ref{fig:acceleration_decoder_with_attention} are the attention map for position, velocity and acceleration, respectively.
+
 \end{multicols}
 
 \begin{figure}[H]
@@ -140,7 +150,7 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
             \caption{bidirectional GRU}
         \end{subfigure}
         \caption{Position decoder with attention}
-        \label{fig:elman_and_jordan}
+        \label{fig:position_decoder_with_attention}
     \end{center}
 \end{figure}
 
@@ -155,7 +165,7 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
             \caption{bidirectional GRU}
         \end{subfigure}
         \caption{Velocity decoder with attention}
-        \label{fig:elman_and_jordan}
+        \label{fig:velocity_decoder_with_attention}
     \end{center}
 \end{figure}
 
@@ -170,7 +180,7 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
             \caption{bidirectional GRU}
         \end{subfigure}
         \caption{Acceleration decoder with attention}
-        \label{fig:elman_and_jordan}
+        \label{fig:acceleration_decoder_with_attention}
     \end{center}
 \end{figure}
 
