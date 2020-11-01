@@ -75,9 +75,9 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \end{multicols}
 
 \newpage
-\todo{ 位置、速度、加速度 各一頁 }
+\todo[inline]{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
-    \foreach \i in {2,3,4,5,6}
+    \foreach \i in {1,2,3,4,5}
     {
         \begin{subfigure}{1\textwidth}
             \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
@@ -88,9 +88,9 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \end{figure}
 
 \newpage
-\todo{ 位置、速度、加速度 各一頁 }
+\todo[inline]{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
-    \foreach \i in {7,8,9,10,11}
+    \foreach \i in {6,7,8,9,10}
     {
         \begin{subfigure}{1\textwidth}
             \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
@@ -101,9 +101,9 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \end{figure}
 
 \newpage
-\todo{ 位置、速度、加速度 各一頁 }
+\todo[inline]{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
-    \foreach \i in {12,13,14,15,16}
+    \foreach \i in {11,12,13,14,15}
     {
         \begin{subfigure}{1\textwidth}
             \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
@@ -131,31 +131,50 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[height=0.4\textheight]{oneway_pos_atten.png}
-        \captionsetup{width=0.5\textwidth}
-
-        \caption{Attention map for oneway GRU in decoding position}
-        \label{fig:oneway_pos_atten}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{oneway_pos_atten.png}
+            \caption{one-way GRU}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{bidir_pos_atten.png}
+            \caption{bidirectional GRU}
+        \end{subfigure}
+        \caption{Position decoder with attention}
+        \label{fig:elman_and_jordan}
     \end{center}
 \end{figure}
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[height=0.4\textheight]{oneway_vel_atten.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Attention map for oneway GRU in decoding velocity}
-        \label{fig:oneway_vel_atten}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{oneway_vel_atten.png}
+            \caption{one-way GRU}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{bidir_vel_atten.png}
+            \caption{bidirectional GRU}
+        \end{subfigure}
+        \caption{Velocity decoder with attention}
+        \label{fig:elman_and_jordan}
     \end{center}
 \end{figure}
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[height=0.4\textheight]{oneway_acc_atten.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Attention map for oneway GRU in decoding acceleration}
-        \label{fig:oneway_acc_atten}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{oneway_acc_atten.png}
+            \caption{one-way GRU}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{bidir_acc_atten.png}
+            \caption{bidirectional GRU}
+        \end{subfigure}
+        \caption{Acceleration decoder with attention}
+        \label{fig:elman_and_jordan}
     \end{center}
 \end{figure}
+
+
 
 
 \section{Internal dynamics of network}
