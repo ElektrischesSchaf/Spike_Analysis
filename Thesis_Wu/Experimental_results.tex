@@ -195,6 +195,13 @@ Figure~\ref{fig:position_decoder_with_attention}, \ref{fig:velocity_decoder_with
 \section{Failure case study}
 \begin{multicols}{2}
 \todo[inline]{放入失敗的例子}
+There are some sessions does not benefit from our attention mechanism.
+Their prediction $R^2$ decreased when comparing to the result from the decoders without implementing attention.
+Take session \textbf{indy\_20161027\_03} for example,
+the $R^2$ in position decoding from the bidirectional LN-GRU is $0.64$, $0.66$ in x-axis and y-axis.
+But the result from the same decoder with attention, the $R^2$ becomes $0.38$ and $0.69$, 
+with a significant drop in x-axis position prediction.
+
 
 \end{multicols}
 

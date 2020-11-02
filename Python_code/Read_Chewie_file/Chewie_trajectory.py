@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.io import loadmat
 import matplotlib.ticker as ticker
-my_fontsize=20
+my_fontsize= 40
 def histc( X, bins):
     map_to_bins = np.digitize(X,bins)
     r = np.zeros(bins.shape)
@@ -88,7 +88,7 @@ for session_k in range(len(session_file_list)):
         fig=plt.figure(figsize = (9, 17))
     target_grid_width=2
 
-    plt.title('Session: '+session_name, fontsize=my_fontsize)
+    plt.title( session_name, fontsize=my_fontsize)
     plt.scatter( targets_corner[:,1], targets_corner[:,2], color='blue' , s=20)
     plt.scatter( targets_corner[:,3], targets_corner[:,4], color='green', s=20)
     for index in range(len(targets_corner[:,1])):
@@ -109,10 +109,10 @@ for session_k in range(len(session_file_list)):
     plt.scatter( down_sampling_pos[:,0], down_sampling_pos[:,1], color='black' , s=5)
     plt.xlim([-10, 15])
     plt.ylim([-46, 11])
-    plt.xlabel('mm', fontsize=my_fontsize)
-    plt.xticks(fontsize=my_fontsize*0.5)
-    plt.ylabel('mm', fontsize=my_fontsize)
-    plt.yticks(fontsize=my_fontsize*0.5)
+    plt.xlabel('cm', fontsize=my_fontsize)
+    plt.xticks(fontsize=my_fontsize*0.8)
+    plt.ylabel('cm', fontsize=my_fontsize)
+    plt.yticks(fontsize=my_fontsize*0.8)
     plt.tight_layout()
     # plt.show()
     plt.savefig('xy_plane_tragectory_session_'+session_name+'.png')
