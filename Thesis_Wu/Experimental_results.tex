@@ -199,22 +199,23 @@ There are some sessions does not benefit from our attention mechanism.
 Their prediction $R^2$ decreased when comparing to the result from the decoders without implementing attention.
 Take session \textbf{indy\_20161027\_03} for example,
 the $R^2$ in position decoding from the bidirectional LN-GRU is $0.64$, $0.66$ in x-axis and y-axis.
-But the result from the same decoder with attention, the $R^2$ becomes $0.38$ and $0.69$, 
+But the result from the same decoder with attention, the $R^2$ becomes $0.44$ and $0.58$, 
 with a significant drop in x-axis position prediction.
 Figure~\ref{fig:indy_20161027_03_position_x_fauilure_case_comparison} compares the position decoding results along x-axis.
 Both decoders tend to fail when the movement of the fingertip stopped.
-However in this session, decoder with attention gives more deviation to the predicted trajectory
+However in this session, decoder with attention gives more deviation to the predicted trajectory than the decoder without attention.
+
 
 \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{1\textwidth}
-            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/x_pos_vs_time_from_1362_to_1378.png}
+            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/x_pos_vs_time_from_1368_to_1381.png}
             \caption{}
         \end{subfigure}
         \begin{subfigure}{1\textwidth}
-            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/x_pos_vs_time_from_1474_to_1490.png}
+            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/x_pos_vs_time_from_1509_to_1522.png}
             \caption{}
         \end{subfigure}
         \caption{x position prediction in session indy\_20161027\_03}
@@ -222,16 +223,17 @@ However in this session, decoder with attention gives more deviation to the pred
     \end{center}
 \end{figure}
 
-Figure~\ref{fig:indy_20161027_03_position_y_fauilure_case_comparison} shows that 
+Figure~\ref{fig:indy_20161027_03_position_y_fauilure_case_comparison} shows that the predicted trajectory in y-axis is smoother than the one without attention.
+
 
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{1\textwidth}
-            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/y_pos_vs_time_from_1362_to_1378.png}
+            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/y_pos_vs_time_from_1368_to_1381.png}
             \caption{}
         \end{subfigure}
         \begin{subfigure}{1\textwidth}
-            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/y_pos_vs_time_from_1474_to_1490.png}
+            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/y_pos_vs_time_from_1509_to_1522.png}
             \caption{}
         \end{subfigure}
         \caption{y position prediction in session indy\_20161027\_03}

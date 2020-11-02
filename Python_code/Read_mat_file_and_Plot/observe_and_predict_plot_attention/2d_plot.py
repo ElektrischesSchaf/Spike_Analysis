@@ -86,7 +86,7 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
 
 
 start_time_bin = 0
-duration = 250
+duration = 200
 end_time_bin = start_time_bin+duration
 
 
