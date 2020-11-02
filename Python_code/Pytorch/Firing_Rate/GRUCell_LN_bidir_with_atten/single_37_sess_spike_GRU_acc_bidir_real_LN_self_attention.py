@@ -625,8 +625,8 @@ for session_k in range(len(session_file_list)):
     time_bin_index = 0
     # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
 
-    while time_bin_index < (testing_data_length -plottin_duration_time_bin*2 ):
-        Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms, type_name='acc', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
+    while time_bin_index < (testing_data_length -plottin_duration_time_bin*1.5 ):
+        Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='acc', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
         time_bin_index = time_bin_index + plottin_duration_time_bin
 
 # session control end
