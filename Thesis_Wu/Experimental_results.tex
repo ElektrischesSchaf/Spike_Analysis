@@ -201,9 +201,45 @@ Take session \textbf{indy\_20161027\_03} for example,
 the $R^2$ in position decoding from the bidirectional LN-GRU is $0.64$, $0.66$ in x-axis and y-axis.
 But the result from the same decoder with attention, the $R^2$ becomes $0.38$ and $0.69$, 
 with a significant drop in x-axis position prediction.
-
+Figure~\ref{fig:indy_20161027_03_position_x_fauilure_case_comparison} compares the position decoding results along x-axis.
+Both decoders tend to fail when the movement of the fingertip stopped.
+However in this session, decoder with attention gives more deviation to the predicted trajectory
 
 \end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/x_pos_vs_time_from_1381_to_1397.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/x_pos_vs_time_from_1541_to_1557.png}
+            \caption{}
+        \end{subfigure}
+        \caption{x position prediction in session indy\_20161027\_03}
+        \label{fig:indy_20161027_03_position_x_fauilure_case_comparison}
+    \end{center}
+\end{figure}
+
+Figure~\ref{fig:indy_20161027_03_position_y_fauilure_case_comparison} shows that 
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/y_pos_vs_time_from_1381_to_1397.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/y_pos_vs_time_from_1541_to_1557.png}
+            \caption{}
+        \end{subfigure}
+        \caption{y position prediction in session indy\_20161027\_03}
+        \label{fig:indy_20161027_03_position_y_fauilure_case_comparison}
+    \end{center}
+\end{figure}
+
+
 
 
 \section{Decodeing results from dataset Chewie}

@@ -41,7 +41,7 @@ prediction_y_no_attention = np.array(prediction_y_no_attention)
 
 
 
-start_time_bin = 50
+start_time_bin = 0
 duration = 50
 end_time_bin = start_time_bin+duration
 
@@ -51,7 +51,7 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     plt.figure(figsize=(12, 12))
     plt.plot(x_ground_truth[start_time_bin:end_time_bin], y_ground_truth[start_time_bin:end_time_bin], color='black', linestyle='dashed', linewidth=5 , label='Actual')
     plt.plot(prediction_x_attention[start_time_bin:end_time_bin], prediction_y_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
-    plt.plot(prediction_x_no_attention[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='no attention')
+    plt.plot(prediction_x_no_attention[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
 
     plt.scatter(x_ground_truth[start_time_bin], y_ground_truth[start_time_bin], color='black', marker='o', s=300)
     plt.scatter(prediction_x_attention[start_time_bin], prediction_y_attention[start_time_bin], color='blue' , marker='o', s=300)
@@ -64,8 +64,8 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     # plot.title('X-Y plane', fontsize=my_fontsize, color='black')
     plt.xlabel('mm', fontsize=my_fontsize, color='black')
     plt.ylabel('mm', fontsize=my_fontsize, color='black')
-    plt.xticks(fontsize=my_fontsize*0.8)
-    plt.yticks(fontsize=my_fontsize*0.8)
+    plt.xticks(fontsize=my_fontsize*0.5)
+    plt.yticks(fontsize=my_fontsize*0.5)
     plt.legend(fontsize=my_fontsize*0.3, loc='upper right')
     plt.tight_layout()
 
@@ -85,7 +85,7 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
 
 
 
-start_time_bin = 50
+start_time_bin = 0
 duration = 250
 end_time_bin = start_time_bin+duration
 
@@ -97,16 +97,16 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], y_ground_truth[start_time_bin:end_time_bin], color='black', linewidth=5 , label='Actual y pos')  
     plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
     # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention y pos')
-    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='no attention')
-    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='no attention y pos')
+    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
+    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention y pos')
 
     plt.xlim([plotting_time_elapsed[start_time_bin], plotting_time_elapsed[end_time_bin] ])
 
-    plt.title('x-axis', fontsize=my_fontsize, color='black')
-    plt.xlabel('Time (second)', fontsize=my_fontsize*0.8, color='black')
-    plt.ylabel('Position (mm)', fontsize=my_fontsize*0.8, color='black')
-    plt.xticks(fontsize=my_fontsize*0.8, color='black')
-    plt.yticks(fontsize=my_fontsize*0.8, color='black')
+    plt.title('x-axis', fontsize=my_fontsize*0.7, color='black')
+    plt.xlabel('Time (second)', fontsize=my_fontsize*0.5, color='black')
+    plt.ylabel('Position (mm)', fontsize=my_fontsize*0.5, color='black')
+    plt.xticks(fontsize=my_fontsize*0.5, color='black')
+    plt.yticks(fontsize=my_fontsize*0.5, color='black')
     plt.legend(fontsize=my_fontsize*0.3, loc='upper right')
     plt.tight_layout()
 
@@ -122,16 +122,16 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], y_ground_truth[start_time_bin:end_time_bin], color='black',linestyle='--', linewidth=5 , label='Actual')  
     # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention x pos')
     plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
-    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='no attention x pos')
-    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='no attention')
+    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention x pos')
+    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
 
     plt.xlim([plotting_time_elapsed[start_time_bin], plotting_time_elapsed[end_time_bin] ])
 
-    plt.title('y-axis', fontsize=my_fontsize, color='black')
-    plt.xlabel('Time (second)', fontsize=my_fontsize*0.8, color='black')
-    plt.ylabel('Position (mm)', fontsize=my_fontsize*0.8, color='black')
-    plt.xticks(fontsize=my_fontsize*0.8, color='black')
-    plt.yticks(fontsize=my_fontsize*0.8, color='black')
+    plt.title('y-axis', fontsize=my_fontsize*0.7, color='black')
+    plt.xlabel('Time (second)', fontsize=my_fontsize*0.5, color='black')
+    plt.ylabel('Position (mm)', fontsize=my_fontsize*0.5, color='black')
+    plt.xticks(fontsize=my_fontsize*0.5, color='black')
+    plt.yticks(fontsize=my_fontsize*0.5, color='black')
     plt.legend(fontsize=my_fontsize*0.3, loc='upper right')
     plt.tight_layout()
 
