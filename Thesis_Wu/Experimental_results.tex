@@ -224,6 +224,8 @@ However in this session, decoder with attention gives more deviation to the pred
 \end{figure}
 
 Figure~\ref{fig:indy_20161027_03_position_y_fauilure_case_comparison} shows that the predicted trajectory in y-axis is smoother than the one without attention.
+But in the intervals with the fingertip stayed stationary, as from $1513s$ to $1516s$,
+the deviation is larger the the trajectory predicted without attention.
 
 
 \begin{figure}[H]
@@ -241,7 +243,27 @@ Figure~\ref{fig:indy_20161027_03_position_y_fauilure_case_comparison} shows that
     \end{center}
 \end{figure}
 
+The corresponding attention map is showed in Figure~\ref{fig:indy_20161027_03_corresponding_attention_map},
+and we can tell that our decoder with attention failed when it has lose the focus a the time bins.
+In other words, our attention should able to distinguish if the fingertip of the subjects is moving or stationary.
+This not an easy task since neurons still fire when 
+\todo[inline]{Here}
 
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/indy_20161027_03/attention_map_600_to_800.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{1\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/indy_20161027_03/attention_map_2800_to_3000.png}
+            \caption{}
+        \end{subfigure}
+        \caption{Corresponding attention map in session indy\_20161027\_03}
+        \label{fig:indy_20161027_03_corresponding_attention_map}
+    \end{center}
+\end{figure}
 
 
 \section{Decodeing results from dataset Chewie}
@@ -249,15 +271,15 @@ Figure~\ref{fig:indy_20161027_03_position_y_fauilure_case_comparison} shows that
 \todo[inline]{ 猴子C的Decoding 結果單獨一個子章節顯示，並不列入與 Makin 的比較 }
 \end{multicols}
 
-\begin{comment}
-    \section{y-axis outperforms x-axis}
-    \begin{multicols}{2}
-    \todo[inline]{用 Mutual Information 解釋 y 方向解碼比 x 方向 解碼還要好的現象}
-    Where we used the tool from \cite{ince2017statistical} named  Gaussian-copula mutual information (GCMI) to analysis the reason why in three kinds of kinematic variables,
-    the prediction of y-axis always exceed x-axis.
-    The module of this tool is available on \url{https://github.com/robince/gcmi}.
-    \end{multicols}
-\end{comment}
+
+% \section{y-axis outperforms x-axis}
+% \begin{multicols}{2}
+% \todo[inline]{用 Mutual Information 解釋 y 方向解碼比 x 方向 解碼還要好的現象}
+% Where we used the tool from \cite{ince2017statistical} named  Gaussian-copula mutual information (GCMI) to analysis the reason why in three kinds of kinematic variables,
+% the prediction of y-axis always exceed x-axis.
+% The module of this tool is available on \url{https://github.com/robince/gcmi}.
+% \end{multicols}
+
 
 \section{Difficulty in position decoder}
 \begin{multicols}{2}
