@@ -37,6 +37,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
 
 % \begin{landscape}
 \section{Ablation study}
+\label{sec:ablation_study}
 \begin{table}[H]
     \centering
     \caption{Performances Weighted Average $R^2$}
@@ -55,7 +56,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
         \multicolumn{4}{c}{ \cite{makin2018} } & 0.46$\pm$0.28 & 0.70$\pm$0.09  & 0.58$\pm$0.15 & 0.74$\pm$0.06 & 0.29$\pm$0.15 & 0.40$\pm$0.09 \\
         \hline
     \end{tabular}
-    \label{tab:weighted_average_with_makin}
+    \label{tab:ablation_study}
 \end{table}
 % \end{landscape}
 
@@ -243,20 +244,24 @@ the deviation is larger the the trajectory predicted without attention.
     \end{center}
 \end{figure}
 
+\begin{multicols}{2}
 The corresponding attention map is showed in Figure~\ref{fig:indy_20161027_03_corresponding_attention_map},
 and we can tell that our decoder with attention failed when it has lose the focus a the time bins.
-In other words, our attention should able to distinguish if the fingertip of the subjects is moving or stationary.
-This not an easy task since neurons still fire when 
-\todo[inline]{Here}
+In other words, the attention scores are distributed rather evenly among all the past time bins,
+whereas in the samples of good prediction accuracy, 
+the attention scores are more concentrated on some specific past time bins.
+our attention should able to distinguish if the fingertip of the subjects is moving or stationary.
+This not an easy task since neurons still fire when the subjects hold their movement.
 
+\end{multicols}
 
 \begin{figure}[H]
     \begin{center}
-        \begin{subfigure}{1\textwidth}
+        \begin{subfigure}{0.49\textwidth}
             \includegraphics[width=1\textwidth]{../Failure_case_figures/indy_20161027_03/attention_map_600_to_800.png}
             \caption{}
         \end{subfigure}
-        \begin{subfigure}{1\textwidth}
+        \begin{subfigure}{0.49\textwidth}
             \includegraphics[width=1\textwidth]{../Failure_case_figures/indy_20161027_03/attention_map_2800_to_3000.png}
             \caption{}
         \end{subfigure}
