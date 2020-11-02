@@ -194,8 +194,11 @@ Figure~\ref{fig:position_decoder_with_attention}, \ref{fig:velocity_decoder_with
 \end{multicols}
 
 \section{Failure case study}
-\begin{multicols}{2}
 \todo[inline]{放入失敗的例子}
+
+\subsection{With or without attention in bidirectional GRU}
+
+\begin{multicols}{2}
 There are some sessions does not benefit from our attention mechanism.
 Their prediction $R^2$ decreased when comparing to the result from the decoders without implementing attention.
 Take session \textbf{indy\_20161027\_03} for example,
@@ -205,8 +208,6 @@ with a significant drop in x-axis position prediction.
 Figure~\ref{fig:indy_20161027_03_position_x_fauilure_case_comparison} compares the position decoding results along x-axis.
 Both decoders tend to fail when the movement of the fingertip stopped.
 However in this session, decoder with attention gives more deviation to the predicted trajectory than the decoder without attention.
-
-
 \end{multicols}
 
 \begin{figure}[H]
@@ -270,6 +271,7 @@ This not an easy task since neurons still fire when the subjects hold their move
     \end{center}
 \end{figure}
 
+\subsection{One-way or bidirectional GRU}
 
 \section{Decodeing results from dataset Chewie}
 \begin{multicols}{2}
