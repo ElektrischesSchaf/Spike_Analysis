@@ -69,9 +69,9 @@ def drawing( rEFH_dynamic_result, my_model_result, axis_type, kinematic_type ):
     if my_model_name == 'atten_LN_bidir':
         plt.ylabel('SNR(dB), Bidir GRU (+LN & Atten.)',fontsize=my_fontsize)
 
-    plt.xticks(fontsize=my_fontsize*0.7)
-    plt.yticks(fontsize=my_fontsize*0.7)
-    plt.legend(fontsize=my_fontsize*0.7, loc='lower right')
+    plt.xticks(fontsize=my_fontsize)
+    plt.yticks(fontsize=my_fontsize)
+    plt.legend(fontsize=my_fontsize, loc='lower right')
 
     model.fit( rEFH_dynamic_result.reshape(-1, 1).astype(np.float32), my_model_result.reshape(-1, 1).astype(np.float32) )
     predict = model.predict(rEFH_dynamic_result)
