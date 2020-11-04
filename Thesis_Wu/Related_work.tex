@@ -1,6 +1,7 @@
 \section{Development and traditional measures of invasive BCIs}
 \begin{multicols}{2}
 \todo[inline]{侵入式腦機介面的發展，傳統侵入式腦機介面用哪些方法?}
+\todo[inline]{這段需要補充Kalman filter的優缺點}
 Table~\ref{tab:traditional_invasive} listed traditional machine learning decoders in invasive BCIs.
 Kalman filter was dominant is this field before artificial neural networks.
 Most of the experiment conduced in the traditional BCI reseaches are either performed the center-out reaching tasker or the computer cursor manipulation with manipulandum.
@@ -30,6 +31,7 @@ The decoders usually predicted only one or two kinematic variables, only a few o
 \section{Restrictions of traditional invasive BCI}
 \begin{multicols}{2}
 \todo[inline]{傳統侵入式腦機介面有哪些限制?}
+\todo[inline]{這段看不出BCI有甚麼條件限制，或者使用上的限制，需要再補充}
 \cite{glaser2020machine} has analysed the performance of modern methods and traditional methods in BCI motor decoding.
 They take LSTM and ensemble models as the representative of modern methods, who a outperformed the traditional ones significantly such as Wiener filter, Wiener cascade and Kalman filter.
 Various neural datasets they have used to evaluate the models, some models such as naive bayers decoder, also a traditional method, can only perform well in the position prediction in the hippocampus dataset.
@@ -42,7 +44,7 @@ They endorsed and provided detailed experimental result about the fact that the 
 \section{Advantages of deep learning in BCI}
 \begin{multicols}{2}
 \todo[inline]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?} % hosman2019bci has emphasized the merit of RNN over KF
-
+\todo[inline]{這段需要補充說明deep learning改良neural decoding的原因}
 Deep learning models provided remarkable improvement to neural decoding \citep{hosman2019bci}.
 In the early study of BCIs, it was the linear Kalman filter decoders which has been widely applied to intracortical brain computer interfaces \citep{jarosiewicz2015virtual, pandarinath2017high,nuyujukian2018cortical}.
 With to the development of non-linear decoders and deep learning methods, more promising performances have been reached both in work in humans and non-human primates \citep{shanechi2017rapid, sussillo2016making, milstein2017multiscale, pandarinath2018inferring}.
@@ -129,6 +131,7 @@ LSTM prevails in many state-of-the-art BCI decoders, and experiments of complex 
 
 
 \begin{multicols}{2}
+\todo[inline]{Table~\ref{tab:LFP_research} 提到7種方法，但是這段只有提到5種方法，需要補充其他2種方法的說明，同時歸納這7種方法的相同、相異處}
 However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
 Therefore several studies adopted local filed potentials (LFPs), which stand for the low frequency part (<~300Hz) of neural signal. 
 Along with local motor potentials (LMPs), which are the moving average of LFPs. 
