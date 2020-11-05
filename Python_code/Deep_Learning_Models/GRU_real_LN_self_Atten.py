@@ -27,7 +27,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         self.GRU_Cell_backward_2 = LayerNormGRUCell( hidden_dim*2      , hidden_dim   ,  bias=True )
         
         # Layer Normalization
-        self.input_LN_forward = torch.nn.LayerNorm( [ max_timestep, hidden_dim*2 ], elementwise_affine=False)
+        # self.input_LN_forward = torch.nn.LayerNorm( [ max_timestep, hidden_dim*2 ], elementwise_affine=False)
         
 
         # Readout layer
@@ -36,6 +36,9 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
         r = int( max_timestep/2 )
         da= int( hidden_dim/2 )
+
+        # LN inside atten
+        self.LN_in_atten = torch.nn.LayerNorm([max_timestep, da], elementwise_affine=False)
 
         self.W_s1_1 = torch.nn.Linear( 2*hidden_dim, da )
         self.W_s2_1 = torch.nn.Linear( da, r )
@@ -48,7 +51,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
     def attention_net(self, gru_output):
         # GRU_output=GRU_output.permute(0, 2, 1)
-        attn_weight_matrix = self.W_s2_1(torch.tanh(self.W_s1_1(gru_output)))
+        attn_weight_matrix = self.W_s2_1( torch.tanh( self.LN_in_atten( self.W_s1_1(gru_output) ) ) )
         attn_weight_matrix = attn_weight_matrix.permute(0, 2, 1)
 
         attn_weight_matrix = torch.softmax(attn_weight_matrix, dim=2)
@@ -163,7 +166,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         self.GRU_Cell_forward_2 = LayerNormGRUCell( hidden_dim      , hidden_dim    ,  bias=True )
 
         # Layer Normalization
-        self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=False)
+        # self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=False)
 
         r = int( max_timestep/2 )
         da= int( hidden_dim/2 )
