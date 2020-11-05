@@ -31,9 +31,8 @@ class  GRUModel_bidir(torch.nn.Module):
 
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.GRU_1 = torch.nn.GRU( input_dim, hidden_dim, 1          , batch_first=True, bidirectional=True )
-        self.GRU_2 = torch.nn.GRU( hidden_dim, hidden_dim, layer_dim-1, batch_first=True, bidirectional=True )
-        
+        self.GRU_1 = torch.nn.GRU( input_dim, hidden_dim,  2        , batch_first=True, bidirectional=True )
+
         # Layer Normalization
         # self.input_LN_0 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
         # self.input_LN_1 = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=True)
@@ -69,13 +68,6 @@ class  GRUModel_bidir(torch.nn.Module):
 
         out, _ = self.GRU_1(x)
 
-        # Layer Normalization 1
-        # out = self.input_LN_1(out)
-
-        out, _ = self.GRU_2(out)
-
-        # Layer Normalization 2
-        # out = self.input_LN_2(out)
 
         attn_weight_matrix = self.attention_net(out)
 
@@ -109,8 +101,7 @@ class  GRUModel_oneway(torch.nn.Module):
 
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.GRU_1 = torch.nn.GRU( input_dim, hidden_dim, 1          , batch_first=True, bidirectional=False )
-        self.GRU_2 = torch.nn.GRU( hidden_dim, hidden_dim, layer_dim-1, batch_first=True, bidirectional=False )
+        self.GRU_1 = torch.nn.GRU( input_dim, hidden_dim, 2          , batch_first=True, bidirectional=False )
         
         # Layer Normalization
         # self.input_LN_0 = torch.nn.LayerNorm( input_dim*max_timestep, elementwise_affine=True)
@@ -147,13 +138,6 @@ class  GRUModel_oneway(torch.nn.Module):
 
         out, _ = self.GRU_1(x)
 
-        # Layer Normalization 1
-        # out = self.input_LN_1(out)
-
-        out, _ = self.GRU_2(out)
-
-        # Layer Normalization 2
-        # out = self.input_LN_2(out)
 
         attn_weight_matrix = self.attention_net(out)
 
