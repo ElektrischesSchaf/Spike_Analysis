@@ -45,7 +45,7 @@ regular_modules = some_modules.regular_modules()
 
 # Deep leaning module
 # from  Deep_Learning_Models.GRU_one_stream import GRUModel
-from  Deep_Learning_Models.Generic_GRU_one_stream import GRUModel
+from  Deep_Learning_Models.GRU_one_stream_self_Atten import GRUModel_oneway
 from Deep_Learning_Models.Abstract_Dataset_Class import AbstractDataset
 
 # attention map plotting module
@@ -61,7 +61,7 @@ List_FILE = ALL_List_FILE[:]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-model_name = 'GRU_Single_session_2_outputs_one_way_no_LN_no_atten'
+model_name = 'GRU_Single_session_2_outputs_one_way_no_LN_self_atten'
 MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
@@ -82,27 +82,59 @@ my_best_epoch_dict={}
 # epoch optimizer
 def epoch_handle(session_name):
     epoch_dict={
-    "indy_20160407_02": 29,
-    "indy_20160411_01": 25,
-    "indy_20160411_02": 14,
-    "indy_20160418_01": 28,
-    "indy_20160419_01": 62,
-    "indy_20160420_01": 13,
-    "indy_20160426_01": 49, # remove indy session 11
-    "loco_20170210_03": 20,
-    "loco_20170213_02": 24,
-    "loco_20170214_02": 85,
-    "loco_20170215_02": 29,
-    "loco_20170216_02": 35,
-    "loco_20170217_02": 13,
-    "loco_20170227_04": 11,
-    "loco_20170228_02": 92,
-    "loco_20170301_05": 32,
-    "loco_20170302_02": 46
+    "Chewie_10032013": 0,
+    "Chewie_12192013": 0,
+    "indy_20160407_02": 34,
+    "indy_20160411_01": 21,
+    "indy_20160411_02": 13,
+    "indy_20160418_01": 16,
+    "indy_20160419_01": 37,
+    "indy_20160420_01": 25,
+    "indy_20160426_01": 24,
+    "indy_20160622_01": 24,
+    "indy_20160624_03": 30,
+    "indy_20160627_01": 15,
+    "indy_20160630_01": 7,
+    "indy_20160915_01": 9,
+    "indy_20160916_01": 18,
+    "indy_20160921_01": 15,
+    "indy_20160927_04": 22,
+    "indy_20160927_06": 19,
+    "indy_20160930_02": 29,
+    "indy_20160930_05": 18,
+    "indy_20161005_06": 20,
+    "indy_20161006_02": 56,
+    "indy_20161007_02": 50,
+    "indy_20161011_03": 68,
+    "indy_20161013_03": 31,
+    "indy_20161014_04": 20,
+    "indy_20161017_02": 44,
+    "indy_20161024_03": 13,
+    "indy_20161025_04": 15,
+    "indy_20161026_03": 29,
+    "indy_20161027_03": 4,
+    "indy_20161206_02": 17,
+    "indy_20161207_02": 46,
+    "indy_20161212_02": 33,
+    "indy_20161220_02": 68,
+    "indy_20170123_02": 55,
+    "indy_20170124_01": 27,
+    "indy_20170127_03": 13,
+    "indy_20170131_02": 40,
+    "loco_20170210_03": 31,
+    "loco_20170213_02": 36,
+    "loco_20170214_02": 93,
+    "loco_20170215_02": 19,
+    "loco_20170216_02": 22,
+    "loco_20170217_02": 29,
+    "loco_20170227_04": 21,
+    "loco_20170228_02": 101,
+    "loco_20170301_05": 77,
+    "loco_20170302_02": 44
     }
     for i in epoch_dict:
         if session_name==i:
-            new_epoch = epoch_dict[i]
+            new_epoch=epoch_dict[i]
             break
     return new_epoch
 
@@ -110,102 +142,147 @@ def epoch_handle(session_name):
 for session_k in range(len(session_file_list)):
 
     session_name = str(session_file_list[session_k])[:-4]
-    file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'
-    # file_list=[file_name_1, file_name_2, file_name_3, file_name_4, file_name_5, file_name_6]
 
-    time_stamp_64ms=[]
+    if session_name.startswith('indy') or session_name.startswith('loco'):
 
-    # Auto-assigned parameters
-    testing_data_index=0
-    channel_number=0
-    units_have_value=0
+        file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'    
+        time_stamp_64ms=[]
 
-    # Parameters should be assigned
-    the_sampling_rate = my_parameters.the_sampling_rate
-    file_numbers = my_parameters.file_numbers
-    time_lag = my_parameters.time_lag
+        # Auto-assigned parameters
+        testing_data_index=0
+        channel_number=0
+        rows_not_empty=0
 
-    with_sorted_spikes = True
-    include_hash_unit=my_parameters.include_hash_unit
+        # Parameters should be assigned
+        the_sampling_rate = my_parameters.the_sampling_rate
+        file_numbers = my_parameters.file_numbers
+        time_lag = my_parameters.time_lag
 
-    print('In session '+ session_name + ': ' + '\n' )
+        with_sorted_spikes = True
+        include_hash_unit=my_parameters.include_hash_unit
 
-    # Load Spike Firing Rate
-    [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number] = mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
+        print('In session '+ session_name + ': ' + '\n' )
 
-    # Get channel and unit numbers
-    channel_numbers_in_this_dataset = channel_number
-    units_numbers_in_this_dataset = unit_number
+        # Load Spike Firing Rate
+        [firing_rate_cell, channel_number, testing_data_index, time_stamp_64ms, unit_number] = mat_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate, time_stamp_64ms, include_hash_unit)
 
-    if with_sorted_spikes==True:
-        feature_numbers=channel_numbers_in_this_dataset*units_numbers_in_this_dataset
-    else:
-        feature_numbers=channel_numbers_in_this_dataset
-
-    if channel_number == 96:
-        R_square_across_all_sessions.append([0, 0])
-        SNR_across_all_sessions.append([0,0])
-        RMSE_across_all_sessions.append([0,0])
-        person_correlation_coefficient_across_all_sessions.append([0, 0])
-        testing_data_length_all_sessions.append(0)
-        best_epoch_arcoss_all_sessions.append(0)
-        continue
-
-    # Create empty arrrays from data
-    [X_for_training, X_for_prediction, 
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
-    x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing ]=mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
-
-    [time_stamp_64ms, 
-    x_position_label, y_position_label, z_position_label, 
-    x_velocity_label, y_velocity_label, z_velocity_label, 
-    x_acceleration_label, y_acceleration_label, z_acceleration_label,
-    x_position_target, y_position_target] = mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
-
-    # Extract firing_rate_cell with rows have length bigger than zero
-    firing_rate_final=[] # not[[]]
-    for row_index in range( len( firing_rate_cell) ):   
-        if len(firing_rate_cell[row_index]):
-            firing_rate_final.append( firing_rate_cell[row_index] )
-            units_have_value+=1
-
-    '''
-    for row_index in range( len( firing_rate_final) ):            
-        print('length of firing_rate_final['+ str(row_index) +']: ',end='')
-        print(len(firing_rate_final[row_index]))
-    '''
-
-    print('\n')
-
-    firing_rate_matrix=np.array(firing_rate_final)
-    print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
-    print('\n')
+        # Get channel and unit numbers
+        channel_numbers_in_this_dataset = channel_number
+        units_numbers_in_this_dataset = unit_number
 
 
-    # New Without spike sorting:
-    firing_rate_matrix = regular_modules.with_or_without_sorting(with_sorted_spikes, firing_rate_matrix, channel_number, unit_number)
+        # Eliniate empty firing rate row
+        firing_rate_final=[] # not[[]]
+        for row_index in range( len( firing_rate_cell) ):   
+            if len(firing_rate_cell[row_index]):
+                firing_rate_final.append( firing_rate_cell[row_index] )
+                rows_not_empty+=1
+        print('rows_not_empty = ', rows_not_empty, '\n')
 
-    firing_rate_matrix=np.transpose(firing_rate_matrix)        
-    feature_numbers_of_firing_rate = firing_rate_matrix.shape[1]
+        firing_rate_matrix=np.array(firing_rate_final)
 
-    X=firing_rate_matrix.astype(np.float32)
-    print('features list shape: ',end='')
-    print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
-    print('\n')
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_matrix.shape[0]):
+            if not np.all( firing_rate_matrix[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_matrix = firing_rate_matrix[valid_rows,:]
+
+        print('firing_rate_matrix shape: ', firing_rate_matrix.shape) #  in indy_20160407_02 (226, 12777) eliminated null units, (288, 12777) with all 96X3 units
+        print('\n')
+
+        # get the correct sorted units number
+        if with_sorted_spikes==True:
+            feature_numbers = int(firing_rate_matrix.shape[0])
+        else:
+            feature_numbers = channel_numbers_in_this_dataset
+
+
+        # Create empty arrrays from data
+        [X_for_training, X_for_prediction, 
+        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
+        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+        x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing ]=mat_file_processing.create_empty_traing_and_testing_label(feature_numbers)
+
+        [time_stamp_64ms, 
+        x_position_label, y_position_label, z_position_label, 
+        x_velocity_label, y_velocity_label, z_velocity_label, 
+        x_acceleration_label, y_acceleration_label, z_acceleration_label,
+        x_position_target, y_position_target] = mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
+
+
+
+
+        # New Without spike sorting:
+        firing_rate_matrix = regular_modules.with_or_without_sorting(with_sorted_spikes, firing_rate_matrix, channel_number, unit_number)
+
+        firing_rate_matrix=np.transpose(firing_rate_matrix)        
+        feature_numbers_of_firing_rate = firing_rate_matrix.shape[1]
+
+        X=firing_rate_matrix.astype(np.float32)
+        print('features list shape: ',end='')
+        print( X.shape ) # X is the feature matrix,  (12777, 288) in indy_20160407_02
+        print('\n')
+
+    if session_name.startswith('Chewie'):
+
+        file_name_1='../../../../Dataset/Sorted_Spike_Dataset/'+ session_name +'.mat'    
+        time_stamp_64ms=[]
+
+        # Auto-assigned parameters
+        testing_data_index=0
+        channel_number=0
+        units_have_value=0
+
+        # Parameters should be assigned
+        the_sampling_rate = 64
+        file_numbers = my_parameters.file_numbers
+        time_lag = my_parameters.time_lag
+
+        print('In session '+ session_name + ': ' + '\n' )
+
+        # Load Spike Firing Rate
+        [firing_rate_cell, testing_data_index, time_stamp_64ms, unit_number] = chewie_file_processing.get_spike_bins_matrix(file_name_1, the_sampling_rate)
+
+        firing_rate_final=[] # not[[]]
+        for row_index in range( len( firing_rate_cell) ):   
+            if len(firing_rate_cell[row_index]):
+                firing_rate_final.append( firing_rate_cell[row_index] )
+                units_have_value+=1
+
+        feature_numbers = unit_number
+
+        firing_rate_matrix=np.array(firing_rate_final)
+        firing_rate_matrix=np.transpose(firing_rate_matrix)        
+        feature_numbers_of_firing_rate = firing_rate_matrix.shape[1]
+        X=firing_rate_matrix.astype(np.float32)
+
+        # Create empty arrrays from data
+        [X_for_training, X_for_prediction, 
+        x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
+        x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
+        x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+        x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing ]=chewie_file_processing.create_empty_traing_and_testing_label(feature_numbers)
+
+        [time_stamp_64ms, 
+        x_position_label, y_position_label,  
+        x_velocity_label, y_velocity_label,  
+        x_acceleration_label, y_acceleration_label, 
+        x_position_target, y_position_target] = chewie_file_processing.get_labels(file_name_1, the_sampling_rate)
+
 
     # Cross Session Data Concatenation
     [X_for_training, X_for_prediction,
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, 
+    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, 
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.cross_session_data_concatenation(
     session_name, feature_numbers_of_firing_rate, X, testing_data_index, X_for_training, X_for_prediction,
-    x_position_label, y_position_label, z_position_label, x_velocity_label, y_velocity_label, z_velocity_label, x_acceleration_label, y_acceleration_label, z_acceleration_label, x_position_target, y_position_target,
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_label, y_position_label,  x_velocity_label, y_velocity_label,  x_acceleration_label, y_acceleration_label,  x_position_target, y_position_target,
+    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, 
+    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, 
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
     print('shape of X_for_training before', X_for_training.shape)
 
@@ -218,14 +295,14 @@ for session_k in range(len(session_file_list)):
     # Processing max orders
     order_num = max_timestep-1
     [X_for_training, X_for_prediction,
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing,  
+    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing,  
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,  
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing] = mat_file_processing.max_order_preparation(
     session_name, order_num, feature_numbers, X_for_training, X_for_prediction,
-    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing, z_position_label_training, z_position_label_testing,
-    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing, z_velocity_label_training, z_velocity_label_testing,
-    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing, z_acceleration_label_training, z_acceleration_label_testing,
+    x_position_label_training, x_position_label_testing, y_position_label_training, y_position_label_testing,  
+    x_velocity_label_training, x_velocity_label_testing, y_velocity_label_training, y_velocity_label_testing,  
+    x_acceleration_label_training, x_acceleration_label_testing, y_acceleration_label_training, y_acceleration_label_testing,
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
 
     print('shape of X_for_training after', X_for_training.shape)
@@ -234,7 +311,6 @@ for session_k in range(len(session_file_list)):
     print('\nshape of X_for_prediction after', X_for_prediction.shape)
     testing_data_length_all_sessions.append( X_for_prediction.shape[0] )
     print('shape of x_velocity_label_testing after', x_velocity_label_testing.shape)
-
 
     # Write features and label from each session to csv files
     CWD = CWD_origin
@@ -263,22 +339,22 @@ for session_k in range(len(session_file_list)):
     testing_x=testing_x.float()
 
 
-    # x_vel
-    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), dtype=float)    
+    # x_pos
+    training_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype=float)    
     training_y_1  = torch.from_numpy(training_y_1.values)    
     training_y_1  = training_y_1.float()
 
-    # y_vel
-    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), dtype=float)    
+    # y_pos
+    training_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_training.csv'), dtype=float)    
     training_y_2 = torch.from_numpy(training_y_2.values)    
     training_y_2 = training_y_2.float()
 
 
-    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), dtype=float)    
+    testing_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_testing.csv'), dtype=float)    
     testing_y_1 = torch.from_numpy(testing_y_1.values)    
     testing_y_1 = testing_y_1.float()
 
-    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), dtype=float)
+    testing_y_2 = pd.read_csv(os.path.join(csv_path,'y_position_label_testing.csv'), dtype=float)
     testing_y_2 = torch.from_numpy(testing_y_2.values)    
     testing_y_2 = testing_y_2.float()
 
@@ -298,11 +374,12 @@ for session_k in range(len(session_file_list)):
 
     testing_data_length = int(testing_y.size(0))
 
+
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    max_epoch = epoch_handle(session_name) + 20
-
+    # max_epoch = epoch_handle(session_name) + 10
+    max_epoch = MAX_EPOCH
     # GRU Hyperparameters
     hidden_dim = HIDDEN_DIMENSION
     layer_dim = NUMBER_OF_LAYERS
@@ -315,7 +392,7 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    net = GRUModel(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim, sorted_unit_numbers=units_numbers_in_this_dataset)     # define the network    # print(net)  # net architecture
+    net = GRUModel_oneway(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim)     # define the network    # print(net)  # net architecture
 
     for n, p in net.named_parameters():
         print(n, p.shape)
@@ -385,10 +462,13 @@ for session_k in range(len(session_file_list)):
         feature = x.to(device)
         labels = y.to(device)
 
-        o_labels = net(feature)
+        o_labels, attn_weight_matrix_forward = net(feature)
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
-        l_loss = loss_func(o_labels, labels)
+        attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)
+        penality_loss_forward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
+
+        l_loss = loss_func(o_labels, labels) + penality_loss_forward*10
 
         return o_labels, l_loss
 
@@ -449,8 +529,17 @@ for session_k in range(len(session_file_list)):
 
     for i, (x, testing_y) in trange:
 
-        o_labels = net(x.to(device))
+        # GRU batch
+        # if(x.size()[0] is not batch_size):
+        #     continue
 
+        o_labels, attn_weight_matrix_forward = net(x.to(device))
+
+        # attention map
+        # attn_weight_matrix = attn_weight_matrix.squeeze(1)
+        attn_weight_matrix = torch.sum(attn_weight_matrix_forward, dim=1)
+        # print('shape of attn_weight_matrix =  ', attn_weight_matrix.size(), '\n')
+        attn_weight_matrix = attn_weight_matrix.cpu().detach().numpy()
 
         # collect firing rate
         x = x.cpu().data.numpy()
@@ -484,6 +573,9 @@ for session_k in range(len(session_file_list)):
         for ele in y_target:
             y_target_all.append( float(ele) )
 
+        # attention map
+        for ele in range(attn_weight_matrix.shape[0]):
+            attn_weight_matrix_all.append( attn_weight_matrix[ele,:] )
 
     shutil.rmtree(save_epoch_path)
 
@@ -491,8 +583,8 @@ for session_k in range(len(session_file_list)):
     attn_weight_matrix_all = np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
 
-    df = pd.DataFrame( attn_weight_matrix_all )
-    df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
+    # df = pd.DataFrame( attn_weight_matrix_all )
+    # df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
 
     # collected firing rate
     firing_rate_collector = np.asarray(firing_rate_collector)
@@ -526,6 +618,17 @@ for session_k in range(len(session_file_list)):
 
     df = pd.DataFrame( [[session_name, testing_data_SNR_1, testing_data_SNR_2 ]] , columns=['session', 'x-axis', 'y-axis'] )
     df.to_csv(os.path.join(csv_path, 'SNR_this_session.csv'), index=False, header=True)
+
+
+    # attention map
+    plottin_duration_time_bin = 200
+    time_bin_index = 0
+    # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
+
+    while time_bin_index < (testing_data_length -plottin_duration_time_bin*1.5 ):
+        Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
+        time_bin_index = time_bin_index + plottin_duration_time_bin
+
 # session control end
 
 # Write all performances to csv files
@@ -537,7 +640,6 @@ testing_data_length_all_sessions, best_epoch_arcoss_all_sessions)
 
 with open( os.path.join( bar_plot_path, 'my_best_epoch_dict.json'), 'w') as f:
     json.dump(my_best_epoch_dict, f, indent=4)
-
 
 tEnd = time.time()
 print('Overall processing time: '+ str ( round( (tEnd-tStart)/60 , 3) )+' minutes' )
