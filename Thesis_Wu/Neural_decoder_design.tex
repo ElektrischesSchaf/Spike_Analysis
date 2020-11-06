@@ -2,7 +2,7 @@
 
 
 \section{Data acquisition}
-\todo[inline]{ (換句話說Makin論文)包含訊號處理、擷取spike的部分，放入 Figure~\ref{fig:s1_and_m1_spike_train} }
+\todo[inline, color=green!40]{ (換句話說Makin論文)包含訊號處理、擷取spike的部分，放入 Figure~\ref{fig:s1_and_m1_spike_train} }
 
 \begin{multicols}{2}
 The first dataset, \textbf{Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology} is provided by \cite{makin2018} and made public available at \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
@@ -77,7 +77,7 @@ and since in this case the tap size is 4, the overlapping time bins are 3.
         \label{fig:time_bin_and_prediction}
     \end{center}
 \end{figure}
-\todo[inline]{ 先說明 tap size ，time bin 的使用方式  }
+\todo[inline, author=Wu, color=blue!40]{ 先說明 tap size ，time bin 的使用方式  }
 
 \begin{multicols}{2}
 Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session varied from 2 to 4.
@@ -104,7 +104,7 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode 
             \label{fig:indy_20160407_02_S1_ch_60}
         \end{minipage}
 \end{figure}
-\todo[inline]{ 再說明有些 session 有 M1 S1 兩個電極的資訊 }
+\todo[inline, author=Wu, color=blue!40]{ 再說明有些 session 有 M1 S1 兩個電極的資訊 }
 
 \begin{multicols}{2}
 Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms bins.
@@ -129,7 +129,7 @@ For other experiments, different width of time bins were used to acquire differe
             \label{fig:the_result_heatmap}
         \end{minipage}
 \end{figure}
-\todo[inline]{ 如何將 M1 與 S1 電極收到的 spike train 轉換成 firing rate，從 raster plot 變 heatmap。同時解釋 M1 與 S1 的 firing rate 是直接 concatenate 在一起。 }
+\todo[inline, author=Wu, color=blue!40]{ 如何將 M1 與 S1 電極收到的 spike train 轉換成 firing rate，從 raster plot 變 heatmap。同時解釋 M1 與 S1 的 firing rate 是直接 concatenate 在一起。 }
 
 
 \begin{multicols}{2}
@@ -148,12 +148,12 @@ Empty units in this session have been removed, as actual number of sorted units 
         \label{fig:Firing_rate_heatmap_and_all_kinematic_variables}
     \end{center}
 \end{figure}
-\todo[inline]{最後在將 firing rate heatmap 與 運動資訊疊圖比較 }
+\todo[inline, author=Wu, color=blue!40]{最後在將 firing rate heatmap 與 運動資訊疊圖比較 }
 
 
 \section{Animal Pursuit task with point-to-point trajectory}
 \begin{multicols}{2}
-\todo[inline]{(換句話說Makin論文)，包含運動軌跡、experimental setup}
+\todo[inline, color=green!40]{(換句話說Makin論文)，包含運動軌跡、experimental setup}
 
 The monkeys were trained to perform reaching tasks with their arms in a transverse plane below their shoulder, with targets showing up in a virtual reality environment.
 Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
@@ -184,7 +184,7 @@ and for monkey Loco square grid of size $6 \times 6$ was used.
         \label{fig:panels}		
     \end{center}	
 \end{figure}
-\todo[inline]{ 3個panel的長寬尺寸還沒調成一致 }
+\todo[inline, author=Wu, color=blue!40]{ 3個panel的長寬尺寸還沒調成一致 }
 
 \begin{multicols}{2}
 Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
@@ -213,7 +213,7 @@ where the solid lines indicate the actual tragectory of the fingertip and the da
         \label{fig:x_and_y_trajectory_and_cue}
     \end{center}
 \end{figure}
-\todo[inline]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:qualitative_analysis} 章 prediction、actual 軌跡對時間作圖保持一致， }
+\todo[inline, author=Wu, color=blue!40]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:qualitative_analysis} 章 prediction、actual 軌跡對時間作圖保持一致， }
 
 \begin{multicols}{2}
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
@@ -724,7 +724,7 @@ As showed in Figure~\ref{fig:visualization_vector}
 
 \section{Performance evaluation}
 \begin{multicols}{2}
-\todo[inline]{描述SNR、R2、single session}
+\todo[inline, color=green!40]{描述SNR、R2、single session}
 
 To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR), 
 two vectors are required which are the observed value $ \vec{y} = \left[ y_1, \cdots , y_n  \right]^{T} $ and predicted value $ \vec{f} = \left[ f_1, \cdots , f_n \right]^{T} $.

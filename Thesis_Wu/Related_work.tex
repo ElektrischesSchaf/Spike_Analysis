@@ -1,11 +1,29 @@
 \section{Development and traditional measures of invasive BCIs}
 \begin{multicols}{2}
-\todo[inline]{侵入式腦機介面的發展，傳統侵入式腦機介面用哪些方法?}
-\todo[inline]{這段需要補充Kalman filter的優缺點}
+\todo[inline, color=green!40]{侵入式腦機介面的發展，傳統侵入式腦機介面用哪些方法?}
+\todo[inline, author=Prof.]{這段需要補充Kalman filter的優缺點}
 Table~\ref{tab:traditional_invasive} listed traditional machine learning decoders in invasive BCIs.
 Kalman filter was dominant is this field before artificial neural networks.
 Most of the experiment conduced in the traditional BCI reseaches are either performed the center-out reaching tasker or the computer cursor manipulation with manipulandum.
 The decoders usually predicted only one or two kinematic variables, only a few of them are willing to predict and evaluat three variances: position, velocity and acceleration.
+
+\todo[inline, author=Wu, color=blue!40]{新增Kalman filter的優缺點}
+\begin{itemize}
+    \item Advantages of Kalman filter
+    \begin{itemize}
+        \item Required only a few minites of training data \citep{wu2003neural}
+        \item Applicable in real-time estimation \citep{wu2003neural}
+        \item Successfuly applied in both open loop and closed loop BCIs \citep{gupta2009offline}
+    \end{itemize}
+    \item Disadvantages of Kalman filter
+    \begin{itemize}
+        \item Assume Gaussian distribution between neural activity and the decoded variables \citep{glaser2020machine, ahmadi2019decoding}
+        \item Only consider linear functions in the hidden state at time $t$ and its previous hidden state at time $t-1$ \citep{glaser2020machine}
+    \end{itemize}
+\end{itemize}
+
+\todo[inline, author=Wu, color=blue!40]{Must say spike signal is non-Gausssian and non-linear here}
+Spike counts are typically assumed to be gaussian or Poisson distributed \citep{todorova2017neural}
 
 \end{multicols}
 
@@ -30,8 +48,8 @@ The decoders usually predicted only one or two kinematic variables, only a few o
 
 \section{Restrictions of traditional invasive BCI}
 \begin{multicols}{2}
-\todo[inline]{傳統侵入式腦機介面有哪些限制?}
-\todo[inline]{這段看不出BCI有甚麼條件限制，或者使用上的限制，需要再補充}
+\todo[inline, color=green!40]{傳統侵入式腦機介面有哪些限制?}
+\todo[inline, author=Prof.]{這段看不出BCI有甚麼條件限制，或者使用上的限制，需要再補充}
 \cite{glaser2020machine} has analysed the performance of modern methods and traditional methods in BCI motor decoding.
 They take LSTM and ensemble models as the representative of modern methods, who a outperformed the traditional ones significantly such as Wiener filter, Wiener cascade and Kalman filter.
 Various neural datasets they have used to evaluate the models, some models such as naive bayers decoder, also a traditional method, can only perform well in the position prediction in the hippocampus dataset.
@@ -43,8 +61,8 @@ They endorsed and provided detailed experimental result about the fact that the 
 
 \section{Advantages of deep learning in BCI}
 \begin{multicols}{2}
-\todo[inline]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?} % hosman2019bci has emphasized the merit of RNN over KF
-\todo[inline]{這段需要補充說明deep learning改良neural decoding的原因}
+\todo[inline, color=green!40]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?} % hosman2019bci has emphasized the merit of RNN over KF
+\todo[inline, author=Prof.]{這段需要補充說明deep learning改良neural decoding的原因}
 Deep learning models provided remarkable improvement to neural decoding \citep{hosman2019bci}.
 In the early study of BCIs, it was the linear Kalman filter decoders which has been widely applied to intracortical brain computer interfaces \citep{jarosiewicz2015virtual, pandarinath2017high,nuyujukian2018cortical}.
 With to the development of non-linear decoders and deep learning methods, more promising performances have been reached both in work in humans and non-human primates \citep{shanechi2017rapid, sussillo2016making, milstein2017multiscale, pandarinath2018inferring}.
@@ -85,7 +103,7 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 \section{Development of deep learning in invasive BCI}
 \label{sec:development_of_deep_learning_in_invasive_BCI}
 \begin{multicols}{2}
-\todo[inline]{使用深度學習於侵入式腦機介面的發展}
+\todo[inline, color=green!40]{使用深度學習於侵入式腦機介面的發展}
 Table~\ref{tab:deep_leaning_in_invasive_BCI} showes decoders involved deep leaning in invasive BCIs.
 LSTM prevails in many state-of-the-art BCI decoders, and experiments of complex movements such as point-to-point fingertip trajetories or free moving have been conducted and decoded.
 \end{multicols}
@@ -131,7 +149,7 @@ LSTM prevails in many state-of-the-art BCI decoders, and experiments of complex 
 
 
 \begin{multicols}{2}
-\todo[inline]{Table~\ref{tab:LFP_research} 提到7種方法，但是這段只有提到5種方法，需要補充其他2種方法的說明，同時歸納這7種方法的相同、相異處}
+\todo[inline, author=Prof.]{Table~\ref{tab:LFP_research} 提到7種方法，但是這段只有提到5種方法，需要補充其他2種方法的說明，同時歸納這7種方法的相同、相異處}
 However, the spike recordings are not stable and the number of recorded single-units neurons may diminish over time \citep{ahmadi2019end}. 
 Therefore several studies adopted local filed potentials (LFPs), which stand for the low frequency part (<~300Hz) of neural signal. 
 Along with local motor potentials (LMPs), which are the moving average of LFPs. 
@@ -173,7 +191,7 @@ Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and th
 \section{Unsolved problems and drawbacks in preceding deep learning invasive BCI researches}
 \label{sec:unsolved_problems_in_deep_learning_bci}
 \begin{multicols}{2}
-\todo[inline]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
+\todo[inline, color=green!40]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
 Deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
 By pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning.
 \cite{tseng2019decoding} intended to show in internal dynamics of the LSTM when decoding the movement of monkeys, 
@@ -187,7 +205,7 @@ Pointing out the dominant key words who contribute the most in their deep learni
 
 \section{Development of normalization in deep learning}
 \begin{multicols}{2}
-\todo[inline]{normalization 的發展}
+\todo[inline, color=green!40]{Normalization 的發展}
 
 When training a deep learning model, \textit{internal covariate shift} as the change in distribution of network activations, is an issue that hinders the loss of the model to converge and sometimes incurs poor performances. 
 Several novel approaches related to data normalization were designed to cope with this problem, showed in Table \ref{tab:six_types_of_norm}. 
@@ -224,7 +242,7 @@ then feed them input the self-attention mechanism.
 
 \section{Development and related work of attention modules}
 \begin{multicols}{2}
-\todo[inline]{Attention module的發展，哪些腦機介面論文使用Attention module?}
+\todo[inline, color=green!40]{Attention module的發展，哪些腦機介面論文使用Attention module?}
 
 \cite{sutskever2014sequence} is the first research which implemented the encoder-decoder machanism (or called sequence to sequence, seq2seq) to machine translation realm.
 This structure has gained popularity also in sentiment analysis ever since.
@@ -241,7 +259,7 @@ the output from previous timestep will be the input of current timestep.
         \label{fig:rnn_encoder_decoder}
     \end{center}
 \end{figure}
-\todo[inline]{這張是網路上的圖，之後會重畫}
+\todo[inline, author=Wu, color=blue!40]{Figure~\ref{fig:rnn_encoder_decoder} 是網路上的圖，之後會重畫}
 
 \begin{multicols}{2}
 But when it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
