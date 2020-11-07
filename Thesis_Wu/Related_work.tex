@@ -17,13 +17,11 @@ The decoders usually predicted only one or two kinematic variables, only a few o
     \end{itemize}
     \item Disadvantages of Kalman filter
     \begin{itemize}
-        \item Assume Gaussian distribution between neural activity and the decoded variables \citep{glaser2020machine, ahmadi2019decoding}
+        \item Assume Gaussian or Poisson distribution between neural activity and the decoded variables \citep{glaser2020machine, ahmadi2019decoding, todorova2017neural}
         \item Only consider linear functions in the hidden state at time $t$ and its previous hidden state at time $t-1$ \citep{glaser2020machine}
+        \item Neural spike signals are non-linear \citep{macke2011empirical, holleman2008micro}
     \end{itemize}
 \end{itemize}
-
-\todo[inline, author=Wu, color=blue!40]{Must say spike signal is non-Gausssian and non-linear here}
-Spike counts are typically assumed to be gaussian or Poisson distributed \citep{todorova2017neural}
 
 \end{multicols}
 
@@ -47,14 +45,19 @@ Spike counts are typically assumed to be gaussian or Poisson distributed \citep{
 
 
 \section{Restrictions of traditional invasive BCI}
+\label{sec:restrictions_of_traditional_invasive_BCI}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{傳統侵入式腦機介面有哪些限制?}
 \todo[inline, author=Prof.]{這段看不出BCI有甚麼條件限制，或者使用上的限制，需要再補充}
+\todo[inline, author=Wu, color=blue!40]{傳統decoder需要比NN decoder更多的training data數量與 recorded neuron數量}
 \cite{glaser2020machine} has analysed the performance of modern methods and traditional methods in BCI motor decoding.
 They take LSTM and ensemble models as the representative of modern methods, who a outperformed the traditional ones significantly such as Wiener filter, Wiener cascade and Kalman filter.
 Various neural datasets they have used to evaluate the models, some models such as naive bayers decoder, also a traditional method, can only perform well in the position prediction in the hippocampus dataset.
 LSTM and other feedforward neural networks' performance is almost the same. 
 They endorsed and provided detailed experimental result about the fact that the modern deep leaning methods can generally exceed the traditional methods.
+When the amount of traing data is decreased, only Kalman filter can be comparable to modern methods wheras the performance of Wiener filter drops fiercely.
+Limited neural data also affect more on traditional methods than modern ones.
+When decoding with only 10 neurons in their experiments, modern methods outperform traditional methods significantly.
 
 
 \end{multicols}
@@ -63,7 +66,9 @@ They endorsed and provided detailed experimental result about the fact that the 
 \begin{multicols}{2}
 \todo[inline, color=green!40]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?} % hosman2019bci has emphasized the merit of RNN over KF
 \todo[inline, author=Prof.]{這段需要補充說明deep learning改良neural decoding的原因}
+\todo[inline, author=Wu, color=blue!40]{如 \ref{sec:restrictions_of_traditional_invasive_BCI} 所述，deep learning decoder雖然更複雜，在減少training data與 recorded neurons仍有較好的表現 }
 Deep learning models provided remarkable improvement to neural decoding \citep{hosman2019bci}.
+Altought with its greater complexity, deep learning decoders still performs better with the training data in shorter and recorded neuron is fewer \citep{glaser2020machine}.
 In the early study of BCIs, it was the linear Kalman filter decoders which has been widely applied to intracortical brain computer interfaces \citep{jarosiewicz2015virtual, pandarinath2017high,nuyujukian2018cortical}.
 With to the development of non-linear decoders and deep learning methods, more promising performances have been reached both in work in humans and non-human primates \citep{shanechi2017rapid, sussillo2016making, milstein2017multiscale, pandarinath2018inferring}.
 Among all the deep learning methods, the RNN model is the tpye which is widely used and also outperforms Kalman filter \citep{sussillo2016making}.
