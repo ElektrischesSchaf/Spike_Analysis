@@ -570,7 +570,7 @@ The output of the attention mechanism, the annotation vector, is computed as
 \end{align}
 \noindent where $\bW_{s1}$ is a weight matrix with shape $(d_a \times 2u)$ or $(d_a \times u)$ depends on the RNN direction number,
 and $\bw_{s2} $ is a vector with size $(1 \times d_a)$.
-$d_a$ is an arbitrary hyperparemeter.
+$d_a$ is an arbitrary hyperparameter.
 The size of the annotation vector $ \ba $ is $(1 \times n)$, which is the length of each input sequence and in or case,
 The number of past time bins used to decode the current kinematic variables.
 The function $ \text{softmax}: \mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
@@ -655,11 +655,11 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined 
 \end{figure}
 
 \begin{multicols}{2}
-\noindent indicates that the summation of the squared value of every element in the matrix $A A^{\intercal} - I$ should be closed to $0$.
-The term $P$ itself is a kind of loss function, and the value, which is an error,
-should be multipled by a coefficient and then propagate backwards to modify the weights in the our attention mechanism.
+\noindent indicates that the summation of the squared value of every element in the matrix $\bA \bA^{\intercal} - \bI$ should be closed to $0$.
+The term $P$ denotes a loss function, 
+which should be multipled by a coefficient and then propagate backwards to modify the weights in the our attention mechanism.
 
-To explain this design, let's start by considering two different annotation vectors $ \ba^i $ and $ \ba^j $.
+To explain the equation, let's start by considering two different annotation vectors $ \ba^i $ and $ \ba^j $.
 Both vectors share the same size $(1 \times n)$.
 Due to the fact that $ \text{softmax}$ is implemented, the summation of every element of these vectors is $1$.
 The values each vector can be consider as a probability distribution.
@@ -706,23 +706,30 @@ As showed in Figure~\ref{fig:visualization_vector}
 
 \begin{multicols}{2}
 The loss function for the predicted kinematic variables is mean square error (Equation \ref{eq:mean_square_error}),
-which is widely used in regression problems and along with Adam Optimizer (Equation \ref{eq:adam_optimizer}).
+which is widely used in regression problems.
 
 \begin{align}
     \label{eq:mean_square_error}
     \text{MSE} &= \frac{1}{n} \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
 \end{align}
 
+Equation \ref{eq:adam_optimizer} is the Adam optimizer \citep{kingma2014adam}, 
+a popular algothrim who combined AdaGrad \citep{duchi2011adaptive} and RMSProp \citep{tieleman2012lecture}.
+
 \begin{align}
     \begin{split}
         \label{eq:adam_optimizer}
         m_t &= \beta_1 m_{t-1} + ( 1-\beta_1 ) \frac{\partial L_t}{\partial W_t} \\
-        v_t &= \beta_1 v_{t-1} + (1- \beta_2) \left( \frac{\partial L_t}  {\partial W_t} \right)^2 \\
-        \hat{m}_t &= \frac{m_t}{1- \beta_1^t} \\
+        v_t &= \beta_2 v_{t-1} + (1- \beta_2) \left( \frac{\partial L_t}  {\partial W_t} \right)^2 \\
+        \hat{m}_t &= \frac{m_t}{1- \beta^t_1 } \\
         \hat{v}_t &= \frac{v_t}{1-\beta^t_2} \\
-        w &\leftarrow w- \eta \frac{ \hat{m}_t }{ \sqrt{\hat{v}_t} + \epsilon }
+        w_t &\leftarrow w_{t-1}- \eta \frac{ \hat{m}_t }{ \sqrt{\hat{v}_t} + \epsilon }
     \end{split}
 \end{align}
+
+\noindent the Adam optimizer updates moving averages of the gradient $m_t$ and the squared gradient $v_t$,
+where the hyperparameter $\beta_1, \ \beta_2$ control the exponential decay rates of these moving averages.
+
 
 
 \end{multicols}
