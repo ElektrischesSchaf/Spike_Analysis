@@ -76,12 +76,22 @@ adopted spike signals from the place cells and pyramidal neurons found in mammal
 哪些方法也用了sequential model?
 不管是center-out或pursuit task都要說明
 詳細說明這些RNN方法改良了甚麼問題?}
-The provider of the main nonhuman primate dataset used in our study, \cite{makin2018}, 
-adopted the decoder based on Kalman filter.
-They have obtained high performances in the position and velocity decoding tasks, 
+
+\todo[inline, author=Wu, color=blue!40]{現有方法 Kalman filter 的相關問題}
+The standard Kalman filter uses linear functions to map the kinematics between current and the next steps, and it also assume Gaussian distributions in the spike count data.
+Several non-linear tuning methods were developed and used in BCI such as Unscented Kalman filter \citep{li2016improved},
+but it failed to learn a useful latent representation \citep{makin2018}.
+A new non-linear tuning method \textit{Recurrent exponential-family harmonium} is proposed by \cite{makin2018},
+which they claimed that it outperforms Unscented Kalman filter in neural decoding. 
+Although they have obtained high performances in the position and velocity decoding tasks, 
 but failed to decode acceleration with the accuracy as good as the preceding two kinematic variables.
-Although they claimed that the prediction accuracy of velocity and acceleration benefited from their sophisticated model the most.
-We seek a decoder to make improvement on the precision of all variables - position, velocity, acceleration.
+Other improved methods for Kalman filter in \cite{vaskov2018cortical} is only applicable when the target of the cue is aquired, 
+thus not suitable in the cases.
+
+RNNs are the most promising tool to outperform Kalman filter in BCI \cite{hosman2019bci}.
+\todo[inline, author=Wu, color=blue!40]{詳細說明這些RNN方法改良了甚麼問題}
+Although RNNs in expensive in space and time complexities, 
+but they are not restricted to solving only linear system with Gaussian noise assumption \citep{chenna2004state}.
 
 \todo[inline, author=Wu, color=blue!40]{這一段引用其他有使用sequence model的研究}
 Since neural signals are non-linear sequential data \citep{brezina2000neuromuscular}, 
