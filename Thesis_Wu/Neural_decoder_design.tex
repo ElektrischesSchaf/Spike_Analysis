@@ -69,6 +69,7 @@ And the input time bins used to predict the kinematic variable at time $t$ and t
 and since in this case the tap size is 4, the overlapping time bins are 3.
 \end{multicols}
 
+\todo[inline, author=Prof.]{ Figure~\ref{fig:time_bin_and_prediction} 與tap size參考以下論文的Figure 3 Inhibition of Long-Term Variability in Decoding Forelimb Trajectory Using Evolutionary Neural Networks With Error-Correction Learning}
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.7\textwidth]{time_bin_and_prediction.png}
@@ -272,7 +273,6 @@ Fortunately the target points are not required when implementing hand movement d
 
 \section{Network architecture}
 \begin{multicols}{2}
-\todo[inline]{ Figure~\ref{fig:time_bin_and_prediction} 與tap size參考以下論文的Figure 3 Inhibition of Long-Term Variability in Decoding Forelimb Trajectory Using Evolutionary Neural Networks With Error-Correction Learning}
 
 We have combined the self-attention mechanism, layer normalization and bidirectional GRU together, 
 and proposed a new aspect of using the same self-attention mechanism to conduct hidden unit attention.
@@ -289,24 +289,6 @@ $r$ is the hops of attention we intend to extract from the same sequence, and it
         \caption{Model with temporal attention}
         \fontsize{10}{12}
         \label{fig:Lin_Attention}
-    \end{center}
-\end{figure}
-
-\begin{multicols}{2}
-Another model is proposed in order to capture and visualize the attention among the output hidden units from GRU layers.
-After the 2-layer GRU processed the spike firing rate input tensors, we constructed 2-stream structure to seperate the path of processing temporal and unit attention.
-Simply be transposing the all the outpout hidden states from all $n$ timesteps, 
-
-\todo[line]{here}
-\end{multicols}
-
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[height=0.5\textheight]{Two_Attention.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Model with temporal attention and unit attention}
-        \fontsize{10}{12}
-        \label{fig:Two_Attention}
     \end{center}
 \end{figure}
 
@@ -573,8 +555,8 @@ The output hidden states from the last layer of GRU will be the input of our att
 The hidden states matrix,
 \begin{align}
     \begin{split}
-        H_{n \times 2u} &= (h_1, \ h_2, \cdots \ h_n) \qquad \text{bidirectional RNN} \\
-        H_{n \times u} &= (h_1, \ h_2, \cdots \ h_n)  \qquad \text{one-way RNN}
+        \bH_{n \times 2u} &= ( \bh_1, \ \bh_2, \cdots \ \bh_n) \qquad \text{bidirectional RNN} \\
+        \bH_{n \times u} &= ( \bh_1, \ \bh_2, \cdots \ \bh_n)  \qquad \text{one-way RNN}
     \end{split}
 \end{align}
 \noindent where $u$ is the number of hidden units.
@@ -582,25 +564,25 @@ The output of the attention mechanism, the annotation vector, is computed as
 \begin{align}
     \label{eq:annotation_vector_calculation}
     \begin{split}
-        \vec{a} &= softmax( \vec{w_{s2}} \ tanh( W_{s1} \ H^{T} ) )  \\
-        \vec{m} &= \vec{a} H
+        \ba &= \text{softmax}( \bw_{s2} \ \text{tanh} ( \bW_{s1} \ \bH^{\intercal} ) )  \\
+        \bm &= \ba \bH
     \end{split}
 \end{align}
-\noindent where $W_{s1}$ is a weight matrix with shape $(d_a \times 2u)$ or $(d_a \times u)$ depends on the RNN direction number,
-and $\vec{w_{s2}}$ is a vector with size $(1 \times d_a)$.
+\noindent where $\bW_{s1}$ is a weight matrix with shape $(d_a \times 2u)$ or $(d_a \times u)$ depends on the RNN direction number,
+and $\bw_{s2} $ is a vector with size $(1 \times d_a)$.
 $d_a$ is an arbitrary hyperparemeter.
-The size of the annotation vector $\vec{a}$ is $(1 \times n)$, which is the length of each input sequence and in or case,
+The size of the annotation vector $ \ba $ is $(1 \times n)$, which is the length of each input sequence and in or case,
 The number of past time bins used to decode the current kinematic variables.
-The function $ softmax: \mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
+The function $ \text{softmax}: \mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
 \begin{align}
     \begin{split}
-    softmax(z)_i &= \frac{e^{z_i}}{ \sum^{K}_{j=1} e^{z_j} } \\ 
+    \text{softmax}( \bz )_i &= \frac{ e^{ \bz_i } }{ \sum^{K}_{j=1} e^{ \bz_j } } \\ 
     \text{for} \ i &=1, \cdots , K \\ 
-    \text{and} \ z&= \left( z_1, \cdots,z_K \right) \in \mathbb{R}^K
+    \text{and} \ \bz&= \left( \bz_1, \cdots, \bz_K \right) \in \mathbb{R}^K
     \end{split}
 \end{align}
-\noindent such that the summation of the vector $\vec{a}$ is $1$.
-The embedding vector $\vec{m}$ is the new feature of size $(1 \times u)$, and can be fed into the next layer.
+\noindent such that the summation of the vector $ \ba $ is $1$.
+The embedding vector $ \bm $ is the new feature of size $(1 \times u)$, and can be fed into the next layer.
 
 % This explain fc in matrix form https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer
 
@@ -612,12 +594,12 @@ The representations from Eqation \ref{eq:annotation_vector_calculation} is now c
 \begin{align}
     \label{eq:annotation_matrix_calculation}
     \begin{split}
-        A &= softmax( W_{s2} \ tanh( W_{s1} \ H^{T} ) )  \\
-        M &= A H
+        \bA &= \text{softmax}( \bW_{s2} \ \text{tanh}( \bW_{s1} \ \bH^{\intercal} ) )  \\
+        \bM &= \bA \bH
     \end{split}
 \end{align}
-\noindent where the vector $\vec{w_{s2}}$ is extend into a $(r \times d_a)$ matrix, denoted as $W_{s2}$,
-and the embedding vector $\vec{m}$ becomes a $(r \times 2u)$ or $(r \times u)$ matrix $M$, depending on the RNN direction number.
+\noindent where the vector $ \bw_{s2} $ is extend into a $(r \times d_a)$ matrix, denoted as $ \bW_{s2}$,
+and the embedding vector $ \bm $ becomes a $(r \times 2u)$ or $(r \times u)$ matrix $ \bM $, depending on the RNN direction number.
 
 Eqation \ref{eq:annotation_matrix_calculation} is equivalent to a 2-layer MLP,
 the first layer reduces the dimension from $u$ to $d_a$, or in bidirectional case, reduces $2u$ to $d_a$.
@@ -648,14 +630,14 @@ named the \textit{penalization term} and defined as follows,
 
 \begin{align}
     \label{eq:penalization_term}
-    P &= {\norm{ A A^T - I }_F}^2
+    P &= {\norm{ \bA \bA^{\intercal} - \bI }_F}^2
 \end{align}
 
-\noindent where $A A^T$ is a square matrix of size $(r \times r)$, 
+\noindent where $A A^{\intercal}$ is a square matrix of size $(r \times r)$, 
 and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined as
 \begin{align}
     \label{eq:frobenius_norm}
-    \norm{X}_F &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|x_{ij}|}_2 }
+    \norm{ \bX }_F &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|x_{ij}|}_2 }
 \end{align}
 
 \noindent illustrated in Figure~\ref{fig:penalization_term}
@@ -673,25 +655,25 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined 
 \end{figure}
 
 \begin{multicols}{2}
-\noindent indicates that the summation of the squared value of every element in the matrix $A A^T - I$ should be closed to $0$.
+\noindent indicates that the summation of the squared value of every element in the matrix $A A^{\intercal} - I$ should be closed to $0$.
 The term $P$ itself is a kind of loss function, and the value, which is an error,
 should be multipled by a coefficient and then propagate backwards to modify the weights in the our attention mechanism.
 
-To explain this design, let's start by considering two different annotation vectors $ \vec{a^i} $ and $\vec{a^j} $.
+To explain this design, let's start by considering two different annotation vectors $ \ba^i $ and $ \ba^j $.
 Both vectors share the same size $(1 \times n)$.
-Due to the fact that $softmax$ is implemented, the summation of every element of these vectors is $1$.
+Due to the fact that $ \text{softmax}$ is implemented, the summation of every element of these vectors is $1$.
 The values each vector can be consider as a probability distribution.
 
 In an extreme case, there should have the no overlapping between the probability distribution of these two vectors, 
-thus the dot products $ \vec{a^i} \cdot \vec{a^j} $ should be $0$, and can be expressed as
+thus the dot products $ \ba^i \cdot \ba^j $ should be $0$, and can be expressed as
 \begin{align}
     0 < a_{ij} &= \sum^{n}_{k=1} a^i_k a^j_k < 1
 \end{align}
-\noindent where $a_{ij}$ is a non-diagonal element in matrix $A A^T$, also should equal to $0$.
-$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $\vec{a^i}$ and ${\vec{a^j}}$, severally.
+\noindent where $a_{ij}$ is a non-diagonal element in matrix $\bA \bA^{\intercal}$, also should equal to $0$.
+$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $ \ba^i$ and $ \ba^j $, severally.
 The diagonal elements, on the other hand,
-will always be $1$ since they are the dot products of two identity vectors ($ \vec{a^i} \cdot \vec{a^i}$, i=1 $\sim$ r). 
-That's why substracting an identity matrix from $A A^T$ is needed when calculating $P$.
+will always be $1$ since they are the dot products of two identity vectors ($ \ba^i \cdot \ba^i $, i=1 $\sim$ r). 
+That's why substracting an identity matrix from $A A^{\intercal}$ is needed when calculating $P$.
 The author of \cite{lin2017structured} claimed that in this way, 
 each annotation vector $a^i$ is encouraged to focus on fewer parts of the sequence,
 enabling each vector be focused on a single aspect. 
@@ -720,14 +702,37 @@ As showed in Figure~\ref{fig:visualization_vector}
 \end{figure}
 
 \section{Loss function and optimizer}
+\label{sec:loss_function_and_optimizer}
 
+\begin{multicols}{2}
+The loss function for the predicted kinematic variables is mean square error (Equation \ref{eq:mean_square_error}),
+which is widely used in regression problems and along with Adam Optimizer (Equation \ref{eq:adam_optimizer}).
+
+\begin{align}
+    \label{eq:mean_square_error}
+    \text{MSE} &= \frac{1}{n} \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
+\end{align}
+
+\begin{align}
+    \begin{split}
+        \label{eq:adam_optimizer}
+        m_t &= \beta_1 m_{t-1} + ( 1-\beta_1 ) \frac{\partial L_t}{\partial W_t} \\
+        v_t &= \beta_1 v_{t-1} + (1- \beta_2) \left( \frac{\partial L_t}  {\partial W_t} \right)^2 \\
+        \hat{m}_t &= \frac{m_t}{1- \beta_1^t} \\
+        \hat{v}_t &= \frac{v_t}{1-\beta^t_2} \\
+        w &\leftarrow w- \eta \frac{ \hat{m}_t }{ \sqrt{\hat{v}_t} + \epsilon }
+    \end{split}
+\end{align}
+
+
+\end{multicols}
 
 \section{Performance evaluation}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{描述SNR、R2、single session}
 
 To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR), 
-two vectors are required which are the observed value $ \vec{y} = \left[ y_1, \cdots , y_n  \right]^{T} $ and predicted value $ \vec{f} = \left[ f_1, \cdots , f_n \right]^{T} $.
+two vectors are required which are the observed value $ \by = \left[ y_1, \cdots , y_n  \right]^{\intercal} $ and predicted value $ \bf = \left[ f_1, \cdots , f_n \right]^{\intercal} $.
 First we compute the mean of the observed data:
 \begin{align}
     \bar{y} &= \frac{1}{n} \sum^{n}_{i=1} y_i
