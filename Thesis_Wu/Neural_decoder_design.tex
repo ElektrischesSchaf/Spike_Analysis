@@ -503,7 +503,7 @@ When implementing it on GRU,
             z_t \\
             r_t
         \end{pmatrix} &=  \sigma( W_h h_{t-1} ) + \sigma( W_x x_t ) \\
-        \tilde{ h_t } &= \tanh( W x_t +  r_t \odot \left( U h_{t-1} \right) ) \\
+        \tilde{ h_t } &= \text{tanh}( W x_t +  r_t \odot \left( U h_{t-1} \right) ) \\
         h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h_t}
     \end{split}
 \end{align}
@@ -516,7 +516,7 @@ When implementing it on GRU,
             z_t \\
             r_t
         \end{pmatrix} &=   \sigma( LN( W_h h_{t-1} ; \ \alpha_1, \ \beta_1 ) ) + \sigma( LN(  W_x x_t ; \ \alpha_2 , \ \beta_2 ) ) \\
-        \tilde{ h_t } &= \tanh(  LN( W x_t ; \ \alpha_3, \ \beta_3 ) +  r_t \odot LN( U h_{t-1} ; \ \alpha_4, \ \beta_4 ) ) \\
+        \tilde{ h_t } &= \text{tanh} (  LN( W x_t ; \ \alpha_3, \ \beta_3 ) +  r_t \odot LN( U h_{t-1} ; \ \alpha_4, \ \beta_4 ) ) \\
         h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h_t}
     \end{split}
 \end{align}
@@ -575,7 +575,9 @@ The hidden states matrix,
     \end{split}
 \end{align}
 \noindent where $u$ is the number of hidden units and $ T $ is the length of each input sequence.
-The output of the attention module, the annotation vector, is computed as
+$T$ in our case it is the number of past time bins used to decode the current kinematic variables.
+The matrix $\bH$ is the temporal features calculated by RNN in each time step, which is $T$ time steps in total.
+Followed by the attention module, and it can give us the annotation vector, computed as
 \begin{align}
     \label{eq:annotation_vector_calculation}
     \begin{split}
@@ -585,9 +587,8 @@ The output of the attention module, the annotation vector, is computed as
 \end{align}
 \noindent where weight matrix $\bW_{s1} \in \mathbb{R}^{d_a \times 2u} $ and vector $\bw_{s2}  \in \mathbb{R}^{ 1 \times d_a }$.
 $d_a$ is an arbitrary hyperparameter.
-The annotation vector, $ \ba  \in \mathbb{R}^{ 1 \times T } $.
-In our case it is the number of past time bins used to decode the current kinematic variables.
-The softmax function $\mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
+The annotation vector $ \ba  \in \mathbb{R}^{ 1 \times T } $ will have its elements re-distributed by a softmax function $\mathbb{R}^K \rightarrow \mathbb{R}^K$,
+which is defined as
 \begin{align}
     \begin{split}
     \text{softmax}( \bz )_i &= \frac{ e^{ \bz_i } }{ \sum^{K}_{j=1} e^{ \bz_j } } \\ 
@@ -596,14 +597,15 @@ The softmax function $\mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
     \end{split}
 \end{align}
 \noindent such that the summation of the vector $ \ba $ is $1$.
-The embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ is the new embedding matrix and can be fed into the next layer.
+The embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ is the new features with enhanced temporal attribute.
+Every single feature from each neural time bin has been annotated by an score.
 
 % This explain fc in matrix form https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer
 
 The vector representation may focues on only one specific part of the input sequence, 
-and is expected to reflect an aspect in the sequence.
-Multiple aspects can be found if we implement multiple hops of attention to the same sequence.
-Another hyperparameter, $r$, is designed to determine how many different parts can be extracted from the sequence.
+and is expected to reflect only one \textit{aspect} in the sequence.
+Multiple aspects can be extracted if we implement multiple hops of attention to the same input sequence.
+Another hyperparameter, $r$ is designed to determine how many different parts can be extracted from the sequence.
 The representations from Eqation \ref{eq:annotation_vector_calculation} is now changed to the matrix form in Eqation \ref{eq:annotation_matrix_calculation},
 \begin{align}
     \label{eq:annotation_matrix_calculation}
