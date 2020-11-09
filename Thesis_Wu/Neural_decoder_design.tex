@@ -548,6 +548,7 @@ The second case has the mean of zero, but its wild distribution makes only a por
 \end{figure}
 
 \subsection{Attention module}
+\label{sec:attention_module}
 
 \begin{figure}[H]
     \begin{center}
@@ -569,11 +570,11 @@ The output hidden states from the last layer of GRU will be the input of our att
 The hidden states matrix,
 \begin{align}
     \begin{split}
-        \bH_{n \times 2u} &= ( \bh_1, \ \bh_2, \cdots \ \bh_n) \qquad \text{bidirectional RNN} \\
-        \bH_{n \times u} &= ( \bh_1, \ \bh_2, \cdots \ \bh_n)  \qquad \text{one-way RNN}
+        ( \bh_1, \ \bh_2, \cdots \ \bh_T) &= \bH \in \mathbb{R}^{T \times 2u }  \  \text{bidirectional RNN}  \\
+           &= \bH \in \mathbb{R}^{T \times u} \ \ \text{one-way RNN}
     \end{split}
 \end{align}
-\noindent where $u$ is the number of hidden units.
+\noindent where $u$ is the number of hidden units and $ T $ is the length of each input sequence.
 The output of the attention module, the annotation vector, is computed as
 \begin{align}
     \label{eq:annotation_vector_calculation}
@@ -582,12 +583,11 @@ The output of the attention module, the annotation vector, is computed as
         \bm &= \ba \bH
     \end{split}
 \end{align}
-\noindent where $\bW_{s1}$ is a weight matrix with shape $(d_a \times 2u)$ or $(d_a \times u)$ depends on the RNN direction number,
-and $\bw_{s2} $ is a vector with size $(1 \times d_a)$.
+\noindent where weight matrix $\bW_{s1} \in \mathbb{R}^{d_a \times 2u} $ and vector $\bw_{s2}  \in \mathbb{R}^{ 1 \times d_a }$.
 $d_a$ is an arbitrary hyperparameter.
-The size of the annotation vector $ \ba $ is $(1 \times n)$, which is the length of each input sequence and in or case,
-The number of past time bins used to decode the current kinematic variables.
-The function $ \text{softmax}: \mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
+The annotation vector, $ \ba  \in \mathbb{R}^{ 1 \times T } $.
+In our case it is the number of past time bins used to decode the current kinematic variables.
+The softmax function $\mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined as
 \begin{align}
     \begin{split}
     \text{softmax}( \bz )_i &= \frac{ e^{ \bz_i } }{ \sum^{K}_{j=1} e^{ \bz_j } } \\ 
@@ -596,7 +596,7 @@ The function $ \text{softmax}: \mathbb{R}^K \rightarrow \mathbb{R}^K$ is defined
     \end{split}
 \end{align}
 \noindent such that the summation of the vector $ \ba $ is $1$.
-The embedding vector $ \bm $ is the new feature of size $(1 \times u)$, and can be fed into the next layer.
+The embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ is the new embedding matrix and can be fed into the next layer.
 
 % This explain fc in matrix form https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer
 
@@ -612,12 +612,12 @@ The representations from Eqation \ref{eq:annotation_vector_calculation} is now c
         \bM &= \bA \bH
     \end{split}
 \end{align}
-\noindent where the vector $ \bw_{s2} $ is extend into a $(r \times d_a)$ matrix, denoted as $ \bW_{s2}$,
-and the embedding vector $ \bm $ becomes a $(r \times 2u)$ or $(r \times u)$ matrix $ \bM $, depending on the RNN direction number.
+\noindent where the vector $ \bw_{s2}  \in \mathbb{R}^{ 1 \times d_a } $ turned into a matrix$ \bW_{s2} \in \mathbb{R}^{r \times d_a }  $,
+and the embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ became a matrix $\bM \in \mathbb{R}^{r \times 2u} $.
 
-Eqation \ref{eq:annotation_matrix_calculation} is equivalent to a 2-layer MLP,
-the first layer reduces the dimension from $u$ to $d_a$, or in bidirectional case, reduces $2u$ to $d_a$.
-The second layer reduces the dimension from $d_a$ to $r$, as Figure~\ref{fig:multiply_attetion_vecotr_to_hidden_states} illustrated,
+Eqation \ref{eq:annotation_matrix_calculation} is equivalent to a 2-layer MLP.
+The first layer reduces the dimension from $2u$ to $d_a$, 
+and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in Figure~\ref{fig:multiply_attetion_vecotr_to_hidden_states}.
 
 \end{multicols}
 
