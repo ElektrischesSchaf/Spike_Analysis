@@ -156,7 +156,14 @@ Due to the considerably low frequency of LFPs, they can be sampled, processed, a
 These studies show that low frequency signals are also informative regarding neural signal decoding \citep{wang2014long}. 
 As for human, the LFPs can be obtained by electroencephalography (EEG), and some studies consider the phase of LFPs from a specific frequency band, 
 instead of the amplitude of the signal, to be the only feature in decoding motor imagery tasks \citep{kumar2018eeg} or to proof the correlation between spatial updating process and the rhythmic process in the brain \citep{mclelland2016phase}.
+
+\todo[inline, author=Wu, color=blue!40]{ 1. 比較歸納 LFP decoders 的同異處\\  2.與 Spike decoders 比較}
 Table \ref{tab:LFP_research} lists several researches regarding the LFPs, and the frequency bands they were using the perform specific tasks.
+The traditional decoders for LFPs are Bayesian families \citep{scherberger2005cortical, quiroga2009, ince2010high}, linear models \citep{flint2012accurate, tan2016decoding} and SVM \citep{kumar2018eeg}.
+Unlike the decoders for neural spike signal, Kalman filter is not popular for LFPs.
+Deep learning decoder for the LFP from motor cortex is the LSTM \citep{ahmadi2019decoding}.
+But they only predicted velocity, without decoding position and acceleration.
+
 \end{multicols}
 
 
@@ -199,7 +206,6 @@ It seems that the internal dynamics of can not highlight the different movement 
 In the field of natural language processing, people have successfully hightlighted the specific texts among a sentence or a paragraph, 
 which are the most relevant to the translation or classification tasks.
 Pointing out the dominant key words who contribute the most in their deep learning result makes it easier for human to evaluate the strength of the model.
-
 \end{multicols}
 
 \section{Development of normalization in deep learning}
@@ -252,13 +258,14 @@ the output from previous timestep will be the input of current timestep.
 \end{multicols}
 
 \begin{figure}[H]
+    \todo[inline, author=Wu, color=blue!40]{Figure~\ref{fig:rnn_encoder_decoder} 是網路上的圖，之後會重畫}
     \begin{center}
         \includegraphics[width=0.6\textwidth]{rnn_encoder_decoder.png}
         \caption{RNN encoder-decoder}
         \label{fig:rnn_encoder_decoder}
     \end{center}
 \end{figure}
-\todo[inline, author=Wu, color=blue!40]{Figure~\ref{fig:rnn_encoder_decoder} 是網路上的圖，之後會重畫}
+
 
 \begin{multicols}{2}
 But when it comes to processing long time-sequence data, inevitably will the models facing the problem called long-term dependencies. 
@@ -280,7 +287,7 @@ Then \cite{vaswani2017attention} adapted similar idea but discarded the RNN arch
 \end{multicols}
 
 \begin{longtable}{cccc}
-    \caption{Development of sequence attention}\\
+    \caption{Development of sequential attention}\\
     \hline
     \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Aritcle}}} & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Novelty} }}   & \multicolumn{1}{c}{  \multirow{1}{*}{\textbf{Applicable}}} & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Tasks}}} \\
     \multicolumn{1}{c}{}                                    & \multicolumn{1}{c}{}                                              & \multicolumn{1}{c}{  \multirow{1}{*}{\textbf{Model}}}      & \multicolumn{1}{c}{}                                       \\
@@ -302,8 +309,10 @@ Then \cite{vaswani2017attention} adapted similar idea but discarded the RNN arch
 
 Table~\ref{tab:rnn_attention_equations_study} listed the mathematicle equations of the different kinds attention modules for RNNs.
 It showes how the sequential attention evolved from sequence to sequence models \citep{bahdanau2014neural, luong2015effective}
-into the ones for classification and sentiment analysis, by calculating the correlation from every two hidden states in the same sequence  \citep{cheng2016long, yang2016hierarchical}.
-However, this procedure costs considerably amount of computational time, thus a simplified version known as local attention as introduced \citep{luong2015effective}.
+into the ones for classification and sentiment analysis, 
+by calculating the correlation from every two hidden states in the same sequence  \citep{cheng2016long, yang2016hierarchical}.
+However, this procedure costs considerably amount of computational time, 
+thus a simplified version known as local attention as introduced \citep{luong2015effective}.
 Followed by the works of \cite{wang2016attention, lin2017structured, ma2017dipole, hu2018novel,cui2019hierarchical}, 
 which all implemented the similar local attention techniques.
 

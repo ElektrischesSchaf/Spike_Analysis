@@ -85,8 +85,9 @@ A new non-linear tuning method \textit{Recurrent exponential-family harmonium} i
 which they claimed that it outperforms Unscented Kalman filter in neural decoding. 
 Although they have obtained high performances in the position and velocity decoding tasks, 
 but failed to decode acceleration with the accuracy as good as the preceding two kinematic variables.
-Other improved methods for Kalman filter in \cite{vaskov2018cortical} is only applicable when the target of the cue is aquired, 
-thus not suitable in the cases.
+Other improved methods for Kalman filter in \cite{vaskov2018cortical} requires two stage of training,
+and it must acquire the target coordinates in the second training phase.
+
 
 RNNs are the most promising tool to outperform Kalman filter in BCI \cite{hosman2019bci}.
 \todo[inline, author=Wu, color=blue!40]{詳細說明這些RNN方法改良了甚麼問題}
@@ -147,10 +148,4 @@ we believe it can provide potent reasons for us to explain our the design of our
 \begin{multicols}{2}
 In order to reduce the difficulty of data acquisition, we only consider neural signal from monkeys instead of human or other kinds of animal. 
 Furthermore, no animal experiments were conducted in this reseach. All of hand movement decoding were computed off-line.
-\end{multicols}
-
-\section{Organization of This Thesis}
-\label{sec:org}
-\begin{multicols}{2}
-\todo[inline]{跳過}
 \end{multicols}
