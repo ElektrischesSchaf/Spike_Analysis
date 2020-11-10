@@ -1,13 +1,13 @@
-\todo[inline]{探討每個experimental result小節的原因}
+\todo[inline, color=green!40]{探討每個experimental result小節的原因}
 
 \section{Contributions of each part in neural decoder}
 \begin{multicols}{2}
-\todo[inline]{探討neural decoder的每個元件的貢獻}
+\todo[inline, color=green!40]{探討neural decoder的每個元件的貢獻}
 \end{multicols}
 
 \subsection{Effect of layer normalization}
 \begin{multicols}{2}
-\todo[inline]{LN 對於訓練模型收斂速度的提升}
+\todo[inline, color=green!40]{LN 對於訓練模型收斂速度的提升}
 The effect of layer normalization in the position, velocity and acceleration decoders is showed in Figure~\ref{fig:loss_vs_epoch}.
 These diagrams help us analysis the model based on the how many epoch numbers are required for the testing loss to converge.
 In the position and velocity decoders, it seems that implementing layer normalization does not contribute to a better convergence significantly since two classes of curve overlap.
@@ -50,11 +50,11 @@ the weighted average $R^2$ across all 47 sessions in x-axis position and both ax
 
 \subsection{Effect of temporal self-attention}
 \begin{multicols}{2}
-\todo[inline]{ 比較有/無 attention 的預測軌跡 }
+\todo[inline, color=green!40]{ 比較有/無 attention 的預測軌跡 }
 \end{multicols}
 
 
-\section{The reason why our neural decoder surpass others}
+\section{The reason why our neural decoder surpasses others}
 \begin{multicols}{2}
 \todo[inline]{探討neural decoder比其他方法好的原因}
 Our attention mechanism modified the method of combining the attention map and the GRU output feature map together from \cite{lin2017structured}, 
@@ -68,7 +68,7 @@ annotating the same sequence with multiple attention vectors.
 
 \section{The insight our attention module provide}
 \begin{multicols}{2}
-\todo[inline]{探討attention找到了甚麼重點?}
+\todo[inline, color=green!40]{探討attention找到了甚麼重點?}
 Our temporal attention mechanism can find the different pattern in different kinematic variables.
 Especially it is the point-to-point movement we are trying to decode, there exists no regular pattern in the trajectories.
 With the help of attention mechanism, the model can somehow
@@ -77,7 +77,7 @@ With the help of attention mechanism, the model can somehow
 
 \section{Connection between neural network and actual brain function}
 \begin{multicols}{2}
-\todo[inline]{探討網路內部的運作方式跟大腦的關連}
+\todo[inline, color=green!40]{探討網路內部的運作方式跟大腦的關連}
 The attention mechanism acts as a visualization tool for depicting how the model sees.
 Just like human brain, first we have to browse trough the whole sequence of the data, 
 then by our own experiacne to 
@@ -89,7 +89,7 @@ then by our own experiacne to
 
 \section{Reason behind failure cases}
 \begin{multicols}{2}
-\todo[inline]{探討失敗例子的原因}
+\todo[inline, color=green!40]{探討失敗例子的原因}
 \begin{itemize}
     \item \textbf{Wrong weights for the two loss functions}\\
     we have two types of loss functions, MSE and the penalization term.
