@@ -470,8 +470,7 @@ In Section~\ref{sec:internal_dynamics_of_network} we provided figures to visuali
 % https://towardsdatascience.com/understanding-dataset-shift-f2a5a262a766
 \begin{multicols}{2}
     
-With the novel normalization method proposed by \cite{ba2016layer}, 
-\textit{layer normalization} is designed to overcome the setbacks of batch normalization when it is implemented in RNNs.
+A novel normalization method proposed by \cite{ba2016layer} called \textit{layer normalization} is designed to overcome the setbacks of batch normalization when it is implemented in RNNs.
 Internal covariate shift is a problem caused by the variant distribution of the output of a previous layer,
 which are used to be the input of its following layer.
 It can be mitigated by fixing the mean and the variance of the summed inputs within each layer.
@@ -553,9 +552,11 @@ When implementing it on GRU,
 \noindent where $\alpha_i$ and $\beta_i$ are initialized as vector of zeros and ones, respectively.
 
 The affect of the layer normalization is illustrated in Figure~\ref{fig:layer_norm_before_after},
-whicih we simulate two extreme cases of hidden state distributions.
-First one has a dense distribution but the mean is deviated from zero, making most of its values above $+4$, and will be mapped approximately to zero no matter in both activation.
-The second case has the mean of zero, but its wild distribution makes only a portion of its elements have gradient other than zero, after activations.
+where we simulated two extreme cases of hidden state distributions.
+First one has a dense distribution but the mean is deviated from zero, 
+making most of its values above $+4$, 
+and they will be mapped approximately to zero after applied to in both sigmoid or hyperbolic tangent activation.
+The second case has the mean of zero, but its broad distribution makes only a portion of its elements have their gradients non-zero after the activations.
 \end{multicols}
 
 \begin{figure}[H]
@@ -666,26 +667,25 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
 
 
 \subsection{Penalization Term}
+\label{sec:penalization_term}
 \begin{multicols}{2}
-The purpose of developing such loss function specifically for our attention module is to avoid repetitive information.
-The embedding matrix $M$ should contains $r$ different parts of aspects from the same sequence.
-But without further constraints, the attention module might always provide similar summation weights for all the $r$ hops.
-\cite{lin2017structured} also proposed an approach to optimize the distribution of the annotations across sequence,
-named the \textit{penalization term} and defined as follows,
+The purpose of developing such loss function in this attention module is to avoid repetitive information.
+The embedding matrix $M$ should contains $r$ different aspects from the same input neural signal sequence.
+But without further constraints, the attention module might always provide similar summation annotations for all the $r$ hops.
+\cite{lin2017structured} proposed an approach to optimize the distribution of the annotations across the sequence,
+named the \textit{penalization term} and it is defined as follows,
 
 \begin{align}
     \label{eq:penalization_term}
     P &= {\norm{ \bA \bA^{\intercal} - \bI }_F}^2
 \end{align}
 
-\noindent where $A A^{\intercal}$ is a square matrix of size $(r \times r)$, 
-and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined as
+\noindent where $A A^{\intercal} \in \mathbb{R}^{ r \times r} $, 
+and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 \begin{align}
     \label{eq:frobenius_norm}
     \norm{ \bX }_F &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|x_{ij}|}_2 }
 \end{align}
-
-\noindent illustrated in Figure~\ref{fig:penalization_term}
 
 \end{multicols}
 
@@ -700,26 +700,31 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, which is defined 
 \end{figure}
 
 \begin{multicols}{2}
-\noindent indicates that the summation of the squared value of every element in the matrix $\bA \bA^{\intercal} - \bI$ should be closed to $0$.
-The term $P$ denotes a loss function, 
-which should be multipled by a coefficient and then propagate backwards to modify the weights in the our attention module.
 
-To explain the equation, let's start by considering two different annotation vectors $ \ba^i $ and $ \ba^j $.
-Both vectors share the same size $(1 \times n)$.
-Due to the fact that $ \text{softmax}$ is implemented, the summation of every element of these vectors is $1$.
-The values each vector can be consider as a probability distribution.
+\noindent Figure~\ref{fig:penalization_term} showed that the summation of the squared value of every element in the matrix $\bA \bA^{\intercal} - \bI$ should be closed to $0$.
+By implementing $P$ as a loss function,
+its loss will be propagated backwards to alter the weights in the our attention module.
 
-In an extreme case, there should have the no overlapping between the probability distribution of these two vectors, 
-thus the dot products $ \ba^i \cdot \ba^j $ should be $0$, and can be expressed as
+To further explain its concept,
+let's start by considering two different annotation vectors $ \ba^i \in \mathbb{R}^{1 \times T} $ and $ \ba^j \in \mathbb{R}^{1 \times T}$.
+Due to the fact that $ \text{softmax} $ is implemented,
+the summation from all the element within the same vector is $1$.
+The values in each vector can be considered as probability distribution.
+
+In an extreme case, 
+there should have the no overlapping between the probability distributions in these two vectors, 
+thus the result from dot products $ \ba^i \cdot \ba^j $ should be $0$, and the calculation can be expressed as
 \begin{align}
     0 < a_{ij} &= \sum^{n}_{k=1} a^i_k a^j_k < 1
 \end{align}
-\noindent where $a_{ij}$ is a non-diagonal element in matrix $\bA \bA^{\intercal}$, also should equal to $0$.
-$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $ \ba^i$ and $ \ba^j $, severally.
-The diagonal elements, on the other hand,
-will always be $1$ since they are the dot products of two identity vectors ($ \ba^i \cdot \ba^i $, i=1 $\sim$ r). 
+\noindent where $a_{ij}$ is a non-diagonal element in matrix $\bA \bA^{\intercal}$, 
+also should be equal to $0$.
+$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $ \ba^i$ and $ \ba^j $ severally.
+The diagonal elements on the other hand,
+will always be $ 1 $ since they are the dot products of two identity vectors,
+$ \ba^i \cdot \ba^i $, i=1 $\sim$ r. 
 That's why substracting an identity matrix from $A A^{\intercal}$ is needed when calculating $P$.
-The author of \cite{lin2017structured} claimed that in this way, 
+\cite{lin2017structured} claimed that in this way, 
 each annotation vector $a^i$ is encouraged to focus on fewer parts of the sequence,
 enabling each vector be focused on a single aspect. 
 
@@ -750,7 +755,7 @@ As showed in Figure~\ref{fig:visualization_vector}
 \label{sec:loss_function_and_optimizer}
 
 \begin{multicols}{2}
-The loss function for the predicted kinematic variables is mean square error (Equation \ref{eq:mean_square_error}),
+The first loss function for the predicted kinematic variables is mean square error (Equation \ref{eq:mean_square_error}),
 which is widely used in regression problems.
 
 \begin{align}
@@ -758,7 +763,16 @@ which is widely used in regression problems.
     L_{MSE} &= \frac{1}{n} \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
 \end{align}
 
-Equation \ref{eq:adam_optimizer} is the Adam optimizer \citep{kingma2014adam}, 
+The second loss function is the penalization term explained in Section~\ref{sec:penalization_term}.
+Summing them together with a coefficient for each loss function (Equation \ref{eq:loss_function_with_two_combined}),
+$C_{1}$ and $ C_{2} $ are capable of weighing these two losses.
+
+\begin{align}
+    \label{eq:loss_function_with_two_combined}
+    L &= C_{1} L_{MSE} + C_{2} P
+\end{align}
+
+Equation \ref{eq:adam_optimizer} is the Adam optimizer \citep{kingma2014adam} used in our research, 
 a popular algothrim who combined AdaGrad \citep{duchi2011adaptive} and RMSProp \citep{tieleman2012lecture}.
 
 \begin{align}
@@ -772,10 +786,8 @@ a popular algothrim who combined AdaGrad \citep{duchi2011adaptive} and RMSProp \
     \end{split}
 \end{align}
 
-\noindent the Adam optimizer updates moving averages of the gradient $m_t$ and the squared gradient $v_t$,
+\noindent Adam optimizer updates moving averages of the gradient $m_t$ and the squared gradient $v_t$,
 where the hyperparameter $\beta_1, \ \beta_2$ control the exponential decay rates of these moving averages.
-
-\todo[inline]{Loss function with Penalization Term}
 
 \end{multicols}
 
@@ -798,6 +810,6 @@ First we compute the mean of the observed data:
     \text{SNR} &\equiv -10 \log_{10} (1 - R^{2})
 \end{align}
 
-\noindent and since the length of the testing data varied, weighted average is used to compute the mean performance across sessions,
-with the weights equal to the testing data length.
+\noindent and since the length of the testing data varied, weighted average is used to compute the mean performance across 47 sessions,
+with the weights are the testing data length in each session.
 \end{multicols}
