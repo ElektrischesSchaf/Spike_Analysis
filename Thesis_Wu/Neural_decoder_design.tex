@@ -8,13 +8,20 @@
 \begin{multicols}{2}
 The first dataset, \textbf{Nonhuman Primate Reaching with Multichannel Sensorimotor Cortex Electrophysiology} is provided by \cite{makin2018} and made public available at \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
 It containes the recordings from two Rhesus macaque monkeys, named Indy and Loco.
-Each monkey performed a number of sessions, and in our research, a session means a consecutive experiment recording within several minutes.
-The lengths of the sessions are not consistant, but normally they are in the range of 5 to 20 minutes.
+Each monkey contributed a several sessions of data.
+One session represents a consecutive experiment recording within several minutes.
+The lengths of the sessions are not consistant, and mostly the durations are in the range of 5 to 20 minutes.
 Two 96-channel silicon microelectrode arrays (Figure~\ref{fig:utah_array}) were chronically implanted into their sensorimotor cortex.
-Each array consisted of 96 electrodes, and the distance between two adjacent electrodes is $400 \mu m$. All electrodes covered the area of size $4mm \times 4mm$.
-For each monkey two arrays were implanted, one was in primary motor cortex (M1) and the other was in primary somatosensory cortex (S1).
-Some sessions of the dataset were made with the recording from both arrays, whereas most of the sessions only consisted of the recording from the M1 array.
-The sampling rate of both arrays is 24.4kHz. More details regarding array type, sorted units numbers, and duration of each session can be found in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
+Each array consisted of 96 electrodes, and the distance between two adjacent electrodes is $400 \mu m$. 
+All electrodes covered the area of size $4mm \times 4mm$.
+For each monkey two arrays were implanted, 
+one was laid in primary motor cortex (M1) and the other was in primary somatosensory cortex (S1).
+Some sessions of the dataset were constituted by the recording from both arrays, 
+whereas most of the sessions consisted of the recording from the M1 array only.
+The sampling rate of both arrays is 24.4kHz. 
+More details regarding recording cortex area,
+sorted units numbers, 
+and duration of each session can be found in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
 \end{multicols}
 
 \begin{figure}[H]
@@ -22,7 +29,7 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
         \begin{subfigure}{0.6\textwidth}
             \captionsetup{width=0.5\textwidth}
             \includegraphics[width=1\textwidth]{Utah_array.jpg}
-            \caption{Utah Array}
+            \caption{Utah array}
             \caption*{\small{source by \url{ https://commons.wikimedia.org/wiki/File:Utah_array_pat5215088.jpg }}}
             \medskip
         \end{subfigure}
@@ -37,37 +44,39 @@ The sampling rate of both arrays is 24.4kHz. More details regarding array type, 
             \caption{ Indy S1 }
         \end{subfigure}
         \captionsetup{width=0.5\textwidth}
-        \caption{The Electrode Array and the Spatial Arrangement of 96 Channels}
+        \caption{ Electrode array and the apatial arrangement of 96 channels }
         \label{fig:utah_array}
     \end{center}
 \end{figure}
 
 \begin{multicols}{2}
-The electrode arrays' sampling rate was 24.4kHz, as mentioned in Section , and their recordings were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
+The raw recording from the electrode arrays were filtered with an IIR bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
 Spikes were detected and sorted online by \cite{makin2018} with a custom software written in C++.
-In Figure \ref{fig:raw_to_spike}, the upper subplot is the raw broadband signal and the bottom subplot is the filtered high-frequency signal and the detected spikes.
+In Figure \ref{fig:raw_to_spike}, 
+the upper subplot is the raw broadband signal and the bottom subplot is the filtered high-frequency signal and the detected spikes.
 \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{raw_to_spike.png}
         \captionsetup{width=0.5\textwidth}
-        \caption{Raw Data Waveform and the Detected Spikes}
+        \caption{Raw data waveform and the detected spikes}
         \fontsize{10}{12}
         \label{fig:raw_to_spike}
     \end{center}
 \end{figure}
 
 \begin{multicols}{2}
-To boost the accuracy of the decoders, many researches used several past BMI signal samples to predict the kinematic of the right next time step. 
+To boost the accuracy of the decoders, 
+BCI researches use past neural signals to predict the current kinematic 
 The term \textit{tap size} indicates the number of the past input neural signal samples \citep{nakagome2020empirical}, 
-which in our case, is the number of past time bins.
+In our case it is the number of past time bins to decode each sample point.
 As an example illustrated in Figure~\ref{fig:time_bin_and_prediction}, 
 the input dimension is the number of sorted units, and the model has the tap size of 4.
 Since it performs a continuous decoding senario, 
-every kinematic variables in each time bin expect for the first 4 ones will be predicted.
-And the input time bins used to predict the kinematic variable at time $t$ and the time bins used to predict at time $t-1$ happens to overlap,
-and since in this case the tap size is 4, the overlapping time bins are 3.
+the kinematic in each time bin expect for the very first 4 ones in the recording will be predicted.
+The input time bins used to predict the kinematics at time $t$ and the time bins used to predict at time $t-1$ happen to overlap,
+and since in this case the tap size is 4, the number of overlapping time bins are 3.
 \end{multicols}
 
 \todo[inline, author=Prof.]{ Figure~\ref{fig:time_bin_and_prediction} 與tap size參考以下論文的Figure 3 Inhibition of Long-Term Variability in Decoding Forelimb Trajectory Using Evolutionary Neural Networks With Error-Correction Learning}
@@ -82,13 +91,16 @@ and since in this case the tap size is 4, the overlapping time bins are 3.
 \todo[inline, author=Wu, color=blue!40]{ 先說明 tap size ，time bin 的使用方式  }
 
 \begin{multicols}{2}
-Due to the spike detecting threshold they assigned in different sessions, the sorted units in each session varied from 2 to 4.
-For all sessions preserved an unsorted \textit{hash} unit for each recording channel.
-Theses units contained all events which surpass the threshold on a channel but which did not match any of the operator defined templates.
-However, \cite{todorova2014sort} showed that there exists some information in the hash unit thus keeping them is benefitial in the movement decoding tasks. 
-As showed in Figure \ref{fig:indy_20160407_02_M1_ch_60}, which visualized the M1 spike train in channel 60 from session \textbf{indy\_20160407\_02}.
-The black rasters are the spikes classified as hash unit, and this session has two more sorted units, marked in red and blue respectively.
-Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode array in the same session and same time interval.
+Due to the spike detecting threshold they determined in different sessions, 
+the number of sorted units in each session varied from 2 to 4.
+But all sessions it preserved an unsorted \textit{hash} unit in each channel.
+These units contained all neuron firing events which surpassed the voltage threshold but they did not match any of the operator defined templates.
+\cite{todorova2014sort} showed that there exists some information in the hash unit thus keeping them is benefitial in the movement decoding tasks. 
+As showed in Figure \ref{fig:indy_20160407_02_M1_ch_60}, 
+we visualized the M1 spike train in channel 60 from session \textbf{indy\_20160407\_02}.
+The black rasters are the spikes classified as hash unit, 
+and this session has two more sorted units, as they were marked in red and blue rasters respectively.
+Figure \ref{fig:indy_20160407_02_S1_ch_60} showed the spike train from S1 electrode array in the same session and same recording interval.
 \end{multicols}
 
 \begin{figure}[H]
@@ -109,12 +121,12 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} is the spike train from S1 electrode 
 \todo[inline, author=Wu, color=blue!40]{ 再說明有些 session 有 M1 S1 兩個電極的資訊 }
 
 \begin{multicols}{2}
-Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms bins.
-For sessions contain both M1 and S1 electrode array, we simply concatenate the two spike trains.
+Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms time window.
+For sessions contained both M1 and S1 electrode array, 
+we concatenated the two spike trains.
 As from Figure~\ref{fig:s1_and_m1_spike_train} the spike trains turned into firing rate in Figure~\ref{fig:the_result_heatmap}.
-For other experiments, different width of time bins were used to acquire different firing rates.
+For other experiments, different bin width were used to obtain different firing rates.
 \end{multicols}
-
 
 \begin{figure}[H]
     \centering
@@ -133,11 +145,10 @@ For other experiments, different width of time bins were used to acquire differe
 \end{figure}
 \todo[inline, author=Wu, color=blue!40]{ 如何將 M1 與 S1 電極收到的 spike train 轉換成 firing rate，從 raster plot 變 heatmap。同時解釋 M1 與 S1 的 firing rate 是直接 concatenate 在一起。 }
 
-
 \begin{multicols}{2}
 The heatmap of the firing rate within 50 time bins and the 6 kinematic variables are showed in Figure \ref{fig:Firing_rate_heatmap_and_all_kinematic_variables}.
-For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x- and y-axis, but omitting the z-axis.
-The heatmap is showing an relationship between the occurrance of movements and the intensity of spike firing.
+For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x and y-axis only without the z-axis.
+The heatmap is showing an obvious relationship between the occurrance of movements and the intensity of spike firing.
 Empty units in this session have been removed, as actual number of sorted units in each session is listed in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
 \end{multicols}
 
@@ -157,7 +168,8 @@ Empty units in this session have been removed, as actual number of sorted units 
 \begin{multicols}{2}
 \todo[inline, color=green!40]{(換句話說Makin論文)，包含運動軌跡、experimental setup}
 
-The monkeys were trained to perform reaching tasks with their arms in a transverse plane below their shoulder, with targets showing up in a virtual reality environment.
+The monkeys were trained to conduct reaching tasks with their arms in a transverse plane below their shoulder, 
+and the targets were showing up one by one in a virtual reality environment.
 Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
 and for monkey Loco square grid of size $6 \times 6$ was used.
 \end{multicols}
@@ -189,7 +201,7 @@ and for monkey Loco square grid of size $6 \times 6$ was used.
 \todo[inline, author=Wu, color=blue!40]{ 3個panel的長寬尺寸還沒調成一致 }
 
 \begin{multicols}{2}
-Only when the monkeys' fingertip reached the acceptance zone of size $7.5mm  \times 7.5mm$ which centered on each target for 450ms would the system consider a legitimate touch and move on to another cue.
+Only when the monkeys' fingertips reached the acceptance zone of size $7.5mm  \times 7.5mm$ which were centered on each target for 450ms would the system consider a valid touch and move on to another cue.
 Figure \ref{fig:X-Y_trajectory_in_VR_panel} 
 \end{multicols}
 
@@ -203,8 +215,8 @@ Figure \ref{fig:X-Y_trajectory_in_VR_panel}
 \end{figure}
 
 \begin{multicols}{2}
-The recorded tragectory in the x- and y-axis as well as the target cue for both directions is in Figure \ref{fig:x_and_y_trajectory_and_cue},
-where the solid lines indicate the actual tragectory of the fingertip and the dash lines indicate the target cue.
+The recorded tragectories in the x and y-axis as well as the target cues for both directions are in Figure \ref{fig:x_and_y_trajectory_and_cue},
+where the dash lines indicate the actual tragectory of the fingertip and the solid vertical gray lines indicate the time point when target cues altered.
 \end{multicols}
 
 \begin{figure}[H]
@@ -219,11 +231,14 @@ where the solid lines indicate the actual tragectory of the fingertip and the da
 
 \begin{multicols}{2}
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
-so we must multiply $-10$ in both x-and y-axis recordings in order to transit the fingertip coordinate to the target coordinate with the unit in micrometer.
-An opaque barrier lied between the eyes of the monkeys and their finger tips, so that the monkeys were not able to see their hands directly during experiments.
+so we must multiply a constant $-10$ to both x and y-axis recordings in order to transit the fingertip coordinate to the target coordinate with the unit in micrometer ($mm$).
+An opaque barrier lay between the eyes of the monkeys and their fingertips,
+so that the monkeys were not able to see their hands directly during experiments.
 The experimental environment is showed in Figure \ref{fig:monkey_experiment}.
-Fingertip position was recorded simultaneously with a six-axis electromagnetic position sensors, with a 250Hz sampling rate.
-The fingertip velocity and acceleration were then computed afterwards by discrete derivative, which is simply the differeces divided by the sampling period.
+Fingertip position was recorded simultaneously by a 6-axis electromagnetic position sensors,
+with a 250Hz sampling rate.
+The fingertip velocity and acceleration were then computed afterwards by discrete derivative, 
+which is simply the differences between two samples divided by the sampling period.
 \end{multicols}
 
 
@@ -239,8 +254,8 @@ The fingertip velocity and acceleration were then computed afterwards by discret
 \section{Animal center-out task}
 
 \begin{multicols}{2}
-    We have the second dataset is provided by \cite{dyer2017cryptography} and available at \url{https://github.com/KordingLab/DAD}.
-    Only 2 sessions from monkey C was considered in \cite{makin2018}, both of them are center out movements as showed in Figure~\ref{fig:xy_plane_trajectory_chewie}.
+The second dataset is provided by \cite{dyer2017cryptography} and available at \url{https://github.com/KordingLab/DAD}.
+Only 2 sessions from monkey C was considered in \cite{makin2018}, both of them are center out movements as showed in Figure~\ref{fig:xy_plane_trajectory_chewie}.
 \end{multicols}
 
 \begin{figure}[H]
@@ -263,11 +278,11 @@ Unlike grid reaching task experiments, this dataset is constituted by trials.
 At the beginning of each trail the subject must move the cursor into the center area of size $2cm \times 2cm$.
 After holding for 500 to 1500 ms, another 2cm target in the outer position will appear.
 8 outer targets are at a 8cm radial distance from the center.
-For monkey C, an auditory 'Go' cue was provided right after the outer target showed up.
+For monkey C, an auditory 'go' cue was provided right after the outer target showed up.
 
 Apparently there exists a deviation between the targets coordinate and the cursors.
 The center point of the cursor's coordinate in these two sessions are inconsistent as well.
-However, the transition matrix is not provided.
+and the transition matrix is not provided.
 Fortunately the target points are not required when implementing hand movement decoders.
 \end{multicols}
 
@@ -275,12 +290,15 @@ Fortunately the target points are not required when implementing hand movement d
 \section{Network architecture}
 \begin{multicols}{2}
 
-We have combined the self-attention module, layer normalization and bidirectional GRU together, 
-and proposed a new aspect of using the same self-attention module to conduct hidden unit attention.
-Figure~\ref{fig:Lin_Attention} showed the model with temporal attention only.
-Where $n$ is the tap size, $u$ is the GRU hyperparameter and is 256 if one-directional, 512 if bidirectional.
-Since this model only perform self-attention along temporal dimension, the dimension of $u$ will be reduced to $d_a$, is chose to be 125 for simplicity, no matter it is one-way or bidirection GRU.
-$r$ is the hops of attention we intend to extract from the same sequence, and it is set as 5 in decoding position and 2 in decoding velocity and acceleration.
+We have combined the temporal self-attention module, layer normalization and bidirectional GRU together.
+Figure~\ref{fig:Lin_Attention} showed our model structure.
+Where $T$ is the tap size, $u$ is the GRU hyperparameter and is 256 in one-way, 512 in bidirectional GRU.
+Since this model only performes self-attention along temporal dimension, 
+the dimension of $u$ will be reduced to $d_a$, 
+is chose to be 125 for simplicity, 
+no matter it is one-way or bidirection GRU.
+$r$ is the hops of attention we intend to extract from the same sequence, 
+and it is set as 5 in decoding position and 2 in decoding velocity and acceleration.
 \end{multicols}
 \begin{figure}[H]
     \begin{center}
@@ -295,9 +313,9 @@ $r$ is the hops of attention we intend to extract from the same sequence, and it
 \subsection{Recurrent Neural Networks}
 \label{sec:RNN}
 Figure~\ref{fig:unfold_rnn} illustrates how basic RNNs \textit{recur}.
-The weights inside one RNN cell is consistant when it processes a sequence.
-This diagram indicates how the input and output from the same RNN cell differs in each timestep.
-
+The weight in each RNN cell remains the same during the process.
+Only after it finishes a whole input sequence can the weight of RNN be adjusted by the output loss.
+This diagram explained how the input and output mapped by the same RNN cell in each time step.
 
 \begin{figure}[H]
     \begin{center}
@@ -310,7 +328,7 @@ This diagram indicates how the input and output from the same RNN cell differs i
 \end{figure}
 
 In our study, we used the model name Gated Recurrent Unit (GRU) as neural decoder.
-The structure inside a GRU cell is showed in Figure \ref{fig:GRU_cell}.
+The structure of a GRU cell is showed in Figure \ref{fig:GRU_cell}.
 
 \begin{figure}[H]
     \begin{center}
@@ -349,12 +367,15 @@ The structure inside a GRU cell is showed in Figure \ref{fig:GRU_cell}.
 
 Where $r_t$ is the \textbf{Reset Gate} and $z_t$ is the \textbf{Update Gate}.
 Notation $\circ$ means elementwise multiplication for two tensors of same shape.
-Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}), which squashes the input value from ($-\infty$, $\infty$) to (0,1).
-$\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}), squashing the input value from ($-\infty$, $\infty$) to (-1,1).
+Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}),
+which squashes the input value from ($-\infty$, $\infty$) to (0,1).
+$\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}),
+squashing the input value from ($-\infty$, $\infty$) to (-1,1).
 Two functions plotted in Figure \ref{fig:sigmoid_and_tanh}.
-However, both of them have drawbacks of saturation problem, e.g., the derivative of input value outside the range [-4, +4] will be nearly 0 after activations, 
+However both of them have drawbacks of saturation problem, 
+e.g., the derivative of input value outside the range [-4, +4] will be nearly 0 after activations, 
 making its gradient vanish and slowing down learninig process.
-The solution about this issue will be addressed in Section~\ref{sec:layer_norm}.
+The solution about this issue will be addressed in Section~\ref{sec:layer_normalization}.
 \end{multicols}
 
 \begin{figure}[H]
@@ -375,22 +396,29 @@ The solution about this issue will be addressed in Section~\ref{sec:layer_norm}.
 \end{figure}
 
 \begin{multicols}{2}
-At each timestep, a single GRU cell can take in two tensors, one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, which is the output from last timestep.
-In the process of calculating each gate value (Equation \ref{eq:reset_gate}, \ref{eq:update_gate}) and $\tilde{h_t}$ (Equation \ref{eq:h_hat}),
-hidden state from last timestep ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
+At each times tep, a single GRU cell can take in two tensors, 
+one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, 
+which is the output from last time step.
+In the process of calculating each gate value (Equation \ref{eq:reset_gate}, 
+\ref{eq:update_gate}) and $\tilde{h_t}$ (Equation \ref{eq:h_hat}),
+hidden state from last time step ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
 and so does the input tensor ($x_t$) will be multiplied by its own weights ($U_r$, $U_z$, $U$).
 After the multiplication, 3 biases ($b_r$, $b_z$, $b$) will be added to the results before entering the activation functions
 
-A hyperparameter named \textbf{hidden dimension} or \textbf{number of hidden units} specified the dimensions for all hidden states, which is a vector.
-This hyperparameter also determine the number of each gates, i.e. with the setting of $u$ hidden units,
-the shape of all hidden states should be $1 \times u$ and there will be $u$ reset gates, $u$ update gates in each cell.
-Typically with the larger the hidden dimension, the more complex the model will be.
-However, sophisticated models tend to overfit.
+A hyperparameter named \textbf{hidden dimension} or \textbf{number of hidden units} specified the dimensions for all hidden state in each time step, which is vector.
+This hyperparameter also determines the number of each gates, 
+i.e. with the setting of $u$ hidden units,
+the shape of all hidden states should be $1 \times u$ and there will be $u$ reset gates, 
+$u$ update gates in each cell.
+Typically with the larger the hidden dimension, 
+the more complex the model will be.
+But highter complexity does not guarantee better performance since sophisticated models tend to overfit.
 
 Figure \ref{fig:two_layer_GRU} demonstrated how hidden states are passed from one layer to another.
-Where $n$ is the order of our input, representing how many the time bins to be fed into the model at a time for decoding the current kinematic states.
-The input data at a time contains the firing rate at this moment $x_t$ and the past firing rate from $x_{t-n+1}$ to $x_{t-1}$.
-The corresponding outputs of our model are the kinematic variables at time $t$.
+Where $T$ is the tap size of our input,
+representing how many past time bins to be fed into the model just to decode the current kinematics.
+The input data at each time step contains the firing rate of this moment $x_t$ and the past firing rate from $x_{t-n+1}$ to $x_{t-1}$.
+Outputs of our model are the predicted kinematic variables for time bin $t$.
 \end{multicols}
 
 \begin{figure}[H]
@@ -404,13 +432,13 @@ The corresponding outputs of our model are the kinematic variables at time $t$.
 \end{figure}
 
 \begin{multicols}{2}
-In the first GRU layer, $n$ bins of firing rate are fed chronologically.
+In the first GRU layer, $T$ bins of firing rate are fed chronologically.
 Hidden state $h^{j}_{i}$ denotes the output tensor from the cell in timestep $i$ and layer $j$, and will be the input to the cell in timestep $i+1$ and layer $j+1$.
 The size of $h^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined parameter.
 Ideally tensor $h^{2}_{t}$ should contain the information from the firing rate $x_{t-n+1}$ to $x_{t-1}$, thus by feeding it to some fully connect layers we can acquire the desired output.
 
 The so called bidirectional RNN is made by simply adding another feeding of the same input sequence in reverse order.
-As in Figure \ref{fig:Bi_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$,
+As in Figure \ref{fig:bidir_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$,
 since the first half of the this vector contains the information by feeding input sequence forward the last half by feeding backward.
 
 
@@ -429,20 +457,21 @@ since the first half of the this vector contains the information by feeding inpu
         \includegraphics[width=0.5\textwidth]{2-way_2-layer_GRU.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Architecture of Bidirectional Two-layer GRU}
-        \fontsize{10}{12}
-        \label{fig:Bi_two_layer_GRU}
+        \label{fig:bidir_two_layer_GRU}
     \end{center}
 \end{figure}
 
-It is the internal dynamics of the GRU to determine the degree of forget and keep the previous information in every timestep.
+It is the internal dynamics of the GRU to determine the degree of forget or keep the previous information in every time step.
+In Section~\ref{sec:internal_dynamics_of_network} we provided figures to visualize these internal dynamics.
 
 
 \subsection{Layer normalization}
 \label{sec:layer_normalization}
 % https://towardsdatascience.com/understanding-dataset-shift-f2a5a262a766
 \begin{multicols}{2}
-With the novel normalization method proposed by \cite{ba2016layer}, \textit{layer normalization} is designed to overcome the setbacks of batch normalization, 
-when it is implemented in RNNs.
+    
+With the novel normalization method proposed by \cite{ba2016layer}, 
+\textit{layer normalization} is designed to overcome the setbacks of batch normalization when it is implemented in RNNs.
 Internal covariate shift is a problem caused by the variant distribution of the output of a previous layer,
 which are used to be the input of its following layer.
 It can be mitigated by fixing the mean and the variance of the summed inputs within each layer.
@@ -503,12 +532,12 @@ When implementing it on GRU,
             z_t \\
             r_t
         \end{pmatrix} &=  \sigma( W_h h_{t-1} ) + \sigma( W_x x_t ) \\
-        \tilde{ h_t } &= \text{tanh}( W x_t +  r_t \odot \left( U h_{t-1} \right) ) \\
-        h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h_t}
+        \tilde{h}_t &= \text{tanh}( W x_t +  r_t \odot \left( U h_{t-1} \right) ) \\
+        h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h}_t
     \end{split}
 \end{align}
 
-\noindent layer normalization is applied as follows:
+\noindent layer normalization in GRU is applied as follows:
 
 \begin{align}
     \begin{split}
@@ -516,8 +545,8 @@ When implementing it on GRU,
             z_t \\
             r_t
         \end{pmatrix} &=   \sigma( LN( W_h h_{t-1} ; \ \alpha_1, \ \beta_1 ) ) + \sigma( LN(  W_x x_t ; \ \alpha_2 , \ \beta_2 ) ) \\
-        \tilde{ h_t } &= \text{tanh} (  LN( W x_t ; \ \alpha_3, \ \beta_3 ) +  r_t \odot LN( U h_{t-1} ; \ \alpha_4, \ \beta_4 ) ) \\
-        h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h_t}
+        \tilde{h}_t &= \text{tanh} (  LN( W x_t ; \ \alpha_3, \ \beta_3 ) +  r_t \odot LN( U h_{t-1} ; \ \alpha_4, \ \beta_4 ) ) \\
+        h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h}_t
     \end{split}
 \end{align}
 
@@ -726,7 +755,7 @@ which is widely used in regression problems.
 
 \begin{align}
     \label{eq:mean_square_error}
-    L &= \frac{1}{n} \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
+    L_{MSE} &= \frac{1}{n} \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
 \end{align}
 
 Equation \ref{eq:adam_optimizer} is the Adam optimizer \citep{kingma2014adam}, 
@@ -746,7 +775,7 @@ a popular algothrim who combined AdaGrad \citep{duchi2011adaptive} and RMSProp \
 \noindent the Adam optimizer updates moving averages of the gradient $m_t$ and the squared gradient $v_t$,
 where the hyperparameter $\beta_1, \ \beta_2$ control the exponential decay rates of these moving averages.
 
-
+\todo[inline]{Loss function with Penalization Term}
 
 \end{multicols}
 

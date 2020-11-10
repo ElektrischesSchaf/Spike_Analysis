@@ -63,15 +63,15 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
 
 \section{Comparison of state-of-the-art}
 \begin{multicols}{2}
-\todo[inline]{包含Wiener filter、KF、簡單的neural network、Makin的方法，每個方法引用一個經典的論文，放入以下論文的Figure 4
+\todo[inline, color=green!40]{包含Wiener filter、KF、簡單的neural network、Makin的方法，每個方法引用一個經典的論文，放入以下論文的Figure 4
 Superior arm-movement decoding from cortex with a new, unsupervised-learning algorithm}
 \end{multicols}
 
 \section{Qualitative analysis}
 \label{sec:qualitative_analysis}
 \begin{multicols}{2}
-\todo[inline]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
-\todo[inline]{ bidirectional GRU + L.N. + attention  結果，分別畫出位置、速度、加速度對時間的預測圖。位置的解碼結果可以畫出 2D 平面軌跡圖。 }
+\todo[inline, color=green!40]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
+\todo[inline, color=green!40]{ bidirectional GRU + L.N. + attention  結果，分別畫出位置、速度、加速度對時間的預測圖。Position 的解碼結果可以畫出 2D 平面軌跡圖。 }
 This section we show the result of our predicted variables. 
 Each figure represents a session, and here we selected 5 sessions for one type of variable.
 Since our models were designed to decode both x and y axis of a variable at the same time, 
@@ -189,6 +189,7 @@ Figure~\ref{fig:position_decoder_with_attention}, \ref{fig:velocity_decoder_with
 
 
 \section{Internal dynamics of network}
+\label{sec:internal_dynamics_of_network}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{參考以下論文的Figure 7 (ClosedLoopLSTM2019)Decoding Movements from Cortical Ensemble Activity Using a Long Short-Term Memory Recurrent Network}
 \end{multicols}
