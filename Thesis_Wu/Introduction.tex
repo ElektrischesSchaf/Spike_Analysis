@@ -15,7 +15,7 @@
 \begin{multicols}{2}
 \todo[inline, color=green!40]{為什麼需要侵入式腦機介面、侵入式腦機介面的用途?}
 \todo[inline, author=Prof.]{ \ref{sec:why_what_how_is_invasive_BCI}不是講electrode的用途，而是BMI的用途，要幫助哪些人?}
-\todo[inline, author=Wu, color=blue!40]{ BMI 的用途放第一段 }
+\todo[inline, author=Wu, color=blue!40]{ BMI 的用途改放在第一段 }
 This research is aimed for developing algorithms that can convert neural signals into actual movement of the limbs. 
 For those who suffer from motor disability, 
 there exist softwares that allow people to move or control a computer cursor using imagined or attempted movents \citep{hosman2019bci}, 
@@ -121,11 +121,14 @@ and sentiment analysis or classification with multiple inputs single outputs \ci
 Corresponding to our neural decoding task, models with multiple inputs single outputs are most applicable in our case.
 
 \todo[inline, author=Wu, color=blue!40]{使用NLP attention的理由。}
-Inspired by the success of attention module which enhanced model performances and also provide interpretability in natural language processing \citep{lin2017structured}.
-Unlike attention module used in image processing \citep{hu2018squeeze, woo2018cbam}, 
+This research is inspired by the successful work from the attention module who enhanced the RNN performance and also provided interpretability in natural language processing \citep{lin2017structured}.
+Also in the field of image processing,
+attention modules have provided visualization to explain what the model sees on their input images \citep{hu2018squeeze, woo2018cbam}.
+But currently there are no other researches showing such visualization results about neural signals.
+As the resemblances bewteen NLP and neural signals were mentioned earlier in this section,
 we believe it can provide potent reasons for us to explain our the design of our model and brand new insight to neural science by showing the attention map of neural signals.
 \todo[inline, author=Wu, color=blue!40]{提出為什麼需要analysis of reciprocal effect}
-No current reseaches have conducted experiments on analyzing which technique contibutes more on the neural decoding. 
+So far no other reseaches have conducted experiments on analyzing which technique contibutes more on the neural decoding. 
 We are interested how the the normalization method \citep{ba2016layer} and the attention module \citep{lin2017structured} can effect each other's performances.
 
 \end{multicols}

@@ -200,6 +200,9 @@ But they only predicted velocity, without decoding position and acceleration.
 \label{sec:unsolved_problems_in_deep_learning_bci}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
+\todo[inline, author=Prof]{這篇碩論除了增加視覺化，還有解決甚麼研究問題呢?}
+\todo[inline, author=Prof]{補充1個使用深度學習於腦機介面的研究問題，看看別的論文怎麼描述這個問題}
+\todo[inline, author=Wu, color=blue!40]{代辦}
 Deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
 By pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning.
 \cite{tseng2019decoding} intended to show in internal dynamics of the LSTM when decoding the movement of monkeys, 
@@ -250,7 +253,8 @@ then feed them input the self-attention mechanism.
 \section{Development and related work of attention modules}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{Attention module的發展，哪些腦機介面論文使用Attention module?}
-
+\todo[inline, author=Prof.]{補充腦機介面使用attention module的論文，包含侵入式與非侵入式}
+\todo[inline, author=Wu, color=blue!40]{代辦}
 \cite{sutskever2014sequence} is the first research which implemented the encoder-decoder machanism (or called sequence to sequence, seq2seq) to machine translation realm.
 This structure has gained popularity also in sentiment analysis ever since.
 The structure of encoder-decoder RNN illustrated in Figure~\ref{fig:rnn_encoder_decoder}, 
@@ -371,6 +375,8 @@ They also visualized the aspect in each sentence, e.g., the term "service" or "f
 They can tell the important words from the whole sentence.
 
 Several different means of attention mechanism were also implemented in BCI field.
+\todo[inline, author=Prof. ]{補充說明\cite{zhang2020motor}設計/使用attention來加強腦機介面的理由}
+\todo[inline, author=Wu, color=blue!40]{代辦}
 \cite{zhang2020motor} used both CNN and RNN to extract the spatio and temporal dynamics in EEG signal processing,
 and its mechanism named \textit{Convolutional Recurrent Attention Model}.
 The self-attention module was placed in the last layer right before the classification layer, after the raw signal was first processed by CNN and then RNN.
