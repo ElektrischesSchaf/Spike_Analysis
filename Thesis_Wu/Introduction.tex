@@ -91,7 +91,7 @@ and it must acquire the target coordinates in the second training phase.
 
 RNNs are the most promising tool to outperform Kalman filter in BCI \cite{hosman2019bci}.
 \todo[inline, author=Wu, color=blue!40]{詳細說明這些RNN方法改良了甚麼問題}
-Although RNNs in expensive in space and time complexities, 
+Although RNNs are expensive in space and time complexities, 
 but they are not restricted to solving only linear system with Gaussian noise assumption \citep{chenna2004state}.
 
 \todo[inline, author=Wu, color=blue!40]{這一段引用其他有使用sequence model的研究}
@@ -124,10 +124,13 @@ Corresponding to our neural decoding task, models with multiple inputs single ou
 Inspired by the success of attention module which enhanced model performances and also provide interpretability in natural language processing \citep{lin2017structured}.
 Unlike attention module used in image processing \citep{hu2018squeeze, woo2018cbam}, 
 we believe it can provide potent reasons for us to explain our the design of our model and brand new insight to neural science by showing the attention map of neural signals.
+\todo[inline, author=Wu, color=blue!40]{提出為什麼需要analysis of reciprocal effect}
+No current reseaches have conducted experiments on analyzing which technique contibutes more on the neural decoding. 
+We are interested how the the normalization method \citep{ba2016layer} and the attention module \citep{lin2017structured} can effect each other's performances.
 
 \end{multicols}
 
-\section{Our contributions to invasive BCI research}
+\section{Our contributions to invasive BCIs}
 \label{sec:our_contributions}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{條列碩士論文的貢獻}
@@ -136,10 +139,9 @@ we believe it can provide potent reasons for us to explain our the design of our
 \todo[inline, author=Prof.]{\ref{sec:our_contributions} 提到這篇碩論的貢獻在於提供了analysis of reciprocal effect，那麼需要在 \ref{sec:inspirations_and_goals} 提出為什麼需要analysis of reciprocal effect?}
 \begin{itemize}
     \item Proposed neural decoder in our reseach outperforms the results from \cite{makin2018}, with higher weighted average $R^{2}$ and lower standard deviation among all sessions, all 6 types of kinematic variables (position, velocity, acceleration each in x- and y-axis).
-    \item Dedicated to develop a \textit{interpretable} deep learning model, which can highlight the key patterns of the input data in an intuitive way.
+    \item Dedicated to develop a \textit{interpretable} deep learning model, which can highlight the key patterns between input neural signal and the fingertip movement in an intuitive way.
     \item Visualized the distribution of attention among past time bins when model decoding different types of kinematic variables.
-    \item Visualized the distribution of attention among sorted units when decoding.
-    \item Analysed the reciprocal effects of layer normalization in GRU, temporal attention and neural units attention mechanism.
+    \item Analysed the reciprocal effects of layer normalization in GRU and temporal attention.
 \end{itemize}
 \end{multicols}
 

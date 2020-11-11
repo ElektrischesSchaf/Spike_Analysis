@@ -9,7 +9,7 @@ The decoders usually predicted only one or two kinematic variables, only a few o
 
 \todo[inline, author=Wu, color=blue!40]{新增Kalman filter的優缺點}
 The strength of Kalman filter is that in general it only needs a few minites of training data \citep{wu2003neural},
-appllicable in real-time estimation \citep{wu2003neural},
+applicable in real-time estimation \citep{wu2003neural},
 and it is successfully applied in both open loop nad close loop BCIs \citep{gupta2009offline}.
 The disadvantages, however, is that Kalman filter has assumed Gaussian distribution between neural activity and the decoded variables \citep{glaser2020machine, ahmadi2019decoding, todorova2017neural}.
 Moreover, Kalman filter only consider linear functions in the hidden state at time $t$ and its previous hidden state at time $t-1$ \citep{glaser2020machine}.
@@ -38,7 +38,7 @@ and these Gaussian-distributed spike counts and linear dynamics assumptions are 
 \end{longtable}
 
 
-\section{Restrictions of traditional invasive BCI}
+\section{Restrictions of traditional invasive BCIs}
 \label{sec:restrictions_of_traditional_invasive_BCI}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{傳統侵入式腦機介面有哪些限制?}
@@ -56,7 +56,7 @@ When decoding with only 10 neurons in their experiments, modern methods outperfo
 
 \end{multicols}
 
-\section{Advantages of deep learning in BCI}
+\section{Advantages of deep learning in BCIs}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?} % hosman2019bci has emphasized the merit of RNN over KF
 \todo[inline, author=Prof.]{這段需要補充說明deep learning改良neural decoding的原因}
@@ -64,8 +64,10 @@ When decoding with only 10 neurons in their experiments, modern methods outperfo
 Deep learning models provided remarkable improvement to neural decoding \citep{hosman2019bci}.
 Altought with its greater complexity, deep learning decoders still performs better with the training data in shorter and recorded neuron is fewer \citep{glaser2020machine}.
 In the early study of BCIs, it was the linear Kalman filter decoders which has been widely applied to intracortical brain computer interfaces \citep{jarosiewicz2015virtual, pandarinath2017high,nuyujukian2018cortical}.
-With to the development of non-linear decoders and deep learning methods, more promising performances have been reached both in work in humans and non-human primates \citep{shanechi2017rapid, sussillo2016making, milstein2017multiscale, pandarinath2018inferring}.
-Among all the deep learning methods, the RNN model is the tpye which is widely used and also outperforms Kalman filter \citep{sussillo2016making}.
+With the development of non-linear decoders and deep learning methods, 
+more promising performances have been reached both in work in humans and non-human primates \citep{shanechi2017rapid, sussillo2016making, milstein2017multiscale, pandarinath2018inferring}.
+Among all the deep learning methods, 
+the RNN model is the tpye which is widely used and also outperforms Kalman filter \citep{sussillo2016making}.
 
 The first idea of recurrent neural networks (RNN), which is called the Hopfield networks, was introduced in 1980s \citep{hopfield1982neural}, 
 and the following different versions of RNN have been developed afterwards \citep{elman1990finding, jordan1997serial}, as showed in Figure~\ref{fig:elman_and_jordan}. 
@@ -99,7 +101,7 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 \end{multicols}
 
 
-\section{Development of deep learning in invasive BCI}
+\section{Development of deep learning in invasive BCIs}
 \label{sec:development_of_deep_learning_in_invasive_BCI}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{使用深度學習於侵入式腦機介面的發展}
@@ -194,7 +196,7 @@ But they only predicted velocity, without decoding position and acceleration.
 % On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
  
 
-\section{Unsolved problems and drawbacks in preceding deep learning invasive BCI researches}
+\section{Unsolved problems and drawbacks in preceding deep learning invasive BCIs}
 \label{sec:unsolved_problems_in_deep_learning_bci}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
