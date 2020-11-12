@@ -23,10 +23,14 @@ plot_path_2 = os.path.join(plot_path, 'My_plot_bidir_vs_one_way')
 if not os.path.exists(plot_path_2):
     os.mkdir(plot_path_2)
 
-my_model_name_for_y = 'atten_LN_bidir'
+plot_path_3 = os.path.join(plot_path, 'bir_attention_with_LN_inside_vs_no_LN_inside')
+if not os.path.exists(plot_path_3):
+    os.mkdir(plot_path_3)
+
+my_model_name_for_y = 'atten_LN_bidir' # atten_LN_bidir
 makin_model_name = 'rEFH_dynamic'
 
-my_model_name_for_x = 'atten_LN_oneway'
+my_model_name_for_x = 'atten_LN_oneway' # atten_LN_oneway atten_LN_bidir_no_LN_inside
 
 my_fontsize=35
 
@@ -160,6 +164,9 @@ def drawing_with_my_two_results( plot_path_2, my_model_result_x, my_model_result
 
     if my_model_name_for_x == 'atten_LN_oneway':
         plt.xlabel('SNR(dB), One-way GRU (+LN & Atten.)',fontsize=my_fontsize)
+    if my_model_name_for_x =='atten_LN_bidir_no_LN_inside':
+        plt.xlabel('SNR(dB), Bidir GRU (+LN & Atten. no LN )',fontsize=my_fontsize)
+
     if my_model_name_for_y == 'atten_LN_bidir':
         plt.ylabel('SNR(dB), Bidir GRU (+LN & Atten.)',fontsize=my_fontsize)
 
@@ -206,6 +213,8 @@ rEFH_x_pos, rEFH_y_pos, rEFH_x_vel, rEFH_y_vel, rEFH_x_acc, rEFH_y_acc = read_ma
 
 x_pos_2, y_pos_2, x_vel_2, y_vel_2, x_acc_2, y_acc_2 = read_my_result_1_for_y_scatter( my_model_name_for_x )
 
+
+
 drawing_with_makin(plot_path_1, rEFH_x_pos, x_pos_1, 'x', 'pos',my_model_name_for_y)
 drawing_with_makin(plot_path_1, rEFH_y_pos, y_pos_1, 'y', 'pos',my_model_name_for_y)
 drawing_with_makin(plot_path_1, rEFH_x_vel, x_vel_1, 'x', 'vel',my_model_name_for_y)
@@ -214,9 +223,10 @@ drawing_with_makin(plot_path_1, rEFH_x_acc, x_acc_1, 'x', 'acc',my_model_name_fo
 drawing_with_makin(plot_path_1, rEFH_y_acc, y_acc_1, 'y', 'acc',my_model_name_for_y)
 
 
-drawing_with_my_two_results(plot_path_2,  x_pos_2, x_pos_1, 'x', 'pos', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_2,  y_pos_2, y_pos_1, 'y', 'pos', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_2,  x_vel_2, x_vel_1, 'x', 'vel', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_2,  y_vel_2, y_vel_1, 'y', 'vel', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_2,  x_acc_2, x_acc_1, 'x', 'acc', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_2,  y_acc_2, y_acc_1, 'y', 'acc', my_model_name_for_x, my_model_name_for_y)
+plot_path_for_this = plot_path_2
+drawing_with_my_two_results(plot_path_for_this,  x_pos_2, x_pos_1, 'x', 'pos', my_model_name_for_x, my_model_name_for_y)
+drawing_with_my_two_results(plot_path_for_this,  y_pos_2, y_pos_1, 'y', 'pos', my_model_name_for_x, my_model_name_for_y)
+drawing_with_my_two_results(plot_path_for_this,  x_vel_2, x_vel_1, 'x', 'vel', my_model_name_for_x, my_model_name_for_y)
+drawing_with_my_two_results(plot_path_for_this,  y_vel_2, y_vel_1, 'y', 'vel', my_model_name_for_x, my_model_name_for_y)
+drawing_with_my_two_results(plot_path_for_this,  x_acc_2, x_acc_1, 'x', 'acc', my_model_name_for_x, my_model_name_for_y)
+drawing_with_my_two_results(plot_path_for_this,  y_acc_2, y_acc_1, 'y', 'acc', my_model_name_for_x, my_model_name_for_y)
