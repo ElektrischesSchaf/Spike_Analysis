@@ -5,7 +5,6 @@ import torch.nn.functional as F
 import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
 
-from GRU_layernorm_cell import LayerNormGRUCell
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -21,10 +20,10 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.GRU_Cell_forward_1 = LayerNormGRUCell( input_dim      , hidden_dim    ,  bias=True )
-        self.GRU_Cell_backward_1 = LayerNormGRUCell( input_dim      , hidden_dim    ,  bias=True )
-        self.GRU_Cell_forward_2 = LayerNormGRUCell( hidden_dim*2      , hidden_dim    ,  bias=True )
-        self.GRU_Cell_backward_2 = LayerNormGRUCell( hidden_dim*2      , hidden_dim   ,  bias=True )
+        self.GRU_Cell_forward_1 = torch.nn.GRUCell( input_dim      , hidden_dim )
+        self.GRU_Cell_backward_1 = torch.nn.GRUCell( input_dim      , hidden_dim )
+        self.GRU_Cell_forward_2 = torch.nn.GRUCell( hidden_dim*2      , hidden_dim )
+        self.GRU_Cell_backward_2 = torch.nn.GRUCell( hidden_dim*2      , hidden_dim )
         
         # Layer Normalization
         # self.input_LN_forward = torch.nn.LayerNorm( [ max_timestep, hidden_dim*2 ], elementwise_affine=False)
@@ -148,6 +147,8 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
         out = torch.cat( (out_x, out_y) ,1)
 
+        hidden_state_list_2_result = hidden_state_list_2_result.squeeze(1)
+
         return out, attn_weight_matrix, hidden_state_list_2_result
 
 class  Real_Layer_GRU_one_way(torch.nn.Module):
@@ -162,8 +163,8 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.GRU_Cell_forward_1 = LayerNormGRUCell( input_dim      , hidden_dim    ,  bias=True )
-        self.GRU_Cell_forward_2 = LayerNormGRUCell( hidden_dim      , hidden_dim    ,  bias=True )
+        self.GRU_Cell_forward_1 = torch.nn.GRUCell( input_dim      , hidden_dim    )
+        self.GRU_Cell_forward_2 = torch.nn.GRUCell( hidden_dim      , hidden_dim   )
 
         # Layer Normalization
         # self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=False)
@@ -230,6 +231,8 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
             hidden_state_list+=[h0]
 
         hidden_state_list = torch.stack(hidden_state_list, 0)
+        hidden_state_list_to_pass_to_plot = hidden_state_list.detach()
+        hidden_state_list_to_pass_to_plot = hidden_state_list_to_pass_to_plot.squeeze(1)
 
         hidden_state_list = hidden_state_list.permute(1,0,2)
 
@@ -251,7 +254,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
 
         out = torch.cat(  (out_x, out_y),1 )
 
-        return out, attn_weight_matrix_forward, hidden_state_list
+        return out, attn_weight_matrix_forward, hidden_state_list_to_pass_to_plot
 
 '''
 class Real_Layer_GRU_one_way_two_stream(torch.nn.Module):

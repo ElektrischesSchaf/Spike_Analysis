@@ -9,13 +9,17 @@ import torch.nn.functional as F
 import torch.utils.data as Data
 from torch.utils.data import Dataset, DataLoader
 
+# https://www.zhihu.com/question/385386895/answer/1133300166
+
 class compute():
     def comp_and_save(self, input, hidden_State, feature_name, seq_length, save_path, w_ir, w_hr, w_iz, w_hz, w_in, w_hn, b_ir, b_hr, b_iz, b_hz, b_in, b_hn):
         x=input
         yee = seq_length
         info_path = save_path
         feature_name = feature_name
+        print(hidden_State)
         hidden_State = hidden_State
+
 
         hidden_state = hidden_State.cpu().data.numpy()
         hidden_state = np.transpose(hidden_state)

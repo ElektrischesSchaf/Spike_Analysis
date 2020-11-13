@@ -320,6 +320,10 @@ for session_k in range(len(session_file_list)):
     # Write features and label from each session to csv files
     CWD = CWD_origin
 
+    info_path=os.path.join(CWD,'gates_and_states')
+    if not os.path.exists(info_path):
+        os.mkdir(str(info_path))
+
     bar_plot_path, save_epoch_path, csv_path, plot_path, attention_plot_path = regular_modules.create_pathes(CWD, session_name, model_name, kinematic_variable_type)
 
     regular_modules.write_data_to_path(csv_path,
@@ -428,19 +432,45 @@ for session_k in range(len(session_file_list)):
 
         my_prediction = []
         real_y_all = []
+        is_hidden_state_saved=False
+        plot_loop=0
 
         for i, (x, y) in trange:
 
-            # GRU batch
-            # if(x.size()[0] is not batch_size):
+            # LSTMCell batch for gates and states heatmap
+            # if(x.size(0) is not batch_size):
             #     continue
 
-            o_labels, batch_loss = _run_iter(x,y)
+            o_labels, batch_loss, hidden_state = _run_iter(x,y)            
 
-            if mode == 'train':
+            if mode=='train':
                 optimizer.zero_grad()   # clear gradients for next train
                 batch_loss.backward()         # backpropagation, compute gradients
                 optimizer.step()        # apply gradients
+                
+                # type 1
+                # Save hidden state and cell state in the last training epoch               
+                if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
+                    x=x.cpu().data.numpy()
+                    print('x.shape[0]=', x.shape[0])
+                    yee=int(x.shape[0]) # how many time steps in a iteration
+
+                    w_hr, w_hz, w_hn = net.GRU_Cell_forward_1.weight_hh.chunk(3, 0)
+                    w_ir, w_iz, w_in = net.GRU_Cell_forward_1.weight_ih.chunk(3, 0)
+                    b_hr, b_hz, b_hn = net.GRU_Cell_forward_1.bias_hh.chunk(3, 0)
+                    b_ir, b_iz, b_in = net.GRU_Cell_forward_1.bias_ih.chunk(3, 0)
+                    gates_and_states.comp_and_save( x[:,:], hidden_state, 'firing_rate', yee, info_path, w_ir, w_hr, w_iz, w_hz, w_in, w_hn, b_ir, b_hr, b_iz, b_hz, b_in, b_hn)
+                    # gates_and_states.plot_heatmap(info_path, plot_path)
+                    # is_hidden_state_saved=True
+
+                    if not os.path.exists(plot_path+'/'+str(plot_loop)):
+                        os.mkdir(plot_path+'/'+str(plot_loop))
+                    my_real_y=y.cpu().data.numpy()
+                    gates_and_states.feature_visualization( info_path, 'firing_rate', plot_path+'/'+str(plot_loop) , x, my_real_y)
+                    print('finished\n')
+                    plot_loop+=1
+                    if plot_loop>9:
+                         is_hidden_state_saved=True
 
             loss  +=  batch_loss.item() 
 
@@ -468,7 +498,7 @@ for session_k in range(len(session_file_list)):
         feature = x.to(device)
         labels = y.to(device)
 
-        o_labels, attn_weight_matrix_forward = net(feature)
+        o_labels, attn_weight_matrix_forward, hidden_state = net(feature)
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
         attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)        
@@ -476,7 +506,7 @@ for session_k in range(len(session_file_list)):
 
         l_loss = loss_func(o_labels, labels) + penality_loss_forward*10
 
-        return o_labels, l_loss
+        return o_labels, l_loss, hidden_state
 
     def save(epoch):
         torch.save(net.state_dict(), os.path.join( save_epoch_path, 'model.pkl.'+str(epoch) ))
