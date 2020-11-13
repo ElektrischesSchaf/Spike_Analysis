@@ -19,7 +19,8 @@ class compute():
         feature_name = feature_name
         print(hidden_State)
         hidden_State = hidden_State
-
+        hidden_State = hidden_State[0,:,:] # use the first one from the batch
+        hidden_State = hidden_State.squeeze(0)
 
         hidden_state = hidden_State.cpu().data.numpy()
         hidden_state = np.transpose(hidden_state)
