@@ -70,7 +70,7 @@ MAX_EPOCH = 2#75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
-BATCH_SIZE = 16
+BATCH_SIZE = 32
 HIDDEN_DIMENSION = 256
 max_timestep = 20
 
@@ -394,24 +394,37 @@ for session_k in range(len(session_file_list)):
                 # type 1
                 # Save hidden state and cell state in the last training epoch               
                 if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
-                    x=x.cpu().data.numpy()
-                    print('x.shape[0]=', x.shape[0])
-                    yee=int(x.shape[0]) # how many time steps in a iteration
 
-                    w_hr, w_hz, w_hn = net.GRU_Cell_forward_1.weight_hh.chunk(3, 0)
-                    w_ir, w_iz, w_in = net.GRU_Cell_forward_1.weight_ih.chunk(3, 0)
+                    input_dim = feature_numbers
+                    x=x.view(x.size(0), -1, input_dim)
+                    x = x.cpu().data.numpy()
+                    print('x.shape[0]=', x.shape[0]) # batch size
+
+                    yee = max_timestep # how many time steps in a iteration
+
+                    w_hr, w_hz, w_hn = net.GRU_Cell_forward_1.weight_hh.chunk(3, 0) # shape of w_hr (hidden_size, hidden_size)
+                    w_ir, w_iz, w_in = net.GRU_Cell_forward_1.weight_ih.chunk(3, 0) # shape of w_hr (hidden_size, input_size )
                     b_hr, b_hz, b_hn = net.GRU_Cell_forward_1.bias_hh.chunk(3, 0)
                     b_ir, b_iz, b_in = net.GRU_Cell_forward_1.bias_ih.chunk(3, 0)
-                    gates_and_states.comp_and_save( x[:,:], hidden_state, 'firing_rate', yee, info_path, w_ir, w_hr, w_iz, w_hz, w_in, w_hn, b_ir, b_hr, b_iz, b_hz, b_in, b_hn)
+
+                    print( w_hr.cpu().data.numpy().shape, ' ', w_hz.cpu().data.numpy().shape, ' ', w_hn.cpu().data.numpy().shape )
+                    print( w_ir.cpu().data.numpy().shape, ' ', w_iz.cpu().data.numpy().shape, ' ', w_in.cpu().data.numpy().shape )
+
+                    gates_and_states.comp_and_save( x, hidden_state, 'firing_rate', yee, info_path, w_ir, w_hr, w_iz, w_hz, w_in, w_hn, b_ir, b_hr, b_iz, b_hz, b_in, b_hn)
                     # gates_and_states.plot_heatmap(info_path, plot_path)
                     # is_hidden_state_saved=True
 
-                    if not os.path.exists(plot_path+'/'+str(plot_loop)):
-                        os.mkdir(plot_path+'/'+str(plot_loop))
-                    my_real_y=y.cpu().data.numpy()
-                    gates_and_states.feature_visualization( info_path, 'firing_rate', plot_path+'/'+str(plot_loop) , x, my_real_y)
+                    gate_plots = os.path.join(plot_path, 'gates_plots')
+                    if not os.path.exists(gate_plots):
+                        os.mkdir(str(gate_plots))
+
+                    if not os.path.exists( gate_plots +'/' +str(plot_loop)):
+                        os.mkdir(str( gate_plots +'/' +str(plot_loop) ))
+
+                    my_real_y = y.cpu().data.numpy()
+                    gates_and_states.feature_visualization( file_path=info_path, feature_name='firing_rate',plot_path= gate_plots +'/' +str(plot_loop) , x=x, y=my_real_y, kinematic_type=kinematic_variable_type)
                     print('finished\n')
-                    plot_loop+=1
+                    plot_loop += 1
                     if plot_loop>9:
                          is_hidden_state_saved=True
 

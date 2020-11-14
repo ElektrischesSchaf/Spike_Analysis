@@ -231,10 +231,10 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
             hidden_state_list+=[h0]
 
         hidden_state_list = torch.stack(hidden_state_list, 0)
-        hidden_state_list_to_pass_to_plot = hidden_state_list.detach()
-        hidden_state_list_to_pass_to_plot = hidden_state_list_to_pass_to_plot.squeeze(1)
-
         hidden_state_list = hidden_state_list.permute(1,0,2)
+
+        hidden_state_list_to_pass_to_plot = hidden_state_list.detach()
+        # print('hidden_state_list_to_pass_to_plot size ', hidden_state_list_to_pass_to_plot.size(), '\n') # batch, seq len, hidden uni
 
         # hidden_state_list = self.input_LN_forward(hidden_state_list)
 
