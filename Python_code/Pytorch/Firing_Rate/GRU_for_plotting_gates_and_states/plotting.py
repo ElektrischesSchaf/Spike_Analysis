@@ -126,7 +126,7 @@ class compute():
 
                 ###############################################
                 ax[0].plot(time,y)
-                ax[0].title('Kinematics')
+                ax[0].set_title('Kinematics')
                 # print('shape of y=', y.shape)
                 ax[0].set_xlim([ time[0], time[-1] ])
                 if kinematic_type=='x_and_y_pos':
