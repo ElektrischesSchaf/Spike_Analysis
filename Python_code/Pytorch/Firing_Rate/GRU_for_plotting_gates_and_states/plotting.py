@@ -28,7 +28,7 @@ class compute():
         print('hidden_state size 2: ', hidden_state.shape, '\n')
 
         df = pd.DataFrame(np.transpose(hidden_state))
-        df.to_csv(os.path.join(info_path, feature_name+'_hidden_state.csv'), index=False, header=False)
+        df.to_csv(os.path.join(info_path, 'Hidden_state.csv'), index=False, header=False)
 
         r_gate = []                    
         for index_seq in range( yee ):
@@ -38,7 +38,7 @@ class compute():
             r_gate += [   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
         r_gate = np.transpose(r_gate)
         df=pd.DataFrame(r_gate)
-        df.to_csv(os.path.join(info_path, feature_name+'_r_gate.csv'), index=False, header=False)
+        df.to_csv(os.path.join(info_path, 'Reset_gate.csv'), index=False, header=False)
 
         z_gate = []
         for index_seq in range( yee ):
@@ -48,7 +48,7 @@ class compute():
             z_gate += [   torch.sigmoid(    torch.from_numpy(yee_hidden)+torch.from_numpy(yee_input)   ).numpy()  ]
         z_gate = np.transpose(z_gate)
         df = pd.DataFrame(z_gate)
-        df.to_csv(os.path.join(info_path, feature_name+'_z_gate.csv'), index=False, header=False)
+        df.to_csv(os.path.join(info_path, 'Update_gate.csv'), index=False, header=False)
 
         return 
 
@@ -107,50 +107,50 @@ class compute():
         for i in range(len(file_list)): # travel r_gate, z_gate, and hidden_states
             file_name=str(file_list[i])[:-4] 
 
-            if file_name.startswith(feature_name):
+            # if file_name.startswith(feature_name): # expired
 
-                df=pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
-                rows=df.values
+            df=pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
+            rows=df.values
 
-                sns.set(font_scale=1.5)
-                plt.rcParams["figure.figsize"] = (16,9)
+            sns.set(font_scale=1.5)
+            plt.rcParams["figure.figsize"] = (16,9)
 
-                # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
+            # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
 
-                f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [1,1,1],  "hspace":0.2 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1} , constrained_layout=False)
-                # f.suptitle(file_name, fontsize=25)
-                
-                time=[]
-                for i in range(y.shape[0]):
-                    time+=[i]
+            f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [1,1,1],  "hspace":0.2 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1} , constrained_layout=False)
+            # f.suptitle(file_name, fontsize=25)
+            
+            time=[]
+            for i in range(y.shape[0]):
+                time+=[i]
 
-                ###############################################
-                ax[0].plot(time,y)
-                ax[0].set_title('Kinematics')
-                # print('shape of y=', y.shape)
-                ax[0].set_xlim([ time[0], time[-1] ])
-                if kinematic_type=='x_and_y_pos':
-                    ax[0].set_ylabel('Position (mm)')
-                if kinematic_type=='x_and_y_vel':
-                    ax[0].set_ylabel('Velocity (mm/s)')
-                if kinematic_type=='x_and_y_acc':
-                    ax[0].set_ylabel('Acceleration (mm/$s^2$)')
-                ax[0].set_xlabel('')
-                ax[0].set_xticks([])       
+            ###############################################
+            ax[0].plot(time,y)
+            ax[0].set_title('Kinematics')
+            # print('shape of y=', y.shape)
+            ax[0].set_xlim([ time[0], time[-1] ])
+            if kinematic_type=='x_and_y_pos':
+                ax[0].set_ylabel('Position (mm)')
+            if kinematic_type=='x_and_y_vel':
+                ax[0].set_ylabel('Velocity (mm/s)')
+            if kinematic_type=='x_and_y_acc':
+                ax[0].set_ylabel('Acceleration (mm/$s^2$)')
+            ax[0].set_xlabel('')
+            ax[0].set_xticks([])       
 
-                ###############################################
-                ax[1] = sns.heatmap(rows, ax=ax[1], cbar=False,  cmap="YlGnBu",  yticklabels=False, xticklabels=False )  # cbar_kws={"orientation": "horizontal"}
-                ax[1].set_title( file_name )
-                ax[1].set_ylabel('hidden units')
-                ###############################################
+            ###############################################
+            ax[1] = sns.heatmap(rows, ax=ax[1], cbar=False,  cmap="YlGnBu",  yticklabels=False, xticklabels=False )  # cbar_kws={"orientation": "horizontal"}
+            ax[1].set_title( file_name )
+            ax[1].set_ylabel('Hidden units')
+            ###############################################
 
-                ax[2] = sns.heatmap(x.transpose(), ax=ax[2], cbar=False, cmap='YlGnBu', yticklabels=False, xticklabels=False)
-                ax[2].set_title('Input Data')
-                ax[2].set_ylabel('Features')
-                ###############################################
+            ax[2] = sns.heatmap(x.transpose(), ax=ax[2], vmax=4, cbar=False, cmap='YlGnBu', yticklabels=False, xticklabels=False)
+            ax[2].set_title('Firing rate')
+            ax[2].set_ylabel('Sorted units')
+            ###############################################
 
-                plt.savefig( plot_path+'/'+file_name+'.png' )
-                plt.cla()
-                plt.clf()
-                plt.close()
+            plt.savefig( plot_path+'/'+file_name+'.png' )
+            plt.cla()
+            plt.clf()
+            plt.close()
         return
