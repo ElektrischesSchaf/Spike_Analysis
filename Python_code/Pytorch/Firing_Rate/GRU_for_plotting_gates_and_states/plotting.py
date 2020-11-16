@@ -113,6 +113,9 @@ class compute():
             rows=df.values
 
             sns.set(font_scale=1.5)
+            sns.set_style("white")
+            sns.color_palette(palette=None)
+
             plt.rcParams["figure.figsize"] = (16,9)
 
             # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
@@ -125,7 +128,7 @@ class compute():
                 time+=[i]
 
             ###############################################
-            ax[0].plot(time,y)
+            ax[0].plot(time, y)
             ax[0].set_title('Kinematics')
             # print('shape of y=', y.shape)
             ax[0].set_xlim([ time[0], time[-1] ])
@@ -137,6 +140,8 @@ class compute():
                 ax[0].set_ylabel('Acceleration (mm/$s^2$)')
             ax[0].set_xlabel('')
             ax[0].set_xticks([])       
+            
+
 
             ###############################################
             ax[1] = sns.heatmap(rows, ax=ax[1], cbar=False,  cmap="YlGnBu",  yticklabels=False, xticklabels=False )  # cbar_kws={"orientation": "horizontal"}
