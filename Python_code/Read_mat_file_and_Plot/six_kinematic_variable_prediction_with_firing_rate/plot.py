@@ -48,7 +48,10 @@ import data_processing.load_mat_file as load_mat_file
 my_parameters=my_parameters.my_parameters()
 mat_file_processing=load_mat_file.mat_file_processing()
 
-session_name='indy_20161007_02'  # indy_20160420_01 indy_20161007_02
+import data_processing.some_modules as some_modules
+regular_modules = some_modules.regular_modules()
+
+session_name='indy_20161007_02'  # indy_20160407_02 indy_20161007_02
 file_name_1='../../../Dataset/Sorted_Spike_Dataset/'+session_name+'.mat'
 file_list=[file_name_1]
 
@@ -180,50 +183,17 @@ csv_path=os.path.join(Firing_Rate_Visualization,'csv_files')
 if not os.path.exists(csv_path):
     os.mkdir(str(csv_path))
 
-df = pd.DataFrame(X_for_training)
-df.to_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), index=False)
 
-df = pd.DataFrame(X_for_prediction)
-df.to_csv(os.path.join(csv_path, 'testset_feature_matrix.csv'), index=False)
-
-# positino
-df=pd.DataFrame(x_position_label_training)
-df.to_csv(os.path.join(csv_path,'x_position_label_training.csv'), index=False)
-
-df=pd.DataFrame(x_position_label_testing)
-df.to_csv(os.path.join(csv_path,'x_position_label_testing.csv'), index=False)
-
-df=pd.DataFrame(y_position_label_training)
-df.to_csv(os.path.join(csv_path,'y_position_label_training.csv'), index=False)
-
-df=pd.DataFrame(y_position_label_testing)
-df.to_csv(os.path.join(csv_path,'y_position_label_testing.csv'), index=False)
-
-# velocity
-df=pd.DataFrame(x_velocity_label_training)
-df.to_csv(os.path.join(csv_path,'x_velocity_label_training.csv'), index=False)
-
-df=pd.DataFrame(x_velocity_label_testing)
-df.to_csv(os.path.join(csv_path,'x_velocity_label_testing.csv'), index=False)
-
-df=pd.DataFrame(y_velocity_label_training)
-df.to_csv(os.path.join(csv_path,'y_velocity_label_training.csv'), index=False)
-
-df=pd.DataFrame(y_velocity_label_testing)
-df.to_csv(os.path.join(csv_path,'y_velocity_label_testing.csv'), index=False)
-
-# acceleration
-df=pd.DataFrame(x_acceleration_label_training)
-df.to_csv(os.path.join(csv_path,'x_acceleration_label_training.csv'), index=False)
-
-df=pd.DataFrame(x_acceleration_label_testing)
-df.to_csv(os.path.join(csv_path,'x_acceleration_label_testing.csv'), index=False)
-
-df=pd.DataFrame(y_acceleration_label_training)
-df.to_csv(os.path.join(csv_path,'y_acceleration_label_training.csv'), index=False)
-
-df=pd.DataFrame(y_acceleration_label_testing)
-df.to_csv(os.path.join(csv_path,'y_acceleration_label_testing.csv'), index=False)
+regular_modules.write_data_to_path(csv_path,
+X_for_training, X_for_prediction, 
+x_position_label_training, x_position_label_testing, 
+y_position_label_training, y_position_label_testing, 
+x_velocity_label_training, x_velocity_label_testing,
+y_velocity_label_training, y_velocity_label_testing,
+x_acceleration_label_training, x_acceleration_label_testing,
+y_acceleration_label_training, y_acceleration_label_testing,
+x_position_target_training, x_position_target_testing, 
+y_position_target_training, y_position_target_testing)
 
 # read from csv file
 training_x=pd.read_csv(os.path.join(csv_path, 'trainset_feature_matrix.csv'), dtype=float)
@@ -332,15 +302,16 @@ for row_idx in range(data.size(0)):
 data = data[valid_rows,:]
 
 my_second_labels=[]
-for second_label in range( len( time_stamp_64ms[start_time_bin:end_time_bin] ) ):
-    my_second_labels.append( time_stamp_64ms[second_label] )
+time_stamp_64ms_testing=time_stamp_64ms[5001:]
+for second_label in range( len( time_stamp_64ms_testing[start_time_bin:end_time_bin] ) ):
+    my_second_labels.append( time_stamp_64ms_testing[second_label] )
 
 # https://stackoverflow.com/questions/47784215/seaborn-heatmap-custom-tick-values
 num_ticks = 5
 # the index of the position of yticks
 xticks = np.linspace(0, len(my_second_labels) - 1, num_ticks, dtype=np.int)
 # the content of labels of these yticks
-xticklabels = [ my_second_labels[idx] for idx in xticks ]
+xticklabels = [ int(my_second_labels[idx]) for idx in xticks ]
 
 # https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.pyplot.colorbar.html
 cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.07, 'ticks' : [ torch.min(data), torch.max(data) ]}
@@ -420,6 +391,15 @@ print('shape of acceleration_y_actual= ', acceleration_y_actual.shape , '\n')
 acceleration_timestamp = pd.read_csv(os.path.join(acceleration_path,'plotting_time_elapsed.csv'), dtype=float, header=None)
 acceleration_timestamp = acceleration_timestamp.to_numpy()
 print('shape of acceleration_timestamp= ', acceleration_timestamp.shape , '\n')
+
+# x and y target cue
+x_target_cue = pd.read_csv(os.path.join(position_path,'x_position_target_testing.csv'), dtype=float)
+x_target_cue = x_target_cue.to_numpy()
+print('shape of x_target_cue= ', x_target_cue.shape , '\n')
+
+y_target_cue = pd.read_csv(os.path.join(position_path,'y_position_target_testing.csv'), dtype=float)
+y_target_cue = y_target_cue.to_numpy()
+print('shape of y_target_cue= ', y_target_cue.shape , '\n')
 
 if ( position_timestamp.shape[0] < velocity_timestamp.shape[0]  ) and ( position_timestamp.shape[0]<acceleration_timestamp.shape[0] ) and (position_timestamp.shape[0]<time_stamp_64ms.shape[0]):
 
@@ -540,18 +520,52 @@ sns.color_palette(palette=None)
 
 f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [1, 1, 1, 1],  "hspace":0 ,"left":0.18, "right":0.95, "top":0.95, "bottom":0.1}, constrained_layout=False , figsize=(my_plot_width, my_plot_height*1.2))
 
+# remove frames https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
+ax[0].spines['top'].set_visible(False)
+ax[0].spines['right'].set_visible(False)
+ax[0].spines['bottom'].set_visible(False)
+ax[0].spines['left'].set_visible(True)
+
+ax[1].spines['top'].set_visible(False)
+ax[1].spines['right'].set_visible(False)
+ax[1].spines['bottom'].set_visible(False)
+ax[1].spines['left'].set_visible(True)
+
+ax[2].spines['top'].set_visible(False)
+ax[2].spines['right'].set_visible(False)
+ax[2].spines['bottom'].set_visible(False)
+ax[2].spines['left'].set_visible(True)
 
 # ax[0].set_title( 'Position', fontsize=my_fontsize)
 ax[0].plot( position_timestamp[start_time_bin:end_time_bin], position_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
 ax[0].plot(position_timestamp[start_time_bin:end_time_bin], position_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
 ax[0].plot( position_timestamp[start_time_bin:end_time_bin], position_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 ax[0].plot(position_timestamp[start_time_bin:end_time_bin], position_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[0].set_ylabel( 'pos ($mm$)', fontsize=my_fontsize, rotation=90, color="black")
+ax[0].set_ylabel( 'pos (mm)', fontsize=my_fontsize, rotation=90, color="black")
 ax[0].get_xaxis().set_ticks([])
 ax[0].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
-# ax[0].legend(loc='upper right', fontsize=my_fontsize)
+ax[0].legend(loc='upper right', fontsize=my_fontsize*0.5, bbox_to_anchor=(1.05, 1.2 ))
 ax[0].set_xlim([ position_timestamp[start_time_bin] ,  position_timestamp[end_time_bin]  ])
+print('position_timestamp[start_time_bin]= ', position_timestamp[start_time_bin],'\n')
+print('position_timestamp[end_time_bin]= ', position_timestamp[end_time_bin], '\n')
 ax[0].set_ylim([ -150, 150  ])
+
+
+# plot target cue change points
+the_x = x_target_cue[start_time_bin:end_time_bin]
+the_y = y_target_cue[start_time_bin:end_time_bin]
+change_points_x = np.where(  np.roll( the_x,1)!= the_x )[0]
+change_points_y = np.where( np.roll( the_y,1)!= the_y )[0]
+
+change_points_x_set = set(change_points_x)
+change_points_y_set = set(change_points_y)
+print('change_points_x_set= ', change_points_x_set ,'\n')
+print('change_points_y= ', change_points_y ,'\n')
+# seconds version
+for ele in list( change_points_x_set.union( change_points_y_set )):
+    print('que seconds= ',  position_timestamp[ start_time_bin + ele ], '\n') # must start_time_bin + ele
+    ax[0].axvline( position_timestamp[start_time_bin + ele] , color='black' , linewidth=5, alpha=0.3 )
+
 
 
 # ax[1].set_title( 'Velocity', fontsize=my_fontsize)
@@ -559,26 +573,55 @@ ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_predction
 ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
 ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[1].set_ylabel( 'vel ($mm/s$)', fontsize=my_fontsize, rotation=90, color="black")
+ax[1].set_ylabel( 'vel (mm/s)', fontsize=my_fontsize, rotation=90, color="black")
 ax[1].get_xaxis().set_ticks([])
 ax[1].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
-# ax[1].legend(loc='upper right', fontsize=my_fontsize)
+# ax[1].legend(loc='upper right', fontsize=my_fontsize*0.5)
 ax[1].set_xlim([ velocity_timestamp[start_time_bin] ,  velocity_timestamp[end_time_bin]  ])
 ax[1].set_ylim([ -350, 350  ])
 
+
+# plot target cue change points
+the_x = x_target_cue[start_time_bin:end_time_bin]
+the_y = y_target_cue[start_time_bin:end_time_bin]
+change_points_x = np.where(  np.roll( the_x,1)!= the_x )[0]
+change_points_y = np.where( np.roll( the_y,1)!= the_y )[0]
+
+change_points_x_set = set(change_points_x)
+change_points_y_set = set(change_points_y)
+print('change_points_x_set= ', change_points_x_set ,'\n')
+print('change_points_y= ', change_points_y ,'\n')
+# seconds version
+for ele in list( change_points_x_set.union( change_points_y_set )):
+    print('que seconds= ',  position_timestamp[ start_time_bin + ele ], '\n') # must start_time_bin + ele
+    ax[1].axvline( position_timestamp[start_time_bin + ele] , color='black' , linewidth=5, alpha=0.3 )
 
 # ax[2].set_title( 'Acceleration', fontsize=my_fontsize)
 ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
 ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
 ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
 ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[2].set_ylabel( 'acc ($mm/s^2$)', fontsize=my_fontsize, rotation=90, color="black")
+ax[2].set_ylabel( 'acc (mm/$s^2$)', fontsize=my_fontsize, rotation=90, color="black")
 ax[2].get_xaxis().set_ticks([])
 ax[2].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
-# ax[2].legend(loc='upper right', fontsize=my_fontsize)
+# ax[2].legend(loc='upper right', fontsize=my_fontsize*0.5)
 ax[2].set_xlim([ acceleration_timestamp[start_time_bin] ,  acceleration_timestamp[end_time_bin]  ])
 ax[2].set_ylim([ -2500, 2500  ])
 
+# plot target cue change points
+the_x = x_target_cue[start_time_bin:end_time_bin]
+the_y = y_target_cue[start_time_bin:end_time_bin]
+change_points_x = np.where(  np.roll( the_x,1)!= the_x )[0]
+change_points_y = np.where( np.roll( the_y,1)!= the_y )[0]
+
+change_points_x_set = set(change_points_x)
+change_points_y_set = set(change_points_y)
+print('change_points_x_set= ', change_points_x_set ,'\n')
+print('change_points_y= ', change_points_y ,'\n')
+# seconds version
+for ele in list( change_points_x_set.union( change_points_y_set )):
+    print('que seconds= ',  position_timestamp[ start_time_bin + ele ], '\n') # must start_time_bin + ele
+    ax[2].axvline( position_timestamp[start_time_bin + ele] , color='black' , linewidth=5, alpha=0.3 )
 
 
 data = torch.transpose( testing_x[start_time_bin:end_time_bin,:], 0, 1)
@@ -595,8 +638,8 @@ my_second_labels = time_stamp_64ms[start_time_bin:end_time_bin]
 # the index of the position of yticks
 xticks = np.linspace(0, len(my_second_labels) - 1, num_ticks, dtype=np.int)
 # the content of labels of these yticks
-xticklabels = [ my_second_labels[idx] for idx in xticks ] # float version
-# xticklabels = [ int(my_second_labels[idx]) for idx in xticks ] # int version
+# xticklabels = [ round( my_second_labels[idx], 2) for idx in xticks ] # float version
+xticklabels = [ int(my_second_labels[idx]) for idx in xticks ]         # int version
 
 # cbar_kws={"orientation": "horizontal", "shrink": 0.2, "aspect":20,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ torch.min(data), 4 ]}
 sns.heatmap( data=data, vmin=0, vmax=4 ,xticklabels=xticklabels, yticklabels=True, cmap='YlGnBu_r', ax=ax[3], cbar=False) # important, not ax[0] = sns.heatmap(...)
