@@ -66,7 +66,7 @@ session_file_list = List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRU_Single_Session_2_outputs_one_way_real_LN_self_atten'
-MAX_EPOCH = 2#75
+MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
@@ -417,14 +417,12 @@ for session_k in range(len(session_file_list)):
                     if not os.path.exists(gate_plots):
                         os.mkdir(str(gate_plots))
 
-                    if not os.path.exists( gate_plots +'/' +str(plot_loop)):
-                        os.mkdir(str( gate_plots +'/' +str(plot_loop) ))
-
                     my_real_y = y.cpu().data.numpy()
-                    gates_and_states.feature_visualization( file_path=info_path, feature_name='firing_rate',plot_path= gate_plots +'/' +str(plot_loop) , x=x, y=my_real_y, kinematic_type=kinematic_variable_type)
+                    model_output= o_labels.cpu().data.numpy()
+                    gates_and_states.feature_visualization(figure_index=plot_loop , file_path=info_path, feature_name='firing_rate',plot_path= gate_plots , x=x, y=my_real_y, model_output=model_output, kinematic_type=kinematic_variable_type)
                     print('finished\n')
                     plot_loop += 1
-                    if plot_loop>9:
+                    if plot_loop > 9:
                          is_hidden_state_saved=True
 
             loss  +=  batch_loss.item() 

@@ -11,6 +11,8 @@ from torch.utils.data import Dataset, DataLoader
 
 # https://www.zhihu.com/question/385386895/answer/1133300166
 
+my_fontsize = 35
+
 class compute():
     def comp_and_save(self, input, hidden_state, feature_name, seq_length, save_path, w_ir, w_hr, w_iz, w_hz, w_in, w_hn, b_ir, b_hr, b_iz, b_hz, b_in, b_hn):
         yee = seq_length
@@ -90,7 +92,7 @@ class compute():
 
         return
 
-    def feature_visualization(self, file_path, feature_name, plot_path, x, y, kinematic_type):
+    def feature_visualization(self,  figure_index ,file_path, feature_name, plot_path, x, y, model_output , kinematic_type):
         file_list= os.listdir(file_path)
         plot_path=plot_path
         # x (batch, seq length, input dim)
@@ -101,61 +103,87 @@ class compute():
         else:
             y=y[-10:,:] # use the last 10 from the batch
 
+        model_output = model_output[-1:] # use the last 10 from the batch
+
         print('x.shape= ' ,x.shape, '\n') 
         print('y.shape= ' ,y.shape, '\n')
 
         for i in range(len(file_list)): # travel r_gate, z_gate, and hidden_states
-            file_name=str(file_list[i])[:-4] 
 
-            # if file_name.startswith(feature_name): # expired
+            file_name=str(file_list[i])[:-4]
+            if file_name == 'Hidden_state':
+                df = pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
+                hidden_states = df.values
+            if file_name == 'Reset_gate':
+                df=pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
+                reset_gates = df.values
+            if file_name == 'Update_gate':
+                df=pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
+                update_gates = df.values
 
-            df=pd.read_csv( file_path+'/'+ file_name+'.csv', sep=',',header=None )
-            rows=df.values
+        sns.set(font_scale=1.5)
+        sns.set_style("white")
+        sns.color_palette(palette=None)
 
-            sns.set(font_scale=1.5)
-            sns.set_style("white")
-            sns.color_palette(palette=None)
+        plt.rcParams["figure.figsize"] = (30, 20)
 
-            plt.rcParams["figure.figsize"] = (16,9)
+        # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
 
-            # grid_kws = {"height_ratios": (.3, .02, .3, .3), "hspace": 0.01}
+        f, ax = plt.subplots(5, 1, gridspec_kw={'height_ratios': [1,1,1,1,1],  "hspace":0.05 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.05} , constrained_layout=False)
+        # f.suptitle(file_name, fontsize=25)
+        
+        time=[]
+        for i in range(y.shape[0]):
+            time+=[i]
 
-            f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [1,1,1],  "hspace":0.2 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1} , constrained_layout=False)
-            # f.suptitle(file_name, fontsize=25)
-            
-            time=[]
-            for i in range(y.shape[0]):
-                time+=[i]
+        ###############################################
+        ax[0].plot(time, y[:,0],'b--' , linewidth=5 , label='x-axis actual')
+        ax[0].plot(time, y[:,1],'g--' , linewidth=5 ,label='y-axis acutal')
+        ax[0].plot( [time[-2], time[-1]], [model_output[:,0], model_output[:,0]], color='blue' , linewidth=5,  label='x-axis predict')
+        ax[0].plot( [time[-2], time[-1]], [model_output[:,1], model_output[:,1]], color='green', linewidth=5,  label='y-axis predict')
+        ax[0].legend(loc='upper left',fontsize=my_fontsize*0.7)
+        ax[0].spines['top'].set_visible(False)
+        ax[0].spines['right'].set_visible(False)
+        ax[0].spines['bottom'].set_visible(False)
+        ax[0].spines['left'].set_visible(True)
+        # ax[0].set_title('Kinematics')
+        # print('shape of y=', y.shape)
+        ax[0].set_xlim([ time[0], time[-1] ])
+        if kinematic_type=='x_and_y_pos':
+            ax[0].set_ylabel('Position', fontsize=my_fontsize)
+        if kinematic_type=='x_and_y_vel':
+            ax[0].set_ylabel('Velocity', fontsize=my_fontsize)
+        if kinematic_type=='x_and_y_acc':
+            ax[0].set_ylabel('Acceleration', fontsize=my_fontsize)
 
-            ###############################################
-            ax[0].plot(time, y)
-            ax[0].set_title('Kinematics')
-            # print('shape of y=', y.shape)
-            ax[0].set_xlim([ time[0], time[-1] ])
-            if kinematic_type=='x_and_y_pos':
-                ax[0].set_ylabel('Position (mm)')
-            if kinematic_type=='x_and_y_vel':
-                ax[0].set_ylabel('Velocity (mm/s)')
-            if kinematic_type=='x_and_y_acc':
-                ax[0].set_ylabel('Acceleration (mm/$s^2$)')
-            ax[0].set_xlabel('')
-            ax[0].set_xticks([])       
-            
+        ax[0].set_xlabel('')
+        ax[0].set_xticks([])
+        ax[0].set_yticks([])
 
+        ###############################################
+        ax[1] = sns.heatmap(hidden_states, ax=ax[1], cbar=False,  cmap="YlGnBu",  yticklabels=False, xticklabels=False )  # cbar_kws={"orientation": "horizontal"}
+        # ax[1].set_title( 'Hidden states' )
+        ax[1].set_ylabel('Hidden states', fontsize=my_fontsize)
 
-            ###############################################
-            ax[1] = sns.heatmap(rows, ax=ax[1], cbar=False,  cmap="YlGnBu",  yticklabels=False, xticklabels=False )  # cbar_kws={"orientation": "horizontal"}
-            ax[1].set_title( file_name )
-            ax[1].set_ylabel('Hidden units')
-            ###############################################
+        ax[2] = sns.heatmap( reset_gates, ax=ax[2], cbar=False,  cmap="YlGnBu",  yticklabels=False, xticklabels=False )  # cbar_kws={"orientation": "horizontal"}
+        # ax[2].set_title( 'Reset gates' )
+        ax[2].set_ylabel('Reset gates', fontsize=my_fontsize)
 
-            ax[2] = sns.heatmap(x.transpose(), ax=ax[2], vmax=4, cbar=False, cmap='YlGnBu', yticklabels=False, xticklabels=False)
-            ax[2].set_title('Firing rate')
-            ax[2].set_ylabel('Sorted units')
-            ###############################################
+        ax[3] = sns.heatmap( update_gates, ax=ax[3], cbar=False,  cmap="YlGnBu",  yticklabels=False, xticklabels=False )  # cbar_kws={"orientation": "horizontal"}
+        # ax[3].set_title( 'Update gates' )
+        ax[3].set_ylabel('Update gates', fontsize=my_fontsize)
 
-            plt.savefig( plot_path+'/'+file_name+'.png' )
-            plt.cla()
-            plt.clf()
-            plt.close()
+        ###############################################
+
+        ax[4] = sns.heatmap(x.transpose(), ax=ax[4], vmax=4, cbar=False, cmap='YlGnBu', yticklabels=False, xticklabels=False)
+        # ax[4].set_title('Firing rate')
+        ax[4].set_ylabel('Firing rate', fontsize=my_fontsize)
+        ax[4].set_xlabel('Time bins', fontsize=my_fontsize)
+        ###############################################
+
+        plt.savefig( plot_path+'/'+ 'gates_' + str(figure_index) +'_.png' )
+        plt.cla()
+        plt.clf()
+        plt.close()
+
         return

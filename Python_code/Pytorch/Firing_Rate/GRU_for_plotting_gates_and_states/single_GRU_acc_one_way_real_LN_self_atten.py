@@ -83,63 +83,6 @@ person_correlation_coefficient_across_all_sessions=[]
 testing_data_length_all_sessions = []
 my_best_epoch_dict={}
 
-# epoch optimizer
-def epoch_handle(session_name):
-    epoch_dict={
-    "indy_20160407_02": 64,
-    "indy_20160411_01": 63,
-    "indy_20160411_02": 47,
-    "indy_20160418_01": 77,
-    "indy_20160419_01": 78,
-    "indy_20160420_01": 40,
-    "indy_20160426_01": 83,
-    "indy_20160622_01": 47,
-    "indy_20160624_03": 25,
-    "indy_20160627_01": 6,
-    "indy_20160630_01": 17,
-    "indy_20160915_01": 37,
-    "indy_20160916_01": 28,
-    "indy_20160921_01": 69,
-    "indy_20160927_04": 38,
-    "indy_20160927_06": 69,
-    "indy_20160930_02": 37,
-    "indy_20160930_05": 55,
-    "indy_20161005_06": 25,
-    "indy_20161006_02": 84,
-    "indy_20161007_02": 49,
-    "indy_20161011_03": 30,
-    "indy_20161013_03": 33,
-    "indy_20161014_04": 45,
-    "indy_20161017_02": 42,
-    "indy_20161024_03": 29,
-    "indy_20161025_04": 23,
-    "indy_20161026_03": 47,
-    "indy_20161027_03": 63,
-    "indy_20161206_02": 37,
-    "indy_20161207_02": 54,
-    "indy_20161212_02": 52,
-    "indy_20161220_02": 38,
-    "indy_20170123_02": 38,
-    "indy_20170124_01": 56,
-    "indy_20170127_03": 82,
-    "indy_20170131_02": 56,
-    "loco_20170210_03": 72,
-    "loco_20170213_02": 42,
-    "loco_20170214_02": 42,
-    "loco_20170215_02": 73,
-    "loco_20170216_02": 48,
-    "loco_20170217_02": 57,
-    "loco_20170227_04": 52,
-    "loco_20170228_02": 50,
-    "loco_20170301_05": 51,
-    "loco_20170302_02": 54
-    }
-    for i in epoch_dict:
-        if session_name==i:
-            new_epoch=epoch_dict[i]
-            break
-    return new_epoch
-
 # session control start
 for session_k in range(len(session_file_list)):
 
@@ -451,25 +394,36 @@ for session_k in range(len(session_file_list)):
                 # type 1
                 # Save hidden state and cell state in the last training epoch               
                 if epoch==MAX_EPOCH-1 and is_hidden_state_saved==False:
-                    x=x.cpu().data.numpy()
-                    print('x.shape[0]=', x.shape[0])
-                    yee=int(x.shape[0]) # how many time steps in a iteration
 
-                    w_hr, w_hz, w_hn = net.GRU_Cell_forward_1.weight_hh.chunk(3, 0)
-                    w_ir, w_iz, w_in = net.GRU_Cell_forward_1.weight_ih.chunk(3, 0)
+                    input_dim = feature_numbers
+                    x=x.view(x.size(0), -1, input_dim)
+                    x = x.cpu().data.numpy()
+                    print('x.shape[0]=', x.shape[0]) # batch size
+
+                    yee = max_timestep # how many time steps in a iteration
+
+                    w_hr, w_hz, w_hn = net.GRU_Cell_forward_1.weight_hh.chunk(3, 0) # shape of w_hr (hidden_size, hidden_size)
+                    w_ir, w_iz, w_in = net.GRU_Cell_forward_1.weight_ih.chunk(3, 0) # shape of w_hr (hidden_size, input_size )
                     b_hr, b_hz, b_hn = net.GRU_Cell_forward_1.bias_hh.chunk(3, 0)
                     b_ir, b_iz, b_in = net.GRU_Cell_forward_1.bias_ih.chunk(3, 0)
-                    gates_and_states.comp_and_save( x[:,:], hidden_state, 'firing_rate', yee, info_path, w_ir, w_hr, w_iz, w_hz, w_in, w_hn, b_ir, b_hr, b_iz, b_hz, b_in, b_hn)
+
+                    print( w_hr.cpu().data.numpy().shape, ' ', w_hz.cpu().data.numpy().shape, ' ', w_hn.cpu().data.numpy().shape )
+                    print( w_ir.cpu().data.numpy().shape, ' ', w_iz.cpu().data.numpy().shape, ' ', w_in.cpu().data.numpy().shape )
+
+                    gates_and_states.comp_and_save( x, hidden_state, 'firing_rate', yee, info_path, w_ir, w_hr, w_iz, w_hz, w_in, w_hn, b_ir, b_hr, b_iz, b_hz, b_in, b_hn)
                     # gates_and_states.plot_heatmap(info_path, plot_path)
                     # is_hidden_state_saved=True
 
-                    if not os.path.exists(plot_path+'/'+str(plot_loop)):
-                        os.mkdir(plot_path+'/'+str(plot_loop))
-                    my_real_y=y.cpu().data.numpy()
-                    gates_and_states.feature_visualization( info_path, 'firing_rate', plot_path+'/'+str(plot_loop) , x, my_real_y)
+                    gate_plots = os.path.join(plot_path, 'gates_plots')
+                    if not os.path.exists(gate_plots):
+                        os.mkdir(str(gate_plots))
+
+                    my_real_y = y.cpu().data.numpy()
+                    model_output= o_labels.cpu().data.numpy()
+                    gates_and_states.feature_visualization(figure_index=plot_loop , file_path=info_path, feature_name='firing_rate',plot_path= gate_plots , x=x, y=my_real_y, model_output=model_output, kinematic_type=kinematic_variable_type)
                     print('finished\n')
-                    plot_loop+=1
-                    if plot_loop>9:
+                    plot_loop += 1
+                    if plot_loop > 9:
                          is_hidden_state_saved=True
 
             loss  +=  batch_loss.item() 
@@ -569,7 +523,7 @@ for session_k in range(len(session_file_list)):
         # if(x.size()[0] is not batch_size):
         #     continue
 
-        o_labels, attn_weight_matrix_forward = net(x.to(device))
+        o_labels, attn_weight_matrix_forward, hidden_state = net(x.to(device))
 
         # attention map
         # attn_weight_matrix = attn_weight_matrix.squeeze(1)
