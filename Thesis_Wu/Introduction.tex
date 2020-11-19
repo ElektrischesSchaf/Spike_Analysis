@@ -14,17 +14,17 @@
 \label{sec:why_what_how_is_invasive_BCI}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{為什麼需要侵入式腦機介面、侵入式腦機介面的用途?}
-\todo[inline, author=Prof.]{ \ref{sec:why_what_how_is_invasive_BCI}不是講electrode的用途，而是BMI的用途，要幫助哪些人?}
-\todo[inline, author=Wu, color=blue!40]{ BMI 的用途改放在第一段 }
+\todo[inline, author=Prof.]{ \ref{sec:why_what_how_is_invasive_BCI}不是講electrode的用途，而是 BCI 的用途，要幫助哪些人?}
+\todo[inline, author=Wu, color=blue!40]{ BCI 的用途改放在第一段 }
 This research is aimed for developing algorithms that can convert neural signals into actual movement of the limbs. 
 For those who suffer from motor disability, 
 there exist softwares that allow people to move or control a computer cursor using imagined or attempted movents \citep{hosman2019bci}, 
 or driving an exoskeleton to perform motro-related task for stroke rehabitation, 
-as \cite{chowdhury2018active} successfully developed such EEG-based BCI supported neurorehabilitation system. 
+as \cite{chowdhury2018active} successfully developed such EEG-based brain-computer interfaces (BCIs) supported neurorehabilitation system. 
 By implementing the advanced techniques of deep learning and exerting all possible computational resources, 
 we stand great chance of developing an algorithm that outperforms current studies. 
 
-Intractorticical microelectrode arrays are widely used in motor brain-machine interfaces (BMIs), 
+Intractorticical microelectrode arrays are widely used in motor BCIs,
 by recording spike activities as input signals \citep{stavisky2015high}. 
 Spikes are a group of neural action potentials, 
 and can be discriminated as single neuron activity by their waveforms, 
@@ -60,7 +60,7 @@ Based on the its descriptions we can list the differences between center-out and
     \item Center-out task requires subjects to move the cursor from center target to peripheral targets, normally located at a fix radial distance between the center.
     \item Center-out task restricts the variety of movement directions, researches typically use 8 outer targets.
     \item The movement from pursuit task with point-to-point trajectory is more complex than center-out task, since there are more combinations to select two random targets in a 2D plane.
-    \item The cursor in pursuit task moves continuously by the subject, there is no need of returning back to origin after completing a target reach.
+    \item The cursor in pursuit task moves continuously by the subject, there is no need to return the cursor back to the origin after completing a target reach.
     \item Finding two similar movements from two randomly selected targets in pursuit tasks is very unlikely to happen, whereas in center-out task it is rather easy.
 \end{itemize}
 
@@ -72,7 +72,7 @@ Based on the its descriptions we can list the differences between center-out and
 \todo[inline, color=green!40]{侵入式腦機介面在Pursuit task with point-to-point trajectory有甚麼問題還沒被解決?}
 \todo[inline, author=Prof.]{\ref{sec:unsolved_problems_related_to_pursuit_task}
 這段需要強調錫志開發的工具，哪些是現有方法缺少的?不只是Makin的方法，其他團隊的方法也要探索，例如Stanford, Brown, CMU。
-建議閱讀Makin's introduction for more details of other BMI studies。
+建議閱讀Makin's introduction for more details of other BCI studies。
 現有方法缺乏甚麼特性?
 哪些方法也用了sequential model?
 不管是center-out或pursuit task都要說明
@@ -84,6 +84,8 @@ Several non-linear tuning methods were developed and used in BCI such as Unscent
 but it failed to learn a useful latent representation \citep{makin2018}.
 A new non-linear tuning method \textit{Recurrent exponential-family harmonium} is proposed by \cite{makin2018},
 which they claimed that it outperforms Unscented Kalman filter in neural decoding. 
+\todo[ inline, author=Prof]{說明 \cite{makin2018} 哪裡還不夠準?}
+\todo[ inline, author=Wu, color=blue!40]{\cite{makin2018} 的 acceleration 預測相當差，但是只能從他們給的$R^2$來說明，無法做他們詳細的的 Failure case study}
 Although they have obtained high performances in the position and velocity decoding tasks, 
 but failed to decode acceleration with the accuracy as good as the preceding two kinematic variables.
 Other improved methods for Kalman filter in \cite{vaskov2018cortical} requires two stage of training,
@@ -103,7 +105,7 @@ for RNN has outperformed traditional linear decoder \citep{sussillo2016making}.
 New technique has been created for RNNs \citep{ba2016layer}, 
 it gives us chance to boost decoding accuracy.
 However, previous BCI researches involved RNNs have not focus on the internal dynamics of their models and explain how the model actually learn from the neural signal.
-Deep learn models are criticized as box boxes with its lack of interpretability.
+Deep learn models are criticized as black boxes with its lack of interpretability.
 
 \end{multicols}
 
@@ -128,6 +130,8 @@ attention modules have provided visualization to explain what the model sees on 
 But currently there are no other researches showing such visualization results about neural signals.
 As the resemblances bewteen NLP and neural signals were mentioned earlier in this section,
 we believe it can provide potent reasons for us to explain our the design of our model and brand new insight to neural science by showing the attention map of neural signals.
+\todo[inline, author=Prof]{說明NLP attention的用途}
+\todo[inline, author=Prof]{說明neural decoding 需 attention 的理由}
 \todo[inline, author=Wu, color=blue!40]{提出為什麼需要analysis of reciprocal effect}
 So far no other reseaches have conducted experiments on analyzing which technique contibutes more on the neural decoding. 
 We are interested how the the normalization method \citep{ba2016layer} and the attention module \citep{lin2017structured} can effect each other's performances.

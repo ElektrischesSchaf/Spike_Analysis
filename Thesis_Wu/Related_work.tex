@@ -96,8 +96,9 @@ Therefore, \cite{hochreiter1997long} created a well-known model named Long Short
 Followed by the work of \cite{chung2014empirical}, a new model named Gated Recurrent Unit (GRU) which is similar to LSTM, was introduced. 
 It is has gained popularity in the community due to its efficiency in training and the high performance sometimes even outdoes the LSTM. 
 
-Nowadays, RNNs come with various architectures have benn widely used in BMI reseachers \citep{ahmadi2020impact}, \cite{tuleuov2019deep} even developed a hybrid deep leaning model which combined RNN with convolution neural network (CNN). 
+Nowadays, RNNs come with various architectures have benn widely used in BCI reseachers \citep{ahmadi2020impact}, \cite{tuleuov2019deep} even developed a hybrid deep leaning model which combined RNN with convolution neural network (CNN). 
 These preceding works manifest the uprising potentials of RNNs in computational neural science.
+\todo[inline, author=Prof]{說明 RNN 為何可以解 neural decoding?}
 \end{multicols}
 
 
@@ -202,7 +203,7 @@ But they only predicted velocity, without decoding position and acceleration.
 \todo[inline, color=green!40]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
 \todo[inline, author=Prof]{這篇碩論除了增加視覺化，還有解決甚麼研究問題呢?}
 \todo[inline, author=Prof]{補充1個使用深度學習於腦機介面的研究問題，看看別的論文怎麼描述這個問題}
-\todo[inline, author=Wu, color=blue!40]{代辦}
+\todo[inline, author=Wu, color=blue!40]{目前深度學習於腦機介面的研究在預測acceleration的表現都比較差 \citep{makin2018, tseng2019decoding}，或者只預測position 或 velocity。我們的decoder與 \cite{makin2018} 相比 acceleration 的預測 $R^2$ 提升最多 }
 Deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
 By pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning.
 \cite{tseng2019decoding} intended to show in internal dynamics of the LSTM when decoding the movement of monkeys, 
