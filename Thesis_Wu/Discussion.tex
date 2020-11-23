@@ -44,14 +44,30 @@ the epoches for training loss needed converge drops, making the training process
 Decoding accuracy also improved with a considerable degree.
 As we showed in the Table~\ref{tab:ablation_study} from Section~\ref{sec:ablation_study}, 
 the weighted average $R^2$ across all 47 sessions in x-axis position and both axes of acceleration rised.
-
-
 \end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_LN.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ With or without layer normalization }
+        \label{fig:scatter_plot_comparison_LN}
+    \end{center}
+\end{figure}
 
 \subsection{Effect of temporal self-attention}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{ 比較有/無 attention 的預測軌跡 }
 \end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_attention.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ With or without temporal attention }
+        \label{fig:scatter_plot_comparison_attention}
+    \end{center}
+\end{figure}
 
 \begin{figure}[H]
     \begin{center}
@@ -90,6 +106,9 @@ the weighted average $R^2$ across all 47 sessions in x-axis position and both ax
         \label{fig:effect_of_atten_in_position_time_plot}
     \end{center}
 \end{figure}
+
+
+
 
 \section{The reason why our neural decoder surpasses others}
 \begin{multicols}{2}
