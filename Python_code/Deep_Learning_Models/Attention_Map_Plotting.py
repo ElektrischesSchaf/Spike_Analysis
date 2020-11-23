@@ -125,11 +125,11 @@ class Plotting():
 
         ax[2].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
         if type_name=='pos':
-            ax[2].set_ylabel( 'Position ($mm$)', rotation=90)
+            ax[2].set_ylabel( 'Position (mm)', rotation=90)
         if type_name=='vel':
-            ax[2].set_ylabel( 'Velocity ($mm/s$)', rotation=90)
+            ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
-            ax[2].set_ylabel( 'Acceleration ($mm/s^2$)', rotation=90)
+            ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
         ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
         ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
 
@@ -221,11 +221,11 @@ class Plotting():
 
         ax[2].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
         if type_name=='pos':
-            ax[2].set_ylabel( 'Position ($mm$)', rotation=90)
+            ax[2].set_ylabel( 'Position (mm)', rotation=90)
         if type_name=='vel':
-            ax[2].set_ylabel( 'Velocity ($mm/s$)', rotation=90)
+            ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
-            ax[2].set_ylabel( 'Acceleration ($mm/s^2$)', rotation=90)
+            ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
         ax[2].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
         ax[2].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
 
@@ -301,9 +301,9 @@ class Plotting():
         if type_name=='pos':
             ax[0].set_ylabel( 'Pos. ($mm$)', rotation=90, fontsize=my_fontsize, color="black")
         if type_name=='vel':
-            ax[0].set_ylabel( 'Vel. ($mm/s$)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'Vel. (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
         if type_name=='acc':
-            ax[0].set_ylabel( 'Acc. ($mm/s^2$)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'Acc. (mm/$s^2$)', rotation=90, fontsize=my_fontsize, color="black")
 
         ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
         ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )

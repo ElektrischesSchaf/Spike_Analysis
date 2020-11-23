@@ -107,6 +107,16 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \end{multicols}
 
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_makin.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Comparison with \cite{makin2018} }
+        \label{fig:scatter_plot_comparison_with_makin}
+    \end{center}
+\end{figure}
+
+
 \section{Visualization of attention process}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{放入attention map}
@@ -136,158 +146,93 @@ we put the predicted trajectories, attention map and the input neural firing rat
 
 
 % \begin{landscape}
-    \section{Ablation study}
-    \subsection{Comparison table}
-    \label{sec:ablation_study}
-    \begin{table}[H]
-        \centering
-        \caption{Weighted average $R^2$ and standard deviation}
-        \begin{tabular}{ccccccccc}
-            \hline
-            \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Atten.}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{L.N.}}}    & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{GRU}}}          & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
-            \multicolumn{1}{c}{}                                   & \multicolumn{1}{c}{}            & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{Dir}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} \\
-            \hline
-            \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & $\rightarrow$                   & 0.49$\pm$0.21         & 0.68$\pm$0.12         & 0.65$\pm$0.13         & 0.71$\pm$0.11         & 0.31$\pm$0.16         & 0.32$\pm$0.23 \\ 
-            \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & $\rightleftarrows$              & 0.49$\pm$0.21         & 0.69$\pm$0.13         & 0.65$\pm$0.12         & 0.74$\pm$0.07         & 0.24$\pm$0.13         & 0.25$\pm$0.19 \\ 
-            \textcolor{red}{\xmark} & \textcolor{blue}{\checkmark} & $\rightarrow$              & 0.53$\pm$0.19         & 0.69$\pm$0.09         & 0.64$\pm$0.11         & 0.75$\pm$0.05         & 0.40$\pm$0.13         & 0.47$\pm$0.10 \\ 
-            \textcolor{red}{\xmark} & \textcolor{blue}{\checkmark} & $\rightleftarrows$         &\textbf{0.55$\pm$0.17} & 0.70$\pm$0.08         & 0.53$\pm$0.19         & 0.71$\pm$0.07         &\textbf{0.41$\pm$0.13} & 0.50$\pm$0.09 \\ 
-            \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & $\rightarrow$              & 0.46$\pm$0.22         & 0.67$\pm$0.11         & 0.62$\pm$0.12         & 0.73$\pm$0.06         & 0.12$\pm$0.11         & 0.14$\pm$0.15 \\
-            \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & $\rightleftarrows$         & 0.49$\pm$0.21         & 0.69$\pm$0.09         & 0.65$\pm$0.11         & 0.74$\pm$0.05         & 0.25$\pm$0.19         & 0.29$\pm$0.22 \\
-            \textcolor{blue}{\checkmark}  & \textcolor{blue}{\checkmark} & $\rightarrow$        & 0.51$\pm$0.20         & 0.69$\pm$0.09         & 0.62$\pm$0.12         & 0.74$\pm$0.05         & 0.35$\pm$0.13         & 0.43$\pm$0.11 \\ 
-            \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & $\rightleftarrows$    & 0.53$\pm$0.19         &\textbf{0.71$\pm$0.08} &\textbf{0.66$\pm$0.10} &\textbf{0.76$\pm$0.05} & 0.40$\pm$0.13         &\textbf{0.48$\pm$0.09} \\ 
-            \hline
-            \multicolumn{3}{c}{ \cite{makin2018} } & 0.46$\pm$0.28 & 0.70$\pm$0.09  & 0.58$\pm$0.15 & 0.74$\pm$0.06 & 0.29$\pm$0.15 & 0.40$\pm$0.09 \\
-            \hline
-        \end{tabular}
-        \label{tab:ablation_study}
-    \end{table}
-    % \end{landscape}
+\section{Ablation study}
+\subsection{Comparison table}
+\label{sec:ablation_study}
+\begin{table}[H]
+    \centering
+    \caption{Weighted average $R^2$ and standard deviation}
+    \begin{tabular}{ccccccccc}
+        \hline
+        \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Atten.}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{L.N.}}}    & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{GRU}}}          & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
+        \multicolumn{1}{c}{}                                   & \multicolumn{1}{c}{}            & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{Dir}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} \\
+        \hline
+        \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & $\rightarrow$                   & 0.49$\pm$0.21         & 0.68$\pm$0.12         & 0.65$\pm$0.13         & 0.71$\pm$0.11         & 0.31$\pm$0.16         & 0.32$\pm$0.23 \\ 
+        \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & $\rightleftarrows$              & 0.49$\pm$0.21         & 0.69$\pm$0.13         & 0.65$\pm$0.12         & 0.74$\pm$0.07         & 0.24$\pm$0.13         & 0.25$\pm$0.19 \\ 
+        \textcolor{red}{\xmark} & \textcolor{blue}{\checkmark} & $\rightarrow$              & 0.53$\pm$0.19         & 0.69$\pm$0.09         & 0.64$\pm$0.11         & 0.75$\pm$0.05         & 0.40$\pm$0.13         & 0.47$\pm$0.10 \\ 
+        \textcolor{red}{\xmark} & \textcolor{blue}{\checkmark} & $\rightleftarrows$         &\textbf{0.55$\pm$0.17} & 0.70$\pm$0.08         & 0.53$\pm$0.19         & 0.71$\pm$0.07         &\textbf{0.41$\pm$0.13} & 0.50$\pm$0.09 \\ 
+        \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & $\rightarrow$              & 0.46$\pm$0.22         & 0.67$\pm$0.11         & 0.62$\pm$0.12         & 0.73$\pm$0.06         & 0.12$\pm$0.11         & 0.14$\pm$0.15 \\
+        \textcolor{blue}{\checkmark} & \textcolor{red}{\xmark} & $\rightleftarrows$         & 0.49$\pm$0.21         & 0.69$\pm$0.09         & 0.65$\pm$0.11         & 0.74$\pm$0.05         & 0.25$\pm$0.19         & 0.29$\pm$0.22 \\
+        \textcolor{blue}{\checkmark}  & \textcolor{blue}{\checkmark} & $\rightarrow$        & 0.51$\pm$0.20         & 0.69$\pm$0.09         & 0.62$\pm$0.12         & 0.74$\pm$0.05         & 0.35$\pm$0.13         & 0.43$\pm$0.11 \\ 
+        \textcolor{blue}{\checkmark} & \textcolor{blue}{\checkmark} & $\rightleftarrows$    & 0.53$\pm$0.19         &\textbf{0.71$\pm$0.08} &\textbf{0.66$\pm$0.10} &\textbf{0.76$\pm$0.05} & 0.40$\pm$0.13         &\textbf{0.48$\pm$0.09} \\ 
+        \hline
+        \multicolumn{3}{c}{ \cite{makin2018} } & 0.46$\pm$0.28 & 0.70$\pm$0.09  & 0.58$\pm$0.15 & 0.74$\pm$0.06 & 0.29$\pm$0.15 & 0.40$\pm$0.09 \\
+        \hline
+    \end{tabular}
+    \label{tab:ablation_study}
+\end{table}
+% \end{landscape}
     
-    
-    \subsection{With or without attention in bidirectional GRU}
-    
-    \begin{multicols}{2}
-    There are some sessions does not benefit from our attention mechanism.
-    Their prediction $R^2$ decreased when comparing to the result from the decoders without implementing attention.
-    Take session \textbf{indy\_20161027\_03} for example,
-    the $R^2$ in position decoding from the bidirectional LN-GRU is $0.64$, $0.66$ in x-axis and y-axis.
-    But the result from the same decoder with attention, the $R^2$ becomes $0.44$ and $0.58$, 
-    with a significant drop in x-axis position prediction.
-    Figure~\ref{fig:indy_20161027_03_position_x_fauilure_case_comparison} compares the position decoding results along x-axis.
-    Both decoders tend to fail when the movement of the fingertip stopped.
-    However in this session, decoder with attention gives more deviation to the predicted trajectory than the decoder without attention.
-    \end{multicols}
-    
-    \begin{figure}[H]
-        \begin{center}
-            \begin{subfigure}{1\textwidth}
-                \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/x_pos_vs_time_from_1368_to_1381.png}
-                \caption{}
-            \end{subfigure}
-            \begin{subfigure}{1\textwidth}
-                \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/x_pos_vs_time_from_1509_to_1522.png}
-                \caption{}
-            \end{subfigure}
-            \caption{x position prediction in session indy\_20161027\_03}
-            \label{fig:indy_20161027_03_position_x_fauilure_case_comparison}
-        \end{center}
-    \end{figure}
-    
-    Figure~\ref{fig:indy_20161027_03_position_y_fauilure_case_comparison} shows that the predicted trajectory in y-axis is smoother than the one without attention.
-    But in the intervals with the fingertip stayed stationary, as from $1513s$ to $1516s$,
-    the deviation is larger the the trajectory predicted without attention.
-    
-    
-    \begin{figure}[H]
-        \begin{center}
-            \begin{subfigure}{1\textwidth}
-                \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/y_pos_vs_time_from_1368_to_1381.png}
-                \caption{}
-            \end{subfigure}
-            \begin{subfigure}{1\textwidth}
-                \includegraphics[height=0.15\textheight]{../Failure_case_figures/indy_20161027_03/y_pos_vs_time_from_1509_to_1522.png}
-                \caption{}
-            \end{subfigure}
-            \caption{y position prediction in session indy\_20161027\_03}
-            \label{fig:indy_20161027_03_position_y_fauilure_case_comparison}
-        \end{center}
-    \end{figure}
-    
-    \begin{multicols}{2}
-    The corresponding attention map is showed in Figure~\ref{fig:indy_20161027_03_corresponding_attention_map},
-    and we can tell that our decoder with attention failed when it has lose the focus a the time bins.
-    In other words, the attention scores are distributed rather evenly among all the past time bins,
-    whereas in the samples of good prediction accuracy, 
-    the attention scores are more concentrated on some specific past time bins.
-    our attention should able to distinguish if the fingertip of the subjects is moving or stationary.
-    This not an easy task since neurons still fire when the subjects hold their movement.
-    
-    \end{multicols}
-    
-    \begin{figure}[H]
-        \begin{center}
-            \begin{subfigure}{0.49\textwidth}
-                \includegraphics[width=1\textwidth]{../Failure_case_figures/indy_20161027_03/attention_map_600_to_800.png}
-                \caption{}
-            \end{subfigure}
-            \begin{subfigure}{0.49\textwidth}
-                \includegraphics[width=1\textwidth]{../Failure_case_figures/indy_20161027_03/attention_map_2800_to_3000.png}
-                \caption{}
-            \end{subfigure}
-            \caption{Corresponding attention map in session indy\_20161027\_03}
-            \label{fig:indy_20161027_03_corresponding_attention_map}
-        \end{center}
-    \end{figure}
-    
-    \subsection{One-way or bidirectional GRU}
-    \begin{multicols}{2}
-    
-    \end{multicols}
-    
-    \begin{figure}[H]
-        \begin{center}
-            \begin{subfigure}{0.49\textwidth}
-                \includegraphics[width=1\textwidth]{oneway_pos_atten.png}
-                \caption{one-way GRU}
-            \end{subfigure}
-            \begin{subfigure}{0.49\textwidth}
-                \includegraphics[width=1\textwidth]{bidir_pos_atten.png}
-                \caption{bidirectional GRU}
-            \end{subfigure}
-            \caption{Position decoder with attention}
-            \label{fig:position_decoder_with_attention}
-        \end{center}
-    \end{figure}
-    
-    \begin{figure}[H]
-        \begin{center}
-            \begin{subfigure}{0.49\textwidth}
-                \includegraphics[width=1\textwidth]{oneway_vel_atten.png}
-                \caption{one-way GRU}
-            \end{subfigure}
-            \begin{subfigure}{0.49\textwidth}
-                \includegraphics[width=1\textwidth]{bidir_vel_atten.png}
-                \caption{bidirectional GRU}
-            \end{subfigure}
-            \caption{Velocity decoder with attention}
-            \label{fig:velocity_decoder_with_attention}
-        \end{center}
-    \end{figure}
-    
-    \begin{figure}[H]
-        \begin{center}
-            \begin{subfigure}{0.49\textwidth}
-                \includegraphics[width=1\textwidth]{oneway_acc_atten.png}
-                \caption{one-way GRU}
-            \end{subfigure}
-            \begin{subfigure}{0.49\textwidth}
-                \includegraphics[width=1\textwidth]{bidir_acc_atten.png}
-                \caption{bidirectional GRU}
-            \end{subfigure}
-            \caption{Acceleration decoder with attention}
-            \label{fig:acceleration_decoder_with_attention}
-        \end{center}
-    \end{figure}
+
+\subsection{One-way or bidirectional GRU}
+\begin{multicols}{2}
+
+\end{multicols}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_one_way_vs_bidir.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Comparison with \cite{makin2018} }
+        \label{fig:scatter_plot_comparison_with_makin}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{oneway_pos_atten.png}
+            \caption{one-way GRU}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{bidir_pos_atten.png}
+            \caption{bidirectional GRU}
+        \end{subfigure}
+        \caption{Position decoder with attention}
+        \label{fig:position_decoder_with_attention}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{oneway_vel_atten.png}
+            \caption{one-way GRU}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{bidir_vel_atten.png}
+            \caption{bidirectional GRU}
+        \end{subfigure}
+        \caption{Velocity decoder with attention}
+        \label{fig:velocity_decoder_with_attention}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{oneway_acc_atten.png}
+            \caption{one-way GRU}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{bidir_acc_atten.png}
+            \caption{bidirectional GRU}
+        \end{subfigure}
+        \caption{Acceleration decoder with attention}
+        \label{fig:acceleration_decoder_with_attention}
+    \end{center}
+\end{figure}
 
 \section{Internal dynamics of network}
 \label{sec:internal_dynamics_of_network}
@@ -328,12 +273,106 @@ we put the predicted trajectories, attention map and the input neural firing rat
 
 \section{Failure case study}
 \todo[inline, color=green!40]{放入失敗的例子}
+\subsection{Position decoder}
+\begin{multicols}{2}
+Most sessions benefit from the layer normalization and attention decoder, 
+but there are sessions turned out to have particularly poor performances.
+Take session indy\_20161027\_03 for example, 
+the x and y-axis position prediction $R^2$ in \cite{makin2018} is (0.41, 0.72),
+and in our bidirectional LN-GRU with attention module the performance is (0.51, 0.55).
+
+The corresponding attention map is showed in Figure~\ref{fig:indy_20161027_03_corresponding_attention_map},
+and we can tell that our decoder with attention failed when it has lose the focus a the time bins.
+In other words, the attention scores are distributed rather evenly among all the past time bins,
+whereas in the samples of good prediction accuracy, 
+the attention scores are more concentrated on some specific past time bins.
+our attention should able to distinguish if the fingertip of the subjects is moving or stationary.
+This not an easy task since neurons still fire when the subjects hold their movement.
+
+\end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/position/indy_20161027_03/attention_map_600_to_800.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/position/indy_20161027_03/attention_map_2800_to_3000.png}
+            \caption{}
+        \end{subfigure}
+        \caption{ Attention map in failed cases }
+        \subcaption*{session indy\_20161027\_03}
+        \label{fig:indy_20161027_03_corresponding_attention_map}
+    \end{center}
+\end{figure}
+
+Similar problems also happened in session indy\_20190426\_01,
+as the the attention map showed in Figure~\ref{fig:indy_20160426_01_corresponding_attention_map}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/position/indy_20160426_01/attention_map_2000_to_2200.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/position/indy_20160426_01/attention_map_2400_to_2600.png}
+            \caption{}
+        \end{subfigure}
+        \caption{ Attention map in failed cases }
+        \subcaption*{session indy\_20160426\_01}
+        \label{fig:indy_20160426_01_corresponding_attention_map}
+    \end{center}
+\end{figure}
+
+\subsection{Velocity decoder}
+\begin{multicols}{2}
+In velocity decoding,
+session indy\_20160627\_01 is the worst compared to others.
+
+\end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/velocity/indy_20160627_01/attention_map_6000_to_6200.png}
+            \caption{}
+            \subcaption*{session indy\_20160627\_01}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/velocity/indy_20160927_04/attention_map_600_to_800.png}
+            \caption{}
+            \subcaption*{session indy\_20160927\_04}
+        \end{subfigure}
+        \caption{ Attention map in failed cases }
+        \label{fig:velocity_failure_case}
+    \end{center}
+\end{figure}
 
 \section{Decodeing results from dataset Chewie}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{ 猴子C的Decoding 結果單獨一個子章節顯示，並不列入與 Makin 的比較 }
 \end{multicols}
 
+\subsection{Acceleration decoder}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/acceleration/indy_20160627_01/attention_map_45800_to_46000.png}
+            \caption{}
+            \subcaption*{session indy\_20160627\_01}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../Failure_case_figures/acceleration/indy_20170124_01/attention_map_1400_to_1600.png}
+            \caption{}
+            \subcaption*{session indy\_20170124\_01}
+        \end{subfigure}
+        \caption{ Attention map in failed cases }
+        \label{fig:acceleration_failure_case}
+    \end{center}
+\end{figure}
 
 % \section{y-axis outperforms x-axis}
 % \begin{multicols}{2}

@@ -10,6 +10,12 @@ my_fontsize=45
 
 CWD = os.getcwd()
 
+# plotting timeline setting
+duration = 50  # time bins
+start_time_bin = 1
+end_time_bin = start_time_bin + duration
+
+
 trajectory_2D_path = os.path.join(CWD, '2D_trajectory')
 if not os.path.exists(trajectory_2D_path):
     os.mkdir(trajectory_2D_path)
@@ -41,21 +47,17 @@ prediction_y_no_attention = np.array(prediction_y_no_attention)
 
 
 
-start_time_bin = 0
-duration = 50
-end_time_bin = start_time_bin+duration
-
 
 while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     
     plt.figure(figsize=(12, 12))
-    plt.plot(x_ground_truth[start_time_bin:end_time_bin], y_ground_truth[start_time_bin:end_time_bin], color='black', linestyle='dashed', linewidth=5 , label='Actual')
-    plt.plot(prediction_x_attention[start_time_bin:end_time_bin], prediction_y_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
-    plt.plot(prediction_x_no_attention[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
+    plt.plot(x_ground_truth[start_time_bin-1:end_time_bin], y_ground_truth[start_time_bin-1:end_time_bin], color='black', linestyle='dashed', linewidth=5 , label='actual')
+    plt.plot(prediction_x_attention[start_time_bin-1:end_time_bin], prediction_y_attention[start_time_bin-1:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
+    plt.plot(prediction_x_no_attention[start_time_bin-1:end_time_bin], prediction_y_no_attention[start_time_bin-1:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
 
-    plt.scatter(x_ground_truth[start_time_bin], y_ground_truth[start_time_bin], color='black', marker='o', s=300)
-    plt.scatter(prediction_x_attention[start_time_bin], prediction_y_attention[start_time_bin], color='blue' , marker='o', s=300)
-    plt.scatter(prediction_x_no_attention[start_time_bin], prediction_y_no_attention[start_time_bin], color='green' , marker='o', s=300)
+    plt.scatter(x_ground_truth[start_time_bin-1], y_ground_truth[start_time_bin-1], color='black', marker='o', s=300)
+    plt.scatter(prediction_x_attention[start_time_bin-1], prediction_y_attention[start_time_bin-1], color='blue' , marker='o', s=300)
+    plt.scatter(prediction_x_no_attention[start_time_bin-1], prediction_y_no_attention[start_time_bin-1], color='green' , marker='o', s=300)
 
     plt.scatter(x_ground_truth[end_time_bin-1], y_ground_truth[end_time_bin-1], color='black', marker='X', s=300)
     plt.scatter(prediction_x_attention[end_time_bin-1], prediction_y_attention[end_time_bin-1], color='blue' , marker='X', s=300)
@@ -66,11 +68,11 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     plt.ylabel('mm', fontsize=my_fontsize, color='black')
     plt.xticks(fontsize=my_fontsize*0.5)
     plt.yticks(fontsize=my_fontsize*0.5)
-    plt.legend(fontsize=my_fontsize*0.3, loc='upper right')
-    plt.tight_layout()
+    plt.legend(fontsize=my_fontsize*0.5, loc='upper right')
 
     plt.xlim([-60,70])
     plt.ylim([-10,120])
+    plt.tight_layout()
 
     plt.savefig( trajectory_2D_path+ '/x_y_trajectory_with_attention'+ '_from_' + str( int(plotting_time_elapsed[start_time_bin,0]) )+'_to_'+str( int(plotting_time_elapsed[end_time_bin,0]) ) +'.png')
 
@@ -85,22 +87,22 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
 
 
 
-start_time_bin = 0
-duration = 200
-end_time_bin = start_time_bin+duration
+start_time_bin = 1
+duration = 50*3
+end_time_bin = start_time_bin + duration
 
 
 while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     
     plt.figure(figsize=(20, 5))
-    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], x_ground_truth[start_time_bin:end_time_bin], color='black',linestyle='--', linewidth=5 , label='Actual')
-    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], y_ground_truth[start_time_bin:end_time_bin], color='black', linewidth=5 , label='Actual y pos')  
-    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
-    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention y pos')
-    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
-    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention y pos')
+    plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], x_ground_truth[start_time_bin-1:end_time_bin], color='black',linestyle='--', linewidth=5 , label='actual')
+    # plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], y_ground_truth[start_time_bin-1:end_time_bin], color='black', linewidth=5 , label='actual y pos')  
+    plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], prediction_x_attention[start_time_bin-1:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
+    # plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], prediction_y_attention[start_time_bin-1:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention y pos')
+    plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], prediction_x_no_attention[start_time_bin-1:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
+    # plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], prediction_y_no_attention[start_time_bin-1:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention y pos')
 
-    plt.xlim([plotting_time_elapsed[start_time_bin], plotting_time_elapsed[end_time_bin] ])
+    plt.xlim([plotting_time_elapsed[start_time_bin-1], plotting_time_elapsed[end_time_bin] ])
 
     plt.title('x-axis', fontsize=my_fontsize*0.7, color='black')
     plt.xlabel('Time (second)', fontsize=my_fontsize*0.5, color='black')
@@ -118,14 +120,14 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     plt.close()
 
     plt.figure(figsize=(20, 5))
-    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], x_ground_truth[start_time_bin:end_time_bin], color='black', linewidth=5 , label='Actual x pos')
-    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], y_ground_truth[start_time_bin:end_time_bin], color='black',linestyle='--', linewidth=5 , label='Actual')  
-    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention x pos')
-    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_attention[start_time_bin:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
-    # plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_x_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention x pos')
-    plt.plot(plotting_time_elapsed[start_time_bin:end_time_bin], prediction_y_no_attention[start_time_bin:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
+    # plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], x_ground_truth[start_time_bin-1:end_time_bin], color='black', linewidth=5 , label='actual x pos')
+    plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], y_ground_truth[start_time_bin-1:end_time_bin], color='black',linestyle='--', linewidth=5 , label='actual')  
+    # plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], prediction_x_attention[start_time_bin-1:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention x pos')
+    plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], prediction_y_attention[start_time_bin-1:end_time_bin], color='blue', linewidth=5 , alpha=0.7, label='with attention')
+    # plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], prediction_x_no_attention[start_time_bin-1:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention x pos')
+    plt.plot(plotting_time_elapsed[start_time_bin-1:end_time_bin], prediction_y_no_attention[start_time_bin-1:end_time_bin], color='green', linewidth=5 , alpha=0.7, label='without attention')
 
-    plt.xlim([plotting_time_elapsed[start_time_bin], plotting_time_elapsed[end_time_bin] ])
+    plt.xlim([plotting_time_elapsed[start_time_bin-1], plotting_time_elapsed[end_time_bin] ])
 
     plt.title('y-axis', fontsize=my_fontsize*0.7, color='black')
     plt.xlabel('Time (second)', fontsize=my_fontsize*0.5, color='black')

@@ -27,10 +27,14 @@ plot_path_3 = os.path.join(plot_path, 'bir_attention_with_LN_inside_vs_no_LN_ins
 if not os.path.exists(plot_path_3):
     os.mkdir(plot_path_3)
 
+plot_path_4 = os.path.join(plot_path, 'My_plot_bidir_vs_no_atten_inside')
+if not os.path.exists(plot_path_4):
+    os.mkdir(plot_path_4)
+
 my_model_name_for_y = 'atten_LN_bidir' # atten_LN_bidir
 makin_model_name = 'rEFH_dynamic'
 
-my_model_name_for_x = 'atten_LN_oneway' # atten_LN_oneway atten_LN_bidir_no_LN_inside
+my_model_name_for_x = 'bidri_LN_no_atten' # atten_LN_oneway , atten_LN_bidir_no_LN_inside , bidri_LN_no_atten
 
 my_fontsize=35
 
@@ -166,6 +170,8 @@ def drawing_with_my_two_results( plot_path_2, my_model_result_x, my_model_result
         plt.xlabel('SNR(dB), One-way GRU (+LN & Atten.)',fontsize=my_fontsize)
     if my_model_name_for_x =='atten_LN_bidir_no_LN_inside':
         plt.xlabel('SNR(dB), Bidir GRU (+LN & Atten. no LN )',fontsize=my_fontsize)
+    if my_model_name_for_x =='bidri_LN_no_atten':
+        plt.xlabel('SNR(dB), Bidir GRU (+LN )',fontsize=my_fontsize)
 
     if my_model_name_for_y == 'atten_LN_bidir':
         plt.ylabel('SNR(dB), Bidir GRU (+LN & Atten.)',fontsize=my_fontsize)
@@ -223,7 +229,7 @@ drawing_with_makin(plot_path_1, rEFH_x_acc, x_acc_1, 'x', 'acc',my_model_name_fo
 drawing_with_makin(plot_path_1, rEFH_y_acc, y_acc_1, 'y', 'acc',my_model_name_for_y)
 
 
-plot_path_for_this = plot_path_2
+plot_path_for_this = plot_path_4
 drawing_with_my_two_results(plot_path_for_this,  x_pos_2, x_pos_1, 'x', 'pos', my_model_name_for_x, my_model_name_for_y)
 drawing_with_my_two_results(plot_path_for_this,  y_pos_2, y_pos_1, 'y', 'pos', my_model_name_for_x, my_model_name_for_y)
 drawing_with_my_two_results(plot_path_for_this,  x_vel_2, x_vel_1, 'x', 'vel', my_model_name_for_x, my_model_name_for_y)

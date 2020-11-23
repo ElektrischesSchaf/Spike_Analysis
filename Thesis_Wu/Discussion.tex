@@ -53,6 +53,43 @@ the weighted average $R^2$ across all 47 sessions in x-axis position and both ax
 \todo[inline, color=green!40]{ 比較有/無 attention 的預測軌跡 }
 \end{multicols}
 
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/x_y_trajectory_with_attention_from_3287_to_3290.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/x_y_trajectory_with_attention_from_3290_to_3293.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/x_y_trajectory_with_attention_from_3293_to_3297.png}
+            \caption{}
+        \end{subfigure}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Effect of attention in position decoding (2D) }
+        \subcaption*{session indy\_20161206\_02}
+        \label{fig:effect_of_atten_in_position_2D_plot}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.9\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/x_pos_vs_time_from_3287_to_3297.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.9\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/y_pos_vs_time_from_3287_to_3297.png}
+            \caption{}
+        \end{subfigure}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Effect of attention in position decoding (1D) }
+        \subcaption*{session indy\_20161206\_02}
+        \label{fig:effect_of_atten_in_position_time_plot}
+    \end{center}
+\end{figure}
 
 \section{The reason why our neural decoder surpasses others}
 \begin{multicols}{2}
@@ -119,3 +156,21 @@ That means our usage of the time bins is acceptable and reasonable.
 
 \cite{wu2003neural} 這篇論文提到傳統的linear filter[8,12]需要500ms到1500ms的神經訊號來解碼運動。最佳的time lag是70到140ms。這篇也是第一篇使用Kalman filter於運動解碼的論文
 \end{multicols}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{tap_size_x_axis.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{tap_size_y_axis.png}
+            \caption{}
+        \end{subfigure}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Effect of different tap size on decoding SNR }
+        \subcaption*{session indy\_20161007\_02}
+        \label{fig:effect_of_tap_size}
+    \end{center}
+\end{figure}
