@@ -134,18 +134,19 @@ we put the predicted trajectories, attention map and the input neural firing rat
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.6\textwidth}
-            \includegraphics[width=1\textwidth]{bidir_pos_atten.png}
+            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160418_01/pos_attention_map_9200_to_9400.png}
             \caption{ Position }
         \end{subfigure}
         \begin{subfigure}{0.6\textwidth}
-            \includegraphics[width=1\textwidth]{bidir_vel_atten.png}
+            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160418_01/vel_attention_map_1000_to_1200.png}
             \caption{ Velocity }
         \end{subfigure}
         \begin{subfigure}{0.6\textwidth}
-            \includegraphics[width=1\textwidth]{bidir_acc_atten.png}
+            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160418_01/acc_attention_map_3000_to_3200.png}
             \caption{ Acceleration }
         \end{subfigure}
         \caption{ Trajectories with attention map }
+        \subcaption*{session indy\_20160418\_01}
         \label{fig:decoding_trajectories_with_attention}
     \end{center}
 \end{figure}
@@ -207,14 +208,15 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.49\textwidth}
-            \includegraphics[width=1\textwidth]{oneway_pos_atten.png}
+            \includegraphics[width=1\textwidth]{../Ablation_study_figures/one-way_vs_bidir/indy_20161007_02/pos/one-way.png}
             \caption{one-way GRU}
         \end{subfigure}
         \begin{subfigure}{0.49\textwidth}
-            \includegraphics[width=1\textwidth]{bidir_pos_atten.png}
+            \includegraphics[width=1\textwidth]{../Ablation_study_figures/one-way_vs_bidir/indy_20161007_02/pos/bidir.png}
             \caption{bidirectional GRU}
         \end{subfigure}
         \caption{Position decoder with attention}
+        \subcaption*{session indy\_20161007\_02}
         \label{fig:position_decoder_with_attention}
     \end{center}
 \end{figure}
@@ -222,14 +224,15 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.49\textwidth}
-            \includegraphics[width=1\textwidth]{oneway_vel_atten.png}
+            \includegraphics[width=1\textwidth]{../Ablation_study_figures/one-way_vs_bidir/indy_20161007_02/vel/one-way.png}
             \caption{one-way GRU}
         \end{subfigure}
         \begin{subfigure}{0.49\textwidth}
-            \includegraphics[width=1\textwidth]{bidir_vel_atten.png}
+            \includegraphics[width=1\textwidth]{../Ablation_study_figures/one-way_vs_bidir/indy_20161007_02/vel/bidir.png}
             \caption{bidirectional GRU}
         \end{subfigure}
         \caption{Velocity decoder with attention}
+        \subcaption*{session indy\_20161007\_02}
         \label{fig:velocity_decoder_with_attention}
     \end{center}
 \end{figure}
@@ -237,14 +240,15 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.49\textwidth}
-            \includegraphics[width=1\textwidth]{oneway_acc_atten.png}
+            \includegraphics[width=1\textwidth]{../Ablation_study_figures/one-way_vs_bidir/indy_20161007_02/acc/one-way.png}
             \caption{one-way GRU}
         \end{subfigure}
         \begin{subfigure}{0.49\textwidth}
-            \includegraphics[width=1\textwidth]{bidir_acc_atten.png}
+            \includegraphics[width=1\textwidth]{../Ablation_study_figures/one-way_vs_bidir/indy_20161007_02/acc/bidir.png}
             \caption{bidirectional GRU}
         \end{subfigure}
         \caption{Acceleration decoder with attention}
+        \subcaption*{session indy\_20161007\_02}
         \label{fig:acceleration_decoder_with_attention}
     \end{center}
 \end{figure}
