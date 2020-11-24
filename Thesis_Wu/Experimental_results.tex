@@ -88,6 +88,12 @@ also easiler for us to compare their results.
     \label{fig:acceleration_prediction}
 \end{figure}
 
+\begin{multicols}{2}
+We put three kinematics prediction results all torgether in figure~\ref{fig:Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar},
+with the neural spike firing rate in heatmap and the time points of target cue changed in gray vertical lines.
+
+\end{multicols}
+
 
 \begin{figure}[H]
     \begin{center}
@@ -149,6 +155,15 @@ we put the predicted trajectories, attention map and the input neural firing rat
 \section{Ablation study}
 \subsection{Comparison table}
 \label{sec:ablation_study}
+\begin{multicols}{2}
+Table~\ref{tab:ablation_study_table} has the results from decoders with different techniques combinations.
+Decoders with the highest $R^2$ and lowest standard deviation are the ones considered the best.
+Aside from x-position and x-acceleration, the best decoder for them is the bidirectional GRU with layer normalization but without attention module.
+The rest of the kinematics get the best results by the decoder of bidirectional GRU which combined with both layer normalization and attention.
+Comparing with \cite{makin2018}, biggest improvement happened in the three kinematics in x-axis.
+
+\end{multicols}
+
 \begin{table}[H]
     \centering
     \caption{Weighted average $R^2$ and standard deviation}
@@ -169,7 +184,7 @@ we put the predicted trajectories, attention map and the input neural firing rat
         \multicolumn{3}{c}{ \cite{makin2018} } & 0.46$\pm$0.28 & 0.70$\pm$0.09  & 0.58$\pm$0.15 & 0.74$\pm$0.06 & 0.29$\pm$0.15 & 0.40$\pm$0.09 \\
         \hline
     \end{tabular}
-    \label{tab:ablation_study}
+    \label{tab:ablation_study_table}
 \end{table}
 % \end{landscape}
     
