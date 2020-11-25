@@ -96,3 +96,6 @@ plt.savefig( label_hist_figure+'/'+ 'acceleration.png')
 plt.cla()
 plt.clf()
 fig.clear()
+
+
+
