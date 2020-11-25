@@ -165,9 +165,9 @@ for i in range(len(m1_raster)):
 
 print(len(m1_raster), ' ', len(s1_raster), '\n')
 
-my_plot_width = 16
-my_plot_height = 16
-my_fontsize = 30
+my_plot_width = 20
+my_plot_height = 20
+my_fontsize = 45
 
 
 
@@ -177,7 +177,7 @@ plt.figure( figsize=(my_plot_width, my_plot_height) )
 cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50, "use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ 0, 4 ]}
 ax = sns.heatmap( data=data, vmax=4 , xticklabels=False, yticklabels=True, cbar=False, cmap='YlGnBu_r') # important, not ax[0] = sns.heatmap(...)
 # ax[0].set_xticklabels(ax[0].get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
-ax.set_title('Firing rate from session '+ session_name, fontsize=my_fontsize)
+ax.set_title('Firing rate', fontsize=my_fontsize)
 
 
 ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = my_fontsize)
@@ -186,13 +186,13 @@ ax.yaxis.set_major_locator(ticker.MultipleLocator(50))
 ax.yaxis.set_major_formatter(ticker.ScalarFormatter())
 
 ax.set_xlim([ start_time_bin, end_time_bin ])
-ax.set_xlabel('Time Bins', fontsize=my_fontsize, color="black")
+ax.set_xlabel('Time bins', fontsize=my_fontsize, color="black")
 ax.set_ylabel('Units', fontsize=my_fontsize, color="black")
 
 plt.tight_layout()
 
 # plt.show()
-plt.savefig(path+'/'+'s1_and_m1_spike_train.png')
+plt.savefig(path+'/'+'the_result_heatmap.png')
 
 plt.cla()
 plt.clf()
@@ -223,7 +223,7 @@ ax[1].yaxis.set_major_formatter(ticker.ScalarFormatter())
 ax[1].set_xlabel('Time (seconds)', fontsize=my_fontsize )
 
 # plt.show()
-plt.savefig(path+'/'+'the_result_heatmap.png')
+plt.savefig( path+'/'+'s1_and_m1_spike_train.png')
 
 plt.cla()
 plt.clf()

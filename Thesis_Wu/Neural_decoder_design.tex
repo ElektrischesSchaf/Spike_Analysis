@@ -124,25 +124,44 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} showed the spike train from S1 electr
 Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms time window.
 For sessions contained both M1 and S1 electrode array, 
 we concatenated the two spike trains.
-As from Figure~\ref{fig:s1_and_m1_spike_train} the spike trains turned into firing rate in Figure~\ref{fig:the_result_heatmap}.
+As from Figure~\ref{fig:spike_train_to_firing_rate} the spike trains turned into firing rate.
 For other experiments, different bin width were used to obtain different firing rates.
 \end{multicols}
 
+% \begin{figure}[H]
+%     \centering
+%         \begin{minipage}[t]{0.49\textwidth}
+%             \centering
+%             \includegraphics[width=1\textwidth]{s1_and_m1_spike_train.png}
+%             \caption{M1 and S1 spike train}
+%             \subcaption*{session indy\_20160411\_02}
+%             \label{fig:s1_and_m1_spike_train}
+%         \end{minipage}
+%         \begin{minipage}[t]{0.49\textwidth}
+%             \centering
+%             \includegraphics[width=1\textwidth]{the_result_heatmap.png}
+%             \caption{Firing rate}
+%             \subcaption*{session indy\_20160411\_02}
+%             \label{fig:the_result_heatmap}
+%         \end{minipage}
+% \end{figure}
+
 \begin{figure}[H]
-    \centering
-        \begin{minipage}[t]{0.49\textwidth}
-            \centering
+    \begin{center}
+        \begin{subfigure}{0.49\textwidth}
             \includegraphics[width=1\textwidth]{s1_and_m1_spike_train.png}
             \caption{M1 and S1 spike train}
-            \label{fig:s1_and_m1_spike_train}
-        \end{minipage}
-        \begin{minipage}[t]{0.49\textwidth}
-            \centering
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
             \includegraphics[width=1\textwidth]{the_result_heatmap.png}
             \caption{Firing rate}
-            \label{fig:the_result_heatmap}
-        \end{minipage}
+        \end{subfigure}
+        \caption{Spike train to firing rate}
+        \subcaption*{session indy\_20160411\_02}
+        \label{fig:spike_train_to_firing_rate}		
+    \end{center}	
 \end{figure}
+
 \todo[inline, author=Wu, color=blue!40]{ 如何將 M1 與 S1 電極收到的 spike train 轉換成 firing rate，從 raster plot 變 heatmap。同時解釋 M1 與 S1 的 firing rate 是直接 concatenate 在一起。 }
 
 \begin{multicols}{2}
