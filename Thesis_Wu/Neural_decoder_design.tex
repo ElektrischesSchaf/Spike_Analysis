@@ -69,9 +69,9 @@ the upper subplot is the raw broadband signal and the bottom subplot is the filt
 \begin{multicols}{2}
 To boost the accuracy of the decoders, 
 BCI researches use past neural signals to predict the current kinematic 
-The term \textit{tap size} indicates the number of the past input neural signal samples \citep{nakagome2020empirical}, 
-In our case it is the number of past time bins to decode each sample point.
-As an example illustrated in Figure~\ref{fig:time_bin_and_prediction}, 
+The term \textit{tap size} represents the number of the discrete history inputs \citep{nakagome2020empirical}, 
+In our case it is the number of past time bins used to decode each kinematics.
+As illustrated in Figure~\ref{fig:time_bin_and_prediction}, 
 the input dimension is the number of sorted units, and the model has the tap size of 4.
 Since it performs a continuous decoding senario, 
 the kinematic in each time bin expect for the very first 4 ones in the recording will be predicted.
