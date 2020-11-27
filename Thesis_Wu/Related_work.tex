@@ -203,6 +203,7 @@ But they only predicted velocity, without decoding position and acceleration.
 \todo[inline, color=green!40]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
 \todo[inline, author=Prof]{這篇碩論除了增加視覺化，還有解決甚麼研究問題呢?}
 \todo[inline, author=Prof]{補充1個使用深度學習於腦機介面的研究問題，看看別的論文怎麼描述這個問題}
+\todo[inline, author=Wu, color=blue!40]{目前腦機介面的研究問題: Tap size 的長度的選擇只能透過比較decoding的結果作為挑選依據}
 \todo[inline, author=Wu, color=blue!40]{目前深度學習於腦機介面的研究在預測acceleration的表現都比較差 \citep{makin2018, tseng2019decoding}，或者只預測position 或 velocity。我們的decoder與 \cite{makin2018} 相比 acceleration 的預測 $R^2$ 提升最多 }
 Deep learning methods have been criticized as black box oracles for a long time \citep{brown2018recurrent, hudson2018compositional}. 
 By pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning.
@@ -212,6 +213,16 @@ It seems that the internal dynamics of can not highlight the different movement 
 In the field of natural language processing, people have successfully hightlighted the specific texts among a sentence or a paragraph, 
 which are the most relevant to the translation or classification tasks.
 Pointing out the dominant key words who contribute the most in their deep learning result makes it easier for human to evaluate the strength of the model.
+
+\cite{nakagome2020empirical} evaluated the effect of different tap sizes by empiricism,
+from small tap sizes (1, 2, and 5) until large ones (30, 40, 50).
+In general, performances from all methods increased as the tap sizes increased.
+For UKF the best tap sizes is 5 and for linear decoders the optimal tap sizes are 20-30.
+Some other neural network decoders required even more taps as far as 50.
+Although their result could be the baseline for both traditional and modern neural decoders,
+it lacks an interpretable proof to provide the reason behind these phenomena.
+
+
 \end{multicols}
 
 \section{Development of normalization in deep learning}

@@ -107,7 +107,10 @@ However, previous BCI researches involved RNNs have not focus on the internal dy
 Deep learn models are criticized as black boxes with its lack of interpretability.
 
 \todo[inline, author=Wu, color=blue!40]{這段提到使用 neural decoder 一定會遇到 tap size 選擇的問題}
-\citep{tseng2019decoding, li2009unscented, li2016improved, nakagome2020empirical}
+Most of the BCI decoders choosed the length of spiking history arbitrarity and they adjusted empirically based on the decoding performances \citep{tseng2019decoding},
+as in \cite{li2009unscented, li2016improved} used 10 taps of spiking data mainly in their experiments.
+There is no analytical tool for researchers to evaluate the optimal history length yet,
+and we tried to solve this problem with our visualization tool.
 
 \end{multicols}
 
@@ -127,13 +130,16 @@ Corresponding to our neural decoding task, models with multiple inputs single ou
 
 \todo[inline, author=Wu, color=blue!40]{使用NLP attention的理由。}
 This research is inspired by the successful work from the attention module who enhanced the RNN performance and also provided interpretability in natural language processing \citep{lin2017structured}.
+\todo[author=Prof]{說明NLP attention的用途}
+After implementing the attention module in the setiment classification tasks, 
+the prediction accuracy rised accourding to their experiments.
 Also in the field of image processing,
 attention modules have provided visualization to explain what the model sees on their input images \citep{hu2018squeeze, woo2018cbam}.
+\todo[author=Prof]{說明neural decoding 需 attention 的理由}
 But currently there are no other researches showing such visualization results about neural signals.
 As the resemblances bewteen NLP and neural signals were mentioned earlier in this section,
 we believe it can provide potent reasons for us to explain our the design of our model and brand new insight to neural science by showing the attention map of neural signals.
-\todo[inline, author=Prof]{說明NLP attention的用途}
-\todo[inline, author=Prof]{說明neural decoding 需 attention 的理由}
+
 \todo[inline, author=Wu, color=blue!40]{提出為什麼需要analysis of reciprocal effect}
 So far no other reseaches have conducted experiments on analyzing which technique contibutes more on the neural decoding. 
 We are interested how the the normalization method \citep{ba2016layer} and the attention module \citep{lin2017structured} can effect each other's performances.
