@@ -43,8 +43,8 @@ if not os.path.exists(plot_path_5):
 my_model_name_for_y = 'atten_LN_bidir' # atten_LN_bidir
 makin_model_name = 'rEFH_dynamic'
 
-my_model_name_for_x = 'bidir_atten_no_LN' # atten_LN_oneway , atten_LN_bidir_no_LN_inside , bidir_LN_no_atten , bidir_atten_no_LN
-plot_path_for_this = plot_path_5
+my_model_name_for_x = 'bidir_LN_no_atten' # atten_LN_oneway , atten_LN_bidir_no_LN_inside , bidir_LN_no_atten , bidir_atten_no_LN
+plot_path_for_this = plot_path_4
 
 my_fontsize=35
 
