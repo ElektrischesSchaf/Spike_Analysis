@@ -57,16 +57,16 @@ kinematic_variable_type = 'x_and_y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_v
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE = ALL_List_FILE[:3]
+List_FILE = ALL_List_FILE[:5]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRU_Single_Session_2_outputs_bidir_LN_self_atten'
-MAX_EPOCH = 20#75
+MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
-BATCH_SIZE = 16
+BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 max_timestep = 10
 
@@ -542,10 +542,13 @@ for session_k in range(len(session_file_list)):
     shutil.rmtree(save_epoch_path)
 
     # loss map
-    loss_plot_vector = np.abs(np.array(real_y_all_1)-np.array(my_prediction_1)) + np.abs(np.array(real_y_all_2)-np.array(my_prediction_2))
-    loss_plot_vector = np.asarray(loss_plot_vector)
-    loss_plot_vector = np.reshape(loss_plot_vector, (-1,1))
-    print('shape of loss_plot_vector= ', loss_plot_vector.shape, '\n')
+    loss_plot_vector_x = np.abs(np.array(real_y_all_1)-np.array(my_prediction_1))
+    loss_plot_vector_y = np.abs(np.array(real_y_all_2)-np.array(my_prediction_2))
+    loss_plot_vector_x = np.asarray(loss_plot_vector_x)
+    loss_plot_vector_y = np.asarray(loss_plot_vector_y)
+    loss_plot_vector_x = np.reshape(loss_plot_vector_x, (-1,1))
+    loss_plot_vector_y = np.reshape(loss_plot_vector_y, (-1,1))
+    print('shape of loss_plot_vector_x= ', loss_plot_vector_x.shape, '\n')
 
     # quantification map
     q_value_all = np.asarray(q_value_all)
@@ -595,10 +598,9 @@ for session_k in range(len(session_file_list)):
     # attention map
     plottin_duration_time_bin = 200
     time_bin_index = 0
-    # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
 
     while time_bin_index < (testing_data_length -plottin_duration_time_bin*1.5 ):
-        Plotting.quant(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='vel', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector, q_value_all=q_value_all, loss_plot_vector=loss_plot_vector)
+        Plotting.quant(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name= kinematic_variable_type, start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector, q_value_all=q_value_all, loss_plot_vector_x=loss_plot_vector_x, loss_plot_vector_y=loss_plot_vector_y)
         # Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
         time_bin_index = time_bin_index + plottin_duration_time_bin
 

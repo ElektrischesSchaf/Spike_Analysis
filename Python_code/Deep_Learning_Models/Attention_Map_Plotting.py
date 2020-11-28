@@ -298,11 +298,11 @@ class Plotting():
         firing_rate_data = firing_rate_data[valid_rows,:]
 
         # ax[0].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
-        if type_name=='pos':
+        if type_name=='x_and_y_pos':
             ax[0].set_ylabel( 'pos (mm)', rotation=90, fontsize=my_fontsize, color="black")
-        if type_name=='vel':
+        if type_name=='x_and_y_vel':
             ax[0].set_ylabel( 'vel (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
-        if type_name=='acc':
+        if type_name=='x_and_y_acc':
             ax[0].set_ylabel( 'acc (mm/$s^2$)', rotation=90, fontsize=my_fontsize, color="black")
 
         ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
@@ -355,7 +355,7 @@ class Plotting():
         ax[1].set_yticklabels(ax[1].get_ymajorticklabels(), fontsize = my_fontsize*0.7, rotation=0)
 
         # ax[1].set_title('Attention Map', fontsize=my_fontsize, color="black")
-        ax[1].set_ylabel('Past Time Bins', fontsize=my_fontsize, color="black")
+        ax[1].set_ylabel('past time bins', fontsize=my_fontsize, color="black")
 
 
         num_ticks = 6
@@ -378,8 +378,8 @@ class Plotting():
         ax[2].yaxis.set_major_formatter(ticker.ScalarFormatter())        
 
         # ax[2].set_title('Firing Rate from Session '+session_name, fontsize=my_fontsize, color="black")
-        ax[2].set_ylabel('Sorted Units', fontsize=my_fontsize, color="black")
-        ax[2].set_xlabel('Time (Seconds)', fontsize=my_fontsize, color="black")
+        ax[2].set_ylabel('sorted units', fontsize=my_fontsize, color="black")
+        ax[2].set_xlabel('time (s)', fontsize=my_fontsize, color="black")
 
         plt.savefig( plot_path+'/'+ 'attention_map_' +str(start_time_bin)+ '_to_'+str(end_time_bin) +'.png' )
 
@@ -392,15 +392,18 @@ class Plotting():
 
 
     
-    def quant( self, session_name, time_step, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, x_target_cue, y_target_cue, firing_rate_collector, q_value_all, loss_plot_vector):
+    def quant( self, session_name, time_step, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, x_target_cue, y_target_cue, firing_rate_collector, q_value_all, loss_plot_vector_x, loss_plot_vector_y):
 
         firing_rate_collector = firing_rate_collector[start_time_bin:end_time_bin,:]
         attn_weight_matrix_all = attn_weight_matrix_all[start_time_bin:end_time_bin,:]
         q_value_all = q_value_all[start_time_bin:end_time_bin,:]
         q_value_all = q_value_all.transpose()
 
-        loss_plot_vector = loss_plot_vector[start_time_bin:end_time_bin,:]
-        loss_plot_vector = loss_plot_vector.transpose()
+        loss_plot_vector_x = loss_plot_vector_x[start_time_bin:end_time_bin,:]
+        loss_plot_vector_x = loss_plot_vector_x.transpose()
+
+        loss_plot_vector_y = loss_plot_vector_y[start_time_bin:end_time_bin,:]
+        loss_plot_vector_y = loss_plot_vector_y.transpose()
 
         sns.set(font_scale=3)
         sns.set_style("white")
@@ -411,7 +414,7 @@ class Plotting():
         # this is use actual second in the time axes
         time_step = time_step[start_time_bin:end_time_bin]
 
-        f, ax = plt.subplots(5, 1, gridspec_kw={'height_ratios': [10,10,1, 1, 10],  "hspace":0.1 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1} , constrained_layout=False)
+        f, ax = plt.subplots(6, 1, gridspec_kw={'height_ratios': [10, 10, 2, 2, 2, 10],  "hspace":0.1 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1} , constrained_layout=False)
 
         firing_rate_data = firing_rate_collector.transpose()
 
@@ -423,11 +426,11 @@ class Plotting():
         firing_rate_data = firing_rate_data[valid_rows,:]
 
         # ax[0].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
-        if type_name=='pos':
+        if type_name=='x_and_y_pos':
             ax[0].set_ylabel( 'pos (mm)', rotation=90, fontsize=my_fontsize, color="black")
-        if type_name=='vel':
+        if type_name=='x_and_y_vel':
             ax[0].set_ylabel( 'vel (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
-        if type_name=='acc':
+        if type_name=='x_and_y_acc':
             ax[0].set_ylabel( 'acc (mm/$s^2$)', rotation=90, fontsize=my_fontsize, color="black")
 
         ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
@@ -470,6 +473,7 @@ class Plotting():
         attention_map_data = attn_weight_matrix_all.transpose()
 
         cbar_kws_attention = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(attention_map_data), np.max(attention_map_data) ]}
+        
         sns.heatmap( data=attention_map_data, ax=ax[1], cbar_kws=cbar_kws_attention, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False , cbar=False) # norm=LogNorm()
         
         b, t = ax[1].get_ylim() # discover the values for bottom and top
@@ -480,22 +484,53 @@ class Plotting():
         ax[1].set_yticklabels(ax[1].get_ymajorticklabels(), fontsize = my_fontsize*0.7, rotation=0)
 
         # ax[1].set_title('Attention Map', fontsize=my_fontsize, color="black")
-        ax[1].set_ylabel('Past Time Bins', fontsize=my_fontsize, color="black")
+        ax[1].set_ylabel('past time bins', fontsize=my_fontsize, color="black")
+
 
 
         # Q VALUE
-        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03 }
-        sns.heatmap( data = q_value_all, ax=ax[2], cbar_kws=cbar_kws_firingrate, cmap='coolwarm', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
-        ax[2].set_ylabel( 'STD' , fontsize=my_fontsize*0.3, color="black")
+        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 1 , "aspect": 40 ,"use_gridspec":"True", "fraction":0.15 , "pad":0.1, 'ticks' : [ 0 , np.max(q_value_all)]  }        
+        sns.heatmap( data = q_value_all, ax=ax[2], vmin=0, cbar_kws=cbar_kws_firingrate, cmap='Blues', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
 
-        # Loss
-        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03 }
-        if type_name == 'pos':
-            sns.heatmap( data =  loss_plot_vector, vmax=60, ax=ax[3], cbar_kws=cbar_kws_firingrate, cmap='coolwarm', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
-        else:
-            sns.heatmap( data =  loss_plot_vector,  ax=ax[3], cbar_kws=cbar_kws_firingrate, cmap='coolwarm', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
+        b, t = ax[2].get_ylim() # discover the values for bottom and top
+        b += 0.5 # Add 0.5 to the bottom
+        t -= 0.5 # Subtract 0.5 from the top
+        ax[2].set_ylim(b, t) # update the ylim(bottom, top) values
 
-        ax[3].set_ylabel( 'E' , fontsize=my_fontsize, color="black")
+        ax[2].set_ylabel( 'STD' , fontsize=my_fontsize*0.6, rotation=0, color="black", labelpad= 70 )
+
+
+        # x-axis error
+        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03 }
+        if type_name == 'x_and_y_pos':
+            sns.heatmap( data =  loss_plot_vector_x, vmin=0, vmax=60, ax=ax[3], cbar_kws=cbar_kws_firingrate, cmap='Reds', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
+        if type_name == 'x_and_y_vel':
+            sns.heatmap( data =  loss_plot_vector_x, vmin=0, vmax=200, ax=ax[3], cbar_kws=cbar_kws_firingrate, cmap='Reds', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
+        if type_name == 'x_and_y_acc':
+            sns.heatmap( data =  loss_plot_vector_x, vmin=0, vmax=2000, ax=ax[3], cbar_kws=cbar_kws_firingrate, cmap='Reds', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
+
+        b, t = ax[3].get_ylim() # discover the values for bottom and top
+        b += 0.5 # Add 0.5 to the bottom
+        t -= 0.5 # Subtract 0.5 from the top
+        ax[3].set_ylim(b, t) # update the ylim(bottom, top) values
+
+        ax[3].set_ylabel( 'x error' , fontsize=my_fontsize*0.6, rotation=0, color="black", labelpad= 70 )
+
+        # y-axis error
+        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03 }
+        if type_name == 'x_and_y_pos':
+            sns.heatmap( data =  loss_plot_vector_y, vmin=0, vmax=60, ax=ax[4], cbar_kws=cbar_kws_firingrate, cmap='Reds', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
+        if type_name == 'x_and_y_vel':
+            sns.heatmap( data =  loss_plot_vector_y, vmin=0, vmax=200, ax=ax[4], cbar_kws=cbar_kws_firingrate, cmap='Reds', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()            
+        if type_name == 'x_and_y_acc':
+            sns.heatmap( data =  loss_plot_vector_y, vmin=0, vmax=2000, ax=ax[4], cbar_kws=cbar_kws_firingrate, cmap='Reds', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
+
+        b, t = ax[4].get_ylim() # discover the values for bottom and top
+        b += 0.5 # Add 0.5 to the bottom
+        t -= 0.5 # Subtract 0.5 from the top
+        ax[4].set_ylim(b, t) # update the ylim(bottom, top) values
+
+        ax[4].set_ylabel( 'y error' , fontsize=my_fontsize*0.6, rotation=0, color="black", labelpad= 70 )
 
         # FIRING RATE
         num_ticks = 6
@@ -507,19 +542,19 @@ class Plotting():
         xticklabels = [ int(my_second_labels[idx]) for idx in xticks ] # int version
 
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
-        sns.heatmap( data=firing_rate_data , ax=ax[4], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=xticklabels, cbar=False ) # norm=LogNorm()
+        sns.heatmap( data=firing_rate_data , ax=ax[5], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=xticklabels, cbar=False ) # norm=LogNorm()
 
-        ax[4].set_xticklabels(ax[4].get_xmajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0)
-        ax[4].set_yticklabels(ax[4].get_ymajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0) # This will get correct row numbers of data matrix
+        ax[5].set_xticklabels(ax[5].get_xmajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0)
+        ax[5].set_yticklabels(ax[5].get_ymajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0) # This will get correct row numbers of data matrix
 
-        ax[4].set_xticks(xticks)
+        ax[5].set_xticks(xticks)
 
-        ax[4].yaxis.set_major_locator(ticker.MultipleLocator(100))
-        ax[4].yaxis.set_major_formatter(ticker.ScalarFormatter())        
+        ax[5].yaxis.set_major_locator(ticker.MultipleLocator(100))
+        ax[5].yaxis.set_major_formatter(ticker.ScalarFormatter())        
 
-        # ax[4].set_title('Firing Rate from Session '+session_name, fontsize=my_fontsize, color="black")
-        ax[4].set_ylabel('Sorted Units', fontsize=my_fontsize, color="black")
-        ax[4].set_xlabel('Time (Seconds)', fontsize=my_fontsize, color="black")
+        # ax[5].set_title('Firing Rate from Session '+session_name, fontsize=my_fontsize, color="black")
+        ax[5].set_ylabel('sorted units', fontsize=my_fontsize, color="black")
+        ax[5].set_xlabel('time (s)', fontsize=my_fontsize, color="black")
 
         plt.savefig( plot_path+'/'+ 'attention_map_' +str(start_time_bin)+ '_to_'+str(end_time_bin) +'.png' )
 
