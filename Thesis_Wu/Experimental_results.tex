@@ -258,9 +258,16 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
 \label{sec:internal_dynamics_of_network}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{參考以下論文的Figure 7 (ClosedLoopLSTM2019)Decoding Movements from Cortical Ensemble Activity Using a Long Short-Term Memory Recurrent Network}
+The easiest way to visualize how the RNNs learn from the features is by showing the outputs (hidden states) and the gates at each time step.
+This method is used in the BCI research for motor cortex decoding \citep{tseng2019decoding},
+and we also copied the same way to see if the result is informative.
+Figure~\ref{fig:internal_dynamic_pos} is the internal dynamics of a position decoder,
+Figure~\ref{fig:internal_dynamic_vel} and Figure~\ref{fig:internal_dynamic_acc} are the result of velocity and acceleration decoders individually.
+The vertical axis represents the number of hidden units in our GRU.
+Here we can observe that the hidden states, 
+reset gates and update gates values are barely interpretable.
+They showes little relationship between the input spike firing rate and the output trajectories.
 \end{multicols}
-
-
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.7\textwidth]{internal_dynamic_pos.png}
@@ -287,7 +294,7 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
         \captionsetup{width=0.5\textwidth}
         \caption{ GRU internal dynamics in acceleration decoder }
         \subcaption*{session indy\_20160411\_01}
-        \label{fig:internal_dynamic_vel}
+        \label{fig:internal_dynamic_acc}
     \end{center}
 \end{figure}
 
