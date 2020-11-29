@@ -96,7 +96,7 @@ Therefore, \cite{hochreiter1997long} created a well-known model named Long Short
 Followed by the work of \cite{chung2014empirical}, a new model named Gated Recurrent Unit (GRU) which is similar to LSTM, was introduced. 
 It is has gained popularity in the community due to its efficiency in training and the high performance sometimes even outdoes the LSTM. 
 
-Nowadays, RNNs come with various architectures have benn widely used in BCI reseachers \citep{ahmadi2020impact}, \cite{tuleuov2019deep} even developed a hybrid deep leaning model which combined RNN with convolution neural network (CNN). 
+Nowadays, RNNs come with various architectures have benn widely used in BCI researches \citep{ahmadi2020impact}, \cite{tuleuov2019deep} even developed a hybrid deep leaning model which combined RNN with convolution neural network (CNN). 
 These preceding works manifest the uprising potentials of RNNs in computational neural science.
 \todo[inline, author=Prof]{說明 RNN 為何可以解 neural decoding?}
 \end{multicols}
@@ -194,7 +194,7 @@ But they only predicted velocity, without decoding position and acceleration.
 
 % In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
 % Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
-% On the other hand, some reseachers prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
+% On the other hand, some researches prefer to high frequency signal called spike train \citep{makin2018}, or merging those two signal all together \citep{stavisky2015high}, which attempt to reach higher decoding performance.
  
 
 \section{Unsolved problems and drawbacks in preceding deep learning invasive BCIs}
@@ -391,7 +391,10 @@ Several different means of attention mechanism were also implemented in BCI fiel
 \todo[inline, author=Wu, color=blue!40]{\cite{zhang2020motor} 也是用attention研究RNN是如何學習的，不過是用在classification task。}
 In BCI field, attention modules are now only be seen in researches with EEG input signals.
 \cite{li2020multi} adopted the famous Squeeze-and-Excitation attention module used to process images \citep{hu2018squeeze},
-
+visualized the importance of input EEG signals with respect to time.
+The interval with high attention score correspond to the moment when subjects received the external stimuli, 
+making the EEG signal at that time prominent to the classifications.
+The researchers also speculated that the temporal attention of the decoder has actually some relationship with the subject's attention degree.
 \cite{zhang2020motor} used both CNN and RNN to extract the spatio and temporal dynamics in EEG signal processing,
 and its mechanism named \textit{Convolutional Recurrent Attention Model}.
 The self-attention module was placed in the last layer right before the classification layer, after the raw signal was first processed by CNN and then RNN.
@@ -399,7 +402,7 @@ The proposed method, convolutional recurrent attention model outperformed other 
 They also used the temporal attention module to understand how RNN learns EEG features in classification tasks.
 Their results showed that the RNN outputs which are later in time have higher attention values,
 indicating more contributions they provide to the classifications.
-\cite{hu2018novel} also constructed the hybrid CNN-RNN architecture.
+\citep{hu2018novel} also constructed the hybrid CNN-RNN architecture.
 They feed the sEMG signal into CNN layer first, then the RNN layer. 
 Immediately followed by the the attention module, then after fully connected layers, is the final classification to show which geture the subject was executing.
 
