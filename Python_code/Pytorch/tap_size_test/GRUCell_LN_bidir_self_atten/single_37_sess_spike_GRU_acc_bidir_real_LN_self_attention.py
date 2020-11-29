@@ -61,11 +61,11 @@ List_FILE = ALL_List_FILE[20:21]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-MAX_EPOCH = 100
+MAX_EPOCH = 10#100
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
-BATCH_SIZE = 16
+BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 
 # tap size study start
@@ -460,7 +460,7 @@ for max_timestep in tap_size_list:
                                     #num_workers = 8
                                     )
         trange = tqdm(enumerate(dataloader), total = len(dataloader), desc = 'Predict')
-        
+            
         my_prediction_1 = []
         real_y_all_1 = []
 
@@ -471,8 +471,12 @@ for max_timestep in tap_size_list:
 
         x_target_all = []
         y_target_all = []
+
         # attention map
         attn_weight_matrix_all=[]
+
+        # quantification map
+        q_value_all = []
 
         for i, (x, testing_y) in trange:
 
@@ -481,6 +485,21 @@ for max_timestep in tap_size_list:
             #     continue
 
             o_labels, attn_weight_matrix_forward = net(x.to(device))
+
+            # quantification calculation
+            torch.set_default_tensor_type('torch.cuda.FloatTensor')
+            attention_for_quantification = attn_weight_matrix_forward.clone().detach()
+            attention_for_quantification = attention_for_quantification.to(device)
+
+            # q value
+            for ele in range( attention_for_quantification.shape[0] ):            
+                # q_value = torch.norm(  input = (torch.mm(  attention_for_quantification[ele,:,:], torch.transpose(attention_for_quantification[ele,:,:], 0, 1) ) - torch.eye( attention_for_quantification[ele,:,:].size(0) )), p = 'fro' )
+
+                q_value = torch.sum( attention_for_quantification[ele,:,:], dim=0 )
+                q_value = torch.std(q_value)
+
+                q_value = q_value.cpu().detach().numpy()            
+                q_value_all.append(q_value)
 
             # attention map
             # attn_weight_matrix = attn_weight_matrix.squeeze(1)
@@ -524,7 +543,22 @@ for max_timestep in tap_size_list:
             for ele in range(attn_weight_matrix.shape[0]):
                 attn_weight_matrix_all.append( attn_weight_matrix[ele,:] )
 
+
         shutil.rmtree(save_epoch_path)
+
+        # loss map
+        loss_plot_vector_x = np.abs(np.array(real_y_all_1)-np.array(my_prediction_1))
+        loss_plot_vector_y = np.abs(np.array(real_y_all_2)-np.array(my_prediction_2))
+        loss_plot_vector_x = np.asarray(loss_plot_vector_x)
+        loss_plot_vector_y = np.asarray(loss_plot_vector_y)
+        loss_plot_vector_x = np.reshape(loss_plot_vector_x, (-1,1))
+        loss_plot_vector_y = np.reshape(loss_plot_vector_y, (-1,1))
+        print('shape of loss_plot_vector_x= ', loss_plot_vector_x.shape, '\n')
+
+        # quantification map
+        q_value_all = np.asarray(q_value_all)
+        q_value_all = np.reshape(q_value_all, (-1,1))
+        print('shape of q_value_all= ', q_value_all.shape, '\n')
 
         # attention map
         attn_weight_matrix_all = np.asarray(attn_weight_matrix_all)
@@ -569,10 +603,10 @@ for max_timestep in tap_size_list:
         # attention map
         plottin_duration_time_bin = 200
         time_bin_index = 0
-        # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
 
         while time_bin_index < (testing_data_length -plottin_duration_time_bin*1.5 ):
-            Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='acc', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
+            Plotting.quant(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name= kinematic_variable_type, start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector, q_value_all=q_value_all, loss_plot_vector_x=loss_plot_vector_x, loss_plot_vector_y=loss_plot_vector_y)
+            # Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
             time_bin_index = time_bin_index + plottin_duration_time_bin
 
     # session control end
