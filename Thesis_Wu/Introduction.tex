@@ -130,12 +130,12 @@ Corresponding to our neural decoding task, models with multiple inputs single ou
 
 \todo[inline, author=Wu, color=blue!40]{使用NLP attention的理由。}
 This research is inspired by the successful work from the attention module who enhanced the RNN performance and also provided interpretability in natural language processing \citep{lin2017structured}.
-\todo[author=Prof]{說明NLP attention的用途}
+\todo[inline, author=Prof]{說明NLP attention的用途}
 After implementing the attention module in the setiment classification tasks, 
 the prediction accuracy rised accourding to their experiments.
 Also in the field of image processing,
 attention modules have provided visualization to explain what the model sees on their input images \citep{hu2018squeeze, woo2018cbam}.
-\todo[author=Prof]{說明neural decoding 需 attention 的理由}
+\todo[inline, author=Prof]{說明neural decoding 需 attention 的理由}
 But currently there are no other researches showing such visualization results about neural signals.
 As the resemblances bewteen NLP and neural signals were mentioned earlier in this section,
 we believe it can provide potent reasons for us to explain our the design of our model and brand new insight to neural science by showing the attention map of neural signals.
@@ -155,11 +155,11 @@ We are interested how the the normalization method \citep{ba2016layer} and the a
 \todo[inline, author=Prof.]{\ref{sec:our_contributions} 提到這篇碩論的貢獻在於提供了analysis of reciprocal effect，那麼需要在 \ref{sec:inspirations_and_goals} 提出為什麼需要analysis of reciprocal effect?}
 \todo[inline, author=Wu, color=blue!40]{新增 tap size 最佳化分析的功能}
 \begin{itemize}
-    \item Proposed neural decoder in our reseach outperforms the results from \cite{makin2018}, with higher weighted average $R^{2}$ and lower standard deviation among all sessions, all 6 types of kinematic variables (position, velocity, acceleration each in x- and y-axis).
-    \item Dedicated to develop a \textit{interpretable} deep learning model, which can highlight the key patterns between input neural signal and the fingertip movement in an intuitive way.
-    \item Visualized the distribution of attention among past time bins when model decoding different types of kinematic variables.
-    \item Analysed the reciprocal effects of layer normalization in GRU and temporal attention.
-    \item Proposed an analytical methods with attention module for determing tap size in decoding kinematics.
+    \item Proposed neural decoder in our reseach outperforms the results from \cite{makin2018}, with higher weighted average $R^{2}$ and lower standard deviation among all sessions, all 6 types of kinematic variables (position, velocity, acceleration each in x- and y-axis)
+    \item Developed a \textit{interpretable} deep learning model, which can highlight the key patterns between input neural signal and the fingertip movement in an intuitive way
+    \item Provided a new method of spike signal attention visualization in invasive BCI research
+    \item Analysed the reciprocal effects of layer normalization in GRU and temporal attention
+    \item Proposed an analytical methods with attention module for determining tap sizes in decoding kinematics
 \end{itemize}
 \end{multicols}
 

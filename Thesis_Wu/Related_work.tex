@@ -266,7 +266,7 @@ then feed them input the self-attention mechanism.
 \begin{multicols}{2}
 \todo[inline, color=green!40]{Attention module的發展，哪些腦機介面論文使用Attention module?}
 \todo[inline, author=Prof.]{補充腦機介面使用attention module的論文，包含侵入式與非侵入式}
-\todo[inline, author=Wu, color=blue!40]{代辦}
+\todo[inline, author=Wu, color=blue!]{放在本區最後一段， \cite{li2020multi, zhang2020motor} 最新的 BCI attention 還是用在 EEG ，而沒有用在侵入式腦機介面，可以是本研究 Novelty 的貢獻 }
 \cite{sutskever2014sequence} is the first research which implemented the encoder-decoder machanism (or called sequence to sequence, seq2seq) to machine translation realm.
 This structure has gained popularity also in sentiment analysis ever since.
 The structure of encoder-decoder RNN illustrated in Figure~\ref{fig:rnn_encoder_decoder}, 
@@ -388,11 +388,17 @@ They can tell the important words from the whole sentence.
 
 Several different means of attention mechanism were also implemented in BCI field.
 \todo[inline, author=Prof. ]{補充說明\cite{zhang2020motor}設計/使用attention來加強腦機介面的理由}
-\todo[inline, author=Wu, color=blue!40]{代辦}
+\todo[inline, author=Wu, color=blue!40]{\cite{zhang2020motor} 也是用attention研究RNN是如何學習的，不過是用在classification task。}
+In BCI field, attention modules are now only be seen in researches with EEG input signals.
+\cite{li2020multi} adopted the famous Squeeze-and-Excitation attention module used to process images \citep{hu2018squeeze},
+
 \cite{zhang2020motor} used both CNN and RNN to extract the spatio and temporal dynamics in EEG signal processing,
 and its mechanism named \textit{Convolutional Recurrent Attention Model}.
 The self-attention module was placed in the last layer right before the classification layer, after the raw signal was first processed by CNN and then RNN.
-The proposed method, convolutional recurrent attention model outperformed other state-of-the-art methods in EEG classification tasks.
+The proposed method, convolutional recurrent attention model outperformed other state-of-the-art methods in EEG classification ta7sks.
+They also used the temporal attention module to understand how RNN learns EEG features in classification tasks.
+Their results showed that the RNN outputs which are later in time have higher attention values,
+indicating more contributions they provide to the classifications.
 \cite{hu2018novel} also constructed the hybrid CNN-RNN architecture.
 They feed the sEMG signal into CNN layer first, then the RNN layer. 
 Immediately followed by the the attention module, then after fully connected layers, is the final classification to show which geture the subject was executing.
