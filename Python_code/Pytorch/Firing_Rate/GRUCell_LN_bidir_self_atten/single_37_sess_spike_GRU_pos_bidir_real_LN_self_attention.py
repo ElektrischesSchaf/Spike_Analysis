@@ -66,7 +66,7 @@ MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
-BATCH_SIZE = 16
+BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 max_timestep = 20
 
@@ -78,65 +78,6 @@ best_epoch_arcoss_all_sessions=[]
 person_correlation_coefficient_across_all_sessions=[]
 testing_data_length_all_sessions = []
 my_best_epoch_dict={}
-
-# epoch optimizer
-def epoch_handle(session_name):
-    epoch_dict={
-    "Chewie_10032013": 0,
-    "Chewie_12192013": 0,
-    "indy_20160407_02": 34,
-    "indy_20160411_01": 21,
-    "indy_20160411_02": 13,
-    "indy_20160418_01": 16,
-    "indy_20160419_01": 37,
-    "indy_20160420_01": 25,
-    "indy_20160426_01": 24,
-    "indy_20160622_01": 24,
-    "indy_20160624_03": 30,
-    "indy_20160627_01": 15,
-    "indy_20160630_01": 7,
-    "indy_20160915_01": 9,
-    "indy_20160916_01": 18,
-    "indy_20160921_01": 15,
-    "indy_20160927_04": 22,
-    "indy_20160927_06": 19,
-    "indy_20160930_02": 29,
-    "indy_20160930_05": 18,
-    "indy_20161005_06": 20,
-    "indy_20161006_02": 56,
-    "indy_20161007_02": 50,
-    "indy_20161011_03": 68,
-    "indy_20161013_03": 31,
-    "indy_20161014_04": 20,
-    "indy_20161017_02": 44,
-    "indy_20161024_03": 13,
-    "indy_20161025_04": 15,
-    "indy_20161026_03": 29,
-    "indy_20161027_03": 4,
-    "indy_20161206_02": 17,
-    "indy_20161207_02": 46,
-    "indy_20161212_02": 33,
-    "indy_20161220_02": 68,
-    "indy_20170123_02": 55,
-    "indy_20170124_01": 27,
-    "indy_20170127_03": 13,
-    "indy_20170131_02": 40,
-    "loco_20170210_03": 31,
-    "loco_20170213_02": 36,
-    "loco_20170214_02": 93,
-    "loco_20170215_02": 19,
-    "loco_20170216_02": 22,
-    "loco_20170217_02": 29,
-    "loco_20170227_04": 21,
-    "loco_20170228_02": 101,
-    "loco_20170301_05": 77,
-    "loco_20170302_02": 44
-    }
-    for i in epoch_dict:
-        if session_name==i:
-            new_epoch=epoch_dict[i]
-            break
-    return new_epoch
 
 # session control start
 for session_k in range(len(session_file_list)):
@@ -515,7 +456,7 @@ for session_k in range(len(session_file_list)):
                                 #num_workers = 8
                                 )
     trange = tqdm(enumerate(dataloader), total = len(dataloader), desc = 'Predict')
-    
+
     my_prediction_1 = []
     real_y_all_1 = []
 
@@ -526,8 +467,12 @@ for session_k in range(len(session_file_list)):
 
     x_target_all = []
     y_target_all = []
+
     # attention map
     attn_weight_matrix_all=[]
+
+    # quantification map
+    q_value_all = []
 
     for i, (x, testing_y) in trange:
 
@@ -536,6 +481,21 @@ for session_k in range(len(session_file_list)):
         #     continue
 
         o_labels, attn_weight_matrix_forward = net(x.to(device))
+
+        # quantification calculation
+        torch.set_default_tensor_type('torch.cuda.FloatTensor')
+        attention_for_quantification = attn_weight_matrix_forward.clone().detach()
+        attention_for_quantification = attention_for_quantification.to(device)
+
+        # q value
+        for ele in range( attention_for_quantification.shape[0] ):            
+            # q_value = torch.norm(  input = (torch.mm(  attention_for_quantification[ele,:,:], torch.transpose(attention_for_quantification[ele,:,:], 0, 1) ) - torch.eye( attention_for_quantification[ele,:,:].size(0) )), p = 'fro' )
+
+            q_value = torch.sum( attention_for_quantification[ele,:,:], dim=0 )
+            q_value = torch.std(q_value)
+
+            q_value = q_value.cpu().detach().numpy()            
+            q_value_all.append(q_value)
 
         # attention map
         # attn_weight_matrix = attn_weight_matrix.squeeze(1)
@@ -579,7 +539,22 @@ for session_k in range(len(session_file_list)):
         for ele in range(attn_weight_matrix.shape[0]):
             attn_weight_matrix_all.append( attn_weight_matrix[ele,:] )
 
+
     shutil.rmtree(save_epoch_path)
+
+    # loss map
+    loss_plot_vector_x = np.abs(np.array(real_y_all_1)-np.array(my_prediction_1))
+    loss_plot_vector_y = np.abs(np.array(real_y_all_2)-np.array(my_prediction_2))
+    loss_plot_vector_x = np.asarray(loss_plot_vector_x)
+    loss_plot_vector_y = np.asarray(loss_plot_vector_y)
+    loss_plot_vector_x = np.reshape(loss_plot_vector_x, (-1,1))
+    loss_plot_vector_y = np.reshape(loss_plot_vector_y, (-1,1))
+    print('shape of loss_plot_vector_x= ', loss_plot_vector_x.shape, '\n')
+
+    # quantification map
+    q_value_all = np.asarray(q_value_all)
+    q_value_all = np.reshape(q_value_all, (-1,1))
+    print('shape of q_value_all= ', q_value_all.shape, '\n')
 
     # attention map
     attn_weight_matrix_all = np.asarray(attn_weight_matrix_all)
@@ -624,10 +599,10 @@ for session_k in range(len(session_file_list)):
     # attention map
     plottin_duration_time_bin = 200
     time_bin_index = 0
-    # Plotting.attention_map_2_outputs(start_time_bin = time_bin_index, time_bin_to_plot = time_bin_index+plottin_duration_time_bin, plot_path = plot_path, my_prediction_1 = my_prediction_1, Ground_Truth_1 = Ground_Truth_1, my_prediction_2 = my_prediction_2, Ground_Truth_2 = Ground_Truth_2, attn_weight_matrix_all = attn_weight_matrix_all, firing_rate_collector = firing_rate_collector)
 
     while time_bin_index < (testing_data_length -plottin_duration_time_bin*1.5 ):
-        Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
+        Plotting.quant(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name= kinematic_variable_type, start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector, q_value_all=q_value_all, loss_plot_vector_x=loss_plot_vector_x, loss_plot_vector_y=loss_plot_vector_y)
+        # Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
         time_bin_index = time_bin_index + plottin_duration_time_bin
 
 # session control end
