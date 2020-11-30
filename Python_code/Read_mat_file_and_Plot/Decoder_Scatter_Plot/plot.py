@@ -5,6 +5,7 @@ import os
 import numpy
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+import seaborn as sns
 
 model = LinearRegression(fit_intercept=True, normalize=True, copy_X=True)
 
@@ -43,8 +44,8 @@ if not os.path.exists(plot_path_5):
 my_model_name_for_y = 'atten_LN_bidir' # atten_LN_bidir
 makin_model_name = 'rEFH_dynamic'
 
-my_model_name_for_x = 'bidir_LN_no_atten' # atten_LN_oneway , atten_LN_bidir_no_LN_inside , bidir_LN_no_atten , bidir_atten_no_LN
-plot_path_for_this = plot_path_4
+my_model_name_for_x = 'bidir_atten_no_LN' # atten_LN_oneway , atten_LN_bidir_no_LN_inside , bidir_LN_no_atten , bidir_atten_no_LN
+plot_path_for_this = plot_path_5
 
 my_fontsize=35
 
@@ -117,8 +118,8 @@ def drawing_with_makin(plot_path, rEFH_dynamic_result, my_model_result, axis_typ
     my_model_name_for_y=my_model_name_for_y
 
     plt.figure(figsize=(12,12))
-    plt.scatter( rEFH_dynamic_result[:37], my_model_result[:37], s=100, color='blue', label='Indy' )
-    plt.scatter( rEFH_dynamic_result[37:], my_model_result[37:], s=100, color='green' , label='Loco ')
+    plt.scatter( rEFH_dynamic_result[:37], my_model_result[:37], s=150, color='blue', label='Indy' )
+    plt.scatter( rEFH_dynamic_result[37:], my_model_result[37:], s=150, color='green' , label='Loco ')
 
     plt.plot([0,10],[0,10], color='black')
     plt.xlim([0,10])
@@ -169,8 +170,8 @@ def drawing_with_my_two_results( plot_path_2, my_model_result_x, my_model_result
     my_model_name_for_x = my_model_name_for_x
     my_model_name_for_y = my_model_name_for_y
     plt.figure(figsize=(12,12))
-    plt.scatter( my_model_result_x[:37], my_model_result_y[:37], s=100, color='blue', label='Indy' )
-    plt.scatter( my_model_result_x[37:], my_model_result_y[37:], s=100, color='green' , label='Loco ')
+    plt.scatter( my_model_result_x[:37], my_model_result_y[:37], s=150, color='blue', label='Indy' )
+    plt.scatter( my_model_result_x[37:], my_model_result_y[37:], s=150, color='green' , label='Loco ')
 
     plt.plot([0,10],[0,10], color='black')
     plt.xlim([0,10])
@@ -223,6 +224,206 @@ def drawing_with_my_two_results( plot_path_2, my_model_result_x, my_model_result
     plt.tight_layout()
     plt.savefig( plot_path + '/' + yee_1 + yee_2 +'.png' )
 
+    plt.cla()
+    plt.clf()
+    plt.close()
+
+def drawing_with_makin_in_axis(plot_path, rEFH_x_pos, x_pos_1, rEFH_y_pos , y_pos_1 ,rEFH_x_vel, x_vel_1,rEFH_y_vel, y_vel_1,  rEFH_x_acc, x_acc_1,rEFH_y_acc, y_acc_1, my_model_name_for_y):
+    sns.set(font_scale=3)
+    sns.set_style("white")
+    plt.rcParams["figure.figsize"] = (30, 20)
+    fig, axes = plt.subplots( 2, 3 ,gridspec_kw={'height_ratios': [1,1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} , constrained_layout=True)
+
+    axes[0,0].scatter( rEFH_x_pos[:37], x_pos_1[:37], s=150, color='blue', label='Indy' )
+    axes[0,0].scatter( rEFH_x_pos[37:], x_pos_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( rEFH_x_pos.reshape(-1, 1).astype(np.float32), x_pos_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(rEFH_x_pos)
+    axes[0,0].plot( rEFH_x_pos, predict , color='red', linestyle='solid' )
+    axes[0,0].plot([0,10],[0,10], color='black')
+    axes[0,0].set_xlim([0,10])
+    axes[0,0].set_ylim([0,10])
+    axes[0,0].set_title('x-position', fontsize=my_fontsize*1.2)
+
+
+    axes[1,0].scatter( rEFH_y_pos[:37], y_pos_1[:37], s=150, color='blue', label='Indy' )
+    axes[1,0].scatter( rEFH_y_pos[37:], y_pos_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( rEFH_y_pos.reshape(-1, 1).astype(np.float32), y_pos_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(rEFH_y_pos)
+    axes[1,0].plot( rEFH_y_pos, predict , color='red', linestyle='solid' )
+    axes[1,0].plot([0,10],[0,10], color='black')
+    axes[1,0].set_xlim([0,10])
+    axes[1,0].set_ylim([0,10])
+    axes[1,0].set_title('y-position', fontsize=my_fontsize*1.2)
+
+    axes[0,1].scatter( rEFH_x_vel[:37], x_vel_1[:37], s=150, color='blue', label='Indy' )
+    axes[0,1].scatter( rEFH_x_vel[37:], x_vel_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( rEFH_x_vel.reshape(-1, 1).astype(np.float32), x_vel_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(rEFH_x_vel)
+    axes[0,1].plot( rEFH_x_vel, predict , color='red', linestyle='solid' )
+    axes[0,1].plot([0,10],[0,10], color='black')
+    axes[0,1].plot([0,10],[0,10], color='black')
+    axes[0,1].set_xlim([0,10])
+    axes[0,1].set_ylim([0,10])
+    axes[0,1].set_title('x-velocity', fontsize=my_fontsize*1.2)
+
+    axes[1,1].scatter( rEFH_y_vel[:37], y_vel_1[:37], s=150, color='blue', label='Indy' )
+    axes[1,1].scatter( rEFH_y_vel[37:], y_vel_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( rEFH_y_vel.reshape(-1, 1).astype(np.float32), y_vel_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(rEFH_y_vel)
+    axes[1,1].plot( rEFH_y_vel, predict , color='red', linestyle='solid' )
+    axes[1,1].plot([0,10],[0,10], color='black')
+    axes[1,1].plot([0,10],[0,10], color='black')
+    axes[1,1].set_xlim([0,10])
+    axes[1,1].set_ylim([0,10])
+    axes[1,1].set_title('y-velocity', fontsize=my_fontsize*1.2)
+
+
+    axes[0,2].scatter( rEFH_x_acc[:37], x_acc_1[:37], s=150, color='blue', label='Indy' )
+    axes[0,2].scatter( rEFH_x_acc[37:], x_acc_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( rEFH_x_acc.reshape(-1, 1).astype(np.float32), x_acc_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(rEFH_x_acc)
+    axes[0,2].plot( rEFH_x_acc, predict , color='red', linestyle='solid' )
+    axes[0,2].plot([0,10],[0,10], color='black')
+    axes[0,2].plot([0,10],[0,10], color='black')
+    axes[0,2].set_xlim([0,10])
+    axes[0,2].set_ylim([0,10])
+    axes[0,2].set_title('x-acceleration', fontsize=my_fontsize*1.2)
+
+    axes[1,2].scatter( rEFH_y_acc[:37], y_acc_1[:37], s=150, color='blue', label='Indy' )
+    axes[1,2].scatter( rEFH_y_acc[37:], y_acc_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( rEFH_y_acc.reshape(-1, 1).astype(np.float32), y_acc_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(rEFH_y_acc)
+    axes[1,2].plot( rEFH_y_acc, predict , color='red', linestyle='solid' )
+    axes[1,2].plot([0,10],[0,10], color='black')
+    axes[1,2].plot([0,10],[0,10], color='black')
+    axes[1,2].set_xlim([0,10])
+    axes[1,2].set_ylim([0,10])
+    axes[1,2].set_title('y-acceleration', fontsize=my_fontsize*1.2)
+
+    axes[1,2].legend(loc='lower right', fontsize=my_fontsize, bbox_to_anchor=(1.4, 0.5))
+
+
+    for i in range(2):
+        for j in range(3):
+            if i==1:
+                axes[i,j].set_xlabel( 'SNR(dB), rEFH(+KF)' ,fontsize=my_fontsize)
+
+            if j==0:
+                if my_model_name_for_y == 'atten_LN_bidir':
+                    axes[i,j].set_ylabel('SNR(dB), Bidir GRU (+LN & Atten.)',fontsize=my_fontsize)
+
+    for i in range(2):
+        for j in range(3):
+            axes[i,j].spines['top'].set_visible(False)
+            axes[i,j].spines['right'].set_visible(False)
+            axes[i,j].spines['bottom'].set_visible(True)
+            axes[i,j].spines['left'].set_visible(True)
+
+    plt.savefig( plot_path + '/' +  'yee' +'.png' )
+
+    return
+
+
+def drawing_with_my_two_results_in_axis(plot_path , x_pos_2, x_pos_1 ,y_pos_2,y_pos_1,x_vel_2,x_vel_1,y_vel_2,y_vel_1,x_acc_2,x_acc_1,y_acc_2,y_acc_1,my_model_name_for_x,  my_model_name_for_y ):
+    sns.set(font_scale=3)
+    sns.set_style("white")
+    plt.rcParams["figure.figsize"] = (30, 20)
+    fig, axes = plt.subplots( 2, 3 ,gridspec_kw={'height_ratios': [1,1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05} , constrained_layout=True)
+
+    axes[0,0].scatter( x_pos_2[:37], x_pos_1[:37], s=150, color='blue', label='Indy' )
+    axes[0,0].scatter( x_pos_2[37:], x_pos_1[37:], s=150, color='green', label='Loco ', marker='D' )
+    model.fit( x_pos_2.reshape(-1, 1).astype(np.float32), x_pos_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(x_pos_2)
+    axes[0,0].plot( x_pos_2, predict , color='red', linestyle='solid' )
+    axes[0,0].plot([0,10],[0,10], color='black')
+    axes[0,0].set_xlim([0,10])
+    axes[0,0].set_ylim([0,10])
+    axes[0,0].set_title('x-position', fontsize=my_fontsize*1.2)
+
+
+    axes[1,0].scatter( y_pos_2[:37], y_pos_1[:37], s=150, color='blue', label='Indy' )
+    axes[1,0].scatter( y_pos_2[37:], y_pos_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( y_pos_2.reshape(-1, 1).astype(np.float32), y_pos_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(y_pos_2)
+    axes[1,0].plot( y_pos_2, predict , color='red', linestyle='solid' )
+    axes[1,0].plot([0,10],[0,10], color='black')
+    axes[1,0].set_xlim([0,10])
+    axes[1,0].set_ylim([0,10])
+    axes[1,0].set_title('y-position', fontsize=my_fontsize*1.2)
+
+    axes[0,1].scatter( x_vel_2[:37], x_vel_1[:37], s=150, color='blue', label='Indy' )
+    axes[0,1].scatter( x_vel_2[37:], x_vel_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( x_vel_2.reshape(-1, 1).astype(np.float32), x_vel_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(x_vel_2)
+    axes[0,1].plot( x_vel_2, predict , color='red', linestyle='solid' )
+    axes[0,1].plot([0,10],[0,10], color='black')
+    axes[0,1].plot([0,10],[0,10], color='black')
+    axes[0,1].set_xlim([0,10])
+    axes[0,1].set_ylim([0,10])
+    axes[0,1].set_title('x-velocity', fontsize=my_fontsize*1.2)
+
+    axes[1,1].scatter( y_vel_2[:37], y_vel_1[:37], s=150, color='blue', label='Indy' )
+    axes[1,1].scatter( y_vel_2[37:], y_vel_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( y_vel_2.reshape(-1, 1).astype(np.float32), y_vel_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(y_vel_2)
+    axes[1,1].plot( y_vel_2, predict , color='red', linestyle='solid' )
+    axes[1,1].plot([0,10],[0,10], color='black')
+    axes[1,1].plot([0,10],[0,10], color='black')
+    axes[1,1].set_xlim([0,10])
+    axes[1,1].set_ylim([0,10])
+    axes[1,1].set_title('y-velocity', fontsize=my_fontsize*1.2)
+
+
+    axes[0,2].scatter( x_acc_2[:37], x_acc_1[:37], s=150, color='blue', label='Indy' )
+    axes[0,2].scatter( x_acc_2[37:], x_acc_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( x_acc_2.reshape(-1, 1).astype(np.float32), x_acc_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(x_acc_2)
+    axes[0,2].plot( x_acc_2, predict , color='red', linestyle='solid' )
+    axes[0,2].plot([0,10],[0,10], color='black')
+    axes[0,2].plot([0,10],[0,10], color='black')
+    axes[0,2].set_xlim([0,10])
+    axes[0,2].set_ylim([0,10])
+    axes[0,2].set_title('x-acceleration', fontsize=my_fontsize*1.2)
+
+    axes[1,2].scatter( y_acc_2[:37], y_acc_1[:37], s=150, color='blue', label='Indy' )
+    axes[1,2].scatter( y_acc_2[37:], y_acc_1[37:], s=150, color='green', label='Loco ', marker='D')
+    model.fit( y_acc_2.reshape(-1, 1).astype(np.float32), y_acc_1.reshape(-1, 1).astype(np.float32) )
+    predict = model.predict(y_acc_2)
+    axes[1,2].plot( y_acc_2, predict , color='red', linestyle='solid' )
+    axes[1,2].plot([0,10],[0,10], color='black')
+    axes[1,2].plot([0,10],[0,10], color='black')
+    axes[1,2].set_xlim([0,10])
+    axes[1,2].set_ylim([0,10])
+    axes[1,2].set_title('y-acceleration', fontsize=my_fontsize*1.2)
+
+    axes[1,2].legend(loc='lower right', fontsize=my_fontsize, bbox_to_anchor=(1.4, 0.5))
+
+    for i in range(2):
+        for j in range(3):
+            if i==1:
+                if my_model_name_for_x == 'atten_LN_oneway': # path 2
+                    axes[i,j].set_xlabel('SNR(dB), One-way GRU (+LN & Atten.)',fontsize=my_fontsize)
+                if my_model_name_for_x =='atten_LN_bidir_no_LN_inside': # special path 3
+                    axes[i,j].set_xlabel('SNR(dB), Bidir GRU (+LN & Atten. no LN )',fontsize=my_fontsize)
+                if my_model_name_for_x =='bidir_LN_no_atten': # path 4
+                    axes[i,j].set_xlabel('SNR(dB), Bidir GRU (+ LN )',fontsize=my_fontsize)
+                if my_model_name_for_x == 'bidir_atten_no_LN': # path 5
+                    axes[i,j].set_xlabel('SNR(dB), Bidir GRU (+ Atten.)',fontsize=my_fontsize)
+
+            if j==0:
+                if my_model_name_for_y == 'atten_LN_bidir':
+                    axes[i,j].set_ylabel('SNR(dB), Bidir GRU (+LN & Atten.)',fontsize=my_fontsize)
+    
+    for i in range(2):
+        for j in range(3):
+            axes[i,j].spines['top'].set_visible(False)
+            axes[i,j].spines['right'].set_visible(False)
+            axes[i,j].spines['bottom'].set_visible(True)
+            axes[i,j].spines['left'].set_visible(True)
+
+    plt.savefig( plot_path + '/' +  'yee' +'.png' )
+
+    return
 
 
 x_pos_1, y_pos_1, x_vel_1, y_vel_1, x_acc_1, y_acc_1 = read_my_result_1_for_y_scatter (my_model_name_for_y )
@@ -233,18 +434,25 @@ x_pos_2, y_pos_2, x_vel_2, y_vel_2, x_acc_2, y_acc_2 = read_my_result_1_for_y_sc
 
 
 
-drawing_with_makin(plot_path_1, rEFH_x_pos, x_pos_1, 'x', 'pos',my_model_name_for_y)
-drawing_with_makin(plot_path_1, rEFH_y_pos, y_pos_1, 'y', 'pos',my_model_name_for_y)
-drawing_with_makin(plot_path_1, rEFH_x_vel, x_vel_1, 'x', 'vel',my_model_name_for_y)
-drawing_with_makin(plot_path_1, rEFH_y_vel, y_vel_1, 'y', 'vel',my_model_name_for_y)
-drawing_with_makin(plot_path_1, rEFH_x_acc, x_acc_1, 'x', 'acc',my_model_name_for_y)
-drawing_with_makin(plot_path_1, rEFH_y_acc, y_acc_1, 'y', 'acc',my_model_name_for_y)
+# drawing_with_makin(plot_path_1, rEFH_x_pos, x_pos_1, 'x', 'pos',my_model_name_for_y)
+# drawing_with_makin(plot_path_1, rEFH_y_pos, y_pos_1, 'y', 'pos',my_model_name_for_y)
+# drawing_with_makin(plot_path_1, rEFH_x_vel, x_vel_1, 'x', 'vel',my_model_name_for_y)
+# drawing_with_makin(plot_path_1, rEFH_y_vel, y_vel_1, 'y', 'vel',my_model_name_for_y)
+# drawing_with_makin(plot_path_1, rEFH_x_acc, x_acc_1, 'x', 'acc',my_model_name_for_y)
+# drawing_with_makin(plot_path_1, rEFH_y_acc, y_acc_1, 'y', 'acc',my_model_name_for_y)
 
 
 
-drawing_with_my_two_results(plot_path_for_this,  x_pos_2, x_pos_1, 'x', 'pos', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_for_this,  y_pos_2, y_pos_1, 'y', 'pos', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_for_this,  x_vel_2, x_vel_1, 'x', 'vel', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_for_this,  y_vel_2, y_vel_1, 'y', 'vel', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_for_this,  x_acc_2, x_acc_1, 'x', 'acc', my_model_name_for_x, my_model_name_for_y)
-drawing_with_my_two_results(plot_path_for_this,  y_acc_2, y_acc_1, 'y', 'acc', my_model_name_for_x, my_model_name_for_y)
+# drawing_with_my_two_results(plot_path_for_this,  x_pos_2, x_pos_1, 'x', 'pos', my_model_name_for_x, my_model_name_for_y)
+# drawing_with_my_two_results(plot_path_for_this,  y_pos_2, y_pos_1, 'y', 'pos', my_model_name_for_x, my_model_name_for_y)
+# drawing_with_my_two_results(plot_path_for_this,  x_vel_2, x_vel_1, 'x', 'vel', my_model_name_for_x, my_model_name_for_y)
+# drawing_with_my_two_results(plot_path_for_this,  y_vel_2, y_vel_1, 'y', 'vel', my_model_name_for_x, my_model_name_for_y)
+# drawing_with_my_two_results(plot_path_for_this,  x_acc_2, x_acc_1, 'x', 'acc', my_model_name_for_x, my_model_name_for_y)
+# drawing_with_my_two_results(plot_path_for_this,  y_acc_2, y_acc_1, 'y', 'acc', my_model_name_for_x, my_model_name_for_y)
+
+
+
+drawing_with_my_two_results_in_axis( plot_path_for_this, x_pos_2, x_pos_1 ,y_pos_2,y_pos_1,x_vel_2,x_vel_1,y_vel_2,y_vel_1,x_acc_2,x_acc_1,y_acc_2,y_acc_1 , my_model_name_for_x, my_model_name_for_y)
+
+
+drawing_with_makin_in_axis( plot_path_1,  rEFH_x_pos, x_pos_1, rEFH_y_pos , y_pos_1 ,rEFH_x_vel, x_vel_1,rEFH_y_vel, y_vel_1,  rEFH_x_acc, x_acc_1,rEFH_y_acc, y_acc_1, my_model_name_for_y)
