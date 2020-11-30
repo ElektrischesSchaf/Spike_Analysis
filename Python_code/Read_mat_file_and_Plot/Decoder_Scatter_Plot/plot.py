@@ -47,6 +47,8 @@ makin_model_name = 'rEFH_dynamic'
 my_model_name_for_x = 'bidir_atten_no_LN' # atten_LN_oneway , atten_LN_bidir_no_LN_inside , bidir_LN_no_atten , bidir_atten_no_LN
 plot_path_for_this = plot_path_5
 
+
+
 my_fontsize=35
 
 def read_my_result_1_for_y_scatter( my_model_name ):
@@ -319,7 +321,7 @@ def drawing_with_makin_in_axis(plot_path, rEFH_x_pos, x_pos_1, rEFH_y_pos , y_po
             axes[i,j].spines['bottom'].set_visible(True)
             axes[i,j].spines['left'].set_visible(True)
 
-    plt.savefig( plot_path + '/' +  'yee' +'.png' )
+    plt.savefig( plot_path + '/' +  'my_vs_makin' +'.png' )
 
     return
 
@@ -403,12 +405,16 @@ def drawing_with_my_two_results_in_axis(plot_path , x_pos_2, x_pos_1 ,y_pos_2,y_
             if i==1:
                 if my_model_name_for_x == 'atten_LN_oneway': # path 2
                     axes[i,j].set_xlabel('SNR(dB), One-way GRU (+LN & Atten.)',fontsize=my_fontsize)
+                    save_file_name = 'my_one_way_vs_bidir'
                 if my_model_name_for_x =='atten_LN_bidir_no_LN_inside': # special path 3
                     axes[i,j].set_xlabel('SNR(dB), Bidir GRU (+LN & Atten. no LN )',fontsize=my_fontsize)
+                    save_file_name = 'attention_internal_no_LN'
                 if my_model_name_for_x =='bidir_LN_no_atten': # path 4
                     axes[i,j].set_xlabel('SNR(dB), Bidir GRU (+ LN )',fontsize=my_fontsize)
+                    save_file_name = 'my_vs_my_no_attention'
                 if my_model_name_for_x == 'bidir_atten_no_LN': # path 5
                     axes[i,j].set_xlabel('SNR(dB), Bidir GRU (+ Atten.)',fontsize=my_fontsize)
+                    save_file_name = 'my_vs_my_no_LN'
 
             if j==0:
                 if my_model_name_for_y == 'atten_LN_bidir':
@@ -421,7 +427,7 @@ def drawing_with_my_two_results_in_axis(plot_path , x_pos_2, x_pos_1 ,y_pos_2,y_
             axes[i,j].spines['bottom'].set_visible(True)
             axes[i,j].spines['left'].set_visible(True)
 
-    plt.savefig( plot_path + '/' +  'yee' +'.png' )
+    plt.savefig( plot_path + '/' +  save_file_name +'.png' )
 
     return
 
