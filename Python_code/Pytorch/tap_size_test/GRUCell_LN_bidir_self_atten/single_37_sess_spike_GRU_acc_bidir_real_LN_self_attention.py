@@ -61,7 +61,7 @@ List_FILE = ALL_List_FILE[20:21]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-MAX_EPOCH = 10#100
+MAX_EPOCH = 100
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
