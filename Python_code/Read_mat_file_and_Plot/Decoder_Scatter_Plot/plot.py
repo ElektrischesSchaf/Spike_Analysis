@@ -180,7 +180,7 @@ def drawing_with_my_two_results( plot_path_2, my_model_result_x, my_model_result
         plt.xlabel('SNR(dB), One-way GRU (+LN & Atten.)',fontsize=my_fontsize)
     if my_model_name_for_x =='atten_LN_bidir_no_LN_inside': # special path 3
         plt.xlabel('SNR(dB), Bidir GRU (+LN & Atten. no LN )',fontsize=my_fontsize)
-    if my_model_name_for_x =='bidri_LN_no_atten': # path 4
+    if my_model_name_for_x =='bidir_LN_no_atten': # path 4
         plt.xlabel('SNR(dB), Bidir GRU (+ LN )',fontsize=my_fontsize)
     if my_model_name_for_x == 'bidir_atten_no_LN': # path 5
         plt.xlabel('SNR(dB), Bidir GRU (+ Atten.)',fontsize=my_fontsize)
