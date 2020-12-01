@@ -345,6 +345,10 @@ class mat_file_processing():
             final_order_matrix = X_for_training[order_num:,:]
             order_original_matrix = np.concatenate(( order_original_matrix, final_order_matrix ), axis = 1)
             X_for_training = order_original_matrix.copy()
+            
+            # put zeros in the front
+            my_zeros = np.zeros((order_num,  X_for_training.shape[1]), dtype=np.float32)
+            X_for_training = np.concatenate( (my_zeros, X_for_training) , axis=0)
 
             order_original_matrix=X_for_prediction[:-order_num,:]
             for order_loop_index in range(1, order_num):
@@ -354,31 +358,63 @@ class mat_file_processing():
             order_original_matrix = np.concatenate(( order_original_matrix, final_order_matrix ), axis = 1)
             X_for_prediction = order_original_matrix.copy()
 
+            # put zeros in the front
+            my_zeros = np.zeros((order_num,  X_for_prediction.shape[1]), dtype=np.float32)
+            X_for_prediction = np.concatenate( (my_zeros, X_for_prediction) , axis=0)
+
             x_position_label_training = x_position_label_training[order_num:]
             x_position_label_testing = x_position_label_testing[order_num:]
             y_position_label_training = y_position_label_training[order_num:]
             y_position_label_testing = y_position_label_testing[order_num:]
-            # z_position_label_training = z_position_label_training[order_num:]
-            # z_position_label_testing = z_position_label_testing[order_num:]
+
+
+            # put zeros in the front
+            my_zeros = np.zeros(( order_num ), dtype=np.float32)
+            x_position_label_training = np.concatenate( (my_zeros, x_position_label_training) , axis=0)
+            x_position_label_testing = np.concatenate( (my_zeros, x_position_label_testing) , axis=0)
+            y_position_label_training = np.concatenate( (my_zeros, y_position_label_training) , axis=0)
+            y_position_label_testing = np.concatenate( (my_zeros, y_position_label_testing) , axis=0)
+
 
             x_velocity_label_training = x_velocity_label_training[order_num:]
             x_velocity_label_testing = x_velocity_label_testing[order_num:]
             y_velocity_label_training = y_velocity_label_training[order_num:]
             y_velocity_label_testing = y_velocity_label_testing[order_num:]
-            # z_velocity_label_training = z_velocity_label_training[order_num:]
-            # z_velocity_label_testing = z_velocity_label_testing[order_num:]
+
+            # put zeros in the front
+            my_zeros = np.zeros(( order_num ), dtype=np.float32)
+            x_velocity_label_training = np.concatenate( (my_zeros, x_velocity_label_training) , axis=0)
+            x_velocity_label_testing = np.concatenate( (my_zeros, x_velocity_label_testing) , axis=0)
+            y_velocity_label_training = np.concatenate( (my_zeros, y_velocity_label_training) , axis=0)
+            y_velocity_label_testing = np.concatenate( (my_zeros, y_velocity_label_testing) , axis=0)
+
 
             x_acceleration_label_training = x_acceleration_label_training[order_num:]
             x_acceleration_label_testing = x_acceleration_label_testing[order_num:]
             y_acceleration_label_training = y_acceleration_label_training[order_num:]
             y_acceleration_label_testing = y_acceleration_label_testing[order_num:]
-            # z_acceleration_label_training = z_acceleration_label_training[order_num:]
-            # z_acceleration_label_testing = z_acceleration_label_testing[order_num:]
+
+
+            # put zeros in the front
+            my_zeros = np.zeros(( order_num ), dtype=np.float32)
+            x_acceleration_label_training = np.concatenate( (my_zeros, x_acceleration_label_training) , axis=0)
+            x_acceleration_label_testing = np.concatenate( (my_zeros, x_acceleration_label_testing) , axis=0)
+            y_acceleration_label_training = np.concatenate( (my_zeros, y_acceleration_label_training) , axis=0)
+            y_acceleration_label_testing = np.concatenate( (my_zeros, y_acceleration_label_testing) , axis=0)
+
 
             x_position_target_training = x_position_target_training[order_num:]
             x_position_target_testing = x_position_target_testing[order_num:]
             y_position_target_training = y_position_target_training[order_num:]
             y_position_target_testing = y_position_target_testing[order_num:]
+
+            # put zeros in the front
+            my_zeros = np.zeros(( order_num ), dtype=np.float32)
+            x_position_target_training = np.concatenate( (my_zeros, x_position_target_training) , axis=0)
+            x_position_target_testing = np.concatenate( (my_zeros, x_position_target_testing) , axis=0)
+            y_position_target_training = np.concatenate( (my_zeros, y_position_target_training) , axis=0)
+            y_position_target_testing = np.concatenate( (my_zeros, y_position_target_testing) , axis=0)
+
 
         aa_dict={
             "indy_20160407_02":	7777,
