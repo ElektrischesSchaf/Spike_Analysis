@@ -110,6 +110,13 @@ with the neural spike firing rate in heatmap and the time points of target cue c
 \begin{multicols}{2}
 \todo[inline, color=green!40]{包含Wiener filter、KF、簡單的neural network、Makin的方法，每個方法引用一個經典的論文，放入以下論文的Figure 4
 Superior arm-movement decoding from cortex with a new, unsupervised-learning algorithm}
+\begin{itemize}
+    \item $\text{KF}_{\text{obs}}$: fully-observed model (supervised learning) + KF
+    \item $\text{KF}_{\text{latent}}$: latent-state model (unsupervised learn) + KF
+    \item UKF:\quad Unscented Kalman filter \citep{li2009unscented}
+    \item rEFH:\quad the recurrent exponential-family harmonium
+\end{itemize}
+
 \end{multicols}
 
 
