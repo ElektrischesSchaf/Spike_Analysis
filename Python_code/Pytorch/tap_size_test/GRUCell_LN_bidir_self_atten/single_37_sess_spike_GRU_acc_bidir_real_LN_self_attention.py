@@ -61,7 +61,7 @@ List_FILE = ALL_List_FILE[20:21]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-MAX_EPOCH = 100
+MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
@@ -70,7 +70,7 @@ HIDDEN_DIMENSION = 256
 
 # tap size study start
 tap_size_list = [5,10,15,20,25,30]
-for max_timestep in tap_size_list:
+for max_timestep in range(5,30):
 
     model_name = 'GRU_Single_Session_2_outputs_bidir_LN_self_atten_' + str(max_timestep)
 
