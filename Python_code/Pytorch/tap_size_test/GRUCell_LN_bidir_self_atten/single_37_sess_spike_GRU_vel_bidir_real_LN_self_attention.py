@@ -70,7 +70,7 @@ HIDDEN_DIMENSION = 256
 
 # tap size study start
 tap_size_list = [5,10,15,20,25,30]
-for max_timestep in range(2,50):
+for max_timestep in range(4,50):
 
     model_name = 'GRU_Single_Session_2_outputs_bidir_LN_self_atten_' + str(max_timestep).rjust(2,'0')
 
