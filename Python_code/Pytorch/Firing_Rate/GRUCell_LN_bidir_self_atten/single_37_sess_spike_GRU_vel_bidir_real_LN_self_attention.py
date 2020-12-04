@@ -559,8 +559,8 @@ for session_k in range(len(session_file_list)):
     attn_weight_matrix_all = np.asarray(attn_weight_matrix_all)
     print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
 
-    # df = pd.DataFrame( attn_weight_matrix_all )
-    # df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
+    df = pd.DataFrame( attn_weight_matrix_all )
+    df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
 
     # collected firing rate
     firing_rate_collector = np.asarray(firing_rate_collector)
