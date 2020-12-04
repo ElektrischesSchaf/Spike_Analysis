@@ -57,7 +57,7 @@ kinematic_variable_type = 'x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_v
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE = ALL_List_FILE[20:21]
+List_FILE = ALL_List_FILE[20:25]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
@@ -69,8 +69,9 @@ BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 
 # tap size study start
-tap_size_list = [5,10,15,20,25,30]
-for max_timestep in range(10, 80):
+tap_size_list = [5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80]
+for max_timestep in tap_size_list:
+
 
     model_name = 'GRU_Single_Session_2_outputs_bidir_LN_self_atten_' + str(max_timestep).rjust(2,'0')
 
@@ -565,8 +566,9 @@ for max_timestep in range(10, 80):
         attn_weight_matrix_all = np.asarray(attn_weight_matrix_all)
         print('shape of attn_weight_matrix_all= ', attn_weight_matrix_all.shape, '\n')
 
-        df = pd.DataFrame( attn_weight_matrix_all )
-        df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
+        if (max_timestep == int(tap_size_list[-1]) ) or (max_timestep == int(tap_size_list[-1]/2) ):
+            df = pd.DataFrame( attn_weight_matrix_all )
+            df.to_csv(os.path.join(csv_path, 'attn_weight_matrix_all.csv'), index=False, header=False)
 
         # collected firing rate
         firing_rate_collector = np.asarray(firing_rate_collector)

@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import json
 import os
 import pandas as pd
+import numpy as np
 
 my_fontsize=45
 
@@ -47,8 +48,21 @@ if kinematci_types == 'x_and_y_vel':
 if kinematci_types == 'x_and_y_acc':
     x_label='x-acceleration'
     y_label='y-acceleration'
-plt.plot(tap_sizes_all, x_score_all_list, linewidth=5, label=x_label)
-plt.plot(tap_sizes_all, y_score_all_list, linewidth=5,label=y_label)
+
+plt.plot(tap_sizes_all, x_score_all_list, linewidth=5, label=x_label, color='blue')
+plt.plot(tap_sizes_all, y_score_all_list, linewidth=5, label=y_label, color='green')
+
+x_regression_a = np.polyfit(tap_sizes_all, x_score_all_list, 3)
+y_regression_a = np.polyfit(tap_sizes_all, y_score_all_list, 3)
+
+x_regression_a=np.squeeze(x_regression_a)
+y_regression_a=np.squeeze(y_regression_a)
+
+x_regression_p = np.poly1d(x_regression_a)
+y_regression_p = np.poly1d(y_regression_a)
+
+plt.plot(tap_sizes_all, x_regression_p(tap_sizes_all), linewidth=3, color='blue', alpha=0.7)
+plt.plot(tap_sizes_all, y_regression_p(tap_sizes_all), linewidth=3, color='green', alpha=0.7 )
 
 plt.xlabel('Tap sizes' , fontsize=my_fontsize)
 plt.xticks(fontsize=my_fontsize*0.8)
