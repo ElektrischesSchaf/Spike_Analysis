@@ -7,6 +7,9 @@
 myvenv/
 save/
 tap_sizes_results/
+tap_sizes_results_acceleration/
+tap_sizes_results_position/
+tap_sizes_results_velocity/
 csv_files/
 __pycache__/
 Spectrogram_all_Channels/
