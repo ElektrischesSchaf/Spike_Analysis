@@ -156,13 +156,32 @@ The second insight our attention can provide is an explaination about the length
 \section{Connections between our AI model and neuroscience}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{探討網路內部的運作方式跟大腦的關連}
-The attention mechanism acts as a visualization tool for depicting how the model sees.
-Just like human brain, first we have to browse trough the whole sequence of the data, 
-then by our own experiacne to 
 
-\cite{hassabis2017neuroscience}
+Both fields of AI and neuroscience has had a huge progress in recent years \cite{hassabis2017neuroscience}.
+The relationship between these two fields are mainly two parts,
+Neuroscience provides a rich sources of inspiration for new types of algorithms and architectures,
+independent of and complementary to the mathematical and logic-based methods.
+Neuroscience can provide validation of AI techniques that already exist.
+as a strong support for its plausiblily as an intergral component of an overall general intelligence system.
+Biological plausiblily is a guide, not a strict requirement.
+The CNN model work directly on entire images or video frames, with equal priority given to all image pixels.
+The primate visual system does not work like this.
+Rather thian processing all input in parallel, 
+visula attention shifts strategically among locations and objects,
+centering processing resources and representational coordinates on a series of regions in turn.
+Detailed neurocomputational models have show this piecemeal approach benefits behavior, 
+by prioritizing and isolating the information that is relevant at any given moment.
+Attention mechanisms have been a source of inspiration for AI architectures that take \textit{glimpses} of the input image at each time step,
+update internal representations, 
+and then select the next location to sample.
+One such network was able to use this selective attentional mechanism to ignore irrelevent objects in a scence,
+allowing it to perform well in challenging object classification tasks in the presence of clutter.
 
-\todo[inline]{\cite{glaser2019roles}}
+While attention is typically thought of as an orienting mechanism,
+its \textit{spotlight} can also be focused internally,
+toward the contents of memory.
+In some architectures, 
+attention mechanisms have been used to select information to be read out from the internal memory of the network.
 
 \end{multicols}
 
@@ -170,6 +189,18 @@ then by our own experiacne to
 \section{Reason behind failure cases}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{探討失敗例子的原因}
+In our position decoder,
+the predicted trajectories were very accurate at the interval when the fingertips moved,
+but the errors were typically large when the fingertips is stationary but the neurons were still firing.
+Those firing patterns tended to affect our model the most, and it is inevitable.
+The velocity decoders,
+on the contrary to the results of position decoders,
+can predict rather well when the fingertips were at rest.
+The errors happend when the value of the current velocity was too high.
+This situation also happened in acceleration decoders,
+and since the values of acceleration labels were even larger,
+making the errors higher than velocity decoders.
+
 \end{multicols}
 
 \section{Difficulty in position decoder}
