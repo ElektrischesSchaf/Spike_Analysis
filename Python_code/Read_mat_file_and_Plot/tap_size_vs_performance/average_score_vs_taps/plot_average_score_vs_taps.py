@@ -8,13 +8,14 @@ my_fontsize=35
 
 
 plt.figure(figsize=(16,9))
-FILE_PATH = './tap_sizes_results_position' # tap_sizes_results_position , tap_sizes_results_velocity
+FILE_PATH = './tap_sizes_results_acceleration' # tap_sizes_results_position , tap_sizes_results_velocity , tap_sizes_results_acceleration
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:]
 file_list=List_FILE
 
-kinematci_types = 'x_and_y_vel'
+CWD = os.getcwd()
+
 
 for sess_name in file_list:
     file_name = FILE_PATH+ '/' +sess_name+'/'+ 'csv_files' + '/' + 'attn_weight_matrix_all' + '.csv'
@@ -48,11 +49,28 @@ for sess_name in file_list:
     plt.xlim([x_ticklabels[0], x_ticklabels[-1]])
     plt.grid(True, 'major', 'x')
     plt.tight_layout()
+
+
+    plot_path_1 = os.path.join('..', 'Plots')
+    if not os.path.exists(plot_path_1):
+        os.mkdir(plot_path_1)
+
     if FILE_PATH == './tap_sizes_results_position':
-        plt.savefig('../tap_sizes_position_'+ str(sess_name) +'.png')
+        plot_path = os.path.join( plot_path_1 , 'Plots_bar_tap_sizes_position')
+        if not os.path.exists(plot_path):
+            os.mkdir(plot_path)
+        plt.savefig(plot_path+'/'+ str(sess_name) +'.png')
+
     if FILE_PATH == './tap_sizes_results_velocity':
-        plt.savefig('../tap_sizes_velocity_'+ str(sess_name) +'.png')
+        plot_path = os.path.join( plot_path_1 , 'Plots_bar_tap_sizes_velocity')
+        if not os.path.exists(plot_path):
+            os.mkdir(plot_path)
+        plt.savefig(plot_path+'/'+ str(sess_name) +'.png')
+
     if FILE_PATH == './tap_sizes_results_acceleration':
-        plt.savefig('../tap_sizes_acceleration_'+ str(sess_name) +'.png')
+        plot_path = os.path.join( plot_path_1 , 'Plots_bar_tap_sizes_acceleration')
+        if not os.path.exists(plot_path):
+            os.mkdir(plot_path)
+        plt.savefig(plot_path+'/'+ str(sess_name) +'.png')
 
     # plt.savefig()
