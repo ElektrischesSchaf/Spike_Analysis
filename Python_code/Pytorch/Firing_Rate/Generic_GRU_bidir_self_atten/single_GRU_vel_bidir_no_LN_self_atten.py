@@ -567,11 +567,11 @@ for session_k in range(len(session_file_list)):
     firing_rate_collector = np.asarray(firing_rate_collector)
     print('shape of firing_rate_collector= ', firing_rate_collector.shape, '\n')
 
-    testing_data_r_square_1, testing_data_SNR_1, testing_data_RMSE_1, PCC_1 = regular_modules.evlauate_performance( real_y_all_1, my_prediction_1 )
+    testing_data_r_square_1, testing_data_SNR_1, testing_data_RMSE_1, PCC_1 = regular_modules.evlauate_performance( real_y_all_1, my_prediction_1 , max_timestep )
     Ground_Truth_1 = real_y_all_1
     print('\nx-velocity score: ', testing_data_r_square_1, ' RMSE: ', testing_data_RMSE_1, ', pearsonr=', PCC_1[0])
 
-    testing_data_r_square_2, testing_data_SNR_2, testing_data_RMSE_2, PCC_2 = regular_modules.evlauate_performance( real_y_all_2, my_prediction_2 )
+    testing_data_r_square_2, testing_data_SNR_2, testing_data_RMSE_2, PCC_2 = regular_modules.evlauate_performance( real_y_all_2, my_prediction_2 , max_timestep )
     Ground_Truth_2 = real_y_all_2
     print('\ny-velocity score: ', testing_data_r_square_2, ' RMSE: ', testing_data_RMSE_2, ', pearsonr=', PCC_2[0])
 
