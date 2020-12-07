@@ -31,14 +31,25 @@ the loss dropped drastically with the aid of layer normalization compared to an 
             \caption{Acceleration}
         \end{subfigure}
         \captionsetup{width=0.5\textwidth}
-        \caption{Epoch vs Loss Graphs from 3 different kinematic variable decoders}
+        \caption{Epoch vs loss graphs from 3 different kinematic decoders}
         \label{fig:loss_vs_epoch}
     \end{center}
 \end{figure}
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{../Figures/all_label_distribution.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Distributions of kinematics }
+        \label{fig:distribution_of_kinematics}
+    \end{center}
+\end{figure}
+
+
 \begin{multicols}{2}
 The reason for the ordinary GRU failed to decode the acceleration is mainly caused by the wide range of this kinematic.
-When it comes to decoding fingertip position, 
+As showed in Figure~\ref{fig:distribution_of_kinematics},
+when it comes to decoding fingertip position, 
 the labels are distributed mainly between $100\sim-50$.
 But for velocity the distribution is between $200\sim-200$ and acceleration $2000\sim-2000$, 
 and most of those values are in the vicinity of zero.
