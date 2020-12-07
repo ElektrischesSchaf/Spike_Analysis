@@ -204,9 +204,9 @@ class regular_modules():
 
     def evlauate_performance( self, real_y, predicted_y, max_timestep ):
         testing_data_r_square = r2_score( real_y[max_timestep:] , predicted_y[max_timestep:] )
-        testing_data_SNR = -10*math.log10(1-testing_data_r_square)
-        testing_data_RMSE = np.sqrt(mean_squared_error(real_y, predicted_y))
-        PCC = pearsonr(real_y, predicted_y)
+        testing_data_SNR = -10*math.log10( 1-testing_data_r_square )
+        testing_data_RMSE = np.sqrt(mean_squared_error( real_y[max_timestep:], predicted_y[max_timestep:] ))
+        PCC = pearsonr( real_y[max_timestep:] , predicted_y[max_timestep:] )
 
         return testing_data_r_square, testing_data_SNR, testing_data_RMSE, PCC
 
