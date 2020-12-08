@@ -169,19 +169,22 @@ The second insight our attention can provide is an explaination about the length
 \todo[inline, color=green!40]{探討網路內部的運作方式跟大腦的關連}
 
 Both fields of AI and neuroscience has had a huge progress in recent years \cite{hassabis2017neuroscience}.
-The relationship between these two fields are mainly two parts,
-Neuroscience provides a rich sources of inspiration for new types of algorithms and architectures,
-independent of and complementary to the mathematical and logic-based methods.
-Neuroscience can provide validation of AI techniques that already exist.
-as a strong support for its plausiblily as an intergral component of an overall general intelligence system.
-Biological plausiblily is a guide, not a strict requirement.
-The CNN model work directly on entire images or video frames, with equal priority given to all image pixels.
-The primate visual system does not work like this.
-Rather thian processing all input in parallel, 
-visula attention shifts strategically among locations and objects,
-centering processing resources and representational coordinates on a series of regions in turn.
-Detailed neurocomputational models have show this piecemeal approach benefits behavior, 
-by prioritizing and isolating the information that is relevant at any given moment.
+The relationship between these two fields has mainly two parts.
+Neuroscience is a sources of inspiration for new types of algorithms or architectures in AI,
+which is both complementary and independent to the mathematical and logic-based methods.
+Neuroscience can also provide validation of the existing AI techniques,
+and being a support for the plausiblily.
+Biological plausiblily can act as a guide, but it's not a strict requirement in engineering.
+
+Take the image attention for example, 
+The CNN model works on entire images, with equal priority given to all the pixels in the image.
+However, this is not how the primate visual system actual works.
+Instead of processing all input in parallel, 
+visual attention shifts among different locations or objects in the image with strategies.
+It is capable of centering and processing resources on a series in turn.
+Neurocomputational models have show this piecemeal approach is benefitial,
+that at any given moment, it isolating and prioritizing relevant information.
+
 Attention mechanisms have been a source of inspiration for AI architectures that take \textit{glimpses} of the input image at each time step,
 update internal representations, 
 and then select the next location to sample.
