@@ -365,7 +365,7 @@ The structure of a GRU cell is showed in Figure \ref{fig:GRU_cell}.
 \begin{multicols}{2}
 
 \begin{align}
-    h_t &= g^{GRU} \left(  h_{t-1}, \ x_t  \right)
+    h_t &= \text{GRU} \left( x_t, \ h_{t-1}   \right)
 \end{align}
 
 \noindent and the four equations in the GRU cell:
@@ -375,8 +375,8 @@ The structure of a GRU cell is showed in Figure \ref{fig:GRU_cell}.
     % \begin{split}
         r_t &=  \sigma (W_r h_{t-1} + U_r x_t + b_r) \label{eq:reset_gate} \\
         z_t &= \sigma (W_z h_{t-1} + U_z x_t + b_z) \label{eq:update_gate} \\
-        \tilde{h_t} &= \phi(W (r_t \circ h_{t-1}) + U x_t + b) \label{eq:h_hat} \\
-        h_t &= z_t \circ h_{t-1} + (1-z_t) \circ \tilde{h_t} \label{eq:h_out}
+        \tilde{h}_t &= \phi(W (r_t \circ h_{t-1}) + U x_t + b) \label{eq:h_hat} \\
+        h_t &= z_t \circ h_{t-1} + (1-z_t) \circ \tilde{h}_t \label{eq:h_out}
     % \end{split}
 \end{align}
 
@@ -422,7 +422,7 @@ At each times tep, a single GRU cell can take in two tensors,
 one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, 
 which is the output from last time step.
 In the process of calculating each gate value (Equation \ref{eq:reset_gate}, 
-\ref{eq:update_gate}) and $\tilde{h_t}$ (Equation \ref{eq:h_hat}),
+\ref{eq:update_gate}) and $\tilde{h}_t$ (Equation \ref{eq:h_hat}),
 hidden state from last time step ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
 and so does the input tensor ($x_t$) will be multiplied by its own weights ($U_r$, $U_z$, $U$).
 After the multiplication, 3 biases ($b_r$, $b_z$, $b$) will be added to the results before entering the activation functions
@@ -466,8 +466,8 @@ since the first half of the this vector contains the information by feeding inpu
 
 \begin{align}
     \begin{split}
-    \overrightarrow{h_t} &= g^{GRU} \left(  \overrightarrow{h_{t-1}}, \ x_t  \right) \\
-    \overleftarrow{h_t}  &= g^{GRU} \left(  \overleftarrow{h_{t-1}}, \ x_t  \right) \\
+    \overrightarrow{h_t} &= \overrightarrow{\text{GRU}} \left( x_t  , \ \overrightarrow{h_{t-1}}  \right) \\
+    \overleftarrow{h_t}  &= \overleftarrow{\text{GRU}}  \left( x_t  , \ \overleftarrow{h_{t+1}}   \right) \\
     h_t &= \overrightarrow{h_t} \oplus \overleftarrow{h_t}
     \end{split}
 \end{align}
