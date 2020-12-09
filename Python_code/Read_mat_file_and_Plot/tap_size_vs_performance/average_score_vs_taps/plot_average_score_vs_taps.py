@@ -8,7 +8,7 @@ my_fontsize=35
 
 
 plt.figure(figsize=(16,9))
-FILE_PATH = './tap_sizes_results_position' # tap_sizes_results_position , tap_sizes_results_velocity , tap_sizes_results_acceleration
+FILE_PATH = './tap_sizes_results_acceleration' # tap_sizes_results_position , tap_sizes_results_velocity , tap_sizes_results_acceleration
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:]
@@ -22,6 +22,13 @@ for sess_name in file_list:
 
     df = pd.read_csv(file_name, header=None )
     attn_weight_matrix_all=df.to_numpy()
+
+
+    max_tap_sizes =  int(attn_weight_matrix_all.shape[1])
+
+    # trip the beginning, because I have 0 padding
+    attn_weight_matrix_all = attn_weight_matrix_all[max_tap_sizes: , :]
+
     mean = np.mean(attn_weight_matrix_all, axis=0)
 
     this_tap_sizes = len(mean)
@@ -30,10 +37,10 @@ for sess_name in file_list:
 
     for ticks_label in reversed(range(this_tap_sizes)):
 
-        if ticks_label == int(attn_weight_matrix_all.shape[1]) -1 :
+        if ticks_label == max_tap_sizes -1 :
             x_ticklabels.append( 't')
         else:
-            x_ticklabels.append( 't-' + str(  int(attn_weight_matrix_all.shape[1]) -1 - ticks_label) )
+            x_ticklabels.append( 't-' + str( max_tap_sizes -1 - ticks_label) )
 
     mean = np.flip(mean)
 
