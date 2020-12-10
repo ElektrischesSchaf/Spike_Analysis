@@ -8,7 +8,7 @@ my_fontsize=35
 
 
 plt.figure(figsize=(16,9))
-FILE_PATH = './tap_sizes_results_acceleration' # tap_sizes_results_position , tap_sizes_results_velocity , tap_sizes_results_acceleration
+FILE_PATH = './tap_sizes_results_position' # tap_sizes_results_position , tap_sizes_results_velocity , tap_sizes_results_acceleration
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:]

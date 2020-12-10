@@ -57,7 +57,7 @@ kinematic_variable_type = 'x_and_y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_v
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE = ALL_List_FILE[20:25]
+List_FILE = ALL_List_FILE[25:30]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
@@ -69,7 +69,7 @@ BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 
 # tap size study start
-tap_size_list = [5,10,15,20,25,30,35,40,45,50,55,60]
+tap_size_list = [5,8,10,12,15,20,25,30,35,40,50,60]
 for max_timestep in tap_size_list:
 
     model_name = 'GRU_Single_Session_2_outputs_bidir_LN_self_atten_' + str(max_timestep).rjust(2,'0')
