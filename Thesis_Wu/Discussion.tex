@@ -140,7 +140,7 @@ Here we plotted the positional decoding result in an actual 2D plan in Figure~\r
 \begin{multicols}{2}
 \todo[inline, color=green!40]{探討neural decoder比其他方法好的原因}
 The improvement of decoding accuracy is mainly contributed by the implementation of bidirectional GRU and layer normalization.
-We provided 3 individual decoders for position, velocity and acceleration instead of decoding the 3 kinds of kinematics by the some decoder.
+We provided 3 individual decoders for position, velocity and acceleration instead of decoding the 3 kinds of kinematics by the same decoder.
 Because we have evaluated the distributions and these 3 kinematics and the tremendous difference is convincing that we should not make the predictions of the 3 kinematics simultaneously.
 Another reason to support our point of view is that the patterns from our attention maps have obvious varieties when the model decoded the 3 types of kinematics.
 
@@ -152,13 +152,16 @@ Another reason to support our point of view is that the patterns from our attent
 \begin{multicols}{2}
 \todo[inline, color=green!40]{探討attention找到了甚麼重點?}
 Our temporal attention mechanism can find the different pattern in different kinematic variables.
-Especially it is the point-to-point movement we are trying to decode, 
-there exists no regular pattern in the trajectories.
-With the help of attention mechanism, the model can reflect the states of the movement in each moment.
-Especially it represents distinguishable attention map when the fingertip is stationary or moving,
-and it is valid in position, velocity and acceleration decoders.
+Especially it is the point-to-point movement we were trying to decode, 
+there were no regular pattern in the trajectories.
+With the help of temporal attention module,
+the attention map can reflect the moving status in every moment.
+Especially it represents distinguishable attention patterns when the fingertip is stationary or moving,
+and it works in all position, velocity and acceleration decoders.
 
-The second insight our attention can provide is an explaination about the length of spiking history, or the tap sizes, should use.
+The second insight our attention can provide is an explaination about the length of spiking history should use.
+By qualifying the average attention score from all the history taps in each session, 
+we discovered a clear boundary of selecting useful tap sizes in the case of velocity and acceleration decoders.
 
 
 \end{multicols}
