@@ -40,9 +40,9 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
 \label{sec:qualitative_analysis}
 \begin{multicols}{2}
 \todo[inline, color=green!40]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
-This section we show the result of our predicted variables. 
-Each figure represents a session, and here we selected 5 sessions for one type of variable.
-Since our models were designed to decode both x and y axis of a variable at the same time, 
+This section we showed the result of our predicted variables. 
+Each figure represents a session, and here we selected 5 sessions for each of variable.
+Since our models were designed to decode both x and y-axis of a variable at the same time, 
 it is convenient to plot the predictions of the two axes in the same figure, 
 also easiler for us to compare their results.
 
@@ -90,7 +90,7 @@ also easiler for us to compare their results.
 \begin{multicols}{2}
 We put three kinematics prediction results all torgether in figure~\ref{fig:Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar},
 with the neural spike firing rate in heatmap and the time points of target cue changed in gray vertical lines.
-
+Please notice the output range of these three kinematics and we only trained and predicted one type of kinematics at a time.
 \end{multicols}
 
 
@@ -110,6 +110,13 @@ with the neural spike firing rate in heatmap and the time points of target cue c
 \begin{multicols}{2}
 \todo[inline, color=green!40]{包含Wiener filter、KF、簡單的neural network、Makin的方法，每個方法引用一個經典的論文，放入以下論文的Figure 4
 Superior arm-movement decoding from cortex with a new, unsupervised-learning algorithm}
+
+There are six state-of-the-art methods we can compare,
+with the decoding results table provided from \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
+All 47 sessions of decoding accuracy in $R^2$ and SNR is recorded,
+and the weighted average $R^2$ is listed in Table~\ref{tab:comparison_state_of_the_art}.
+
+The decoders included in the tables are
 \begin{itemize}
     \item $\text{KF}_{\text{obs}}$: fully-observed model (supervised learning) + KF
     \item $\text{KF}_{\text{latent}}$: latent-state model (unsupervised learn) + KF
@@ -118,7 +125,6 @@ Superior arm-movement decoding from cortex with a new, unsupervised-learning alg
 \end{itemize}
 
 \end{multicols}
-
 
 \begin{table}[H]
     \centering
@@ -380,16 +386,22 @@ They showes little relationship between the input spike firing rate and the outp
 Most sessions benefit from the layer normalization and attention decoder, 
 but there are sessions turned out to have particularly poor performances.
 Take session indy\_20161027\_03 for example, 
-the x and y-axis position prediction $R^2$ in \cite{makin2018} is (0.41, 0.72),
-and in our bidirectional LN-GRU with attention module the performance is (0.51, 0.55).
+the corresponding attention map is showed in Figure~\ref{fig:indy_20161027_03_corresponding_attention_map},
+We can tell that our decoder with attention failed mostly when the fingertips in stationary.
+Our attention should able to distinguish if the fingertip of the subjects is moving or at rest.
+In these failed predictions, 
+the predicted trajectories were very accurate at the interval when the fingertips moved,
+but the errors were typically large when the fingertips is stationary but the neurons were still firing.
+Those firing patterns tended to affect our model the most, and it is inevitable.
 
-The corresponding attention map is showed in Figure~\ref{fig:indy_20161027_03_corresponding_attention_map},
-and we can tell that our decoder with attention failed when it has lose the focus a the time bins.
-In other words, the attention scores are distributed rather evenly among all the past time bins,
-whereas in the samples of good prediction accuracy, 
-the attention scores are more concentrated on some specific past time bins.
-our attention should able to distinguish if the fingertip of the subjects is moving or stationary.
-This not an easy task since neurons still fire when the subjects hold their movement.
+
+The velocity decoders on the other hand,
+showed a different result compared to position decoder.
+It can predict quite well when the fingertips were at rest.
+The errors increased when the value of the current velocity was too high.
+This situation also happened in acceleration decoders,
+and since the values of accelerations were even larger when the fingertips moved,
+it made the errors a lot higher than velocity decoders.
 
 \end{multicols}
 
