@@ -486,11 +486,16 @@ it made the errors a lot higher than velocity decoders.
 
 We have showed that the attention score can help as quantify the contributions from each past time bin.
 Based on this attribution we designed a measure to evalutate the optimal tap sizes in movement decoding tasks in different kinematics.
-Averaging the attention scores along the predicted sample axis,
+First averaging the attention scores along the predicted sample axis,
 so that the result can be invariant to the length of each session.
-Then 
+Then plotting the average attention score with respect to the taps.
+It is clear to see the influence distributed among all the past time bins.
 
 \subsection{Velocity decoder}
+
+In Figure~\ref{fig:velocity_decoder_in_different_taps_indy_20161011_03} we can see that the average attention score after $t-14$ in session indy\_20161011\_03 is almost $0$.
+Indicating 15 time bins is all we need to decode velocity.
+Spiking neural signal more than 16 time bins ago are not necessary 
 
 \begin{figure}[H]
     \begin{center}
