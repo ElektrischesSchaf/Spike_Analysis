@@ -484,6 +484,12 @@ it made the errors a lot higher than velocity decoders.
 
 \section{Tap sizes optimization}
 
+We have showed that the attention score can help as quantify the contributions from each past time bin.
+Based on this attribution we designed a measure to evalutate the optimal tap sizes in movement decoding tasks in different kinematics.
+Averaging the attention scores along the predicted sample axis,
+so that the result can be invariant to the length of each session.
+Then 
+
 \subsection{Velocity decoder}
 
 \begin{figure}[H]
