@@ -309,27 +309,30 @@ Fortunately the target points are not required when implementing hand movement d
 \end{comment}
 
 \section{Network architecture}
-% \begin{multicols}{2}
 
-We have combined the temporal self-attention module, layer normalization and bidirectional GRU together.
-Figure~\ref{fig:Lin_Attention} showed our model structure.
-Where $T$ is the tap size, $u$ is the GRU hyperparameter and is 256 in one-way, 512 in bidirectional GRU.
-Since this model only performes self-attention along temporal dimension, 
-the dimension of $u$ will be reduced to $d_a$, 
-is chose to be 125 for simplicity, 
-no matter it is one-way or bidirection GRU.
-$r$ is the hops of attention we intend to extract from the same sequence, 
-and it is set as 5 in decoding position and 2 in decoding velocity and acceleration.
-% \end{multicols}
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[height=0.5\textheight]{Lin_Attention.png}
+        \includegraphics[width=1\textwidth]{my_pipeline.png}
         \captionsetup{width=0.5\textwidth}
-        \caption{Model with temporal attention}
-        \fontsize{10}{12}
-        \label{fig:Lin_Attention}
+        \caption{ Network architecture }
+        \label{fig:my_pipeline}
     \end{center}
 \end{figure}
+
+% \begin{multicols}{2}
+
+We have combined the temporal self-attention module, layer normalization and bidirectional GRU together into our neural decoder.
+Figure~\ref{fig:my_pipeline} showed the overall architecture.
+The first step we use a 2-layer bidirectional GRU as the neural decoder, which transfer the neural spike input into temporal features.
+Its output $\bH$ contains the $T$ vectors with the dimension of $\mathbb{R}^{1 \times 2u}$, where $u$ is a hyperparameter determined before training phase.
+The temporal attention module therefore enhances the features from neural decoder and gives us the attention matrix $\bA$,
+with $r$ attention vectors $\ba$, each vector annotates $T$ hidden states from $\bH$.
+By multiplying the original feature $H$ with attention matrix $A$, a new embedding matrix $M$ is formed.
+Last step feeding matrix $M$ into non-linear layer and obtain the final outputs as the predicted kinematics.
+
+% \end{multicols}
+
+
 
 \subsection{Recurrent Neural Networks}
 \label{sec:RNN}
@@ -601,20 +604,13 @@ The second case has the mean of zero, but its broad distribution makes only a po
 \subsection{Attention module}
 \label{sec:attention_module}
 
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.7\textwidth]{my_pipeline.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{ Attention-aided movement decoder }
-        \label{fig:my_pipeline}
-    \end{center}
-\end{figure}
 
 % \begin{multicols}{2}
 
 The attention module is used to process the output features from its previous layers,
 typically a RNN decoder in many cases \citep{zhang2020motor, hu2018novel}.
-The structure of the whole decoding procedure is illustrated in Figure~\ref{fig:my_pipeline}.
+The structure of the attention module is illustrated in Figure~\ref{fig:temporal_attention_in_matrix_diagram}.
+\\
 
 \cite{lin2017structured} proposed a concise but effective attention module.
 The output hidden states from the last layer of GRU will be the input of our attention module.
@@ -625,6 +621,7 @@ The hidden states matrix,
            &= \bH \in \mathbb{R}^{T \times u} \ \ \text{one-way RNN}
     \end{split}
 \end{align}
+
 \noindent where $u$ is the number of hidden units and $ T $ is the length of each input sequence.
 $T$ in our case it is the number of past time bins used to decode the current kinematic variables.
 The matrix $\bH$ is the temporal features calculated by RNN in each time step, which is $T$ time steps in total.
@@ -636,10 +633,12 @@ Followed by the attention module, and it can give us the annotation vector, comp
         \bm &= \ba \bH
     \end{split}
 \end{align}
+
 \noindent where weight matrix $\bW_{s1} \in \mathbb{R}^{d_a \times 2u} $ and vector $\bw_{s2}  \in \mathbb{R}^{ 1 \times d_a }$.
 $d_a$ is an arbitrary hyperparameter.
 The annotation vector $ \ba  \in \mathbb{R}^{ 1 \times T } $ will have its elements re-distributed by a softmax function $\mathbb{R}^K \rightarrow \mathbb{R}^K$,
 which is defined as
+
 \begin{align}
     \begin{split}
     \text{softmax}( \bz )_i &= \frac{ e^{ \bz_i } }{ \sum^{K}_{j=1} e^{ \bz_j } } \\ 
@@ -647,6 +646,7 @@ which is defined as
     \text{and} \ \bz&= \left( \bz_1, \cdots, \bz_K \right) \in \mathbb{R}^K
     \end{split}
 \end{align}
+
 \noindent such that the summation of the vector $ \ba $ is $1$.
 The embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ is the new features with enhanced temporal attribute.
 Every single feature from each neural time bin has been annotated by an score.
@@ -674,10 +674,19 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
 
 % \end{multicols}
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[height=0.3\textheight]{temporal_attention_in_matrix_diagram.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Temporal attention module }
+        \label{fig:temporal_attention_in_matrix_diagram}
+    \end{center}
+\end{figure}
+
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{multiply_attetion_vecotr_to_hidden_states.png}
+        \includegraphics[width=0.5\textwidth]{multiply_attetion_vecotr_to_hidden_states.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Multiply attention vectors to hidden states}
         \fontsize{10}{12}
@@ -741,13 +750,10 @@ thus the result from dot products $ \ba^i \cdot \ba^j $ should be $0$, and the c
 \noindent where $a_{ij}$ is a non-diagonal element in matrix $\bA \bA^{\intercal}$, 
 also should be equal to $0$.
 $ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $ \ba^i$ and $ \ba^j $ severally.
-The diagonal elements on the other hand,
-will always be $ 1 $ since they are the dot products of two identity vectors,
-$ \ba^i \cdot \ba^i $, i=1 $\sim$ r. 
-That's why substracting an identity matrix from $A A^{\intercal}$ is needed when calculating $P$.
-\cite{lin2017structured} claimed that in this way, 
-each annotation vector $a^i$ is encouraged to focus on fewer parts of the sequence,
-enabling each vector be focused on a single aspect. 
+The diagonal elements $ \ba^i \cdot \ba^i $, i=1 $\sim$ r, on the other hand,
+will have a maximum value of $ 1 $ in an extreme case that all attention concentrates on one single time bin.
+Thus substracting an identity matrix from $A A^{\intercal}$ will force each attention vector $a^i$ to focus on as few features as it can,
+concnetrating on a single aspect.
 
 % \end{multicols}
 
