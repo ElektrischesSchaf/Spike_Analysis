@@ -1,5 +1,5 @@
 \section{Implementation details}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 \todo[inline, color=green!40]{描述training, testing data的選取}
 
 The training data of each session are the first 5000 time bins, and the rest is the testing data.
@@ -7,7 +7,7 @@ Figure \ref{fig:full_testing_data} visualized the complete testing data from a f
 whereas some sessions, had their testing data trimmed by \cite{makin2018} due to the abnormal recording periods.
 These sessions contained intervals when monkeys fingertip stayed still for a considerable long while.
 As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated the discarded intervals.
-\end{multicols}
+% \end{multicols}
 
 \begin{figure}[H]
     \foreach \i in {indy_20160622_01,indy_20160624_03,indy_20160627_01}
@@ -38,7 +38,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
 
 \section{Qualitative analysis}
 \label{sec:qualitative_analysis}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 \todo[inline, color=green!40]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
 This section we showed the result of our predicted variables. 
 Each figure represents a session, and here we selected 5 sessions for each of variable.
@@ -46,7 +46,7 @@ Since our models were designed to decode both x and y-axis of a variable at the 
 it is convenient to plot the predictions of the two axes in the same figure, 
 also easiler for us to compare their results.
 
-\end{multicols}
+% \end{multicols}
 
 \newpage
 \todo[inline, author=Wu, color=blue!40]{ 位置、速度、加速度 各一頁 }
@@ -54,7 +54,7 @@ also easiler for us to compare their results.
     \foreach \i in {1,2,3,4,5}
     {
         \begin{subfigure}{1\textwidth}
-            \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
+            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
     \caption{Position Predictions}
@@ -67,7 +67,7 @@ also easiler for us to compare their results.
     \foreach \i in {6,7,8,9,10}
     {
         \begin{subfigure}{1\textwidth}
-            \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
+            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
     \caption{Velocity Predictions}
@@ -80,18 +80,18 @@ also easiler for us to compare their results.
     \foreach \i in {11,12,13,14,15}
     {
         \begin{subfigure}{1\textwidth}
-            \includegraphics[height=0.18\textheight]{../KM_reconstruction_plots/\i.png}
+            \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
     \caption{Acceleration Predictions}
     \label{fig:acceleration_prediction}
 \end{figure}
 
-\begin{multicols}{2}
+% \begin{multicols}{2}
 We put three kinematics prediction results all torgether in figure~\ref{fig:Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar},
 with the neural spike firing rate in heatmap and the time points of target cue changed in gray vertical lines.
 Please notice the output range of these three kinematics and we only trained and predicted one type of kinematics at a time.
-\end{multicols}
+% \end{multicols}
 
 
 \begin{figure}[H]
@@ -107,7 +107,7 @@ Please notice the output range of these three kinematics and we only trained and
 
 
 \section{Comparison of state-of-the-art}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 \todo[inline, color=green!40]{包含Wiener filter、KF、簡單的neural network、Makin的方法，每個方法引用一個經典的論文，放入以下論文的Figure 4
 Superior arm-movement decoding from cortex with a new, unsupervised-learning algorithm}
 
@@ -124,11 +124,12 @@ The decoders included in the tables are
     \item rEFH:\quad the recurrent exponential-family harmonium
 \end{itemize}
 
-\end{multicols}
+% \end{multicols}
 
 \begin{table}[H]
     \centering
     \caption{Weighted average $R^2$ and standard deviation}
+    \hspace*{-2cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
     \begin{tabular}{ccccccccc}
         \hline
         \multicolumn{3}{c|}{ \multirow{2}{*}{\textbf{Decoders}}}    & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
@@ -143,6 +144,7 @@ The decoders included in the tables are
         \multicolumn{3}{c}{Bidir GRU (+LN \& Atten.)}           & \textbf{0.53$\pm$0.19} & \textbf{0.71$\pm$0.08} & \textbf{0.66$\pm$0.10} & \textbf{0.76$\pm$0.05} & \textbf{0.40$\pm$0.13} & \textbf{0.48$\pm$0.09} \\
         \hline
     \end{tabular}
+    \hspace*{-2cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
     \label{tab:comparison_state_of_the_art}
 \end{table}
 
@@ -157,12 +159,12 @@ The decoders included in the tables are
 
 
 \section{Visualization of attention process}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 \todo[inline, color=green!40]{放入attention map}
 We have implemented the attention mechanism to both one-way and bidirectional GRUs.
 To maximize the information we can get form the attention map visualization,
 we put the predicted trajectories, attention map and the input neural firing rate torgether as showed in Figure~\ref{fig:decoding_trajectories_with_attention_indy_20160418_01} and Figure~\ref{fig:decoding_trajectories_with_attention_indy_20161025_04}.
-\end{multicols}
+% \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -208,18 +210,19 @@ we put the predicted trajectories, attention map and the input neural firing rat
 \section{Ablation study}
 \subsection{Comparison table}
 \label{sec:ablation_study}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 Table~\ref{tab:ablation_study_table} has the results from decoders with different techniques combinations.
 Decoders with the highest $R^2$ and lowest standard deviation are the ones considered the best.
 Aside from x-position and x-acceleration, the best decoder for them is the bidirectional GRU with layer normalization but without attention module.
 The rest of the kinematics get the best results by the decoder of bidirectional GRU which combined with both layer normalization and attention.
 Comparing with \cite{makin2018}, biggest improvement happened in the three kinematics in x-axis.
 
-\end{multicols}
+% \end{multicols}
 
 \begin{table}[H]
     \centering
     \caption{Ablation study results}
+    \hspace*{-2cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
     \begin{tabular}{ccccccccc}
         \hline
         \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Atten.}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{L.N.}}}    & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{GRU}}}          & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
@@ -237,15 +240,16 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
         \multicolumn{3}{c}{rEFH (+KF)\ \citep{makin2018} } & 0.46$\pm$0.28 & 0.70$\pm$0.09  & 0.58$\pm$0.15 & 0.74$\pm$0.06 & 0.29$\pm$0.15 & 0.40$\pm$0.09 \\
         \hline
     \end{tabular}
+    \hspace*{-2cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
     \label{tab:ablation_study_table}
 \end{table}
 % \end{landscape}
     
 
 \subsection{One-way or bidirectional GRU}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 
-\end{multicols}
+% \end{multicols}
 
 
 \begin{figure}[H]
@@ -307,7 +311,7 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
 
 \section{Internal dynamics of network}
 \label{sec:internal_dynamics_of_network}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 \todo[inline, color=green!40]{參考以下論文的Figure 7 (ClosedLoopLSTM2019)Decoding Movements from Cortical Ensemble Activity Using a Long Short-Term Memory Recurrent Network}
 The easiest way to visualize how the RNNs learn from the features is by showing the outputs (hidden states) and the gates at each time step.
 This method is used in the BCI research for motor cortex decoding \citep{tseng2019decoding},
@@ -318,7 +322,7 @@ The vertical axis represents the number of hidden units in our GRU.
 Here we can observe that the hidden states, 
 reset gates and update gates values are barely interpretable.
 They showes little relationship between the input spike firing rate and the output trajectories.
-\end{multicols}
+% \end{multicols}
 
 % \begin{figure}[H]
 %     \begin{center}
@@ -382,7 +386,7 @@ They showes little relationship between the input spike firing rate and the outp
 \section{Failure case study}
 \todo[inline, color=green!40]{放入失敗的例子}
 \subsection{Position decoder}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 Most sessions benefit from the layer normalization and attention decoder, 
 but there are sessions turned out to have particularly poor performances.
 Take session indy\_20161027\_03 for example, 
@@ -397,7 +401,7 @@ Those firing patterns tended to affect our model the most, and it is inevitable.
 
 
 
-\end{multicols}
+% \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -435,7 +439,7 @@ as the the attention map showed in Figure~\ref{fig:indy_20160426_01_correspondin
 \end{figure}
 
 \subsection{Velocity and acceleration decoder}
-\begin{multicols}{2}
+% \begin{multicols}{2}
 
 The velocity decoders on the other hand,
 showed a different result compared to position decoder.
@@ -446,7 +450,7 @@ and since the values of accelerations were even larger when the fingertips moved
 it made the errors a lot higher than velocity decoders.
 
 
-\end{multicols}
+% \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -559,10 +563,13 @@ The $R^2$ from different tap sizes also reflected the optimal number of tap size
 
 \subsection{Position decoder}
 
-This tap sizes optimation method, however, does not valid in position decoder.
+This tap sizes optimization method, however, does not valid in position decoder.
 The main reason can be showed in Figure~\ref{fig:position_decoder_in_two_tap_sizes_indy_20160419_01},
 where two identitical interval in two different position decoders with difference tap sizes.
 One used 20 taps and the other used 50.
+It seems that the required length of past time bins is dependent on the duration of fingertips' standstill.
+The decoder tends to focus on the spike time bins before the fingertips stop moving,
+that makes the the length of stationary period a variable for tap sizes optimization in position decoder.
 
 
 \begin{figure}[H]
@@ -580,6 +587,9 @@ One used 20 taps and the other used 50.
         \label{fig:position_decoder_in_two_tap_sizes_indy_20160419_01}
     \end{center}
 \end{figure}
+
+This phenomenon also reflects in Figure~\ref{fig:position_decoder_in_different_taps_r_square_indy_indy_20160419_01},
+where there is no clear boundary along the tap axis to distinguish which ones are contributive or not.
 
 
 \begin{figure}[H]
@@ -600,16 +610,16 @@ One used 20 taps and the other used 50.
 
 \begin{comment}
     \section{Decodeing results from dataset Chewie}
-    \begin{multicols}{2}
+    % \begin{multicols}{2}
     \todo[inline, color=green!40]{ 猴子C的Decoding 結果單獨一個子章節顯示，並不列入與 Makin 的比較 }
-    \end{multicols}
+    % \end{multicols}
 \end{comment}
 
 % \section{y-axis outperforms x-axis}
-% \begin{multicols}{2}
+% % \begin{multicols}{2}
 % \todo[inline]{用 Mutual Information 解釋 y 方向解碼比 x 方向 解碼還要好的現象}
 % Where we used the tool from \cite{ince2017statistical} named  Gaussian-copula mutual information (GCMI) to analysis the reason why in three kinds of kinematic variables,
 % the prediction of y-axis always exceed x-axis.
 % The module of this tool is available on \url{https://github.com/robince/gcmi}.
-% \end{multicols}
+% % \end{multicols}
 
