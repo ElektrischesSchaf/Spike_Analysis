@@ -57,7 +57,7 @@ kinematic_variable_type = 'x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_v
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE = ALL_List_FILE[20:25]
+List_FILE = ALL_List_FILE[4:10]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters

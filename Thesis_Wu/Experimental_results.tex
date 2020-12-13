@@ -493,37 +493,42 @@ It is clear to see the influence distributed among all the past time bins.
 
 \subsection{Velocity decoder}
 
-In Figure~\ref{fig:velocity_decoder_in_different_taps_indy_20161011_03} we can see that the average attention score after $t-14$ in session indy\_20161011\_03 is almost $0$.
-Indicating 15 time bins is all we need to decode velocity.
-Spiking neural signal more than 16 time bins ago are not necessary 
+In Figure~\ref{fig:velocity_decoder_in_different_taps_indy_20161014_04} we can see that the average attention score after $t-10$ in session indy\_20161011\_03 is almost zero.
+Indicating 10 time bins is all we need to decode velocity.
+Spiking neural signal more than 16 time bins ago are not necessary and informative to decoding.
+Also examing the attention map in Figure~\ref{fig:velocity_decoder_in_different_taps_r_square_indy_20161014_04},
+the attention score for time bins earlier than $t-10$ is almost zero.
 
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.49\textwidth}
-            \includegraphics[width=1\textwidth]{../tap_sizes_figures/indy_20161011_03/velocity/average_score.png}
+            \includegraphics[width=1\textwidth]{../tap_sizes_figures/indy_20161014_04/velocity/average_score.png}
             \caption{Average attention score}
         \end{subfigure}
         \begin{subfigure}{0.49\textwidth}
-            \includegraphics[width=1\textwidth]{../tap_sizes_figures/indy_20161011_03/velocity/all_r_square.png}
+            \includegraphics[width=1\textwidth]{../tap_sizes_figures/indy_20161014_04/velocity/all_r_square.png}
             \caption{ $R^2$ results in different taps }
         \end{subfigure}
         \caption{ Velocity decoder in different taps }
-        \subcaption*{session indy\_20161011\_03}
-        \label{fig:velocity_decoder_in_different_taps_indy_20161011_03}
+        \subcaption*{session indy\_20161014\_04}
+        \label{fig:velocity_decoder_in_different_taps_indy_20161014_04}
     \end{center}
 \end{figure}
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{../tap_sizes_figures/indy_20161011_03/velocity/atention_map.png}
+        \includegraphics[width=0.5\textwidth]{../tap_sizes_figures/indy_20161014_04/velocity/atention_map.png}
         \captionsetup{width=0.5\textwidth}
         \caption{ Corresponding attention map }
-        \subcaption*{session indy\_20161011\_03}
-        \label{fig:velocity_decoder_in_different_taps_r_square_indy_20161011_03}
+        \subcaption*{session indy\_20161014\_04}
+        \label{fig:velocity_decoder_in_different_taps_r_square_indy_20161014_04}
     \end{center}
 \end{figure}
 
 \subsection{Acceleration decoder}
+In the acceleration decoder's case, it is clear in Figure~\ref{fig:acceleration_decoder_in_different_taps_indy_20161014_04} that the average attention score after time bins $t-7$ is almost zero.
+The $R^2$ from different tap sizes also reflected the optimal number of tap size is around 7.
+
 
 \begin{figure}[H]
     \begin{center}
@@ -554,6 +559,12 @@ Spiking neural signal more than 16 time bins ago are not necessary
 
 \subsection{Position decoder}
 
+This tap sizes optimation method, however, does not valid in position decoder.
+The main reason can be showed in Figure~\ref{fig:position_decoder_in_two_tap_sizes_indy_20160419_01},
+where two identitical interval in two different position decoders with difference tap sizes.
+One used 20 taps and the other used 50.
+
+
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.49\textwidth}
@@ -570,16 +581,22 @@ Spiking neural signal more than 16 time bins ago are not necessary
     \end{center}
 \end{figure}
 
+
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{../tap_sizes_figures/indy_20160419_01/position/average_score.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{Average attention score}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../tap_sizes_figures/indy_20160419_01/position/average_score.png}
+            \caption{Average attention score}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+            \includegraphics[width=1\textwidth]{../tap_sizes_figures/indy_20160419_01/position/all_r_square.png}
+            \caption{$R^2$ results in different taps}
+        \end{subfigure}
+        \caption{ Acceleration decoder in different taps }
         \subcaption*{session indy\_20160419\_01}
         \label{fig:position_decoder_in_different_taps_r_square_indy_indy_20160419_01}
     \end{center}
 \end{figure}
-
 
 \begin{comment}
     \section{Decodeing results from dataset Chewie}

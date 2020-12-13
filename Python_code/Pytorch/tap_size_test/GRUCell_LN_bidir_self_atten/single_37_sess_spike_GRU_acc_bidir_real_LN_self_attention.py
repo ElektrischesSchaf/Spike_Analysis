@@ -69,7 +69,7 @@ BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 
 # tap size study start
-tap_size_list = [5,8,10,12,15,20,25,30,35,40,50,60]
+tap_size_list = [4,5,6,7,8,9,10,20,30,40,50,60]
 for max_timestep in tap_size_list:
 
 
