@@ -400,6 +400,8 @@ However both of them have drawbacks of saturation problem,
 e.g., the derivative of input value outside the range [-4, +4] will be nearly 0 after activations, 
 making its gradient vanish and slowing down learninig process.
 The solution about this issue will be addressed in Section~\ref{sec:layer_normalization}.
+\\
+
 % \end{multicols}
 
 \begin{figure}[H]
@@ -428,26 +430,29 @@ In the process of calculating each gate value (Equation \ref{eq:reset_gate},
 hidden state from last time step ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
 and so does the input tensor ($x_t$) will be multiplied by its own weights ($U_r$, $U_z$, $U$).
 After the multiplication, 3 biases ($b_r$, $b_z$, $b$) will be added to the results before entering the activation functions
+\\
 
-A hyperparameter named \textbf{hidden dimension} or \textbf{number of hidden units} specified the dimensions for all hidden state in each time step, which is vector.
-This hyperparameter also determines the number of each gates, 
+A hyperparameter named \textbf{hidden dimension} or \textbf{number of hidden units} specified the dimensions for all hidden state in each time step,
+which is a vector.
+This hyperparameter also determines the number for each gates, 
 i.e. with the setting of $u$ hidden units,
 the shape of all hidden states should be $1 \times u$ and there will be $u$ reset gates, 
 $u$ update gates in each cell.
-Typically with the larger the hidden dimension, 
-the more complex the model will be.
+Typically with larger hidden dimension, 
+more complex the model will be.
 But highter complexity does not guarantee better performance since sophisticated models tend to overfit.
+\\
 
 Figure \ref{fig:two_layer_GRU} demonstrated how hidden states are passed from one layer to another.
 Where $T$ is the tap size of our input,
 representing how many past time bins to be fed into the model just to decode the current kinematics.
-The input data at each time step contains the firing rate of this moment $x_t$ and the past firing rate from $x_{t-n+1}$ to $x_{t-1}$.
-Outputs of our model are the predicted kinematic variables for time bin $t$.
+The input data at each time step $t$ contains the firing rate of this moment $x_t$ and the past firing rate from $x_{1}$ to $x_{t-1}$.
+
 % \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{1-way_2-layer_GRU.png}
+        \includegraphics[width=0.5\textwidth]{1-way_2_layer_GRU.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Architecture of One-way Two-layer GRU}
         \fontsize{10}{12}
@@ -457,12 +462,14 @@ Outputs of our model are the predicted kinematic variables for time bin $t$.
 
 % \begin{multicols}{2}
 In the first GRU layer, $T$ bins of firing rate are fed chronologically.
-Hidden state $h^{j}_{i}$ denotes the output tensor from the cell in timestep $i$ and layer $j$, and will be the input to the cell in timestep $i+1$ and layer $j+1$.
+Hidden state $h^{j}_{i}$ denotes the output tensor from the cell in timestep $i$ and layer $j$, 
+and will be the input of the GRU cell in timestep $i+1$ and layer $j+1$.
 The size of $h^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined parameter.
-Ideally tensor $h^{2}_{t}$ should contain the information from the firing rate $x_{t-n+1}$ to $x_{t-1}$, thus by feeding it to some fully connect layers we can acquire the desired output.
+Ideally the tensor $h^{2}_{t}$ should also contains the information from the firing rate $x_{1}$ to $x_{t-1}$, thus by feeding it to some fully connect layers we can acquire the desired output.
+\\
 
-The so called bidirectional RNN is made by simply adding another feeding of the same input sequence in reverse order.
-As in Figure \ref{fig:bidir_two_layer_GRU}, but the size of the hidden state $h^{j}_{i}$ will be $1 \times 2u$,
+The bidirectional RNN is designed by simply training another GRU with the same input sequence but in reverse order.
+As in Figure \ref{fig:bidir_two_layer_GRU}, but the size of the hidden state tensor $h^{j}_{i}$ should be $1 \times 2u$ in this case,
 since the first half of the this vector contains the information by feeding input sequence forward the last half by feeding backward.
 
 
@@ -485,6 +492,22 @@ since the first half of the this vector contains the information by feeding inpu
     \end{center}
 \end{figure}
 
+The benfit of implementing bidirectional RNN is that it can see a broader range of input sequence than one-way RNN.
+As illustrated in Figure~\ref{fig:bidir_RNN_explain},
+the output at time step $t$ contains only the memory from $1~t$ in one-way RNN.
+But it covers the whole sequence in bidirectional RNN.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.6\textwidth]{bidir_RNN_explain.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Benefit of bidirectional RNN}
+        \fontsize{10}{12}
+        \label{fig:bidir_RNN_explain}
+    \end{center}
+\end{figure}
+
+
 It is the internal dynamics of the GRU to determine the degree of forget or keep the previous information in every time step.
 In Section~\ref{sec:internal_dynamics_of_network} we provided figures to visualize these internal dynamics.
 
@@ -499,6 +522,7 @@ Internal covariate shift is a problem caused by the variant distribution of the 
 which are used to be the input of its following layer.
 It can be mitigated by fixing the mean and the variance of the summed inputs within each layer.
 By the approach of normalization it can also provent the gradient vanishing problem from happening, which was brought up in Section~\ref{sec:RNN}.
+\\
 
 Here is the computation of mean and variance from all the hidden units in the same layer:
 
@@ -515,6 +539,7 @@ all the hidden units in a layer share the same normalization terms $\mu$ and $\s
 Unlike batch normalization, 
 layer normalization does not impose any constraint on the size of a mini-batch,
 such that it cam be implemented to the model with batch size 1.
+\\
 
 The original layer normalization methods is computed within a RNN cell.
 In a standard RNN, 
@@ -535,6 +560,7 @@ The layer normalizationed recurrent layer re-centers and re-scales its activatio
 \noindent where $\odot$ is the elementwise multiplication, 
 and $b$, $g$ are defined as the bias and gain parameters of the same dimension as $h^t$.
 $f$ is the activation function in the RNN cell, it could be a sigmoid or hyperbolic tangent function.
+\\
 
 We define layer normalization as a function mapping $LN: \mathbb{R}^D \rightarrow \mathbb{R}^D$ with two set of adaptive parameters,
 gains $\alpha$ and biases $\beta$:
@@ -574,6 +600,7 @@ When implementing it on GRU,
 \end{align}
 
 \noindent where $\alpha_i$ and $\beta_i$ are initialized as vector of zeros and ones, respectively.
+\\
 
 The affect of the layer normalization is illustrated in Figure~\ref{fig:layer_norm_before_after},
 where we simulated two extreme cases of hidden state distributions.
@@ -650,8 +677,7 @@ which is defined as
 \noindent such that the summation of the vector $ \ba $ is $1$.
 The embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ is the new features with enhanced temporal attribute.
 Every single feature from each neural time bin has been annotated by an score.
-
-% This explain fc in matrix form https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer
+\\ % This explain fc in matrix form https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer
 
 The vector representation may focues on only one specific part of the input sequence, 
 and is expected to reflect only one \textit{aspect} in the sequence.
@@ -667,6 +693,7 @@ The representations from Eqation \ref{eq:annotation_vector_calculation} is now c
 \end{align}
 \noindent where the vector $ \bw_{s2}  \in \mathbb{R}^{ 1 \times d_a } $ turned into a matrix$ \bW_{s2} \in \mathbb{R}^{r \times d_a }  $,
 and the embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ became a matrix $\bM \in \mathbb{R}^{r \times 2u} $.
+\\
 
 Eqation \ref{eq:annotation_matrix_calculation} is equivalent to a 2-layer MLP.
 The first layer reduces the dimension from $2u$ to $d_a$, 
@@ -693,7 +720,6 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
         \label{fig:multiply_attetion_vecotr_to_hidden_states}
     \end{center}
 \end{figure}
-
 
 
 \subsection{Penalization Term}
@@ -734,12 +760,14 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 \noindent Figure~\ref{fig:penalization_term} showed that the summation of the squared value of every element in the matrix $\bA \bA^{\intercal} - \bI$ should be closed to $0$.
 By implementing $P$ as a loss function,
 its loss will be propagated backwards to alter the weights in the our attention module.
+\\
 
 To further explain its concept,
 let's start by considering two different annotation vectors $ \ba^i \in \mathbb{R}^{1 \times T} $ and $ \ba^j \in \mathbb{R}^{1 \times T}$.
 Due to the fact that $ \text{softmax} $ is implemented,
 the summation from all the element within the same vector is $1$.
 The values in each vector can be considered as probability distribution.
+\\
 
 In an extreme case, 
 there should have the no overlapping between the probability distributions in these two vectors, 
@@ -754,6 +782,7 @@ The diagonal elements $ \ba^i \cdot \ba^i $, i=1 $\sim$ r, on the other hand,
 will have a maximum value of $ 1 $ in an extreme case that all attention concentrates on one single time bin.
 Thus substracting an identity matrix from $A A^{\intercal}$ will force each attention vector $a^i$ to focus on as few features as it can,
 concnetrating on a single aspect.
+\\
 
 % \end{multicols}
 
