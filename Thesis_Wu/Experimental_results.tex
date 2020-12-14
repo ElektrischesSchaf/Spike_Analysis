@@ -114,6 +114,8 @@ There are six state-of-the-art methods we can compare,
 with the decoding results table provided from \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
 All 47 sessions of decoding accuracy in $R^2$ and SNR is recorded,
 and the weighted average $R^2$ is listed in Table~\ref{tab:comparison_state_of_the_art}.
+The scatter plot for comparing our decoder with the proposed method in \cite{makin2018} is in Figure~\ref{fig:scatter_plot_comparison_with_makin}
+
 
 The decoders included in the tables are
 \begin{itemize}
@@ -155,6 +157,10 @@ The decoders included in the tables are
         \label{fig:scatter_plot_comparison_with_makin}
     \end{center}
 \end{figure}
+
+It is notable that the decoding result of y-axis position surpassed \citep{makin2018} the least,
+only improved 0.01 in weighted average $R^2$.
+Less than half sessions in our decoder exceeded rEFH (+KF).
 
 
 \section{Visualization of attention process}
@@ -204,6 +210,17 @@ we put the predicted trajectories, attention map and the input neural firing rat
         \label{fig:decoding_trajectories_with_attention_indy_20161025_04}
     \end{center}
 \end{figure}
+
+Here we discovered the pattern in our attention maps.
+In decoding position,
+the focus of attention was shifted gradually when the fingertips stp moving.
+It formed an oblique line between each movements,
+capturing the fingertips' status.
+For velocity and acceleration,
+the attention map pattern showed that that decoder tend to focus on earlier spiking data whenever a movement take place.
+If the fingertips were at rest,
+the decoder will focus on the time bins closer to current time step instead.
+It also tells us that the attention module can actually represent the dynamics of temporal features in the point-to-point pursuit task.
 
 % \begin{landscape}
 \section{Ablation study}
