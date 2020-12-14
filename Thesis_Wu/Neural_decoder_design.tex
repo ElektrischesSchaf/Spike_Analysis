@@ -20,7 +20,7 @@ whereas most of the sessions consisted of the recording from the M1 array only.
 The sampling rate of both arrays is 24.4kHz. 
 More details regarding recording cortex area,
 sorted units numbers, 
-and duration of each session can be found in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
+and duration of each session can be found in Appendix~\ref{sec:dataset_indy} and \ref{sec:dataset_loco}
 % \end{multicols}
 
 \begin{figure}[H]
@@ -167,7 +167,7 @@ For other experiments, different bin width were used to obtain different firing 
 The heatmap of the firing rate within 50 time bins and the 6 kinematic variables are showed in Figure \ref{fig:Firing_rate_heatmap_and_all_kinematic_variables}.
 For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x and y-axis only without the z-axis.
 The heatmap is showing an obvious relationship between the occurrance of movements and the intensity of spike firing.
-Empty units in this session have been removed, as actual number of sorted units in each session is listed in Table \ref{tab:dataset_indy} and \ref{tab:dataset_loco}.
+Empty units in this session have been removed, as actual number of sorted units in each session is listed in in Appendix~\ref{sec:dataset_indy} and \ref{sec:dataset_loco}.
 % \end{multicols}
 
 
@@ -183,7 +183,7 @@ Empty units in this session have been removed, as actual number of sorted units 
 \todo[inline, author=Wu, color=blue!40]{最後在將 firing rate heatmap 與 運動資訊疊圖比較 }
 
 
-\section{Animal Pursuit task with point-to-point trajectory}
+\section{Animal pursuit task with point-to-point trajectory}
 % \begin{multicols}{2}
 \todo[inline, color=green!40]{(換句話說Makin論文)，包含運動軌跡、experimental setup}
 
@@ -358,7 +358,7 @@ The structure of a GRU cell is showed in Figure \ref{fig:GRU_cell}.
     \begin{center}
         \includegraphics[width=0.7\textwidth]{GRU_cell.png}
         \captionsetup{width=0.5\textwidth}
-        \caption[GRU Cell]{Mecahnism inside a GRU Cell}
+        \caption[GRU Cell]{Mechanism inside a GRU Cell}
         \caption*{\small{adapted from \url{ https://en.wikipedia.org/wiki/File:Gated_Recurrent_Unit,_type_2.svg } licensed under \href{https://creativecommons.org/licenses/by-sa/4.0/deed.en}{CC BY 4.0} }}
         \label{fig:GRU_cell}
     \end{center}
@@ -600,7 +600,18 @@ When implementing it on GRU,
 \end{align}
 
 \noindent where $\alpha_i$ and $\beta_i$ are initialized as vector of zeros and ones, respectively.
-\\
+The LN-GRU cell is illustrated in Figure~\ref{fig:LN_GRU_cell},
+with four $L.N.$ blocks adding inside each GRU cell.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{LN_GRU_cell.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{Mechanism inside a LN-GRU Cell}
+        \caption*{\small{adapted from \url{ https://en.wikipedia.org/wiki/File:Gated_Recurrent_Unit,_type_2.svg } licensed under \href{https://creativecommons.org/licenses/by-sa/4.0/deed.en}{CC BY 4.0} }}
+        \label{fig:LN_GRU_cell}
+    \end{center}
+\end{figure}
 
 The affect of the layer normalization is illustrated in Figure~\ref{fig:layer_norm_before_after},
 where we simulated two extreme cases of hidden state distributions.
@@ -740,7 +751,7 @@ named the \textit{penalization term} and it is defined as follows,
 and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 \begin{align}
     \label{eq:frobenius_norm}
-    \norm{ \bX }_F &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|x_{ij}|}_2 }
+    \norm{ \bP } &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|p_{ij}|}_2 }
 \end{align}
 
 % \end{multicols}
