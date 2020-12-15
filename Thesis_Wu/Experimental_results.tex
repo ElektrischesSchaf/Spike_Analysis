@@ -162,14 +162,7 @@ It is notable that the decoding result of y-axis position surpassed \citep{makin
 only improved 0.01 in weighted average $R^2$.
 Less than half sessions in our decoder exceeded rEFH (+KF).
 
-
 \section{Visualization of attention process}
-% \begin{multicols}{2}
-\todo[inline, color=green!40]{放入attention map}
-We have implemented the attention mechanism to both one-way and bidirectional GRUs.
-To maximize the information we can get form the attention map visualization,
-we put the predicted trajectories, attention map and the input neural firing rate torgether as showed in Figure~\ref{fig:decoding_trajectories_with_attention_indy_20160418_01} and Figure~\ref{fig:decoding_trajectories_with_attention_indy_20161025_04}.
-% \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -211,7 +204,10 @@ we put the predicted trajectories, attention map and the input neural firing rat
     \end{center}
 \end{figure}
 
-Here we discovered the pattern in our attention maps.
+% \begin{multicols}{2}
+Here we selected two sessions and plotted the attention map in decoding position, 
+velocity and acceleration in Figure~\ref{fig:decoding_trajectories_with_attention_indy_20160418_01} and Figure~\ref{fig:decoding_trajectories_with_attention_indy_20161025_04}.
+We discovered the pattern in our attention maps.
 In decoding position,
 the focus of attention was shifted gradually when the fingertips stp moving.
 It formed an oblique line between each movements,
@@ -221,6 +217,9 @@ the attention map pattern showed that that decoder tend to focus on earlier spik
 If the fingertips were at rest,
 the decoder will focus on the time bins closer to current time step instead.
 It also tells us that the attention module can actually represent the dynamics of temporal features in the point-to-point pursuit task.
+
+% \end{multicols}
+
 
 % \begin{landscape}
 \section{Ablation study}
@@ -262,11 +261,7 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
 % \end{landscape}
     
 
-\subsection{One-way or bidirectional GRU}
-% \begin{multicols}{2}
-
-% \end{multicols}
-
+\subsection{One-way versus bidirectional GRU}
 
 \begin{figure}[H]
     \begin{center}
@@ -414,9 +409,6 @@ the predicted trajectories were very accurate at the interval when the fingertip
 but the errors were typically large when the fingertips is stationary but the neurons were still firing.
 Those firing patterns tended to affect our model the most, and it is inevitable.
 
-
-
-
 % \end{multicols}
 
 \begin{figure}[H]
@@ -464,7 +456,6 @@ The errors increased when the value of the current velocity was too high.
 This situation also happened in acceleration decoders,
 and since the values of accelerations were even larger when the fingertips moved,
 it made the errors a lot higher than velocity decoders.
-
 
 % \end{multicols}
 
@@ -604,9 +595,8 @@ that makes the the length of stationary period a variable for tap sizes optimiza
     \end{center}
 \end{figure}
 
-This phenomenon also reflects in Figure~\ref{fig:position_decoder_in_different_taps_r_square_indy_indy_20160419_01},
+\noindent This phenomenon also reflects in Figure~\ref{fig:position_decoder_in_different_taps_r_square_indy_indy_20160419_01},
 where there is no clear boundary along the tap axis to distinguish which ones are contributive or not.
-
 
 \begin{figure}[H]
     \begin{center}
