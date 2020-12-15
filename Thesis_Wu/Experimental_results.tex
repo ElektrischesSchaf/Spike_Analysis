@@ -149,6 +149,14 @@ The decoders included in the tables are
     \label{tab:comparison_state_of_the_art}
 \end{table}
 
+In each kinematic, results from y-axis are always higher than the ones from the x-axis.
+Our result as long as the two rEFH decoders,
+showed the some tendency of good precision in decoding velocity.
+The first four KF related decoders on our table on the other hand,
+were able to decode the position better than its own velocity results.
+Acceleration is the hardest kinematics to decode with out a doubt,
+but it is also the kinematic that we have exceeded \cite{makin2018} the most.
+
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_makin.png}
@@ -162,7 +170,24 @@ It is notable that the decoding result of y-axis position surpassed \citep{makin
 only improved 0.01 in weighted average $R^2$.
 Less than half sessions in our decoder exceeded rEFH (+KF).
 
+\newpage
 \section{Visualization of attention process}
+
+% \begin{multicols}{2}
+Here we selected two sessions and plotted the attention map in decoding position, 
+velocity and acceleration in Figure~\ref{fig:decoding_trajectories_with_attention_indy_20160418_01} and Figure~\ref{fig:decoding_trajectories_with_attention_indy_20161025_04}.
+We have discovered some patterns in our attention maps which is related to the kinematics.
+In decoding position,
+the focus of attention was shifted gradually when the fingertips stp moving.
+It formed an oblique line between each movements,
+capturing the fingertips' status.
+For velocity and acceleration,
+the attention map pattern showed that that decoder tend to focus on earlier spiking data whenever a movement take place.
+If the fingertips were at rest,
+the decoder will focus on the time bins closer to current time step instead.
+It also tells us that the attention module can actually represent the dynamics of temporal features in the point-to-point pursuit task.
+
+% \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
@@ -204,22 +229,6 @@ Less than half sessions in our decoder exceeded rEFH (+KF).
     \end{center}
 \end{figure}
 
-% \begin{multicols}{2}
-Here we selected two sessions and plotted the attention map in decoding position, 
-velocity and acceleration in Figure~\ref{fig:decoding_trajectories_with_attention_indy_20160418_01} and Figure~\ref{fig:decoding_trajectories_with_attention_indy_20161025_04}.
-We discovered the pattern in our attention maps.
-In decoding position,
-the focus of attention was shifted gradually when the fingertips stp moving.
-It formed an oblique line between each movements,
-capturing the fingertips' status.
-For velocity and acceleration,
-the attention map pattern showed that that decoder tend to focus on earlier spiking data whenever a movement take place.
-If the fingertips were at rest,
-the decoder will focus on the time bins closer to current time step instead.
-It also tells us that the attention module can actually represent the dynamics of temporal features in the point-to-point pursuit task.
-
-% \end{multicols}
-
 
 % \begin{landscape}
 \section{Ablation study}
@@ -228,9 +237,15 @@ It also tells us that the attention module can actually represent the dynamics o
 % \begin{multicols}{2}
 Table~\ref{tab:ablation_study_table} has the results from decoders with different techniques combinations.
 Decoders with the highest $R^2$ and lowest standard deviation are the ones considered the best.
-Aside from x-position and x-acceleration, the best decoder for them is the bidirectional GRU with layer normalization but without attention module.
-The rest of the kinematics get the best results by the decoder of bidirectional GRU which combined with both layer normalization and attention.
-Comparing with \cite{makin2018}, biggest improvement happened in the three kinematics in x-axis.
+Aside from y-position, the best decoders are the bidirectional GRU with layer normalization but without attention module.
+Comparing with \cite{makin2018}, biggest improvement happened in the x-axis of all three kinematics.
+\\
+
+Taking a deep inspection into the effects of these three techniques,
+it is obvious that bidirectional GRU is always better than one-way GRU, with the same condition of using temporal attention and layer normalization or not.
+Layer normalization, on the other hand, contributes most in decoding accelerations.
+Temporal attention module however,
+does not seems to have an significant contribution in the decoding accuracy.
 
 % \end{multicols}
 
@@ -271,6 +286,11 @@ Comparing with \cite{makin2018}, biggest improvement happened in the three kinem
         \label{fig:scatter_plot_one-way_vs_bidir}
     \end{center}
 \end{figure}
+
+In Section~\ref{sec:RNN}, we discussed that the difference between one-way and bidirectional RNN and the benefit of the latter structure.
+By design, bidirectional RNN should be capable of \textit{seeing} a larger range of input sequence.
+Our attention map also manifested this concept,
+as the distribution of attention scores 
 
 \begin{figure}[H]
     \begin{center}
