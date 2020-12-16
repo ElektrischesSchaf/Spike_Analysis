@@ -751,7 +751,7 @@ named the \textit{penalization term} and it is defined as follows,
 and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 \begin{align}
     \label{eq:frobenius_norm}
-    \norm{ \bP } &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|p_{ij}|}_2 }
+    \norm{ \bP } &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|p_{ij}|}^{2} }
 \end{align}
 
 % \end{multicols}
@@ -784,7 +784,7 @@ In an extreme case,
 there should have the no overlapping between the probability distributions in these two vectors, 
 thus the result from dot products $ \ba^i \cdot \ba^j $ should be $0$, and the calculation can be expressed as
 \begin{align}
-    0 < a_{ij} &= \sum^{n}_{k=1} a^i_k a^j_k < 1
+    0 < a_{ij} &= \sum^{T}_{k=1} a^i_k a^j_k < 1
 \end{align}
 \noindent where $a_{ij}$ is a non-diagonal element in matrix $\bA \bA^{\intercal}$, 
 also should be equal to $0$.
