@@ -10,7 +10,7 @@
 %     % \end{multicols}
 % \end{comment}
 
-\section{Why, what and how is invasive BCI?}
+\section{Why, what and how is invasive BCIs?}
 \label{sec:why_what_how_is_invasive_BCI}
 % \begin{multicols}{2}
 \todo[inline, color=green!40]{為什麼需要侵入式腦機介面、侵入式腦機介面的用途?}
@@ -49,7 +49,7 @@ adopted spike signals from the place cells and pyramidal neurons found in mammal
 \end{figure}
 
 
-\section{Difference between center-out task and pursuit task with point-to-point trajectory}
+\section{Difference between center-out task and point-to-point pursuit task}
 \label{sec:difference_between_center_out_and_pursuit}
 % \begin{multicols}{2}
 
@@ -77,7 +77,7 @@ Based on the its descriptions we can list the differences between center-out and
 
 % \end{multicols}
 
-\section{Unsolved problems related to pursuit task with point-to-point trajectory}
+\section{Unsolved problems related to point-to-point pursuit task}
 \label{sec:unsolved_problems_related_to_pursuit_task}
 % \begin{multicols}{2}
 \todo[inline, color=green!40]{侵入式腦機介面在Pursuit task with point-to-point trajectory有甚麼問題還沒被解決?}
@@ -106,7 +106,7 @@ and it must acquire the target coordinates in the second training phase.
 \\
 
 \todo[inline, author=Wu, color=blue!40]{詳細說明這些RNN方法改良了甚麼問題}
-RNNs are the most promising tool to outperform Kalman filter in BCI \cite{hosman2019bci}.
+RNNs are the most promising tool to outperform Kalman filter in BCI \citep{hosman2019bci}.
 Although RNNs are expensive in space and time complexities, 
 but they are not restricted to solving only linear system with Gaussian noise assumption \citep{chenna2004state}.
 \\
@@ -125,9 +125,9 @@ Deep learn models are criticized as black boxes with its lack of interpretabilit
 
 \todo[inline, author=Wu, color=blue!40]{這段提到使用 neural decoder 一定會遇到 tap size 選擇的問題}
 Most of the BCI decoders choosed the length of spiking history arbitrarity and they adjusted empirically based on the decoding performances \citep{tseng2019decoding},
-as in \cite{li2009unscented, li2016improved} used 10 taps of spiking data mainly in their experiments.
+as \cite{li2009unscented, li2016improved} used 10 taps of spiking data in their experiments.
 There is no analytical tool for researchers to evaluate the optimal history length yet,
-and we tried to solve this problem with our visualization tool.
+and we tried to solve this problem with our temporal attention visualization tool.
 
 % \end{multicols}
 

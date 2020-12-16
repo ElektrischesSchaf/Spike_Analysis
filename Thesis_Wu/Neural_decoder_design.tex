@@ -667,7 +667,7 @@ Followed by the attention module, and it can give us the annotation vector, comp
 \begin{align}
     \label{eq:annotation_vector_calculation}
     \begin{split}
-        \ba &= \text{softmax}( \bw_{s2} \ \text{tanh} ( \bW_{s1} \ \bH^{\intercal} ) )  \\
+        \ba &= \text{softmax}( \bw_{s2} \ \text{tanh} ( LN( \bW_{s1} \ \bH^{\intercal} ) ) )  \\
         \bm &= \ba \bH
     \end{split}
 \end{align}
@@ -685,7 +685,7 @@ which is defined as
     \end{split}
 \end{align}
 
-\noindent such that the summation of the vector $ \ba $ is $1$.
+\noindent such that the summation of the vector $ \ba $ will always be $1$.
 The embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ is the new features with enhanced temporal attribute.
 Every single feature from each neural time bin has been annotated by an score.
 \\ % This explain fc in matrix form https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer
@@ -698,7 +698,7 @@ The representations from Eqation \ref{eq:annotation_vector_calculation} is now c
 \begin{align}
     \label{eq:annotation_matrix_calculation}
     \begin{split}
-        \bA &= \text{softmax}( \bW_{s2} \ \text{tanh}( \bW_{s1} \ \bH^{\intercal} ) )  \\
+        \bA &= \text{softmax}( \bW_{s2} \ \text{tanh}( LN( \bW_{s1} \ \bH^{\intercal} ) ) )  \\
         \bM &= \bA \bH
     \end{split}
 \end{align}
