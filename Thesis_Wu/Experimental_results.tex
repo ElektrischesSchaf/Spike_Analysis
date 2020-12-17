@@ -346,10 +346,95 @@ whereas the velocity and acceleration decoder requires more past informations wh
     \end{center}
 \end{figure}
 
+\newpage
+\subsection{With or without layer normalization}
+
+As we showed in the Table~\ref{tab:ablation_study_table},
+the weighted average $R^2$ across all 47 sessions in x-axis position and both axes of acceleration rised.
+Also showed in Figure~\ref{fig:scatter_plot_comparison_LN}, 
+it is obvious that in these three types of kinematics,
+acceleration is the one with the biggest improvement by the layer normalization.
+% \end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_LN.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ With or without layer normalization }
+        \label{fig:scatter_plot_comparison_LN}
+    \end{center}
+\end{figure}
+
+\newpage
+\subsection{With or without temporal self-attention}
+
+\todo[inline, color=green!40]{ 比較有/無 attention 的預測軌跡 }
+The decoding accuracy benefit from the temporal self-attention module in each session is showed in Figure~\ref{fig:scatter_plot_comparison_attention}.
+In the aspect of decoding performances, attention module does not provide noticeable improvement.
+After averaging the SNR from all 47 sessions, the regression line lay incredibly close to the diagonal.
+Here we presented the position decoding result in an actual 2D plan in Figure~\ref{fig:effect_of_atten_in_position_2D_plot} and the corresponding timeline plot in Figure~\ref{fig:effect_of_atten_in_position_time_plot}
+
+% \end{multicols}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_attention.png}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ With or without temporal attention }
+        \todo[inline, author=Wu, color=blue!40]{Velocity wrong}
+        \label{fig:scatter_plot_comparison_attention}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/x_y_trajectory_with_attention_from_3287_to_3290.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/x_y_trajectory_with_attention_from_3290_to_3293.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.48\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/x_y_trajectory_with_attention_from_3293_to_3297.png}
+            \caption{}
+        \end{subfigure}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Effect of attention in position decoding (2D) }
+        \subcaption*{session indy\_20161206\_02}
+        \label{fig:effect_of_atten_in_position_2D_plot}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{subfigure}{0.9\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/x_pos_vs_time_from_3287_to_3297.png}
+            \caption{}
+        \end{subfigure}
+        \begin{subfigure}{0.9\textwidth}
+            \includegraphics[width=1\textwidth]{../Discussion_figures/effect_of_attention/indy_20161206_02/y_pos_vs_time_from_3287_to_3297.png}
+            \caption{}
+        \end{subfigure}
+        \captionsetup{width=0.5\textwidth}
+        \caption{ Effect of attention in position decoding (1D) }
+        \subcaption*{session indy\_20161206\_02}
+        \label{fig:effect_of_atten_in_position_time_plot}
+    \end{center}
+\end{figure}
+
+There exists no clear clue to tell which predicted trajectory is better than another one,
+since both results have considerable deviations from the ground truth.
+Comparing with the results between Figure~\ref{fig:effect_of_atten_in_position_2D_plot} and Figure~\ref{fig:effect_of_atten_in_position_time_plot},
+we can see how the predicted trajectories drifted away from groud truth when the fingertips were at rest.
+
+\newpage
 \section{Internal dynamics of network}
 \label{sec:internal_dynamics_of_network}
 % \begin{multicols}{2}
 \todo[inline, color=green!40]{參考以下論文的Figure 7 (ClosedLoopLSTM2019)Decoding Movements from Cortical Ensemble Activity Using a Long Short-Term Memory Recurrent Network}
+
 The easiest way to visualize how the RNNs learn from the features is by showing the outputs (hidden states) and the gates at each time step.
 This method is used in the BCI research for motor cortex decoding \citep{tseng2019decoding},
 and we also copied the same way to see if the result is informative.
@@ -359,6 +444,7 @@ The vertical axis represents the number of hidden units in our GRU.
 Here we can observe that the hidden states, 
 reset gates and update gates values are barely interpretable.
 They showes little relationship between the input spike firing rate and the output trajectories.
+
 % \end{multicols}
 
 % \begin{figure}[H]
@@ -526,7 +612,7 @@ Based on this attribution we designed a measure to evalutate the optimal tap siz
 First averaging the attention scores along the predicted sample axis,
 so that the result can be invariant to the length of each session.
 Then plotting the average attention score with respect to the taps.
-It is clear to see the influence distributed among all the past time bins.
+It is clear to see the influences distributed among all the past time bins.
 
 \subsection{Velocity decoder}
 
