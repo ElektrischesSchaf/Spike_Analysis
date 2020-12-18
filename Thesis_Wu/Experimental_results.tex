@@ -607,20 +607,23 @@ it made the errors a lot higher than velocity decoders.
 
 \section{Tap sizes optimization}
 
-We have showed that the attention score can help as quantify the contributions from each past time bin.
-Based on this attribution we designed a measure to evalutate the optimal tap sizes in movement decoding tasks in different kinematics.
-First averaging the attention scores along the predicted sample axis,
-so that the result can be invariant to the length of each session.
-Then plotting the average attention score with respect to the taps.
-It is clear to see the influences distributed among all the past time bins.
+We have showed that the attention scores can help as quantify the contributions from each past time bin.
+Based on this attribution we designed a method to evalutate the optimal tap sizes in movement decoding tasks for different kinematics.
+First step we have to designate a considerable long tap size $T$,
+then averaging the attention scores along the predicted sample axis.
+It will give us a vector of length $T$,
+with each element represents the importance of every past time bin in the whole session.
+By plotting the average attention scores with respect to the taps.
+It is easier to find the cutting point for the taps.
 
 \subsection{Velocity decoder}
 
-In Figure~\ref{fig:velocity_decoder_in_different_taps_indy_20161014_04} we can see that the average attention scores after $t-10$ are almost zero.
+In Figure~\ref{fig:velocity_decoder_in_different_taps_indy_20161014_04},
+we can see the average attention scores after $t-10$ are nearly zeros.
 Indicating 11 time bins is all we need to decode velocity.
-Spiking neural signal more than 16 time bins ago are not necessary and informative to decoding.
-Also examing the attention map in Figure~\ref{fig:velocity_decoder_in_different_taps_r_square_indy_20161014_04},
-the attention score for time bins earlier than $t-10$ is almost zero.
+Spiking neural signals more than 11 time bins ago are not necessary and informative to decoding.
+Also by examing the attention map in Figure~\ref{fig:velocity_decoder_in_different_taps_r_square_indy_20161014_04},
+the attention scores in the time bins prior to $t-10$ is indeed almost zero.
 
 \begin{figure}[H]
     \begin{center}
@@ -649,7 +652,8 @@ the attention score for time bins earlier than $t-10$ is almost zero.
 \end{figure}
 
 \subsection{Acceleration decoder}
-In the acceleration decoder's case, it is clear in Figure~\ref{fig:acceleration_decoder_in_different_taps_indy_20161014_04} that the average attention scores after time bins $t-7$ are almost zero.
+In the case of acceleration decoder,
+it is also clear in Figure~\ref{fig:acceleration_decoder_in_different_taps_indy_20161014_04} that the average attention scores after time bins $t-7$ are almost zero.
 The $R^2$ from different tap sizes also reflected the optimal number of tap size is around 8.
 
 
@@ -682,12 +686,12 @@ The $R^2$ from different tap sizes also reflected the optimal number of tap size
 
 \subsection{Position decoder}
 
-This tap sizes optimization method, however, does not valid in position decoder.
-The main reason can be showed in Figure~\ref{fig:position_decoder_in_two_tap_sizes_indy_20160419_01},
-where two identitical interval in two different position decoders with difference tap sizes.
+This tap sizes optimization method however, does not valid in our position decoder.
+The main reason can be found in Figure~\ref{fig:position_decoder_in_two_tap_sizes_indy_20160419_01},
+where two identitical intervals in two position decoders with difference tap sizes.
 One used 20 taps and the other used 50.
 It seems that the required length of past time bins is dependent on the duration of fingertips' standstill.
-The decoder tends to focus on the spike time bins before the fingertips stop moving,
+The decoder tends to focus on the spike time bins right before fingertips stop moving,
 that makes the the length of stationary period a variable for tap sizes optimization in position decoder.
 
 
@@ -708,7 +712,10 @@ that makes the the length of stationary period a variable for tap sizes optimiza
 \end{figure}
 
 \noindent This phenomenon also reflects in Figure~\ref{fig:position_decoder_in_different_taps_r_square_indy_indy_20160419_01},
-where there is no clear boundary along the tap axis to distinguish which ones are contributive or not.
+where there is no clear cutting point in tap axis to distinguish which ones are contributive taps or not.
+From time bin $t$ to $t-49$,
+the averaged attention scores do not converge to zero with the increasing taps.
+
 
 \begin{figure}[H]
     \begin{center}

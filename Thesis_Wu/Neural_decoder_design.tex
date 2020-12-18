@@ -663,9 +663,9 @@ The hidden states matrix,
 \noindent where $u$ is the number of hidden units and $ T $ is the length of each input sequence.
 $T$ in our case it is the number of past time bins used to decode the current kinematic variables.
 The matrix $\bH$ is the temporal features calculated by RNN in each time step, which is $T$ time steps in total.
-Followed by the attention module, and it can give us the annotation vector, computed as
+Followed by the attention module, and it can give us the attention vector, computed as
 \begin{align}
-    \label{eq:annotation_vector_calculation}
+    \label{eq:attention_vector_calculation}
     \begin{split}
         \ba &= \text{softmax}( \bw_{s2} \ \text{tanh} ( LN( \bW_{s1} \ \bH^{\intercal} ) ) )  \\
         \bm &= \ba \bH
@@ -674,7 +674,7 @@ Followed by the attention module, and it can give us the annotation vector, comp
 
 \noindent where weight matrix $\bW_{s1} \in \mathbb{R}^{d_a \times 2u} $ and vector $\bw_{s2}  \in \mathbb{R}^{ 1 \times d_a }$.
 $d_a$ is an arbitrary hyperparameter.
-The annotation vector $ \ba  \in \mathbb{R}^{ 1 \times T } $ will have its elements re-distributed by a softmax function $\mathbb{R}^K \rightarrow \mathbb{R}^K$,
+The attention vector $ \ba  \in \mathbb{R}^{ 1 \times T } $ will have its elements re-distributed by a softmax function $\mathbb{R}^K \rightarrow \mathbb{R}^K$,
 which is defined as
 
 \begin{align}
@@ -694,9 +694,9 @@ The vector representation may focues on only one specific part of the input sequ
 and is expected to reflect only one \textit{aspect} in the sequence.
 Multiple aspects can be extracted if we implement multiple hops of attention to the same input sequence.
 Another hyperparameter, $r$ is designed to determine how many different parts can be extracted from the sequence.
-The representations from Eqation \ref{eq:annotation_vector_calculation} is now changed to the matrix form in Eqation \ref{eq:annotation_matrix_calculation},
+The representations from Eqation \ref{eq:attention_vector_calculation} is now changed to the matrix form in Eqation \ref{eq:attention_matrix_calculation},
 \begin{align}
-    \label{eq:annotation_matrix_calculation}
+    \label{eq:attention_matrix_calculation}
     \begin{split}
         \bA &= \text{softmax}( \bW_{s2} \ \text{tanh}( LN( \bW_{s1} \ \bH^{\intercal} ) ) )  \\
         \bM &= \bA \bH
@@ -706,7 +706,7 @@ The representations from Eqation \ref{eq:annotation_vector_calculation} is now c
 and the embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ became a matrix $\bM \in \mathbb{R}^{r \times 2u} $.
 \\
 
-Eqation \ref{eq:annotation_matrix_calculation} is equivalent to a 2-layer MLP.
+Eqation \ref{eq:attention_matrix_calculation} is equivalent to a 2-layer MLP.
 The first layer reduces the dimension from $2u$ to $d_a$, 
 and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in Figure~\ref{fig:multiply_attetion_vecotr_to_hidden_states}.
 
@@ -738,8 +738,8 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
 % \begin{multicols}{2}
 The purpose of developing such loss function in this attention module is to avoid repetitive information.
 The embedding matrix $M$ should contains $r$ different aspects from the same input neural signal sequence.
-But without further constraints, the attention module might always provide similar summation annotations for all the $r$ hops.
-\cite{lin2017structured} proposed an approach to optimize the distribution of the annotations across the sequence,
+But without further constraints, the attention module might always provides attention vecotors with similar distribution for all the $r$ hops.
+\cite{lin2017structured} proposed an approach to differentiate the distribution between different attention vectors,
 named the \textit{penalization term} and it is defined as follows,
 
 \begin{align}
@@ -774,7 +774,7 @@ its loss will be propagated backwards to alter the weights in the our attention 
 \\
 
 To further explain its concept,
-let's start by considering two different annotation vectors $ \ba^i \in \mathbb{R}^{1 \times T} $ and $ \ba^j \in \mathbb{R}^{1 \times T}$.
+let's start by considering two different attention vectors $ \ba^i \in \mathbb{R}^{1 \times T} $ and $ \ba^j \in \mathbb{R}^{1 \times T}$.
 Due to the fact that $ \text{softmax} $ is implemented,
 the summation from all the element within the same vector is $1$.
 The values in each vector can be considered as probability distribution.
@@ -803,8 +803,8 @@ Interpretation of the neural signals is one of the main topic in our study.
 By taking advantage of attention module, we can visualize what the model \textit{sees.} \citep{xu2015show}
 The term \textit{tap size} refer to the past time bins used to decode the current sample point.
 In our main result, 20 tap size was used in decoding position and 10 tap size in decoding velocity and acceleration.
-With the aid of annotation matrix from the attention module,
-it is possible to depict the importance of the past time bins with annotations.
+With the aid of attention matrix from the attention module,
+it is possible to depict the importance of the past time bins with attention scores.
 As showed in Figure~\ref{fig:visualization_vector}
 % \end{multicols}
 
@@ -812,7 +812,7 @@ As showed in Figure~\ref{fig:visualization_vector}
     \begin{center}
         \includegraphics[height=0.2\textheight]{visualization_vector.png}
         \captionsetup{width=0.5\textwidth}
-        \caption{Annotation visualization}
+        \caption{Attention map visualization}
         \fontsize{10}{12}
         \label{fig:visualization_vector}
     \end{center}
