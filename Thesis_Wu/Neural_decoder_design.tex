@@ -736,7 +736,7 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
 \label{sec:penalization_term}
 % \begin{multicols}{2}
 The purpose of developing such loss function in this attention module is to avoid repetitive information.
-The embedding matrix $M$ should contains $r$ different aspects from the same input neural signal sequence.
+The embedding matrix $\bM$ should contains $r$ different aspects from the same input neural signal sequence.
 But without further constraints, the attention module might always provides attention vecotors with similar distribution for all the $r$ hops.
 \cite{lin2017structured} proposed an approach to differentiate the distribution between different attention vectors,
 named the \textit{penalization term} and it is defined as follows,
@@ -861,8 +861,9 @@ where the hyperparameter $\beta_1, \ \beta_2$ control the exponential decay rate
 % \begin{multicols}{2}
 \todo[inline, color=green!40]{描述SNR、R2、single session}
 
-To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR), 
-two vectors are required which are the observed value $ \by = \left[ y_1, \cdots , y_n  \right]^{\intercal} $ and predicted value $ \bf = \left[ f_1, \cdots , f_n \right]^{\intercal} $.
+To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR).
+Two vectors are required which are the observed value $ \by = \left[ y_1, \cdots , y_n  \right]^{\intercal} $,
+and predicted value $ \mathbf{f} = \left[ f_1, \cdots , f_n \right]^{\intercal} $.
 First we compute the mean of the observed data:
 \begin{align}
     \bar{y} &= \frac{1}{n} \sum^{n}_{i=1} y_i
