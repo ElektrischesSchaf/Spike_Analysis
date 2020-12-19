@@ -327,8 +327,9 @@ The first step we use a 2-layer bidirectional GRU as the neural decoder, which t
 Its output $\bH$ contains the $T$ vectors with the dimension of $\mathbb{R}^{1 \times 2u}$, where $u$ is a hyperparameter determined before training phase.
 The temporal attention module therefore enhances the features from neural decoder and gives us the attention matrix $\bA$,
 with $r$ attention vectors $\ba$, each vector annotates $T$ hidden states from $\bH$.
-By multiplying the original feature $H$ with attention matrix $A$, a new embedding matrix $M$ is formed.
-Last step feeding matrix $M$ into non-linear layer and obtain the final outputs as the predicted kinematics.
+By multiplying the original feature $\bH$ with attention matrix $\bA$,
+a new embedding matrix $\bM$ is formed.
+Last step feeding matrix $\bM$ into non-linear layer and obtain the final outputs as the predicted kinematics.
 
 % \end{multicols}
 
@@ -367,7 +368,7 @@ The structure of a GRU cell is showed in Figure \ref{fig:GRU_cell}.
 % \begin{multicols}{2}
 
 \begin{align}
-    h_t &= \text{GRU} \left( x_t, \ h_{t-1}   \right)
+    \bh_t &= \text{GRU} \left( \bx_t, \ \bh_{t-1}   \right)
 \end{align}
 
 \noindent and the four equations in the GRU cell:
@@ -375,10 +376,10 @@ The structure of a GRU cell is showed in Figure \ref{fig:GRU_cell}.
 \begin{align}
     % \label{eq:gru_cell}
     % \begin{split}
-        r_t &=  \sigma (W_r h_{t-1} + U_r x_t + b_r) \label{eq:reset_gate} \\
-        z_t &= \sigma (W_z h_{t-1} + U_z x_t + b_z) \label{eq:update_gate} \\
-        \tilde{h}_t &= \phi(W (r_t \circ h_{t-1}) + U x_t + b) \label{eq:h_hat} \\
-        h_t &= z_t \circ h_{t-1} + (1-z_t) \circ \tilde{h}_t \label{eq:h_out}
+        \br_t &=  \sigma ( \bW_r \bh_{t-1} + \bU_r \bx_t + \bb_r) \label{eq:reset_gate} \\
+        \bz_t &= \sigma ( \bW_z \bh_{t-1} + \bU_z \bx_t + \bb_z) \label{eq:update_gate} \\
+        \tilde{\bh}_t &= \phi( \bW ( \br_t \circ \bh_{t-1}) + \bU \bx_t + \bb) \label{eq:h_hat} \\
+        \bh_t &= \bz_t \circ \bh_{t-1} + ( 1 - \bz_t) \circ \tilde{\bh}_t \label{eq:h_out}
     % \end{split}
 \end{align}
 
@@ -389,7 +390,7 @@ The structure of a GRU cell is showed in Figure \ref{fig:GRU_cell}.
     \phi (x) &= \frac{ e^{x}-e^{-x} }{ e^{x}+e^{-x} } \label{eq:tanh}
 \end{align}
 
-Where $r_t$ is the \textbf{Reset Gate} and $z_t$ is the \textbf{Update Gate}.
+Where $\br_t$ is the \textbf{reset gate} and $\bz_t$ is the \textbf{update gate}.
 Notation $\circ$ means elementwise multiplication for two tensors of same shape.
 Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}),
 which squashes the input value from ($-\infty$, $\infty$) to (0,1).
@@ -423,13 +424,13 @@ The solution about this issue will be addressed in Section~\ref{sec:layer_normal
 
 % \begin{multicols}{2}
 At each times tep, a single GRU cell can take in two tensors, 
-one is the current input tensor $x_t$ and another is the previous hidden state $h_{t-1}$, 
+one is the current input tensor $ \bx_t $ and another is the previous hidden state $ \bh_{t-1} $, 
 which is the output from last time step.
 In the process of calculating each gate value (Equation \ref{eq:reset_gate}, 
-\ref{eq:update_gate}) and $\tilde{h}_t$ (Equation \ref{eq:h_hat}),
-hidden state from last time step ($h_{t-1}$) will be multiplied by unique weights ($W_r$, $W_z$, $W$),
-and so does the input tensor ($x_t$) will be multiplied by its own weights ($U_r$, $U_z$, $U$).
-After the multiplication, 3 biases ($b_r$, $b_z$, $b$) will be added to the results before entering the activation functions
+\ref{eq:update_gate}) and $\tilde{\bh}_t$ (Equation \ref{eq:h_hat}),
+hidden state from last time step ($\bh_{t-1}$) will be multiplied by unique weights ($\bW_r$, $\bW_z$, $\bW$),
+and so does the input tensor ($\bx_t$) will be multiplied by its own weights ($\bU_r$, $\bU_z$, $\bU$).
+After the multiplication, 3 biases ($ \bb_r $, $ \bb_z $, $ \bb $) will be added to the results before entering the activation functions
 \\
 
 A hyperparameter named \textbf{hidden dimension} or \textbf{number of hidden units} specified the dimensions for all hidden state in each time step,
@@ -446,7 +447,7 @@ But highter complexity does not guarantee better performance since sophisticated
 Figure \ref{fig:two_layer_GRU} demonstrated how hidden states are passed from one layer to another.
 Where $T$ is the tap size of our input,
 representing how many past time bins to be fed into the model just to decode the current kinematics.
-The input data at each time step $t$ contains the firing rate of this moment $x_t$ and the past firing rate from $x_{1}$ to $x_{t-1}$.
+The input data at each time step $t$ contains the firing rate of this moment $\bx_t$ and the past firing rate from $\bx_{1}$ to $\bx_{t-1}$.
 
 % \end{multicols}
 
@@ -462,22 +463,21 @@ The input data at each time step $t$ contains the firing rate of this moment $x_
 
 % \begin{multicols}{2}
 In the first GRU layer, $T$ bins of firing rate are fed chronologically.
-Hidden state $h^{j}_{i}$ denotes the output tensor from the cell in timestep $i$ and layer $j$, 
+Hidden state $\bh^{j}_{i}$ denotes the output tensor from the cell in timestep $i$ and layer $j$, 
 and will be the input of the GRU cell in timestep $i+1$ and layer $j+1$.
-The size of $h^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined parameter.
-Ideally the tensor $h^{2}_{t}$ should also contains the information from the firing rate $x_{1}$ to $x_{t-1}$, thus by feeding it to some fully connect layers we can acquire the desired output.
+The size of $\bh^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined parameter.
+Ideally the tensor $\bh^{2}_{t}$ should also contains the information from the firing rate $\bx_{1}$ to $\bx_{t-1}$, thus by feeding it to some fully connect layers we can acquire the desired output.
 \\
 
 The bidirectional RNN is designed by simply training another GRU with the same input sequence but in reverse order.
-As in Figure \ref{fig:bidir_two_layer_GRU}, but the size of the hidden state tensor $h^{j}_{i}$ should be $1 \times 2u$ in this case,
+As in Figure \ref{fig:bidir_two_layer_GRU}, but the size of the hidden state tensor $\bh^{j}_{i}$ should be $1 \times 2u$ in this case,
 since the first half of the this vector contains the information by feeding input sequence forward the last half by feeding backward.
-
 
 \begin{align}
     \begin{split}
-    \overrightarrow{h_t} &= \overrightarrow{\text{GRU}} \left( x_t  , \ \overrightarrow{h_{t-1}}  \right) \\
-    \overleftarrow{h_t}  &= \overleftarrow{\text{GRU}}  \left( x_t  , \ \overleftarrow{h_{t+1}}   \right) \\
-    h_t &= \overrightarrow{h_t} \oplus \overleftarrow{h_t}
+    \overrightarrow{ \bh_t } &= \overrightarrow{\text{GRU}} \left( \bx_t  , \ \overrightarrow{ \bh_{t-1}}  \right) \\
+    \overleftarrow{ \bh_t }  &= \overleftarrow{\text{GRU}}  \left( \bx_t  , \ \overleftarrow{ \bh_{t+1}}   \right) \\
+    \bh_t &= \overrightarrow{ \bh_t } \oplus \overleftarrow{ \bh_t }
     \end{split}
 \end{align}
 
@@ -494,7 +494,7 @@ since the first half of the this vector contains the information by feeding inpu
 
 The benfit of implementing bidirectional RNN is that it can see a broader range of input sequence than one-way RNN.
 As illustrated in Figure~\ref{fig:bidir_RNN_explain},
-the output at time step $t$ contains only the memory from $1~t$ in one-way RNN.
+the output at time step $t$ contains only the memory from $1 \sim t$ in one-way RNN.
 But it covers the whole sequence in bidirectional RNN.
 
 \begin{figure}[H]
@@ -529,12 +529,12 @@ Here is the computation of mean and variance from all the hidden units in the sa
 \begin{align}
     \begin{split}
         \label{eq:normalization_term}
-        \mu^l &= \frac{1}{H} \sum^{H}_{i=1} a^l_i \\
-        \sigma^l &= \sqrt{ \frac{1}{H} \sum^H_{i=1} \left( a^l_i -\mu^l  \right)^2 }
+        \mu^l &= \frac{1}{u} \sum^{u}_{i=1} a^l_i \\
+        \sigma^l &= \sqrt{ \frac{1}{u} \sum^u_{i=1} \left( a^l_i -\mu^l  \right)^2 }
     \end{split}
 \end{align}
 
-\noindent where $H$ denotes the number of hidden units in a layer, 
+\noindent where $u$ denotes the number of hidden units in a layer, 
 all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
 Unlike batch normalization, 
 layer normalization does not impose any constraint on the size of a mini-batch,
@@ -543,22 +543,22 @@ such that it cam be implemented to the model with batch size 1.
 
 The original layer normalization methods is computed within a RNN cell.
 In a standard RNN, 
-the summed inputs in the recurrent layer are computed from the current input $x_t$ and previous vector of hidden states $h^{t-1}$, 
-which are computed as $a^t = W_{hh} h^{t-1} + W_{xh} x^{t} $. 
-Where $W_{hh}$ is the recurrent hidden to hidden weights and $W_{xh}$ are the input to hidden weights.
+the summed inputs in the recurrent layer are computed from the current input $ \bx_t $ and previous vector of hidden states $ \bh^{t-1}$, 
+which are computed as $ \ba^t = \bW_{hh} \bh^{t-1} + \bW_{xh} \bx^{t} $. 
+Where $\bW_{hh}$ is the recurrent hidden to hidden weights and $\bW_{xh}$ are the input to hidden weights.
 The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalization terms similar to Equation \ref{eq:normalization_term}:
 
 \begin{align}
     \begin{split}
-        h^{t} &= f \left[ \frac{g}{\sigma^t} \odot \left( a^t- \mu^t \right) +b \right] \\
-        \mu^t &= \frac{1}{H} \sum^{H}_{i=1} a^{t}_{i} \\
-        \sigma^t &= \sqrt{ \frac{1}{H} \sum^{H}_{i=1} \left( a^t_i - \mu^t \right)^2 }
+        \bh^{t} &= f \left[ \frac{g}{\sigma^t} \odot \left( \ba^t- \mu^t \right) + b \right] \\
+        \mu^t &= \frac{1}{u} \sum^{u}_{i=1} \ba^{t}_{i} \\
+        \sigma^t &= \sqrt{ \frac{1}{u} \sum^{u}_{i=1} \left( a^t_i - \mu^t \right)^2 }
     \end{split}
 \end{align}
 
 
 \noindent where $\odot$ is the elementwise multiplication, 
-and $b$, $g$ are defined as the bias and gain parameters of the same dimension as $h^t$.
+and $\bb$, $\bg$ are defined as the bias and gain parameters of the same dimension as $\bh^t$.
 $f$ is the activation function in the RNN cell, it could be a sigmoid or hyperbolic tangent function.
 \\
 
@@ -567,7 +567,7 @@ gains $\alpha$ and biases $\beta$:
 
 \begin{align}
     \begin{split}
-        LN(z; \ \alpha, \ \beta) &= \frac{(z-\mu)}{\sigma} \odot \alpha + \beta \\
+        LN(\bz; \ \alpha, \ \beta) &= \frac{( \bz-\mu )}{\sigma} \odot \alpha + \beta \\
         \mu &= \frac{1}{D} \sum^{D}_{i=1} z_i \\
         \sigma &= \sqrt{ \frac{1}{D} \sum^{D}_{i=1} \left( z_i- \mu \right)^{2} }
     \end{split}
@@ -578,11 +578,11 @@ When implementing it on GRU,
 \begin{align}
     \begin{split}
         \begin{pmatrix}
-            z_t \\
-            r_t
-        \end{pmatrix} &=  \sigma( W_h h_{t-1} ) + \sigma( W_x x_t ) \\
-        \tilde{h}_t &= \text{tanh}( W x_t +  r_t \odot \left( U h_{t-1} \right) ) \\
-        h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h}_t
+            \bz_t \\
+            \br_t
+        \end{pmatrix} &=  \sigma( \bW_h \bh_{t-1} ) + \sigma( \bW_x \bx_t ) \\
+        \tilde{\bh}_t &= \text{tanh}( \bW \bx_t +  \br_t \odot \left( \bU \bh_{t-1} \right) ) \\
+        \bh_t &= \left( 1- \bz_t \right) \bh_{t-1} + \bz_t \tilde{\bh}_t
     \end{split}
 \end{align}
 
@@ -591,11 +591,11 @@ When implementing it on GRU,
 \begin{align}
     \begin{split}
         \begin{pmatrix}
-            z_t \\
-            r_t
-        \end{pmatrix} &=   \sigma( LN( W_h h_{t-1} ; \ \alpha_1, \ \beta_1 ) ) + \sigma( LN(  W_x x_t ; \ \alpha_2 , \ \beta_2 ) ) \\
-        \tilde{h}_t &= \text{tanh} (  LN( W x_t ; \ \alpha_3, \ \beta_3 ) +  r_t \odot LN( U h_{t-1} ; \ \alpha_4, \ \beta_4 ) ) \\
-        h_t &= \left( 1- z_t \right) h_{t-1} + z_t \tilde{h}_t
+            \bz_t \\
+            \br_t
+        \end{pmatrix} &=   \sigma( LN( \bW_h  \bh_{t-1} ; \ \alpha_1, \ \beta_1 ) ) + \sigma( LN(  \bW_x \bx_t ; \ \alpha_2 , \ \beta_2 ) ) \\
+        \tilde{\bh}_t &= \text{tanh} (  LN( \bW \bx_t ; \ \alpha_3, \ \beta_3 ) +  \br_t \odot LN( \bU \bh_{t-1} ; \ \alpha_4, \ \beta_4 ) ) \\
+        \bh_t &= \left( 1- \bz_t \right) \bh_{t-1} + \bz_t \tilde{\bh}_t
     \end{split}
 \end{align}
 
@@ -641,7 +641,6 @@ The second case has the mean of zero, but its broad distribution makes only a po
 
 \subsection{Attention module}
 \label{sec:attention_module}
-
 
 % \begin{multicols}{2}
 
@@ -702,7 +701,7 @@ The representations from Eqation \ref{eq:attention_vector_calculation} is now ch
         \bM &= \bA \bH
     \end{split}
 \end{align}
-\noindent where the vector $ \bw_{s2}  \in \mathbb{R}^{ 1 \times d_a } $ turned into a matrix$ \bW_{s2} \in \mathbb{R}^{r \times d_a }  $,
+\noindent where the vector $ \bw_{s2}  \in \mathbb{R}^{ 1 \times d_a } $ turned into a matrix $ \bW_{s2} \in \mathbb{R}^{r \times d_a }  $,
 and the embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ became a matrix $\bM \in \mathbb{R}^{r \times 2u} $.
 \\
 
@@ -751,7 +750,7 @@ named the \textit{penalization term} and it is defined as follows,
 and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 \begin{align}
     \label{eq:frobenius_norm}
-    \norm{ \bP } &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {|p_{ij}|}^{2} }
+    \norm{ \bB } &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {| b_{ij} |}^{2} }
 \end{align}
 
 % \end{multicols}
@@ -791,7 +790,7 @@ also should be equal to $0$.
 $ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $ \ba^i$ and $ \ba^j $ severally.
 The diagonal elements $ \ba^i \cdot \ba^i $, i=1 $\sim$ r, on the other hand,
 will have a maximum value of $ 1 $ in an extreme case that all attention concentrates on one single time bin.
-Thus substracting an identity matrix from $A A^{\intercal}$ will force each attention vector $a^i$ to focus on as few features as it can,
+Thus substracting an identity matrix from $\bA \bA^{\intercal}$ will force each attention vector $\ba^i$ to focus on as few features as it can,
 concnetrating on a single aspect.
 \\
 
