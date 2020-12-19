@@ -654,8 +654,8 @@ The output hidden states from the last layer of GRU will be the input of our att
 The hidden states matrix,
 \begin{align}
     \begin{split}
-        [ \bh_1, \ \bh_2, \cdots \ \bh_T ] &= \bH \in \mathbb{R}^{T \times 2u }  \  \text{bidirectional RNN}  \\
-           &= \bH \in \mathbb{R}^{T \times u} \ \ \text{one-way RNN}
+        \bH = [ \bh_1, \ \bh_2, \cdots , \  \bh_T ] &\in \mathbb{R}^{T \times 2u }  \  \text{bidirectional RNN}  \\
+                                                    &\in \mathbb{R}^{T \times u}    \ \text{one-way RNN}
     \end{split}
 \end{align}
 
@@ -680,7 +680,7 @@ which is defined as
     \begin{split}
     \text{softmax}( \bz )_i &= \frac{ e^{ \bz_i } }{ \sum^{K}_{j=1} e^{ \bz_j } } \\ 
     \text{for} \ i &=1, \cdots , K \\ 
-    \text{and} \ \bz&= \left( \bz_1, \cdots, \bz_K \right) \in \mathbb{R}^K
+    \text{and} \ \bz&= \left[ z_1, \cdots, z_K \right ] \in \mathbb{R}^K
     \end{split}
 \end{align}
 
@@ -706,7 +706,7 @@ and the embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ became a matrix $\
 \\
 
 Eqation \ref{eq:attention_matrix_calculation} is equivalent to a 2-layer MLP.
-The first layer reduces the dimension from $2u$ to $d_a$, 
+The first layer reduces the dimension from $2u$ to $d_a$,
 and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in Figure~\ref{fig:multiply_attetion_vecotr_to_hidden_states}.
 
 % \end{multicols}
@@ -746,7 +746,7 @@ named the \textit{penalization term} and it is defined as follows,
     P &= {\norm{ \bA \bA^{\intercal} - \bI }_F}^2
 \end{align}
 
-\noindent where $A A^{\intercal} \in \mathbb{R}^{ r \times r} $, 
+\noindent where $ \bA \bA^{\intercal} \in \mathbb{R}^{ r \times r} $, 
 and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 \begin{align}
     \label{eq:frobenius_norm}
