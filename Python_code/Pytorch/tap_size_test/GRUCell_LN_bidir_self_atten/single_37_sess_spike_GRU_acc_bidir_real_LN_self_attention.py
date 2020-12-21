@@ -61,11 +61,11 @@ List_FILE = ALL_List_FILE[20:25]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
-MAX_EPOCH = 75
+MAX_EPOCH = 80
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
-BATCH_SIZE = 64
+BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
 
 # tap size study start
