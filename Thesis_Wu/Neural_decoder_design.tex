@@ -529,8 +529,8 @@ Here is the computation of mean and variance from all the hidden units in the sa
 \begin{align}
     \begin{split}
         \label{eq:normalization_term}
-        \mu^l &= \frac{1}{u} \sum^{u}_{i=1} a^l_i \\
-        \sigma^l &= \sqrt{ \frac{1}{u} \sum^u_{i=1} \left( a^l_i -\mu^l  \right)^2 }
+        \mu^l &= \frac{1}{u} \sum^{u}_{i=1} q^l_i \\
+        \sigma^l &= \sqrt{ \frac{1}{u} \sum^u_{i=1} \left( q^l_i -\mu^l  \right)^2 }
     \end{split}
 \end{align}
 
@@ -544,15 +544,15 @@ such that it cam be implemented to the model with batch size 1.
 The original layer normalization methods is computed within a RNN cell.
 In a standard RNN, 
 the summed inputs in the recurrent layer are computed from the current input $ \bx_t $ and previous vector of hidden states $ \bh^{t-1}$, 
-which are computed as $ \ba^t = \bW_{hh} \bh^{t-1} + \bW_{xh} \bx^{t} $. 
+which are computed as $ \bq^t = \bW_{hh} \bh^{t-1} + \bW_{xh} \bx^{t} $. 
 Where $\bW_{hh}$ is the recurrent hidden to hidden weights and $\bW_{xh}$ are the input to hidden weights.
 The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalization terms similar to Equation \ref{eq:normalization_term}:
 
 \begin{align}
     \begin{split}
-        \bh^{t} &= f \left[ \frac{g}{\sigma^t} \odot \left( \ba^t- \mu^t \right) + b \right] \\
-        \mu^t &= \frac{1}{u} \sum^{u}_{i=1} \ba^{t}_{i} \\
-        \sigma^t &= \sqrt{ \frac{1}{u} \sum^{u}_{i=1} \left( a^t_i - \mu^t \right)^2 }
+        \bh^{t} &= f \left[ \frac{g}{\sigma^t} \odot \left( \bq^t- \mu^t \right) + \bb \right] \\
+        \mu^t &= \frac{1}{u} \sum^{u}_{i=1} q^{t}_{i} \\
+        \sigma^t &= \sqrt{ \frac{1}{u} \sum^{u}_{i=1} \left( q^t_i - \mu^t \right)^2 }
     \end{split}
 \end{align}
 
@@ -654,8 +654,8 @@ The output hidden states from the last layer of GRU will be the input of our att
 The hidden states matrix,
 \begin{align}
     \begin{split}
-        \bH = [ \bh_1, \ \bh_2, \cdots , \  \bh_T ] &\in \mathbb{R}^{T \times 2u }  \  \text{bidirectional RNN}  \\
-                                                    &\in \mathbb{R}^{T \times u}    \ \text{one-way RNN}
+        \bH = [ \bh_1, \ \bh_2, \cdots , \  \bh_T ] &\in \mathbb{R}^{T \times 2u }  \quad  \text{bidirectional RNN}  \\
+                                                    &\in \mathbb{R}^{T \times u}    \quad \ \text{one-way RNN}
     \end{split}
 \end{align}
 
@@ -725,7 +725,7 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
     \begin{center}
         \includegraphics[width=0.5\textwidth]{multiply_attetion_vecotr_to_hidden_states.png}
         \captionsetup{width=0.5\textwidth}
-        \caption{Multiply attention vectors to hidden states}
+        \caption{Multiplying attention vectors to hidden states}
         \fontsize{10}{12}
         \label{fig:multiply_attetion_vecotr_to_hidden_states}
     \end{center}
@@ -844,11 +844,11 @@ a popular algothrim who combined AdaGrad \citep{duchi2011adaptive} and RMSProp \
 \begin{align}
     \begin{split}
         \label{eq:adam_optimizer}
-        m_t &= \beta_1 m_{t-1} + ( 1-\beta_1 ) \frac{\partial L_t}{\partial W_t} \\
-        v_t &= \beta_2 v_{t-1} + (1- \beta_2) \left( \frac{\partial L_t}  {\partial W_t} \right)^2 \\
+        m_t &= \beta_1 m_{t-1} + ( 1-\beta_1 ) \frac{\partial L_t}{\partial \bw_t} \\
+        v_t &= \beta_2 v_{t-1} + (1- \beta_2) \left( \frac{\partial L_t}  {\partial \bw_t} \right)^2 \\
         \hat{m}_t &= \frac{m_t}{1- \beta^t_1 } \\
         \hat{v}_t &= \frac{v_t}{1-\beta^t_2} \\
-        w_t &\leftarrow w_{t-1}- \eta \frac{ \hat{m}_t }{ \sqrt{\hat{v}_t} + \epsilon }
+        \bw_t &\leftarrow \bw_{t-1}- \eta \frac{ \hat{m}_t }{ \sqrt{\hat{v}_t} + \epsilon }
     \end{split}
 \end{align}
 
