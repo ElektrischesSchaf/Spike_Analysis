@@ -315,11 +315,20 @@ It also tells us that the attention module can actually represent the dynamics o
 We have showed that the attention scores can help as quantify the contributions from each past time bin.
 Based on this attribution we designed a method to evalutate the optimal tap sizes in movement decoding tasks for different kinematics.
 First step we have to designate a considerable long tap size $T$,
-then averaging the attention scores along the predicted sample axis.
+then averaging the attention scores along the predicted sample axis, as showed in Figure~\ref{fig:explain_average_atten_score}.
 It will give us a vector of length $T$,
 with each element represents the importance of every past time bin in the whole session.
 By plotting the average attention scores with respect to the taps.
 It is easier to find the cutting point for the taps.
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{explain_average_atten_score.png}
+        \caption{Averaging attention scores}
+        \label{fig:explain_average_atten_score}
+    \end{center}
+\end{figure}
 
 \subsection{Velocity decoder}
 
