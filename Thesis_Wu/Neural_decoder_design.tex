@@ -863,14 +863,14 @@ where the hyperparameter $\beta_1, \ \beta_2$ control the exponential decay rate
 
 To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR).
 Two vectors are required which are the observed value $ \by = \left[ y_1, \cdots , y_n  \right]^{\intercal} $,
-and predicted value $ \mathbf{f} = \left[ f_1, \cdots , f_n \right]^{\intercal} $.
+and predicted value $ \mathbf{\hat{y}} = \left[ \hat{y}_1, \cdots , \hat{y}_n \right]^{\intercal} $.
 First we compute the mean of the observed data:
 \begin{align}
     \bar{y} &= \frac{1}{n} \sum^{n}_{i=1} y_i
     \intertext{ then the total sum of squares, }
     SS_{tot} &= \sum^{n}_{i=1} \left( y_i - \bar{y} \right)^{2}
     \intertext{ the residual sum of squares, }
-    SS_{res} &= \sum^{n}_{i=1} \left( y_i - f_i \right)^{2}
+    SS_{res} &= \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
     \intertext{ with that the coefficient of determination will be }
     R^{2} &\equiv 1 - \frac{ SS_{res} }{ SS_{tot} } \label{eq:r_square}
     \intertext{ the SNR is defined by:}
