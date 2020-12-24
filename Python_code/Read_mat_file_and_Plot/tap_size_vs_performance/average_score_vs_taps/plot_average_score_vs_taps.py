@@ -8,7 +8,7 @@ my_fontsize=35
 
 
 plt.figure(figsize=(16,9))
-FILE_PATH = './tap_sizes_results_position' # tap_sizes_results_position , tap_sizes_results_velocity , tap_sizes_results_acceleration
+FILE_PATH = './tap_sizes_results_velocity' # tap_sizes_results_position , tap_sizes_results_velocity , tap_sizes_results_acceleration
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
 List_FILE=ALL_List_FILE[:]
@@ -109,6 +109,8 @@ for sess_name in file_list:
     plt.xlabel('taps' , fontsize=my_fontsize)
     plt.xticks(fontsize=my_fontsize*0.3, rotation=45)
     plt.ylabel('Score', fontsize=my_fontsize )
+    
+    plt.yticks(np.linspace( 0, 1, 11))
     plt.yticks(fontsize=my_fontsize*0.8)
     # plt.legend(loc='lower right', fontsize=my_fontsize*0.8 )
     plt.xlim([x_ticklabels[0], x_ticklabels[-1]])

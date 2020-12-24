@@ -76,7 +76,8 @@ for the_session_name in session_all_names:
         plt.legend(loc='lower right', fontsize=my_fontsize*0.8 )
 
         plt.xlim([tap_sizes_all[0], tap_sizes_all[-1]])
-        plt.ylim([0, 1])
+        plt.ylim([0.5,1])
+        # plt.ylim([0, 1])
 
         plt.tight_layout()
 
