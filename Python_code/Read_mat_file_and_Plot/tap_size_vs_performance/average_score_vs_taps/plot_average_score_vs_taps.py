@@ -46,13 +46,17 @@ for sess_name in file_list:
 
     plt.figure(figsize=(16,9))
 
-    plt.plot(x_ticklabels, mean, linewidth=5, color='blue')
+    plt.plot(x_ticklabels, mean, linewidth=5, color='blue', label= 'Average attention score')
+
+    difference_mean = mean  - np.insert(mean, 0,0)[:-1]
+
+    plt.plot(x_ticklabels, difference_mean, linewidth=5, color='green', alpha=0.7 , label= 'First derivative')
 
     plt.xlabel('taps' , fontsize=my_fontsize)
     plt.xticks(fontsize=my_fontsize*0.3, rotation=45)
-    plt.ylabel('Average attention score', fontsize=my_fontsize )
+    # plt.ylabel('Average attention score', fontsize=my_fontsize )
     plt.yticks(fontsize=my_fontsize*0.8)
-    # plt.legend(loc='lower right', fontsize=my_fontsize*0.8 )
+    plt.legend(loc='upper right', fontsize=my_fontsize*0.8 )
     plt.xlim([x_ticklabels[0], x_ticklabels[-1]])
     plt.grid(True, 'major', 'x')
 
@@ -82,9 +86,57 @@ for sess_name in file_list:
         plt.savefig(plot_path+'/'+ str(sess_name) +'.png')
 
 
+
+
     plt.cla()
     plt.clf()
     plt.close()
+
+    # Derivative
+    '''
+    plt.figure(figsize=(16,9))
+    difference_mean = mean  - np.insert(mean, 0,0)[:-1]
+
+    plt.plot(x_ticklabels, difference_mean, linewidth=5, color='blue')
+
+    plt.xlabel('taps' , fontsize=my_fontsize)
+    plt.xticks(fontsize=my_fontsize*0.3, rotation=45)
+    plt.ylabel('Average attention score', fontsize=my_fontsize )
+    plt.yticks(fontsize=my_fontsize*0.8)
+    # plt.legend(loc='lower right', fontsize=my_fontsize*0.8 )
+    plt.xlim([x_ticklabels[0], x_ticklabels[-1]])
+    plt.grid(True, 'major', 'x')
+
+
+    plt.tight_layout()
+
+    plot_path_1 = os.path.join('..', 'Plots')
+    if not os.path.exists(plot_path_1):
+        os.mkdir(plot_path_1)
+
+    if FILE_PATH == './tap_sizes_results_position':
+        plot_path = os.path.join( plot_path_1 , 'Plots_bar_tap_sizes_position')
+        if not os.path.exists(plot_path):
+            os.mkdir(plot_path)
+        plt.savefig(plot_path+'/'+ str(sess_name) +'_diff' +'.png')
+
+    if FILE_PATH == './tap_sizes_results_velocity':
+        plot_path = os.path.join( plot_path_1 , 'Plots_bar_tap_sizes_velocity')
+        if not os.path.exists(plot_path):
+            os.mkdir(plot_path)
+        plt.savefig(plot_path+'/'+ str(sess_name) +'_diff' +'.png')
+
+    if FILE_PATH == './tap_sizes_results_acceleration':
+        plot_path = os.path.join( plot_path_1 , 'Plots_bar_tap_sizes_acceleration')
+        if not os.path.exists(plot_path):
+            os.mkdir(plot_path)
+        plt.savefig(plot_path+'/'+ str(sess_name) +'_diff' +'.png')
+
+    plt.cla()
+    plt.clf()
+    plt.close()
+
+    # Integral
 
     min_score = np.min(mean)
     mean_minus_min = mean - min_score
@@ -142,3 +194,4 @@ for sess_name in file_list:
     
     
     # plt.savefig()
+    '''
