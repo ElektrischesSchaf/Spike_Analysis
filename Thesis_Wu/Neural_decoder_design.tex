@@ -26,7 +26,7 @@ and duration of each session can be found in Appendix~\ref{sec:dataset_indy} and
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.6\textwidth}
-            \captionsetup{width=0.5\textwidth}
+            \captionsetup{width=1\textwidth}
             \includegraphics[width=1\textwidth]{Utah_array.jpg}
             \caption{Utah array}
             \caption*{\small{source by \url{ https://commons.wikimedia.org/wiki/File:Utah_array_pat5215088.jpg }}}
@@ -42,7 +42,7 @@ and duration of each session can be found in Appendix~\ref{sec:dataset_indy} and
             \includegraphics[width=1\textwidth]{channel_array_2.png}
             \caption{ Indy S1 }
         \end{subfigure}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{ Electrode array and the apatial arrangement of 96 channels }
         \label{fig:utah_array}
     \end{center}
@@ -58,7 +58,7 @@ the upper subplot is the raw broadband signal and the bottom subplot is the filt
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{raw_to_spike.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Raw data waveform and the detected spikes}
         \fontsize{10}{12}
         \label{fig:raw_to_spike}
@@ -82,7 +82,7 @@ and since in this case the tap size is 4, the number of overlapping time bins ar
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.7\textwidth]{time_bin_and_prediction.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Tap sizes}
         \label{fig:time_bin_and_prediction}
     \end{center}
@@ -174,7 +174,7 @@ Empty units in this session have been removed, as actual number of sorted units 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{Firing_rate_heatmap_and_all_kinematic_variables.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Firing rate and kinematic variables}
         \subcaption*{session indy\_20160927\_04}
         \label{fig:Firing_rate_heatmap_and_all_kinematic_variables}
@@ -227,7 +227,7 @@ Figure \ref{fig:X-Y_trajectory_in_VR_panel}
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.6\textwidth]{X-Y_trajectory_in_VR_panel.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Fingertip Trajectory in 2D Virtual Panel}
         \label{fig:X-Y_trajectory_in_VR_panel}
     \end{center}
@@ -241,7 +241,7 @@ where the dash lines indicate the actual tragectory of the fingertip and the sol
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Fingertip trajectory with respect to time}
         \label{fig:x_and_y_trajectory_and_cue}
     \end{center}
@@ -313,7 +313,7 @@ Fortunately the target points are not required when implementing hand movement d
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{my_pipeline.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{ Network architecture }
         \label{fig:my_pipeline}
     \end{center}
@@ -345,7 +345,7 @@ This diagram explained how the input and output mapped by the same RNN cell in e
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{unfold_rnn.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Unfolded basic recurrent neural network}
         \caption*{\small{source by \url{https://en.wikipedia.org/wiki/File:Recurrent_neural_network_unfold.svg} licensed under \href{https://creativecommons.org/licenses/by-sa/4.0/deed.en}{CC BY-SA 4.0} }}
         \label{fig:unfold_rnn}
@@ -358,7 +358,7 @@ The structure of a GRU cell is showed in Figure \ref{fig:GRU_cell}.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.7\textwidth]{GRU_cell.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption[GRU Cell]{Mechanism inside a GRU Cell}
         \caption*{\small{adapted from \url{ https://en.wikipedia.org/wiki/File:Gated_Recurrent_Unit,_type_2.svg } licensed under \href{https://creativecommons.org/licenses/by-sa/4.0/deed.en}{CC BY 4.0} }}
         \label{fig:GRU_cell}
@@ -454,7 +454,7 @@ The input data at each time step $t$ contains the firing rate of this moment $\b
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{1-way_2_layer_GRU.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Architecture of One-way Two-layer GRU}
         \fontsize{10}{12}
         \label{fig:two_layer_GRU}
@@ -486,7 +486,7 @@ since the first half of the this vector contains the information by feeding inpu
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{2-way_2-layer_GRU.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Architecture of Bidirectional Two-layer GRU}
         \label{fig:bidir_two_layer_GRU}
     \end{center}
@@ -500,7 +500,7 @@ But it covers the whole sequence in bidirectional RNN.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.6\textwidth]{bidir_RNN_explain.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Benefit of bidirectional RNN}
         \fontsize{10}{12}
         \label{fig:bidir_RNN_explain}
@@ -606,7 +606,7 @@ with four $L.N.$ blocks adding inside each GRU cell.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.7\textwidth]{LN_GRU_cell.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Mechanism inside a LN-GRU Cell}
         \caption*{\small{adapted from \url{ https://en.wikipedia.org/wiki/File:Gated_Recurrent_Unit,_type_2.svg } licensed under \href{https://creativecommons.org/licenses/by-sa/4.0/deed.en}{CC BY 4.0} }}
         \label{fig:LN_GRU_cell}
@@ -633,7 +633,7 @@ The second case has the mean of zero, but its broad distribution makes only a po
             \includegraphics[width=1\textwidth]{activation_histogram_after.png}
             \caption{After LN}
         \end{subfigure}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{LN comparison}
         \label{fig:layer_norm_before_after}
     \end{center}
@@ -714,7 +714,7 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[height=0.3\textheight]{temporal_attention_in_matrix_diagram.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{ Temporal attention module }
         \label{fig:temporal_attention_in_matrix_diagram}
     \end{center}
@@ -724,7 +724,7 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{multiply_attetion_vecotr_to_hidden_states.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Multiplying attention vectors to hidden states}
         \fontsize{10}{12}
         \label{fig:multiply_attetion_vecotr_to_hidden_states}
@@ -758,7 +758,7 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{penalization_term.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Penalization term}
         \fontsize{10}{12}
         \label{fig:penalization_term}
@@ -810,7 +810,7 @@ As showed in Figure~\ref{fig:visualization_vector}
 \begin{figure}[H]
     \begin{center}
         \includegraphics[height=0.2\textheight]{visualization_vector.png}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{Attention map visualization}
         \fontsize{10}{12}
         \label{fig:visualization_vector}

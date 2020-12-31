@@ -6,7 +6,7 @@ Table~\ref{tab:traditional_invasive} list traditional machine learning decoders 
 Kalman filter was dominant in this field before artificial neural networks.
 Most of the experiment conduced in the traditional BCI reseaches are either performed the center-out reaching tasker or the computer cursor manipulation with manipulandum.
 The decoders usually predicted only one or two kinematic variables, only a few of them are willing to predict and evaluat three variances: position, velocity and acceleration.
-\\
+
 
 \todo[inline, author=Wu, color=blue!40]{新增Kalman filter的優缺點}
 The strength of Kalman filter is that in general it only needs a few minites of training data \citep{wu2003neural},
@@ -20,8 +20,8 @@ and these Gaussian-distributed spike counts and linear dynamics assumptions are 
 
 % \end{multicols}
  
-\setlength\LTleft{-1cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
-\setlength\LTright{-1cm}
+% \setlength\LTleft{-1cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
+% \setlength\LTright{-1cm}
 
 \begin{longtable}{ccccc}
     \caption{ Traditional decoder in invasive BCIs } \\
@@ -30,19 +30,18 @@ and these Gaussian-distributed spike counts and linear dynamics assumptions are 
     \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Variable(s) }}}\\
     \hline
     \endhead
-    \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out\\reaching\\ by hand}  & \makecell{Directions\\of movement} \\ \\
-    \cite{wu2003neural}             & Kalman filter & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor\\control by\\manipulandum} & \makecell{Position,\\velocity,\\acceleration} \\ \\
-    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor\\control by\\manipulandum} & \makecell{Position,\\velocity,\\acceleration} \\ \\
-    \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer\\cursors} & \makecell{Position,\\velocity}  \\ \\
-    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point\\pursuit\\by joystick } & \makecell{Position,\\velocity} \\ \\
-    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} & \makecell{Position,\\velocity} \\ \\
-    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor\\control by\\manipulandum} & Velocity \\ 
-    \hline
+    \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out\\reaching\\ by hand}  & \makecell{Directions\\of movement} \\  \hline
+    \cite{wu2003neural}             & Kalman filter & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor\\control by\\manipulandum} & \makecell{Position,\\velocity,\\acceleration} \\  \hline
+    \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor\\control by\\manipulandum} & \makecell{Position,\\velocity,\\acceleration} \\  \hline
+    \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer\\cursors} & \makecell{Position,\\velocity}  \\  \hline
+    \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point\\pursuit\\by joystick } & \makecell{Position,\\velocity} \\  \hline
+    \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} & \makecell{Position,\\velocity} \\  \hline
+    \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor\\control by\\manipulandum} & Velocity \\  \hline
     \label{tab:traditional_invasive}
 \end{longtable}
 
-\setlength\LTleft{0cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
-\setlength\LTright{0cm}
+% \setlength\LTleft{0cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
+% \setlength\LTright{0cm}
 
 \section{Restrictions of traditional invasive BCIs}
 \label{sec:restrictions_of_traditional_invasive_BCI}
@@ -74,37 +73,22 @@ With the development of non-linear decoders and deep learning methods,
 more promising performances have been reached both in work in humans and non-human primates \citep{shanechi2017rapid, sussillo2016making, milstein2017multiscale, pandarinath2018inferring}.
 Among all the deep learning methods, 
 the RNN model is the tpye which is widely used and also outperforms Kalman filter \citep{sussillo2016making}.
-\\
+
 
 The first idea of recurrent neural networks (RNN), which is called the Hopfield networks, was introduced in 1980s \citep{hopfield1982neural}, 
 and the following different versions of RNN have been developed afterwards \citep{elman1990finding, jordan1997serial}.
 But the these RNN models face the same gradient vanishing problem, and the two effective approaches to solve this problem is either clip and scale the gradient if the norm is too large, 
 or create a better RNN model \citep{alom2018history}.
-\\
+
 
 % \end{multicols}
 
-% https://developer.ibm.com/articles/cc-cognitive-recurrent-neural-networks/
-% \begin{figure}[H]
-%     \begin{center}
-%         \begin{subfigure}{0.49\textwidth}
-%             \includegraphics[height=0.5\textheight]{elman_network.png}
-%             \caption{Elman network}
-%         \end{subfigure}
-%         \begin{subfigure}{0.49\textwidth}
-%             \includegraphics[height=0.5\textheight]{jordan_network.png}
-%             \caption{Jordan network}
-%         \end{subfigure}
-%         \caption{Early developed RNNs}
-%         \label{fig:elman_and_jordan}
-%     \end{center}
-% \end{figure}
 
 % \begin{multicols}{2}
 Therefore, \cite{hochreiter1997long} created a well-known model named Long Short-Term Memory (LSTM), solved the gradient vanishing problem of the original RNNs. LSTM quipped with three gates to learn how to forget or keep the memory from previous states. 
 Followed by the work of \cite{chung2014empirical}, a new model named Gated Recurrent Unit (GRU) which is similar to LSTM, was introduced. 
 It is has gained popularity in the community due to its efficiency in training and the high performance sometimes even outdoes the LSTM. 
-\\
+
 
 Nowadays, RNNs come with various architectures have benn widely used in BCI researches \citep{ahmadi2020impact}, \cite{tuleuov2019deep} even developed a hybrid deep leaning model which combined RNN with convolution neural network (CNN). 
 These preceding works manifest the uprising potentials of RNNs in computational neural science.
@@ -118,8 +102,8 @@ Table~\ref{tab:deep_leaning_in_invasive_BCI} showes decoders involved deep leani
 LSTM prevails in many state-of-the-art BCI decoders, and experiments of complex movements such as point-to-point fingertip trajetories or free moving have been conducted and decoded.
 % \end{multicols}
 
-\setlength\LTleft{-1cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
-\setlength\LTright{-1cm}
+% \setlength\LTleft{-1cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
+% \setlength\LTright{-1cm}
 
 \begin{longtable}{ccccc}
     \caption{ Deep leaning decoder in invasive BCIs } \\
@@ -128,40 +112,15 @@ LSTM prevails in many state-of-the-art BCI decoders, and experiments of complex 
     \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Variable(s) }}} \\
     \hline
     \endhead
-    \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\point-to-point\\reaching\\by computer cursors} & \makecell{Position,\\velocity}  \\ \\
-    \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} & \makecell{Position,\\velocity,\\acceleration} \\ \\
-    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } & \makecell{Location} \\ \\
-    \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\center-out reaching\\by joystick} & \makecell{Position,\\velocity,\\acceleration} \\ 
-    \hline
+    \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\point-to-point\\reaching\\by computer cursors} & \makecell{Position,\\velocity}  \\ \hline
+    \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} & \makecell{Position,\\velocity,\\acceleration} \\  \hline
+    \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } & \makecell{Location} \\  \hline
+    \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\center-out reaching\\by joystick} & \makecell{Position,\\velocity,\\acceleration} \\  \hline
     \label{tab:deep_leaning_in_invasive_BCI}
 \end{longtable}
 
-\setlength\LTleft{0cm}
-\setlength\LTright{0cm}
-
-% \begin{longtable}{cccc}
-%     \caption{Researches involved spikes} \\
-%     \hline
-%     \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Article}} } &  \multicolumn{1}{c}{\multirow{2}{*}{\textbf{Model}}}  & \multicolumn{1}{c}{  \multirow{2}{*}{\textbf{Subjects}}}     & \multicolumn{1}{c}{  \multirow{2}{*}{ \textbf{ Tasks }}}    \\
-%     \multicolumn{1}{c}{}                                    &  \multicolumn{1}{c}{}                                 & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                        \\
-%     \hline
-%     \endhead
-%     \cite{georgopoulos1986neuronal} & Linear & Rhesus monkey & \makecell{ Center-out reaching\\ by hand} \\ \\
-%     \cite{wu2004modeling}       & \makecell{Switching\\Kalman filter} & \makecell{Macaque\\monkeys} &  \makecell{ Computer cursor control\\by two-link\\manipulandum} \\ \\
-%     \cite{dethier2013design}    & \makecell{Kalman filter,\\Spiking neural networks} & Monkeys & \makecell{Center-out,\\Pinball task\\by computer cursors} \\ \\
-%     \cite{homer2013mixing}      & Kalman filter             & Human         & \makecell{ Center-out reaching\\by computer cursors}  \\ \\
-%     \cite{li2016improved}       & \makecell{Unscented\\Kalman filter}   & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching,\\Point-to-point pursuit\\by joystick } \\ \\
-%     \cite{vaskov2018cortical}   & \makecell{ReFIT\\Kalmen filter}       & \makecell{Rhesus\\monkeys} & \makecell{ Center-out reaching\\by virtual hand} \\ \\
-%     \cite{makin2018}            & \makecell{Recurrent\\exponential-family\\harmonium\\+\\Kalman filter} & \makecell{Rhesus\\monkeys} & \makecell{Point-to-point\\reaching\\by hands} \\ \\
-%     \cite{shaikh2019towards}    & Kalman filter             & Monkeys       & \makecell{ Computer cursor control\\by planar\\manipulandum} \\ \\
-%     \cite{tampuu2019efficient}  & LSTM                      & Rodent        & \makecell{ Free moving in\\2D open field\\environment } \\ \\
-%     \cite{tseng2019decoding}    & LSTM                      & \makecell{Rhesus\\monkeys} &\makecell{ Treadmill walking,\\Center-out reaching\\by joystick} \\ 
-%     \hline
-%     % some as dethier2013design \cite{dethier2011brain}     & & & \\ \\
-%     % some as dethier2013design \cite{dethier2011spiking} & & & \\ \\
-%     % no decoder \cite{jwo2007practical}     & \multirow{10}{*}{Kalman filter}   & & \\ \\
-%     \label{tab:spike_research}
-% \end{longtable}
+% \setlength\LTleft{0cm}
+% \setlength\LTright{0cm}
 
 
 % \begin{multicols}{2}
@@ -184,9 +143,10 @@ But they only predicted velocity, without decoding position and acceleration.
 
 % \end{multicols}
 
-\setlength\LTleft{-2cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
-\setlength\LTright{-2cm}
+% \setlength\LTleft{-2cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
+% \setlength\LTright{-2cm}
 
+\newpage
 \begin{longtable}{cccccc}
     \caption{Researches involved LFPs}\\
         \hline
@@ -194,23 +154,18 @@ But they only predicted velocity, without decoding position and acceleration.
         \multicolumn{1}{c}{}                                      &  \multicolumn{1}{c}{}                                           & \multicolumn{1}{c}{}                                      & \multicolumn{1}{c}{}                                         & \multicolumn{1}{c}{}                                   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Variable(s) }}} \\
         \hline
         \endhead
-        \cite{scherberger2005cortical} & \makecell{Magnitude\\0-5Hz\\5-15Hz\\$\vdots$\\95-105Hz} & \makecell{Bayesian\\classifier} & \makecell{Macaque\\monkeys} & \makecell{Arm reaching\\Saccade} & \makecell{Directions\\of movement} \\ \\        
-        \cite{quiroga2009}          & \makecell{Instantaneous\\phase\\1-4Hz}     & Bayesian      & Rodent    & \makecell{ Heading\\predictions} & \makecell{Directions\\of headings} \\ \\
-        \cite{ince2010high} & \makecell{Magnitude\\0.3-4Hz\\4-10Hz\\$\vdots$\\48-200Hz} & \makecell{Binary\\linear\\classifiers} & \makecell{Rhesus\\monkeys} & \makecell{ Center-out\\reaching\\by manipulandum} & \makecell{Directions\\of movement} \\ \\
-        \cite{flint2012accurate} & \makecell{Magnitude\\0-4Hz\\7-20Hz\\$\vdots$\\200-300Hz} & \makecell{Wiener\\cascade} & \makecell{Rhesus\\monkeys} & \makecell{Random-traget\\reaching\\by hands} & \makecell{Position,\\velocity} \\ \\
-        \cite{tan2016decoding} & \makecell{Magnitude\\13-30Hz\\55-90Hz} & \makecell{Linear\\dynamic\\model} & Human  & \makecell{Dynamometer\\gripping} & \makecell{Gripping\\force}　\\ \\
-        \cite{kumar2018eeg}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{2-class\\motor imagery} & None \\ \\
-        \cite{ahmadi2019decoding}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & \makecell{Rhesus\\Monkey}    & \makecell{Point-to-point\\reaching\\by hands} & \makecell{Velocity} \\
-        \hline
-        % no decoder \makecell{\cite{siapas2005}}            & theta (4-10Hz)                        & \makecell{Instantaneous\\phase}   &   & Place cells  \\ \\
-        % no decoder \makecell{\cite{einevoll2013}}          & LFP                                   & Magnitude                         & \makecell{Current\\source\\density}  & \makecell{  Sensory stimuli } \\ \\
-        % no decoder \makecell{\cite{coude2014}}             & \makecell{7-13Hz\\13-19Hz\\19-25Hz}   & Magnitude                         &   & \makecell{Monkey\\ } \\ \\
-        % no decoder \makecell{\cite{cattani2015}}           &\makecell{Delta (1-4Hz)\\Theta (4-8Hz)}& \makecell{Instantaneous\\phase}   &   & \makecell{ Monkeys \\ binocularly presented \\ a color movie}  \\ \\
+        \cite{scherberger2005cortical} & \makecell{Magnitude\\0-5Hz\\5-15Hz\\$\vdots$\\95-105Hz} & \makecell{Bayesian\\classifier} & \makecell{Macaque\\monkeys} & \makecell{Arm reaching\\Saccade} & \makecell{Directions\\of movement} \\ \hline
+        \cite{quiroga2009}          & \makecell{Instantaneous\\phase\\1-4Hz}     & Bayesian      & Rodent    & \makecell{ Heading\\predictions} & \makecell{Directions\\of headings} \\  \hline
+        \cite{ince2010high} & \makecell{Magnitude\\0.3-4Hz\\4-10Hz\\$\vdots$\\48-200Hz} & \makecell{Binary\\linear\\classifiers} & \makecell{Rhesus\\monkeys} & \makecell{ Center-out\\reaching\\by manipulandum} & \makecell{Directions\\of movement} \\ \hline
+        \cite{flint2012accurate} & \makecell{Magnitude\\0-4Hz\\7-20Hz\\$\vdots$\\200-300Hz} & \makecell{Wiener\\cascade} & \makecell{Rhesus\\monkeys} & \makecell{Random-traget\\reaching\\by hands} & \makecell{Position,\\velocity} \\ \hline
+        \cite{tan2016decoding} & \makecell{Magnitude\\13-30Hz\\55-90Hz} & \makecell{Linear\\dynamic\\model} & Human  & \makecell{Dynamometer\\gripping} & \makecell{Gripping\\force}　\\ \hline
+        \cite{kumar2018eeg}         & \makecell{Instantaneous\\phase\\8-24Hz}            & SVM           & Human     & \makecell{2-class\\motor imagery} & None \\ \hline
+        \cite{ahmadi2019decoding}   & \makecell{Magnitude\\0-4Hz\\ 0-300Hz}              & LSTM          & \makecell{Rhesus\\Monkey}    & \makecell{Point-to-point\\reaching\\by hands} & \makecell{Velocity} \\ \hline
     \label{tab:LFP_research}
 \end{longtable}
 
-\setlength\LTleft{0cm}
-\setlength\LTright{0cm}
+% \setlength\LTleft{0cm}
+% \setlength\LTright{0cm}
 
 % In order to obtaine neuronal signal containing less information other than motor cortex, invasive microelectrode were used instead than electroencephalography (EEG), which was attached to the surface of subject's head. 
 % Broadband signal, or local field potential (LFP), is one source to the hand movement decoder \citep{ahmadi2019decoding, ahmadi2019end}. 
@@ -233,7 +188,7 @@ It seems that the internal dynamics of can not highlight the different movement 
 In the field of natural language processing, people have successfully hightlighted the specific texts among a sentence or a paragraph, 
 which are the most relevant to the translation or classification tasks.
 Pointing out the dominant key words who contribute the most in their deep learning result makes it easier for human to evaluate the strength of the model.
-\\
+
 
 \cite{nakagome2020empirical} evaluated the effect of different tap sizes empirically,
 from small tap sizes (1, 2, and 5) to large ones (30, 40, 50).
@@ -266,12 +221,12 @@ Also in the field of image processing, generative adversarial network (GAN) thri
         \multicolumn{1}{c}{ \multirow{2}{*}{ \textbf{Article} } }    &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Normalization \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Applicable }}}  \\ 
         \multicolumn{1}{c}{}                                         &  \multicolumn{2}{c}{ \multirow{1}{*}{ \textbf{ \quad Approaches    \quad }}}   & \multicolumn{1}{c}{ \multirow{1}{*}{ \textbf{ Models     }}}  \\
         \hline \\
-        \cite{ioffe2015batch}       & Batch       & \multirow{11}{*}{Normalization}     & CNN \\ \\
-        \cite{ba2016layer}          & Layer       &                                     & RNN \\ \\ 
-        \cite{salimans2016weight}   & Weight      &                                     & CNN \& RNN \\ \\
-        \cite{ulyanov2016instance}  & Instance    &                                     & GAN \\ \\
-        \cite{wu2018group}          & Group       &                                     & CNN \\ \\
-        \cite{miyato2018spectral}   & Spectral    &                                     & GAN \\ \\
+        \cite{ioffe2015batch}       & Batch       & \multirow{6}{*}{Normalization}     & CNN \\ 
+        \cite{ba2016layer}          & Layer       &                                     & RNN \\
+        \cite{salimans2016weight}   & Weight      &                                     & CNN \& RNN \\
+        \cite{ulyanov2016instance}  & Instance    &                                     & GAN \\ 
+        \cite{wu2018group}          & Group       &                                     & CNN \\ 
+        \cite{miyato2018spectral}   & Spectral    &                                     & GAN \\
         \hline
     \end{tabular}
     \label{tab:six_types_of_norm}
@@ -325,6 +280,7 @@ It was \cite{cheng2016long} which first proposed the \textit{intra-attention} me
 Then \cite{vaswani2017attention} adapted similar idea but discarded the RNN architecture, making its \textit{Transformer} model has the advantage of parallelization.
 % \end{multicols}
 
+\newpage
 \begin{longtable}{cccc}
     \caption{Development of sequential attention}\\
     \hline
@@ -332,14 +288,14 @@ Then \cite{vaswani2017attention} adapted similar idea but discarded the RNN arch
     \multicolumn{1}{c}{}                                    & \multicolumn{1}{c}{}                                              & \multicolumn{1}{c}{  \multirow{1}{*}{\textbf{Model}}}      & \multicolumn{1}{c}{}                                       \\
     \hline
     \endhead
-    \cite{bahdanau2014neural} & \makecell{Alignment\\Model} & \makecell{Encoder-decoder\\(Seq2Seq)} & Machine translation \\ \\
-    \cite{xu2015show} & \makecell{Soft/Hard\\Attention} & RNN & Image Caption \\ \\
-    \cite{luong2015effective} & \makecell{Global/Local\\ Attention} &  \makecell{Encoder-decoder\\(Seq2Seq)} & Machine translation \\ \\
-    \cite{cheng2016long} & Intra-attention & \makecell{Encoder-decoder\\(Seq2Seq)} & Sentiment analysis \\ \\
-    \cite{parikh2016decomposable} & \makecell{Intra-sentence\\attention} & \makecell{Encoder-decoder\\(Seq2Seq)} & Sentiment analysis \\ \\
-    \cite{paulus2017deep} & Intra-attention & \makecell{Encoder-decoder\\(Seq2Seq)} & Text summarization \\ \\
-    \cite{vaswani2017attention} & \makecell{Self-attention,\\Parallelization,\\remove RNN} & \makecell{Encoder-decoder\\(The Transformer)} & Machine Translation \\ \\
-    \cite{lin2017structured} & \makecell{Self-attention} & RNN & Sentiment analysis \\ \\
+    \cite{bahdanau2014neural} & \makecell{Alignment\\Model} & \makecell{Encoder-decoder\\(Seq2Seq)} & Machine translation \\ \hline
+    \cite{xu2015show} & \makecell{Soft/Hard\\Attention} & RNN & Image Caption \\  \hline
+    \cite{luong2015effective} & \makecell{Global/Local\\ Attention} &  \makecell{Encoder-decoder\\(Seq2Seq)} & Machine translation \\  \hline
+    \cite{cheng2016long} & Intra-attention & \makecell{Encoder-decoder\\(Seq2Seq)} & Sentiment analysis \\  \hline
+    \cite{parikh2016decomposable} & \makecell{Intra-sentence\\attention} & \makecell{Encoder-decoder\\(Seq2Seq)} & Sentiment analysis \\  \hline
+    \cite{paulus2017deep} & Intra-attention & \makecell{Encoder-decoder\\(Seq2Seq)} & Text summarization \\  \hline
+    \cite{vaswani2017attention} & \makecell{Self-attention,\\Parallelization,\\remove RNN} & \makecell{Encoder-decoder\\(The Transformer)} & Machine Translation \\  \hline
+    \cite{lin2017structured} & \makecell{Self-attention} & RNN & Sentiment analysis \\ 
     \hline
     \label{tab:atten_dev}
 \end{longtable}
@@ -354,7 +310,7 @@ However, this procedure costs considerably amount of computational time,
 thus a simplified version known as local attention as introduced \citep{luong2015effective}.
 Followed by the works of \cite{wang2016attention, lin2017structured, ma2017dipole, hu2018novel,cui2019hierarchical}, 
 which all implemented the similar local attention techniques.
-\\
+
 
 Unlike the attention methods used in image processing as Table~\ref{tab:image_attention_equations_study} showes, 
 attention in RNNs typically use hyperbolic tangent and softmax as activations, 
@@ -365,8 +321,8 @@ wheras \cite{hu2018squeeze, woo2018cbam} used relu and sigmoid instead, also red
 
 \newpage
 
-\setlength\LTleft{-1.5cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
-\setlength\LTright{-1.5cm}
+% \setlength\LTleft{-1.5cm} %https://tex.stackexchange.com/questions/164005/how-to-exceed-left-margin-with-longtable
+% \setlength\LTright{-1.5cm}
 
 \begin{longtable}{ccc}
     \caption{Attention vectors for RNNs} \\
@@ -374,25 +330,19 @@ wheras \cite{hu2018squeeze, woo2018cbam} used relu and sigmoid instead, also red
     \textbf{Article} & \textbf{Score functions} & \textbf{Tasks} \\
     \hline
     \endhead
-    \\
-    \cite{bahdanau2014neural} & $\begin{aligned} \text{softmax}( \ba( \bs_{i-1}, \bh_j) ) &= \bv_a^{\intercal} \text{tanh}( \bW_a \bs_{i-1} + \bU_a \bh_j) \end{aligned}$  & \makecell{Machine\\translation} \\ \\
-    \cite{luong2015effective} & $ \begin{aligned} \text{score}( \bh_t, \bar{\bh}_s) &= \left \{ \begin{aligned} &\bh^{\intercal}_t \bar{\bh}_s   &&\text{dot} \\  &\bh^{\intercal}_t  \bW_a \bar{\bh}_s  &&\text{general} \\  &\bv^{\intercal}_a \text{tanh} ( \bW_a[ \bh_t ; \bar{\bh}_s ])  &&\text{concat}  \end{aligned}  \right.  \\  \ba_t &= \text{softmax}( \bW_a \bh_t) \quad \quad \quad \text{location} \end{aligned} $ & \makecell{Machine\\translation} \\ \\
-    \cite{cheng2016long} & $\begin{aligned} \ba^{t}_{i} &= \bv^{\intercal} \text{tanh}( \bW_h \bh_i + \bW_x \bx_t + \bW_{\tilde{\bh}} \tilde{\bh}_{t-1} ) \\ \bs^t_i &= \text{softmax}( \ba^t_i) \\ \begin{bmatrix} \hat{\bh}_t  \\ \hat{\bc}_t \end{bmatrix} &= \sum^{t-1}_{i=1} s^t_i \cdot \begin{bmatrix} \bh_i \\ \bc_i \end{bmatrix}   \end{aligned}$ & \makecell{Language modeling,\\sentiment analysis} \\  \\
-    \cite{yang2016hierarchical} & $\begin{aligned} \bu_{it} &= \text{tanh}( \bW_w \bh_{it} + \bb_w ) \\ \alpha_{it} &= \frac{\text{exp}(\bu_{it}^{\intercal} \bu_w)}{ \sum_t \text{exp}( \bu_{it}^{\intercal} \bu_w ) } \\ \bs_i &= \sum_t \alpha_{it} \bh_{it} \end{aligned}$ & \makecell{Text\\classification} \\ \\
-    \cite{wang2016attention} & $\begin{aligned} \bM &= \text{tanh} \left( \begin{bmatrix} \bW_h \bH \\ \bW_v \bv_a \otimes e_N \end{bmatrix} \right) \\  \boldsymbol{\alpha} &= \text{softmax}( \bw^{\intercal} \bM )  \\ \br &= \bH \alpha^{\intercal}  \end{aligned}$ & \makecell{Sentiment\\classification} \\ \\
-    \cite{lin2017structured} & $\begin{aligned} \bA &= \text{softmax}( \bW_{s2} \text{tanh}( \bW_{s1} \bH^{\intercal}) ) \\ \bM &= \bA \bH  \end{aligned}$ & \makecell{Sentiment\\analysis}  \\ \\
-    % \cite{ma2017dipole}  & $ \begin{aligned} \alpha_{ti} &= \left \{ \begin{aligned} &\bW^{\intercal}_{\alpha} \bh_i + \bb_{\alpha} &&\text{local-base} \\ &\bh^{\intercal}_{t} \bW_a \bh_i &&\text{general}  \\ &\bv^{\intercal}_{\alpha} \text{tanh}( \bW_a [ \bh_t;\bh_i ]) &&\text{concate-base}  \end{aligned}  \right.  \\ \boldsymbol{\alpha}_t &= \text{softmax}([ \alpha_{t1}, \alpha_{t2} , \cdots, \alpha_{t(t-1)} ]) \\ \bc_t &= \sum^{t-1}_{i=1} \alpha_{ti} \bh_i \\ \tilde{\bh}_t &= \text{tanh}(\bW_c [\bc_t;\bh_t]) \\ \tilde{\by}_t &= \text{softmax}(\bW_s \tilde{\bh}_t + \bb_s )  \end{aligned} $ & \makecell{Diagnoises\\prediction} \\ \\
-    \cite{hu2018novel} & $\begin{aligned} \bM_t &= \text{tanh}( \bW_h \bh_t) \\ \alpha_r &= \text{softmax}( \bw^{\intercal} \bM_t) \\ \br &= \sum_{t=1}^{T} \alpha_t \bh_t  \end{aligned} $ & \makecell{sEMG-based\\gesture recognition} \\ \\
-    \cite{cui2019hierarchical} & $\begin{aligned} \bC^t_h &=  [ \bh^{t-W_h+1}, \cdots, \bh^t] \\ \be_h &= r^{\intercal}_h \text{tanh}( \bQ_h( \bC^t_h )^{\intercal} ) \\ \ba_h &= \text{softmax}(\be_h) \\ \bx^t_c &= ( \ba_h \bC^t_h)^{\intercal} \end{aligned}$  & \makecell{Sequential\\recommendation} \\ \\
-    % too old \cite{brown2018recurrent} & $\begin{aligned} K &= tanh( V W^a) \\ d &=  softmax( q K^T) \\ a &= d V \\ P(t)&=softmax([ h_{t-1} a_{t-1} W + b ])   \end{aligned}$ \\ \\
-    % too old \cite{zhang2020motor} & $\begin{aligned} H_i &= tanh(W_i h^{'}_i + b_i), \quad H_i \in \mathbb{R}^{ha} \\ V_i &= \frac{exp(H^T_i V_i)}{\sum_i exp(H^T_i V_i)} \\ A &= \sum_i Vi h^{'}_i , \quad A \in \mathbb{R}^{l} \\ P &= softmax(WA+b)  \end{aligned}$  \\ \\
-    % too old \cite{} & $\begin{aligned}  \end{aligned}$  \\ \\
-    \hline
+    \cite{bahdanau2014neural} & $\begin{aligned} \text{softmax}( \ba( \bs_{i-1}, \bh_j) ) &= \bv_a^{\intercal} \text{tanh}( \bW_a \bs_{i-1} + \bU_a \bh_j) \end{aligned}$  & \makecell{Machine\\translation} \\ \hline
+    \cite{luong2015effective} & $ \begin{aligned} \text{score}( \bh_t, \bar{\bh}_s) &= \left \{ \begin{aligned} &\bh^{\intercal}_t \bar{\bh}_s   &&\text{dot} \\  &\bh^{\intercal}_t  \bW_a \bar{\bh}_s  &&\text{general} \\  &\bv^{\intercal}_a \text{tanh} ( \bW_a[ \bh_t ; \bar{\bh}_s ])  &&\text{concat}  \end{aligned}  \right.  \\  \ba_t &= \text{softmax}( \bW_a \bh_t) \quad \quad \quad \text{location} \end{aligned} $ & \makecell{Machine\\translation} \\  \hline
+    \cite{cheng2016long} & $\begin{aligned} \ba^{t}_{i} &= \bv^{\intercal} \text{tanh}( \bW_h \bh_i + \bW_x \bx_t + \bW_{\tilde{\bh}} \tilde{\bh}_{t-1} ) \\ \bs^t_i &= \text{softmax}( \ba^t_i) \\ \begin{bmatrix} \hat{\bh}_t  \\ \hat{\bc}_t \end{bmatrix} &= \sum^{t-1}_{i=1} s^t_i \cdot \begin{bmatrix} \bh_i \\ \bc_i \end{bmatrix}   \end{aligned}$ & \makecell{Language modeling,\\sentiment analysis} \\   \hline
+    \cite{yang2016hierarchical} & $\begin{aligned} \bu_{it} &= \text{tanh}( \bW_w \bh_{it} + \bb_w ) \\ \alpha_{it} &= \frac{\text{exp}(\bu_{it}^{\intercal} \bu_w)}{ \sum_t \text{exp}( \bu_{it}^{\intercal} \bu_w ) } \\ \bs_i &= \sum_t \alpha_{it} \bh_{it} \end{aligned}$ & \makecell{Text\\classification} \\  \hline
+    \cite{wang2016attention} & $\begin{aligned} \bM &= \text{tanh} \left( \begin{bmatrix} \bW_h \bH \\ \bW_v \bv_a \otimes e_N \end{bmatrix} \right) \\  \boldsymbol{\alpha} &= \text{softmax}( \bw^{\intercal} \bM )  \\ \br &= \bH \alpha^{\intercal}  \end{aligned}$ & \makecell{Sentiment\\classification} \\  \hline
+    \cite{lin2017structured} & $\begin{aligned} \bA &= \text{softmax}( \bW_{s2} \text{tanh}( \bW_{s1} \bH^{\intercal}) ) \\ \bM &= \bA \bH  \end{aligned}$ & \makecell{Sentiment\\analysis}  \\  \hline
+    \cite{hu2018novel} & $\begin{aligned} \bM_t &= \text{tanh}( \bW_h \bh_t) \\ \alpha_r &= \text{softmax}( \bw^{\intercal} \bM_t) \\ \br &= \sum_{t=1}^{T} \alpha_t \bh_t  \end{aligned} $ & \makecell{sEMG-based\\gesture recognition} \\  \hline
+    \cite{cui2019hierarchical} & $\begin{aligned} \bC^t_h &=  [ \bh^{t-W_h+1}, \cdots, \bh^t] \\ \be_h &= r^{\intercal}_h \text{tanh}( \bQ_h( \bC^t_h )^{\intercal} ) \\ \ba_h &= \text{softmax}(\be_h) \\ \bx^t_c &= ( \ba_h \bC^t_h)^{\intercal} \end{aligned}$  & \makecell{Sequential\\recommendation} \\  \hline
     \label{tab:rnn_attention_equations_study}
 \end{longtable}
 
-\setlength\LTleft{0cm}
-\setlength\LTright{0cm}
+% \setlength\LTleft{0cm}
+% \setlength\LTright{0cm}
 
 
 \begin{longtable}{cc}
@@ -401,11 +351,8 @@ wheras \cite{hu2018squeeze, woo2018cbam} used relu and sigmoid instead, also red
     \textbf{Article} & \textbf{ \quad Score functions \quad } \\
     \hline
     \endhead
-    \\
-    \cite{hu2018squeeze} & $\begin{aligned} \bs &= \text{sigmoid}( \bW_2( \text{relu}( \bW_1 \bz )))    \end{aligned}$  \\ \\
-    \cite{woo2018cbam} & $\begin{aligned} \bM_c(F) &= \text{sigmoid}( \bW_1( \bW_0( F^c_{avg} )) +  \bW_1( \bW_0(F^c_{max} ))) \end{aligned}$  \\ \\
-    % \cite{} & $\begin{aligned}  \end{aligned}$  \\ \\
-    \hline
+    \cite{hu2018squeeze} & $\begin{aligned} \bs &= \text{sigmoid}( \bW_2( \text{relu}( \bW_1 \bz )))    \end{aligned}$  \\  \hline
+    \cite{woo2018cbam} & $\begin{aligned} \bM_c(F) &= \text{sigmoid}( \bW_1( \bW_0( F^c_{avg} )) +  \bW_1( \bW_0(F^c_{max} ))) \end{aligned}$  \\  \hline    
     \label{tab:image_attention_equations_study}
 \end{longtable}
 
@@ -415,7 +362,7 @@ Similar attention techniques can be seen in sentiment classification research \c
 where they appended the attention mechanism right after the LSTM outputs and named it attention-based LSTM.
 They also visualized the aspect in each sentence, e.g., the term \textit{service} or \textit{food} by showing the weights in attention vectors.
 They can tell the important words from the whole sentence.
-\\
+
 
 \todo[inline, author=Prof. ]{補充說明\cite{zhang2020motor}設計/使用attention來加強腦機介面的理由}
 \todo[inline, author=Wu, color=blue!40]{\cite{zhang2020motor} 也是用attention研究RNN是如何學習的，不過是用在classification task。}
