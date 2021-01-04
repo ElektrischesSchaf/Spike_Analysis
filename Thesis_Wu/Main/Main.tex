@@ -104,8 +104,8 @@
 \usepackage{../macros_tn} %Loads all my macros
 \usepackage{geometry}
 
-% \usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes}   % notes showed \usepackage[disable]{todonotes}
-\usepackage[disable]{todonotes}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}   % notes showed \usepackage[disable]{todonotes}
+% \usepackage[disable]{todonotes}
 
 % \usepackage[disable]{todonotes} % hide all todos
 \usepackage{enumitem}
@@ -129,8 +129,8 @@
 \usepackage{etoolbox}
 \renewcommand\nomgroup[1]{%
 	\item[\bfseries
-			\ifstrequal{#1}{A}{List of Abbreviations}{
-					\ifstrequal{#1}{B}{Attention Mechanism}{
+			\ifstrequal{#1}{A}{List of abbreviations}{
+					\ifstrequal{#1}{B}{List of symbols}{
 						% \ifstrequal{#1}{C}{Attention Mechanism} {
 						% }
 					}
@@ -146,7 +146,7 @@
 \hypersetup{
   colorlinks=true,
   linkcolor=black, 
-  citecolor=black,
+  citecolor=blue,
   urlcolor=magenta,
   filecolor=cyan,
   linkbordercolor={0 0 1}
@@ -241,7 +241,7 @@
 		\chapter{Introduction}
 		\label{chap:Introduction}
 		\input{../Introduction.tex}
-		\chapter{Related Work}
+		\chapter{Related Works}
 		\label{chap:Related_work}
 		\input{../Related_work.tex}
 		\chapter{Neural Decoder Design}
