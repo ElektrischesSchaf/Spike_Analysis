@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import seaborn as sns
 
+
 path=r'''../../Figures/Spike_and_Heatmap/'''
 if not os.path.exists(path):
     os.mkdir(path)
@@ -174,8 +175,10 @@ my_fontsize = 45
 # f ,ax = plt.subplots(2,1, gridspec_kw={'height_ratios': [1,1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, constrained_layout=True , figsize=(my_plot_width, my_plot_height*2))
 
 plt.figure( figsize=(my_plot_width, my_plot_height) )
-cbar_kws={"orientation": "horizontal", "shrink": 0.5, "aspect":50, "use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ 0, 4 ]}
-ax = sns.heatmap( data=data, vmax=4 , xticklabels=False, yticklabels=True, cbar=False, cmap='YlGnBu_r') # important, not ax[0] = sns.heatmap(...)
+sns.set(font_scale=5)
+sns.set_style("white")
+cbar_kws={"orientation": "vertical", "shrink": 0.5, "aspect":25,"use_gridspec":"True", "fraction":0.1 , "pad":0.07, 'ticks' : [ 0, 4 ]}
+ax = sns.heatmap( data=data, vmax=4 , xticklabels=False, yticklabels=True, cbar=True, cbar_kws=cbar_kws, cmap='YlGnBu_r') # important, not ax[0] = sns.heatmap(...)
 # ax[0].set_xticklabels(ax[0].get_xmajorticklabels(), fontsize = my_fontsize, rotation=0)
 ax.set_title('Firing rate', fontsize=my_fontsize)
 
@@ -200,7 +203,7 @@ plt.close()
 
 
 f ,ax = plt.subplots(2,1, gridspec_kw={'height_ratios': [1, 1],  "hspace":0.2 ,"left":0.1, "right":0.9, "top":0.95, "bottom":0.05}, constrained_layout=True , figsize=(my_plot_width, my_plot_height))
-
+sns.set_style("white")
 ax[0].set_title('M1 spike train', fontsize=my_fontsize)
 ax[0].eventplot(m1_raster, linelengths=1 , color='black')
 ax[0].set_xlim([ start_plot_time, end_plot_time ])
@@ -220,7 +223,7 @@ ax[1].tick_params(axis='x', labelsize= my_fontsize*0.5)
 ax[1].tick_params(axis='y', labelsize= my_fontsize*0.5)
 ax[1].yaxis.set_major_locator(ticker.MultipleLocator(50))
 ax[1].yaxis.set_major_formatter(ticker.ScalarFormatter())
-ax[1].set_xlabel('Time (seconds)', fontsize=my_fontsize )
+ax[1].set_xlabel('Time (s)', fontsize=my_fontsize )
 
 # plt.show()
 plt.savefig( path+'/'+'s1_and_m1_spike_train.png')
