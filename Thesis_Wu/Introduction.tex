@@ -13,9 +13,9 @@
 \section{Why, what and how is invasive BCIs?}
 \label{sec:why_what_how_is_invasive_BCI}
 % \begin{multicols}{2}
-\todo[ color=green!40]{為什麼需要侵入式腦機介面、侵入式腦機介面的用途?}
+\todo[ color=green!20]{為什麼需要侵入式腦機介面、侵入式腦機介面的用途?}
 % \todo[ author=Prof.]{ \ref{sec:why_what_how_is_invasive_BCI}不是講electrode的用途，而是 BCI 的用途，要幫助哪些人?}
-% \todo[ author=Wu, color=blue!40]{ BCI 的用途改放在第一段 }
+% \todo[ author=Wu, color=blue!20]{ BCI 的用途改放在第一段 }
 This research is aimed for developing algorithms that can convert neural signals into actual movement of the limbs. 
 For those who suffer from motor disability, 
 there exist softwares that allow people to move or control a computer cursor using imagined or attempted movents \citep{hosman2019bci}, 
@@ -43,7 +43,7 @@ adopted spike signals from the place cells and pyramidal neurons found in mammal
 \label{sec:difference_between_center_out_and_pursuit}
 % \begin{multicols}{2}
 
-\todo[ color=green!40]{center-out task and pursuit task的差異}
+\todo[ color=green!20]{center-out task and pursuit task的差異}
 % \todo[inline, author=Prof.]{Pursuit task with point-to-point trajectory，可參考以下論文，搜尋An Improved Unscented Kalman Filter Based Decoder for Cortical Brain-Machine Interfaces}
 
 \cite{li2016improved} is one of a few researches that has conducted both center-out and point-to-point movements (Figure~\ref{fig:center-out_and_pursuit}).
@@ -72,7 +72,7 @@ Based on the descriptions we listed the differences between center-out and point
 \section{Unsolved problems related to point-to-point pursuit task}
 \label{sec:unsolved_problems_related_to_pursuit_task}
 % \begin{multicols}{2}
-\todo[ color=green!40]{有甚麼問題還沒被解決?}
+\todo[ color=green!20]{有甚麼問題還沒被解決?}
 % \todo[inline, author=Prof.]{\ref{sec:unsolved_problems_related_to_pursuit_task}
 % 這段需要強調錫志開發的工具，哪些是現有方法缺少的?不只是Makin的方法，其他團隊的方法也要探索，例如Stanford, Brown, CMU。
 % 建議閱讀Makin's introduction for more details of other BCI studies。
@@ -81,7 +81,7 @@ Based on the descriptions we listed the differences between center-out and point
 % 不管是center-out或pursuit task都要說明
 % 詳細說明這些RNN方法改良了甚麼問題?}
 
-\todo[ author=Wu, color=blue!40]{現有方法 Kalman filter 的相關問題}
+\todo[ author=Wu, color=blue!20]{現有方法 Kalman filter 的相關問題}
 The standard Kalman filter uses linear functions to map the kinematics between current and the next steps, and it also assume Gaussian distributions in the spike count data.
 Several non-linear tuning methods were developed and used in BCI such as Unscented Kalman filter \citep{li2016improved},
 but it failed to learn a useful latent representation \citep{makin2018}.
@@ -90,21 +90,21 @@ which they claimed that it outperforms Unscented Kalman filter in neural decodin
 
 
 % \todo[  author=Prof]{說明 \cite{makin2018} 哪裡還不夠準?}
-% \todo[  author=Wu, color=blue!40]{\cite{makin2018} 的 acceleration 預測相當差，但是只能從他們給的$R^2$來說明，無法做他們詳細的的 Failure case study}
+% \todo[  author=Wu, color=blue!20]{\cite{makin2018} 的 acceleration 預測相當差，但是只能從他們給的$R^2$來說明，無法做他們詳細的的 Failure case study}
 Although they have obtained high performances in the position and velocity decoding tasks, 
 but failed to decode acceleration with the accuracy as good as the preceding two kinematic variables.
 Other improved methods for Kalman filter in \cite{vaskov2018cortical} requires two stage of training,
 and it must acquire the target coordinates in the second training phase.
 
 
-\todo[ author=Wu, color=blue!40]{詳細說明這些RNN方法改良了甚麼問題}
+\todo[ author=Wu, color=blue!20]{詳細說明這些RNN方法改良了甚麼問題}
 RNNs are the most promising tool to outperform Kalman filter in BCI \citep{hosman2019bci}.
 Although RNNs are expensive in space and time complexities, 
 but they are not restricted to solving only linear system with Gaussian noise assumption \citep{chenna2004state}.
 
 
-\todo[ author=Wu, color=blue!40]{這一段引用其他有使用sequence model的研究}
-\todo[ author=Wu, color=blue!40]{說明 RNN 為何可以解 neural decoding}
+\todo[ author=Wu, color=blue!20]{這一段引用其他有使用sequence model的研究}
+\todo[ author=Wu, color=blue!20]{說明 RNN 為何可以解 neural decoding}
 Since neural signals are non-linear sequential data \citep{brezina2000neuromuscular}, 
 and firing patterns in motor cortex neurons are closely related to movement directions \citep{hatsopoulos1998information},
 It is practical to use RNNs as the backbone of neural decoders \citep{buonomano2011population}, 
@@ -115,7 +115,7 @@ However, previous BCI researches involved RNNs have not focus on the internal dy
 Deep learning models are criticized as black boxes with its lack of interpretability.
 
 
-\todo[ author=Wu, color=blue!40]{這段提到使用 neural decoder 一定會遇到 tap size 選擇的問題}
+\todo[ author=Wu, color=blue!20]{這段提到使用 neural decoder 一定會遇到 tap size 選擇的問題}
 Most of the BCI decoders choosed the length of spiking history arbitrarity and they adjusted empirically based on the decoding performances \citep{tseng2019decoding},
 as \cite{li2009unscented, li2016improved} used 10 taps of spiking data in their experiments.
 There is no analytical tool for researchers to evaluate the optimal history length yet,
@@ -126,9 +126,9 @@ and we tried to solve this problem with our temporal attention visualization too
 \section{Motivation and goals of our research}
 \label{sec:inspirations_and_goals}
 % \begin{multicols}{2}
-% \todo[ color=green!40]{碩士論文受到哪些論文的啟發? 有了甚麼想法? 想解決哪些問題?}
+% \todo[ color=green!20]{碩士論文受到哪些論文的啟發? 有了甚麼想法? 想解決哪些問題?}
 % \todo[inline, author=Prof.]{NLP的attention有甚麼特別的地方?NLP的問題有甚麼特性?neural decoding的問題又有甚麼特性?這兩者之間有甚麼關聯?}
-\todo[ author=Wu, color=blue!40]{新增NLP與Neural decoder的關聯}
+\todo[ author=Wu, color=blue!20]{新增NLP與Neural decoder的關聯}
 The resemblances between NLP neural network models and neural signal decoders are strong.
 First, since they are both sequential data and rely on extracting temporal features \citep{pustejovsky2005temporal, kornysheva2014human},
 that makes RNNs widely used in both fields \citep{yin2017comparative, glaser2020machine, xu2019comparison}.
@@ -137,18 +137,18 @@ such as machine translation has multiple inputs multiple outputs \citep{bahdanau
 and sentiment analysis or classification with multiple inputs single output \citep{cheng2016long, yang2016hierarchical, wang2016attention}.
 Corresponding to our neural decoding task, models with multiple inputs single outputs are most applicable in our case.
 
-\todo[ author=Wu, color=blue!40]{使用NLP attention的理由與用途}
+\todo[ author=Wu, color=blue!20]{使用NLP attention的理由與用途}
 This research is inspired by the successful work from the attention module enhanced the RNN performance and also provided interpretability in natural language processing \citep{lin2017structured}.
 After implementing the attention module in the setiment classification task,
 the prediction accuracy rised according to their experiments.
 Also in the field of image processing,
 attention modules have provided visualization to explain what the model sees on their input images \citep{hu2018squeeze, woo2018cbam}.
-\todo[ author=Wu, color=blue!40]{說明neural decoding 需 attention 的理由}
+\todo[ author=Wu, color=blue!20]{說明neural decoding 需 attention 的理由}
 But currently there are no other researches showing such visualization results about neural signals.
 As the resemblances bewteen NLP and neural signals were mentioned earlier in this section,
 we believe it can provide potent reasons for us to explain the design of our model and provide new insights to neural science by showing the attention map of neural signals.
 
-% \todo[ author=Wu, color=blue!40]{提出為什麼需要analysis of reciprocal effect}
+% \todo[ author=Wu, color=blue!20]{提出為什麼需要analysis of reciprocal effect}
 So far no other reseaches have conducted experiments on analyzing which technique contibutes more on the neural decoding. 
 We are interested in how the the normalization method \citep{ba2016layer} and the attention module \citep{lin2017structured} can affect decoding performances.
 
@@ -157,11 +157,11 @@ We are interested in how the the normalization method \citep{ba2016layer} and th
 \section{Our contributions to invasive BCIs}
 \label{sec:our_contributions}
 % \begin{multicols}{2}
-% \todo[ color=green!40]{條列碩士論文的貢獻}
+% \todo[ color=green!20]{條列碩士論文的貢獻}
 % \todo[inline, author=Prof.]{\ref{sec:our_contributions}的論文貢獻必須跟 \ref{sec:unsolved_problems_related_to_pursuit_task}, \ref{sec:inspirations_and_goals} 提到的問題互相呼應，例如\ref{sec:our_contributions}提到這篇碩論的方法可提供interpretable的功能，那麼\ref{sec:unsolved_problems_related_to_pursuit_task}, \ref{sec:inspirations_and_goals}必須提到過去的neural decoder不能提供interpretable的缺點}
 % \todo[inline, author=Prof.]{需要在 \ref{sec:inspirations_and_goals} 提到為什麼NLP的方法可以提供interpretable?}
 % \todo[inline, author=Prof.]{\ref{sec:our_contributions} 提到這篇碩論的貢獻在於提供了analysis of reciprocal effect，那麼需要在 \ref{sec:inspirations_and_goals} 提出為什麼需要analysis of reciprocal effect?}
-% \todo[inline, author=Wu, color=blue!40]{新增 tap size 最佳化分析的功能}
+% \todo[inline, author=Wu, color=blue!20]{新增 tap size 最佳化分析的功能}
 \begin{itemize}
     \item Proposed neural decoder in our reseach outperforms the state-of-the-art results from \cite{makin2018}, with higher weighted average $R^{2}$ and lower standard deviation among all sessions, all 6 types of kinematic variables (position, velocity, acceleration each in x-axis and y-axis)
     \item Developed an \textit{interpretable} deep learning model, which can highlight the key patterns between model attention and the fingertip movement in an intuitive way

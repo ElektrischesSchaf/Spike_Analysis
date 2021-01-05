@@ -1,5 +1,5 @@
 % \todo[inline, author=Prof]{將發明的網路命名，提供兩個命名}
-% \todo[inline, author=Wu, color=blue!40]{ 1. self-attentive bidirectional GRU decoder \\   2. Attention-aided bidirectional decoder }
+% \todo[inline, author=Wu, color=blue!20]{ 1. self-attentive bidirectional GRU decoder \\   2. Attention-aided bidirectional decoder }
 
 \section{Data acquisition}
 % \todo[inline, color=green!40]{ (換句話說Makin論文)包含訊號處理、擷取spike的部分，放入 Figure~\ref{fig:spike_train_to_firing_rate} }
@@ -10,7 +10,7 @@ It containes the recordings from two rhesus macaque monkeys, named Indy and Loco
 Each monkey contributed several sessions of data.
 One session represents a consecutive experiment recording within several minutes.
 The lengths of the sessions are not consistant, and mostly the durations are in the range of 5 to 20 minutes.
-\todo[ author=Wu, color=blue!40 ]{強調電極植入腦區}
+\todo[ author=Wu, color=blue!20 ]{強調電極植入腦區}
 Two 96-channel silicon microelectrode arrays (Figure~\ref{fig:utah_array}) were chronically implanted into their primary motor cortex (Brodmann area 4, M1) and sensorimotor cortex (Brodmann area 1, S1).
 Each array consisted of 96 electrodes, and the distance between two adjacent electrodes is $400 \mu m$. 
 All electrodes covered the area of size $4mm \times 4mm$.
@@ -52,7 +52,7 @@ and duration of each session can be found in Appendix~\ref{sec:dataset_indy} and
 % \begin{multicols}{2}
 The raw recording from the electrode arrays were filtered with an infinite impulse response (IIR) bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
 Spikes were detected and sorted online by \cite{makin2018} with a custom software written in C++.
-\todo[ author=Wu, color=blue!40]{解釋 sorted units, hash unit}
+\todo[ author=Wu, color=blue!20]{解釋 sorted units, hash unit}
 First they computed the absolute value of the filtered neural signal,
 and then extracted neural events that crossed the threshold value,
 typically 3.5 to 4.0 times the standard deviation.
@@ -77,7 +77,7 @@ the upper subplot is the raw broadband signal and the lower subplot is the filte
         \label{fig:raw_to_spike}
     \end{center}
 \end{figure}
-\todo[ author=Wu, color=blue!40]{修改Figure~\ref{fig:raw_to_spike}的caption}
+\todo[ author=Wu, color=blue!20]{修改Figure~\ref{fig:raw_to_spike}的caption}
 
 % \begin{multicols}{2}
 To boost the accuracy of the decoders, 
@@ -101,7 +101,7 @@ and since in this case the tap size is 4, the number of overlapping time bins ar
         \label{fig:time_bin_and_prediction}
     \end{center}
 \end{figure}
-% \todo[inline, author=Wu, color=blue!40]{ 先說明 tap size ，time bin 的使用方式  }
+% \todo[inline, author=Wu, color=blue!20]{ 先說明 tap size ，time bin 的使用方式  }
 
 % \begin{multicols}{2}
 As showed in Figure \ref{fig:indy_20160407_02_M1_ch_60}, 
@@ -126,13 +126,13 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} showed the spike train from S1 electr
             \label{fig:indy_20160407_02_S1_ch_60}
         \end{minipage}
 \end{figure}
-% \todo[inline, author=Wu, color=blue!40]{ 再說明有些 session 有 M1 S1 兩個電極的資訊 }
+% \todo[inline, author=Wu, color=blue!20]{ 再說明有些 session 有 M1 S1 兩個電極的資訊 }
 
 % \begin{multicols}{2}
-Spike firing rate was calculated by counting the spike numbers within non-overlapping time window.
-\todo[author=Wu, color=blue!40]{說明64ms window width 理由}
+Spike firing rate was calculated by counting the spike numbers within non-overlapping time bins.
+\todo[author=Wu, color=blue!20]{說明64ms window width 理由}
 In order to compare our performances with the main results from \cite{makin2018},
-we selected window width as 64ms in our research.
+we selected the bin width as 64ms in our research.
 For sessions contained both M1 and S1 electrode array, 
 we concatenated the two spike trains.
 As from Figure~\ref{fig:spike_train_to_firing_rate} the spike trains turned into firing rate.
@@ -161,25 +161,34 @@ For other experiments, different bin width were used to obtain different firing 
     \begin{center}
         \begin{subfigure}{0.49\textwidth}
             \includegraphics[width=1\textwidth]{s1_and_m1_spike_train.png}
-            \caption{M1 and S1 spike train}
+            \caption{}
         \end{subfigure}
         \begin{subfigure}{0.49\textwidth}
             \includegraphics[width=1\textwidth]{the_result_heatmap.png}
-            \caption{Firing rate}
+            \caption{}
         \end{subfigure}
-        \caption{Spike train to firing rate}
-        \subcaption*{session indy\_20160411\_02}
+        \caption{(a) M1 and S1 spike train and (b) its firing rate, both from session indy\_20160411\_02}
         \label{fig:spike_train_to_firing_rate}		
     \end{center}	
 \end{figure}
+\todo[author=Wu, color=blue!20]{ Figure~\ref{fig:spike_train_to_firing_rate} add colorbar, 仍然維持 Unit }
 
-% \todo[inline, author=Wu, color=blue!40]{ 如何將 M1 與 S1 電極收到的 spike train 轉換成 firing rate，從 raster plot 變 heatmap。同時解釋 M1 與 S1 的 firing rate 是直接 concatenate 在一起。 }
+% \todo[inline, author=Wu, color=blue!20]{ 如何將 M1 與 S1 電極收到的 spike train 轉換成 firing rate，從 raster plot 變 heatmap。同時解釋 M1 與 S1 的 firing rate 是直接 concatenate 在一起。 }
 
 % \begin{multicols}{2}
-The heatmap of the firing rate within 50 time bins and the 6 kinematic variables are showed in Figure \ref{fig:Firing_rate_heatmap_and_all_kinematic_variables}.
-For each type of the kinematic variable (position, velocity, acceleration) we will predict the trajectory among x and y-axis only without the z-axis.
-The heatmap is showing an obvious relationship between the occurrance of movements and the intensity of spike firing.
-Empty units in this session have been removed, as actual number of sorted units in each session is listed in in Appendix~\ref{sec:dataset_indy} and \ref{sec:dataset_loco}.
+In Figure \ref{fig:Firing_rate_heatmap_and_all_kinematic_variables}
+we plotted the firing rate heatmap with 50 time bins (3.2s) and 6 kinematic variables together.
+For each type of the kinematic variable (position, velocity and acceleration),
+\todo[author=Wu, color=blue!20]{解釋模型的預測是運動的x與y方向的座標}
+we predicted the trajectoriews among x-axis (lateral) and y-axis (sagittal) of the transverse plane.
+The dash lines indicated the actual tragectory of the fingertip and the solid vertical gray lines indicated the time points when target cues altered.
+\todo[author=Wu, color=blue!20]{加強解釋firing rate與手部軌跡的初步觀察結果}
+The heatmap shown a pattern between the occurrance of movements and the intensity of spike firing,
+that is when the neuron firing is intense,
+it typically corresponds to the timing when fingertips are moving.
+Empty units in this session have been removed,
+and the actual numbers of sorted units in each session is listed in in Appendix~\ref{sec:dataset_indy} and \ref{sec:dataset_loco}.
+
 % \end{multicols}
 
 
@@ -187,22 +196,21 @@ Empty units in this session have been removed, as actual number of sorted units 
     \begin{center}
         \includegraphics[width=1\textwidth]{Firing_rate_heatmap_and_all_kinematic_variables.png}
         \captionsetup{width=1\textwidth}
-        \caption{Firing rate and kinematic variables}
-        \subcaption*{session indy\_20160927\_04}
+        \caption{Firing rate and kinematic variables from session indy\_20160927\_04}
         \label{fig:Firing_rate_heatmap_and_all_kinematic_variables}
     \end{center}
 \end{figure}
-\todo[inline, author=Wu, color=blue!40]{最後在將 firing rate heatmap 與 運動資訊疊圖比較 }
-
+\todo[author=Wu, color=blue!20]{ Figure~\ref{fig:Firing_rate_heatmap_and_all_kinematic_variables} axis 改成 coordinate, add colorbar, 時間軸 (Seconds) 改成 (s) }
 
 \section{Animal pursuit task with point-to-point trajectory}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{(換句話說Makin論文)，包含運動軌跡、experimental setup}
+% \todo[inline, color=green!40]{(換句話說Makin論文)，包含運動軌跡、experimental setup}
 
 The monkeys were trained to conduct reaching tasks with their arms in a transverse plane below their shoulder, 
-and the targets were showing up one by one in a virtual reality environment.
+and the targets were shown up one by one in a virtual reality environment.
 Circular targets in 5mm virual radius were presented in Figure \ref{fig:panels} which the size is either $8 \times 8 $ square grid or $8 \times 17$ rectangular grid for monkey Indy,
 and for monkey Loco square grid of size $6 \times 6$ was used.
+
 % \end{multicols}
 
 \begin{figure}[H]
@@ -225,31 +233,29 @@ and for monkey Loco square grid of size $6 \times 6$ was used.
             \label{fig:6_times_6}
             \caption{$6 \times 6$ square grid} 
         \end{subfigure}
-        \caption[Three sizes of the panel]{Three sizes of the panel}
+        \caption{Three sizes of the virtual panels}
         \label{fig:panels}		
     \end{center}	
 \end{figure}
-% \todo[inline, author=Wu, color=blue!40]{ 3個panel的長寬尺寸還沒調成一致 }
+% \todo[inline, author=Wu, color=blue!20]{ 3個panel的長寬尺寸還沒調成一致 }
 
-% \begin{multicols}{2}
-Only when the monkeys' fingertips reached the acceptance zone of size $7.5mm  \times 7.5mm$ which were centered on each target for 450ms would the system consider a valid touch and move on to another cue.
-Figure \ref{fig:X-Y_trajectory_in_VR_panel} 
-% \end{multicols}
+Only when the monkeys' fingertips reached the acceptance zone of size $7.5mm \times 7.5mm$ which were centered on each target for 450ms would the system consider a valid touch and move on to another cue.
+We illustrated how the fingertip moved from an arbitrary point A to point B in the 2D virtual panel (Figure~\ref{fig:X_Y_trajectory_in_VR_panel}) and the corresponding trajectories with respect to time (Figure~\ref{fig:x_and_y_trajectory_and_cue}).
+As in Figure~\ref{fig:Firing_rate_heatmap_and_all_kinematic_variables},
+dash lines indicated the actual tragectory of the fingertip and the solid vertical gray lines indicated the time points when target cues altered.
+
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.6\textwidth]{X-Y_trajectory_in_VR_panel.png}
         \captionsetup{width=1\textwidth}
         \caption{Fingertip Trajectory in 2D Virtual Panel}
-        \label{fig:X-Y_trajectory_in_VR_panel}
+        \label{fig:X_Y_trajectory_in_VR_panel}
     \end{center}
 \end{figure}
 
-% \begin{multicols}{2}
-The recorded tragectories in the x and y-axis as well as the target cues for both directions are in Figure \ref{fig:x_and_y_trajectory_and_cue},
-where the dash lines indicate the actual tragectory of the fingertip and the solid vertical gray lines indicate the time point when target cues altered.
-% \end{multicols}
 
+% \todo[ author=Wu, color=blue!20]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:qualitative_analysis} 章 prediction、actual 軌跡對時間作圖保持一致， }
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{x_and_y_trajectory_and_cue.png}
@@ -258,7 +264,7 @@ where the dash lines indicate the actual tragectory of the fingertip and the sol
         \label{fig:x_and_y_trajectory_and_cue}
     \end{center}
 \end{figure}
-\todo[inline, author=Wu, color=blue!40]{ 這邊真實紀錄到的軌跡都用虛線表示，是為了跟 \ref{sec:qualitative_analysis} 章 prediction、actual 軌跡對時間作圖保持一致， }
+
 
 % \begin{multicols}{2}
 They used a mirror to reflect visual input from a projector so that visual cues appeared in the plane of the reaching hand, 
@@ -276,10 +282,11 @@ which is simply the differences between two samples divided by the sampling peri
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.8\textwidth]{monkey_experiment.png}
-        \caption{Experimental setup}
+        \caption{Experimental setup \cite{makin2018}}
         \label{fig:monkey_experiment}
     \end{center}
 \end{figure}
+\todo[author=Wu, color=blue!20]{加上圖片citation}
 
 
 \begin{comment}

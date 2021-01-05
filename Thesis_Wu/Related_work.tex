@@ -1,6 +1,6 @@
 \section{Development and traditional measures of invasive BCIs}
 % \begin{multicols}{2}
-% \todo[inline, color=green!40]{侵入式腦機介面的發展，傳統侵入式腦機介面用哪些方法?}
+% \todo[inline, color=green!20]{侵入式腦機介面的發展，傳統侵入式腦機介面用哪些方法?}
 % \todo[inline, author=Prof.]{這段需要補充Kalman filter的優缺點}
 Table~\ref{tab:traditional_invasive} listed traditional machine learning decoders in invasive BCIs.
 Kalman filter was dominant in this field before the appearance of artificial neural networks.
@@ -9,7 +9,7 @@ The decoders usually predicted one or two kinematic variables,
 and only a few of them are able to predict and evaluate three variables: position, velocity and acceleration.
 
 
-\todo[ author=Wu, color=blue!40]{新增Kalman filter的優缺點}
+\todo[ author=Wu, color=blue!20]{新增Kalman filter的優缺點}
 The strength of Kalman filter is that it only needs a few amount of training data \citep{wu2003neural},
 applicable in real-time estimation \citep{wu2003neural},
 and it is successfully applied in both open loop and close-loop BCIs \citep{gupta2009offline}.
@@ -48,9 +48,9 @@ and the Gaussian-distributed spike counts and linear dynamics assumptions are so
 \section{Restrictions of traditional invasive BCIs}
 \label{sec:restrictions_of_traditional_invasive_BCI}
 % \begin{multicols}{2}
-% \todo[inline, color=green!40]{傳統侵入式腦機介面有哪些限制?}
+% \todo[inline, color=green!20]{傳統侵入式腦機介面有哪些限制?}
 % \todo[inline, author=Prof.]{這段看不出BCI有甚麼條件限制，或者使用上的限制，需要再補充}
-\todo[ author=Wu, color=blue!40]{傳統decoder需要比NN decoder更多的training data數量與 recorded neuron數量}
+\todo[ author=Wu, color=blue!20]{傳統decoder需要比NN decoder更多的training data數量與 recorded neuron數量}
 \cite{glaser2020machine} has analyzed the performance of modern methods and traditional methods in BCI motor decoding.
 They take long short-term memory (LSTM) and ensemble models as the representative of modern methods, 
 and they outperformed the traditional ones significantly such as Wiener filter, 
@@ -68,9 +68,9 @@ When decoding with only 10 neurons in their experiments, modern methods outperfo
 
 \section{Advantages of deep learning in BCIs}
 % \begin{multicols}{2}
-% \todo[inline, color=green!40]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?} % hosman2019bci has emphasized the merit of RNN over KF
+% \todo[inline, color=green!20]{深度學習的優點，可解決傳統侵入式腦機介面哪些問題?} % hosman2019bci has emphasized the merit of RNN over KF
 % \todo[inline, author=Prof.]{這段需要補充說明deep learning改良neural decoding的原因}
-% \todo[inline, author=Wu, color=blue!40]{如 Section \ref{sec:restrictions_of_traditional_invasive_BCI} 所述，deep learning decoder雖然更複雜，在減少training data與 recorded neurons 的情況下仍有較好的表現 }
+% \todo[inline, author=Wu, color=blue!20]{如 Section \ref{sec:restrictions_of_traditional_invasive_BCI} 所述，deep learning decoder雖然更複雜，在減少training data與 recorded neurons 的情況下仍有較好的表現 }
 Deep learning models provided remarkable improvement to neural decoding \citep{hosman2019bci}.
 Altought with its greater complexity, deep learning decoders still performs better with shorter training data and fewer recorded neurons \citep{glaser2020machine}.
 In the early study of BCIs, it was the linear Kalman filter decoders which has been widely applied to intracortical brain computer interfaces \citep{jarosiewicz2015virtual, pandarinath2017high,nuyujukian2018cortical}.
@@ -100,7 +100,7 @@ These preceding works manifest the uprising potentials of RNNs in computational 
 \section{Development of deep learning in invasive BCIs}
 \label{sec:development_of_deep_learning_in_invasive_BCI}
 % \begin{multicols}{2}
-% \todo[inline, color=green!40]{使用深度學習於侵入式腦機介面的發展}
+% \todo[inline, color=green!20]{使用深度學習於侵入式腦機介面的發展}
 Table~\ref{tab:deep_leaning_in_invasive_BCI} shown decoders involved deep leaning in invasive BCIs.
 LSTM prevails in many state-of-the-art BCI decoders, and experiments of complex movements such as point-to-point fingertip trajetories or free moving have been conducted and decoded.
 % \end{multicols}
@@ -137,7 +137,7 @@ As for human, the LFPs can be obtained by electroencephalography (EEG), and some
 instead of the amplitude of the signal, to be the only feature in decoding motor imagery tasks \citep{kumar2018eeg} or to prove the correlation between spatial updating process and the rhythmic process in the brain \citep{mclelland2016phase}.
 
 
-\todo[ author=Wu, color=blue!40]{ 1. 比較歸納 LFP decoders 的同異處\\  2.與 Spike decoders 比較}
+\todo[ author=Wu, color=blue!20]{ 1. 比較歸納 LFP decoders 的同異處\\  2.與 Spike decoders 比較}
 Table \ref{tab:LFP_research} listed several researches regarding the LFPs,
 and the specific frequency bands they took.
 The traditional decoders for LFPs are Bayesian families \citep{scherberger2005cortical, quiroga2009, ince2010high},
@@ -180,11 +180,11 @@ But they only predicted velocity, without decoding position and acceleration.
 \section{Unsolved problems and drawbacks in preceding deep learning invasive BCIs}
 \label{sec:unsolved_problems_in_deep_learning_bci}
 % \begin{multicols}{2}
-% \todo[inline, color=green!40]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
+% \todo[inline, color=green!20]{這些深度學習的侵入式腦機介面還有甚麼問題沒被解決? 有甚麼缺點?}
 % \todo[inline, author=Prof]{這篇碩論除了增加視覺化，還有解決甚麼研究問題呢?}
 % \todo[inline, author=Prof]{補充1個使用深度學習於腦機介面的研究問題，看看別的論文怎麼描述這個問題}
-% \todo[inline, author=Wu, color=blue!40]{目前腦機介面的研究問題: Tap size 的長度的選擇只能透過比較decoding的結果作為挑選依據}
-% \todo[inline, author=Wu, color=blue!40]{目前深度學習於腦機介面的研究在預測acceleration的表現都比較差 \citep{makin2018, tseng2019decoding}，或者只預測position 或 velocity。我們的decoder與 \cite{makin2018} 相比 acceleration 的預測 $R^2$ 提升最多 }
+% \todo[inline, author=Wu, color=blue!20]{目前腦機介面的研究問題: Tap size 的長度的選擇只能透過比較decoding的結果作為挑選依據}
+% \todo[inline, author=Wu, color=blue!20]{目前深度學習於腦機介面的研究在預測acceleration的表現都比較差 \citep{makin2018, tseng2019decoding}，或者只預測position 或 velocity。我們的decoder與 \cite{makin2018} 相比 acceleration 的預測 $R^2$ 提升最多 }
 Deep learning methods have been criticized as black boxes for a long time \citep{brown2018recurrent, hudson2018compositional}. 
 By pointing out the parts where the model cosider informative allows humans to have more insights into the decision factors inside deep learning.
 \cite{tseng2019decoding} intended to show in internal dynamics of the LSTM when decoding the movement of monkeys, 
@@ -208,7 +208,7 @@ it lacks an interpretable proof and the explanation of these phenomena.
 
 \section{Development of normalization in deep learning}
 % \begin{multicols}{2}
-% \todo[inline, color=green!40]{Normalization 的發展}
+% \todo[inline, color=green!20]{Normalization 的發展}
 
 When training a deep learning model, \textit{internal covariate shift} as the change in distribution of network activations, is an issue that hinders the loss of the model to converge and sometimes incurs poor performances. 
 Several novel approaches related to data normalization were designed to cope with this problem, shown in Table \ref{tab:six_types_of_norm}. 
@@ -245,9 +245,9 @@ then feed them into the self-attention modules.
 
 \section{Development and related work of attention modules}
 % \begin{multicols}{2}
-% \todo[inline, color=green!40]{Attention module的發展，哪些腦機介面論文使用Attention module?}
+% \todo[inline, color=green!20]{Attention module的發展，哪些腦機介面論文使用Attention module?}
 % \todo[inline, author=Prof.]{補充腦機介面使用attention module的論文，包含侵入式與非侵入式}
-% \todo[inline, author=Wu, color=blue!40]{放在本區最後一段， \cite{li2020multi, zhang2020motor} 最新的 BCI attention 還是用在 EEG/sEMG ，而沒有用在侵入式腦機介面}
+% \todo[inline, author=Wu, color=blue!20]{放在本區最後一段， \cite{li2020multi, zhang2020motor} 最新的 BCI attention 還是用在 EEG/sEMG ，而沒有用在侵入式腦機介面}
 Table~\ref{tab:atten_dev} listed the development of temporal attention from the first to the advanced design.
 \cite{sutskever2014sequence} was the first to implement the encoder-decoder machanism (or called sequence to sequence, seq2seq) to machine translation field.
 This structure has gained popularity also in sentiment analysis.
@@ -376,10 +376,10 @@ but attention modules are now only be implemented in non-invasive BCIs.
 and visualized the importance of input EEG signals with respect to time.
 The intervals with high attention score correspond to the moment when subjects received the external stimuli, 
 making the EEG signal at that time prominent to the classifications.
-\todo[author=Wu, color=blue!40 ]{新增\cite{li2020multi}解釋}
+\todo[author=Wu, color=blue!20 ]{新增\cite{li2020multi}解釋}
 The researchers also speculated that the temporal attention patterns of the decoder might have something to do with subject's attention degree,
 that is whether they were paying attention during the experiments or not. 
-\todo[ author=Wu, color=blue!40 ]{補充說明\cite{zhang2020motor}設計/使用attention來加強腦機介面的理由}
+\todo[ author=Wu, color=blue!20 ]{補充說明\cite{zhang2020motor}設計/使用attention來加強腦機介面的理由}
 \cite{zhang2020motor} used both CNN and RNN to extract the spatio and temporal dynamics in EEG signal processing,
 and its mechanism named \textit{Convolutional Recurrent Attention Model}.
 The self-attention module was placed in the last layer right before the classification layer,
