@@ -10,7 +10,8 @@ It containes the recordings from two rhesus macaque monkeys, named Indy and Loco
 Each monkey contributed several sessions of data.
 One session represents a consecutive experiment recording within several minutes.
 The lengths of the sessions are not consistant, and mostly the durations are in the range of 5 to 20 minutes.
-Two 96-channel silicon microelectrode arrays (Figure~\ref{fig:utah_array}) were chronically implanted into their primary motor cortex and sensorimotor cortex.
+\todo[ author=Wu, color=blue!40 ]{強調電極植入腦區}
+Two 96-channel silicon microelectrode arrays (Figure~\ref{fig:utah_array}) were chronically implanted into their primary motor cortex (Brodmann area 4, M1) and sensorimotor cortex (Brodmann area 1, S1).
 Each array consisted of 96 electrodes, and the distance between two adjacent electrodes is $400 \mu m$. 
 All electrodes covered the area of size $4mm \times 4mm$.
 For each monkey two arrays of electrodes were implanted, 
@@ -51,6 +52,18 @@ and duration of each session can be found in Appendix~\ref{sec:dataset_indy} and
 % \begin{multicols}{2}
 The raw recording from the electrode arrays were filtered with an infinite impulse response (IIR) bandpass filter (fourth-order Butterworth; $F_{pass}$=500Hz to 5000Hz).
 Spikes were detected and sorted online by \cite{makin2018} with a custom software written in C++.
+\todo[ author=Wu, color=blue!40]{解釋 sorted units, hash unit}
+First they computed the absolute value of the filtered neural signal,
+and then extracted neural events that crossed the threshold value,
+typically 3.5 to 4.0 times the standard deviation.
+Next they aligned the extracted waveforms to their maxima,
+using principal components to reduce dimensionality.
+Those reduced waveforms were assigned to single units with operator defined templates.
+Due to the spike detecting threshold they determined in different sessions, 
+the number of sorted units in each session varied from 2 to 4.
+But in all sessions it preserved an unsorted \textit{hash} unit in each channel.
+Hash units contained all neuron firing events which surpassed the voltage threshold but they did not match any of the operator defined templates.
+\cite{todorova2014sort} showed that there exists some information in the hash unit thus keeping them is benefitial in the movement decoding tasks. 
 In Figure \ref{fig:raw_to_spike}, 
 the upper subplot is the raw broadband signal and the lower subplot is the filtered high-frequency signal and the detected spikes.
 % \end{multicols}
@@ -91,12 +104,6 @@ and since in this case the tap size is 4, the number of overlapping time bins ar
 % \todo[inline, author=Wu, color=blue!40]{ 先說明 tap size ，time bin 的使用方式  }
 
 % \begin{multicols}{2}
-\todo[ author=Wu, color=blue!40]{解釋 sorted units, hash unit}
-Due to the spike detecting threshold they determined in different sessions, 
-the number of sorted units in each session varied from 2 to 4.
-But all sessions it preserved an unsorted \textit{hash} unit in each channel.
-These units contained all neuron firing events which surpassed the voltage threshold but they did not match any of the operator defined templates.
-\cite{todorova2014sort} showed that there exists some information in the hash unit thus keeping them is benefitial in the movement decoding tasks. 
 As showed in Figure \ref{fig:indy_20160407_02_M1_ch_60}, 
 we visualized the M1 spike train in channel 60 from session \textbf{indy\_20160407\_02}.
 The black rasters are the spikes classified as hash unit, 
@@ -122,7 +129,10 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} showed the spike train from S1 electr
 % \todo[inline, author=Wu, color=blue!40]{ 再說明有些 session 有 M1 S1 兩個電極的資訊 }
 
 % \begin{multicols}{2}
-Spike firing rate was calculated by counting the spike numbers within non-overlapping 64ms time window.
+Spike firing rate was calculated by counting the spike numbers within non-overlapping time window.
+\todo[author=Wu, color=blue!40]{說明64ms window width 理由}
+In order to compare our performances with the main results from \cite{makin2018},
+we selected window width as 64ms in our research.
 For sessions contained both M1 and S1 electrode array, 
 we concatenated the two spike trains.
 As from Figure~\ref{fig:spike_train_to_firing_rate} the spike trains turned into firing rate.
