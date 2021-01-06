@@ -30,6 +30,7 @@
 \usepackage{makecell}
 \usepackage[titletoc]{appendix}
 \usepackage{csquotes}
+\usepackage{lineno} % line numbers Butters
 %% Font style setting
 % -----------------------------------------
 \usepackage{mathspec}
@@ -140,7 +141,7 @@
 % -----------------------------------------
 %%
 \setcounter{secnumdepth}{4}
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 \usepackage{lipsum}
 
 \hypersetup{
@@ -157,12 +158,29 @@
 \usepackage{pifont}% http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
+
+%%%%%%%%%%%%%%%%%%%%%%% the page numbers location 
+% \pagestyle{headings}
+%%%%%%%%%%%%%%%%%%%%%%%
+% \pagestyle{plain} % good but no header
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+% \fancyhf{}
+% \rhead{}
+\lhead{  }
+\cfoot{\thepage}
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Please create a new tex file and copy the content of this template%
 %                    START WRITING FROM HERE                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+	\linenumbers % show line numbers Butters
 	\pagenumbering{gobble}
 	\begin{titlepage}
 		\newgeometry{a4paper,
@@ -182,7 +200,7 @@
 		top = 23mm,  %23
 		bottom = 35mm,  %35
 	}
-	% \CenterWallPaper{.325}{watermark.jpg}
+	% \CenterWallPaper{.325}{watermark.jpg} % disable watermark Butters
 	\begin{spacing}{1.5} %1.5
 		\frontmatter
 		%% Chinese Abstract

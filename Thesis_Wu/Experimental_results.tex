@@ -1,6 +1,6 @@
 \section{Implementation details}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{描述training, testing data的選取}
+\todo[ color=green!40]{描述training, testing data的選取}
 
 The training data of each session are the first 5000 time bins, and the rest is the testing data.
 Figure \ref{fig:full_testing_data} visualized the complete testing data from a few sessions,
@@ -22,7 +22,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
 \end{figure}
 
 \newpage
-\todo[author=Wu, color=blue!40]{10個session剛好一整頁}
+\todo[author=Wu, color=blue!20]{10個session剛好一整頁}
 \begin{figure}[H]
     \foreach \i in {loco_20170210_03,loco_20170213_02,loco_20170214_02,loco_20170215_02,loco_20170216_02,loco_20170217_02,loco_20170227_04,loco_20170228_02,loco_20170301_05,loco_20170302_02}
         {
@@ -39,7 +39,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
 \section{Qualitative analysis}
 \label{sec:qualitative_analysis}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
+\todo[ color=green!40]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
 This section we showed the result of our predicted variables. 
 Each figure represents a session, and here we selected 5 sessions for each of variable.
 Since our models were designed to decode both x and y-axis of a variable at the same time, 
@@ -48,7 +48,7 @@ also easiler for us to compare their results.
 
 % \end{multicols}
 
-\todo[inline, author=Wu, color=blue!40]{ 位置、速度、加速度 各一頁 }
+\todo[ author=Wu, color=blue!20]{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
     \foreach \i in {1,2,3,4,5}
     {
@@ -61,7 +61,7 @@ also easiler for us to compare their results.
 \end{figure}
 
 \newpage
-\todo[inline, author=Wu, color=blue!40]{ 位置、速度、加速度 各一頁 }
+\todo[ author=Wu, color=blue!20]{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
     \foreach \i in {6,7,8,9,10}
     {
@@ -74,7 +74,7 @@ also easiler for us to compare their results.
 \end{figure}
 
 \newpage
-\todo[inline, author=Wu, color=blue!40]{ 位置、速度、加速度 各一頁 }
+\todo[ author=Wu, color=blue!20]{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
     \foreach \i in {11,12,13,14,15}
     {
@@ -107,8 +107,7 @@ Please notice the output range of these three kinematics and we only trained and
 \newpage
 \section{Comparison of state-of-the-art}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{包含Wiener filter、KF、簡單的neural network、Makin的方法，每個方法引用一個經典的論文，放入以下論文的Figure 4
-Superior arm-movement decoding from cortex with a new, unsupervised-learning algorithm}
+% \todo[ color=green!40]{包含Wiener filter、KF、簡單的neural network、Makin的方法，每個方法引用一個經典的論文，放入以下論文的Figure 4 Superior arm-movement decoding from cortex with a new, unsupervised-learning algorithm}
 
 There are six state-of-the-art methods we can compare,
 with the decoding results table provided from \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
@@ -177,7 +176,7 @@ The progress of x-axis is also higher than the one of y-axis.
 \section{Internal dynamics of network}
 \label{sec:internal_dynamics_of_network}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{參考以下論文的Figure 7 (ClosedLoopLSTM2019)Decoding Movements from Cortical Ensemble Activity Using a Long Short-Term Memory Recurrent Network}
+% \todo[ color=green!40]{參考以下論文的Figure 7 (ClosedLoopLSTM2019)Decoding Movements from Cortical Ensemble Activity Using a Long Short-Term Memory Recurrent Network}
 
 The easiest way to visualize how the RNNs learn from the features is by showing the outputs (hidden states) and the gates at each time step.
 This method is used in the BCI research for motor cortex decoding \citep{tseng2019decoding},
@@ -583,7 +582,7 @@ acceleration is the one with the biggest improvement by the layer normalization.
 \newpage
 \subsection{With or without temporal self-attention}
 
-\todo[inline, color=green!40]{ 比較有/無 attention 的預測軌跡 }
+% \todo[ color=green!40]{ 比較有/無 attention 的預測軌跡 }
 The decoding accuracy benefit from the temporal self-attention module in each session is showed in Figure~\ref{fig:scatter_plot_comparison_attention}.
 In the aspect of decoding performances, attention module does not provide noticeable improvement.
 After averaging the SNR from all 47 sessions, the regression line lay incredibly close to the diagonal.
@@ -596,7 +595,6 @@ Here we presented the position decoding result in an actual 2D plan in Figure~\r
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_attention.png}
         \captionsetup{width=0.5\textwidth}
         \caption{ With or without temporal attention }
-        \todo[inline, author=Wu, color=blue!40]{Velocity wrong}
         \label{fig:scatter_plot_comparison_attention}
     \end{center}
 \end{figure}
@@ -646,7 +644,7 @@ we can see how the predicted trajectories drifted away from groud truth when the
 
 
 \section{Failure case study}
-\todo[inline, color=green!40]{放入失敗的例子}
+% \todo[ color=green!40]{放入失敗的例子}
 \subsection{Position decoder}
 % \begin{multicols}{2}
 Most sessions benefit from the layer normalization and attention decoder, 
@@ -747,7 +745,7 @@ it made the errors a lot higher than velocity decoders.
 \begin{comment}
     \section{Decodeing results from dataset Chewie}
     % \begin{multicols}{2}
-    \todo[inline, color=green!40]{ 猴子C的Decoding 結果單獨一個子章節顯示，並不列入與 Makin 的比較 }
+    \todo[ color=green!40]{ 猴子C的Decoding 結果單獨一個子章節顯示，並不列入與 Makin 的比較 }
     % \end{multicols}
 \end{comment}
 
