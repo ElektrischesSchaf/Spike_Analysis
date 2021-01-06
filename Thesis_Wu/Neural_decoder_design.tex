@@ -539,6 +539,7 @@ But in bidirectional RNN the output at any time step $t'$ can cover the memory f
         \label{fig:bidir_RNN_explain}
     \end{center}
 \end{figure}
+\todo[author=Wu, color=blue!20]{重畫 Figure~\ref{fig:bidir_RNN_explain}}
 
 \noindent It is the internal dynamics of the GRU to determine the degree of forget or keep the previous information in every time step.
 In Section~\ref{sec:internal_dynamics_of_network} we provided figures to visualize these internal dynamics.
@@ -681,7 +682,7 @@ typically a RNN decoder in many cases \citep{zhang2020motor, hu2018novel}.
 The structure of the attention module is illustrated in Figure~\ref{fig:temporal_attention_in_matrix_diagram}.
 \\
 
-\cite{lin2017structured} proposed a concise but effective attention module.
+\cite{tao2018get} proposed a concise but effective attention module.
 The output hidden states from the last layer of GRU will be the input of our attention module.
 The hidden states matrix,
 \begin{align}
@@ -770,7 +771,7 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
 The purpose of developing such loss function in this attention module is to avoid repetitive information.
 The embedding matrix $\bM$ should contains $r$ different aspects from the same input neural signal sequence.
 But without further constraints, the attention module might always provides attention vecotors with similar distribution for all the $r$ hops.
-\cite{lin2017structured} proposed an approach to differentiate the distribution between different attention vectors,
+\cite{tao2018get} proposed an approach to differentiate the distribution between different attention vectors,
 named the \textit{penalization term} and it is defined as follows,
 
 \begin{align}

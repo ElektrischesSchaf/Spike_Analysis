@@ -304,7 +304,7 @@ creating the \textit{Transformer} model with the advantage of parallelization.
     \cite{parikh2016decomposable} & \makecell{Intra-sentence\\attention} & \makecell{Encoder-decoder\\(Seq2Seq)} & Sentiment analysis \\  \hline
     \cite{paulus2017deep} & Intra-attention & \makecell{Encoder-decoder\\(Seq2Seq)} & Text summarization \\  \hline
     \cite{vaswani2017attention} & \makecell{Self-attention,\\Parallelization,\\remove RNN} & \makecell{Encoder-decoder\\(The Transformer)} & Machine Translation \\  \hline
-    \cite{lin2017structured} & \makecell{Self-attention} & RNN & Sentiment analysis \\ 
+    \cite{tao2018get} & \makecell{Self-attention} & RNN & Sentiment analysis \\ 
     \hline
     \label{tab:atten_dev}
 \end{longtable}
@@ -317,7 +317,7 @@ into the ones for classification and sentiment analysis,
 by calculating the correlation from every two hidden states in the same sequence  \citep{cheng2016long, yang2016hierarchical}.
 However, this procedure costs considerably amount of computational time, 
 thus a simplified version known as local attention was introduced \citep{luong2015effective}.
-Followed by the works of \cite{wang2016attention, lin2017structured, ma2017dipole, hu2018novel,cui2019hierarchical}, 
+Followed by the works of \cite{wang2016attention, tao2018get, ma2017dipole, hu2018novel,cui2019hierarchical}, 
 all of them implemented similar local attention techniques.
 
 Unlike the attention methods used in image processing as shown Table~\ref{tab:image_attention_equations_study}, 
@@ -342,7 +342,7 @@ wheras \cite{hu2018squeeze, woo2018cbam} used rectified linear unit (ReLU) and s
     \cite{cheng2016long} & $\begin{aligned} \ba^{t}_{i} &= \bv^{\intercal} \text{tanh}( \bW_h \bh_i + \bW_x \bx_t + \bW_{\tilde{\bh}} \tilde{\bh}_{t-1} ) \\ \bs^t_i &= \text{softmax}( \ba^t_i) \\ \begin{bmatrix} \hat{\bh}_t  \\ \hat{\bc}_t \end{bmatrix} &= \sum^{t-1}_{i=1} s^t_i \cdot \begin{bmatrix} \bh_i \\ \bc_i \end{bmatrix}   \end{aligned}$ & \makecell{Language modeling,\\sentiment analysis} \\   \hline
     \cite{yang2016hierarchical} & $\begin{aligned} \bu_{it} &= \text{tanh}( \bW_w \bh_{it} + \bb_w ) \\ \alpha_{it} &= \frac{\text{exp}(\bu_{it}^{\intercal} \bu_w)}{ \sum_t \text{exp}( \bu_{it}^{\intercal} \bu_w ) } \\ \bs_i &= \sum_t \alpha_{it} \bh_{it} \end{aligned}$ & \makecell{Text\\classification} \\  \hline
     \cite{wang2016attention} & $\begin{aligned} \bM &= \text{tanh} \left( \begin{bmatrix} \bW_h \bH \\ \bW_v \bv_a \otimes e_N \end{bmatrix} \right) \\  \boldsymbol{\alpha} &= \text{softmax}( \bw^{\intercal} \bM )  \\ \br &= \bH \alpha^{\intercal}  \end{aligned}$ & \makecell{Sentiment\\classification} \\  \hline
-    \cite{lin2017structured} & $\begin{aligned} \bA &= \text{softmax}( \bW_{s2} \text{tanh}( \bW_{s1} \bH^{\intercal}) ) \\ \bM &= \bA \bH  \end{aligned}$ & \makecell{Sentiment\\analysis}  \\  \hline
+    % \cite{lin2017structured} & $\begin{aligned} \bA &= \text{softmax}( \bW_{s2} \text{tanh}( \bW_{s1} \bH^{\intercal}) ) \\ \bM &= \bA \bH  \end{aligned}$ & \makecell{Sentiment\\analysis}  \\  \hline
     \cite{hu2018novel} & $\begin{aligned} \bM_t &= \text{tanh}( \bW_h \bh_t) \\ \alpha_r &= \text{softmax}( \bw^{\intercal} \bM_t) \\ \br &= \sum_{t=1}^{T} \alpha_t \bh_t  \end{aligned} $ & \makecell{sEMG-based\\gesture recognition} \\  \hline
     \cite{cui2019hierarchical} & $\begin{aligned} \bC^t_h &=  [ \bh^{t-W_h+1}, \cdots, \bh^t] \\ \be_h &= r^{\intercal}_h \text{tanh}( \bQ_h( \bC^t_h )^{\intercal} ) \\ \ba_h &= \text{softmax}(\be_h) \\ \bx^t_c &= ( \ba_h \bC^t_h)^{\intercal} \end{aligned}$  & \makecell{Sequential\\recommendation} \\  \hline
     \label{tab:rnn_attention_equations_study}
