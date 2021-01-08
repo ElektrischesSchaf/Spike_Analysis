@@ -68,7 +68,7 @@ The reasons why implementing temporal attention did not contribute to decoding a
 First, the temporal feature of neural spiking data we used can be extracted simply by an ordinary RNN.
 With the aid of layer normalization to regulate the internal distribution,
 our decoder can already reach the performances higher than the state-of-the-art results without attention module.
-\\
+
 
 Secondly, as our attention map has demonstrated that only a few time bins of firing rate are needed in decoding velocity and acceleration.
 It contradicted the purpose of temporal attention, 
@@ -95,7 +95,7 @@ With the help of temporal attention module,
 the attention map can reflect the moving status in every moment.
 Especially it represents distinguishable attention patterns when the fingertip is stationary or moving,
 and it works in all position, velocity and acceleration decoders.
-\\
+
 
 The second insight our attention can provide is an explaination about the length of spiking history should use.
 By qualifying the average attention score from all the history taps in each session, 
@@ -114,7 +114,7 @@ which is both complementary and independent to the mathematical and logic-based 
 Neuroscience can also provide validation of the existing AI techniques,
 and being a support for the plausiblily.
 Biological plausiblily can act as a guide, but it's not a strict requirement in engineering.
-\\
+
 
 Take the image attention for example, 
 The CNN model works on entire images, with equal priority given to all the pixels in the image.
@@ -124,7 +124,7 @@ visual attention shifts among different locations or objects in the image with s
 It is capable of centering and processing resources on a series in turn.
 Neurocomputational models have show this piecemeal approach is benefitial,
 that at any given moment, it isolating and prioritizing relevant information.
-\\
+
 
 In our study, the attention map showed that the decoder can capture two states of fingertips: standstill or in action.
 Especially in position decoder, 
@@ -160,7 +160,7 @@ and 10 time bins (640ms) to decode velocity and acceleration,
 we noticed that \cite{wu2003neural} has analysed the optimal length, 
 which is between 500ms to 1500ms.
 Which means our usage of the time bins is acceptable and reasonable.
-\\
+
 
 In Figure~\ref{fig:effect_of_tap_size}, 
 we showed that the decoding results from position, velocity and acceleration in different tap sizes.

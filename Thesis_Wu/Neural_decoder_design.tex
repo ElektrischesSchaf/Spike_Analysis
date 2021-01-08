@@ -401,8 +401,8 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
 \begin{align}
     % \label{eq:gru_cell}
     % \begin{split}
-        \br_t &=  S ( \bW_r \bh_{t-1} + \bU_r \bx_t + \bb_r) \label{eq:reset_gate} \\
-        \bz_t &= S ( \bW_z \bh_{t-1} + \bU_z \bx_t + \bb_z) \label{eq:update_gate} \\
+        \br_t &=  \mathcal{S} ( \bW_r \bh_{t-1} + \bU_r \bx_t + \bb_r) \label{eq:reset_gate} \\
+        \bz_t &= \mathcal{S} ( \bW_z \bh_{t-1} + \bU_z \bx_t + \bb_z) \label{eq:update_gate} \\
         \tilde{\bh}_t &= \phi( \bW ( \br_t \odot \bh_{t-1}) + \bU \bx_t + \bb) \label{eq:h_hat} \\
         \bh_t &= \bz_t \odot \bh_{t-1} + ( 1 - \bz_t) \odot \tilde{\bh}_t \label{eq:h_out}
     % \end{split}
@@ -411,13 +411,13 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
 \noindent and the two activation functions:
 
 \begin{align}
-    S (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
+    \mathcal{S} (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
     \phi (x) &= \frac{ e^{x}-e^{-x} }{ e^{x}+e^{-x} } \label{eq:tanh}
 \end{align}
 
 Where $\br_t$ is the \textbf{reset gate} and $\bz_t$ is the \textbf{update gate}.
 Notation $\odot$ means elementwise multiplication for two tensors of same shape.
-Operator $S$ is the sigmoid function (Equation \ref{eq:sigmoid}),
+Operator $\mathcal{S}$ is the sigmoid function (Equation \ref{eq:sigmoid}),
 which squashes the input value from ($-\infty$, $\infty$) to (0, 1).
 $\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}),
 squashing the input value from ($-\infty$, $\infty$) to (-1,1).
@@ -607,7 +607,7 @@ When implementing it on GRU,
         \begin{pmatrix}
             \bz_t \\
             \br_t
-        \end{pmatrix} &=  S( \bW_h \bh_{t-1} ) + S( \bW_x \bx_t ) \\
+        \end{pmatrix} &=  \mathcal{S}( \bW_h \bh_{t-1} ) + \mathcal{S}( \bW_x \bx_t ) \\
         \tilde{\bh}_t &= \text{tanh}( \bW \bx_t +  \br_t \odot \left( \bU \bh_{t-1} \right) ) \\
         \bh_t &= \left( 1- \bz_t \right) \bh_{t-1} + \bz_t \tilde{\bh}_t
     \end{split}
@@ -620,7 +620,7 @@ When implementing it on GRU,
         \begin{pmatrix}
             \bz_t \\
             \br_t
-        \end{pmatrix} &=   S( LN( \bW_h  \bh_{t-1} ) ) + S( LN(  \bW_x \bx_t  ) ) \\
+        \end{pmatrix} &=   \mathcal{S}( LN( \bW_h  \bh_{t-1} ) ) + \mathcal{S}( LN(  \bW_x \bx_t  ) ) \\
         \tilde{\bh}_t &= \text{tanh} (  LN( \bW \bx_t  ) +  \br_t \odot LN( \bU \bh_{t-1} ) ) \\
         \bh_t &= \left( 1- \bz_t \right) \bh_{t-1} + \bz_t \tilde{\bh}_t
     \end{split}
