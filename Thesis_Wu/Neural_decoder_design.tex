@@ -401,8 +401,8 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
 \begin{align}
     % \label{eq:gru_cell}
     % \begin{split}
-        \br_t &=  \sigma ( \bW_r \bh_{t-1} + \bU_r \bx_t + \bb_r) \label{eq:reset_gate} \\
-        \bz_t &= \sigma ( \bW_z \bh_{t-1} + \bU_z \bx_t + \bb_z) \label{eq:update_gate} \\
+        \br_t &=  S ( \bW_r \bh_{t-1} + \bU_r \bx_t + \bb_r) \label{eq:reset_gate} \\
+        \bz_t &= S ( \bW_z \bh_{t-1} + \bU_z \bx_t + \bb_z) \label{eq:update_gate} \\
         \tilde{\bh}_t &= \phi( \bW ( \br_t \odot \bh_{t-1}) + \bU \bx_t + \bb) \label{eq:h_hat} \\
         \bh_t &= \bz_t \odot \bh_{t-1} + ( 1 - \bz_t) \odot \tilde{\bh}_t \label{eq:h_out}
     % \end{split}
@@ -411,13 +411,13 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
 \noindent and the two activation functions:
 
 \begin{align}
-    \sigma (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
+    S (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
     \phi (x) &= \frac{ e^{x}-e^{-x} }{ e^{x}+e^{-x} } \label{eq:tanh}
 \end{align}
 
 Where $\br_t$ is the \textbf{reset gate} and $\bz_t$ is the \textbf{update gate}.
 Notation $\odot$ means elementwise multiplication for two tensors of same shape.
-Operator $\sigma$ is the sigmoid function (Equation \ref{eq:sigmoid}),
+Operator $S$ is the sigmoid function (Equation \ref{eq:sigmoid}),
 which squashes the input value from ($-\infty$, $\infty$) to (0, 1).
 $\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}),
 squashing the input value from ($-\infty$, $\infty$) to (-1,1).
@@ -556,7 +556,6 @@ It can be mitigated by fixing the mean and the variance of the summed inputs wit
 By the approach of normalization it can also prevent the gradient vanishing problem,
 which will be introduced in Section~\ref{sec:RNN}.
 
-
 The computation of mean and variance from all the hidden units in the same layer:
 
 \begin{align}
@@ -569,10 +568,9 @@ The computation of mean and variance from all the hidden units in the same layer
 
 \noindent where $u$ denotes the number of hidden units in a layer, 
 all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
-Unlike batch normalization, 
+Unlike batch normalization,
 layer normalization does not impose any constraint on the size of a mini-batch,
 such that it cam be implemented to the model with batch size 1.
-
 
 The original layer normalization methods is computed within a RNN cell.
 In a standard RNN, 
@@ -589,18 +587,14 @@ The layer normalizationed recurrent layer re-centers and re-scales its activatio
     \end{split}
 \end{align}
 
-
-\noindent where $\odot$ is still the elementwise multiplication, 
-and $\bb$, $\bg$ are defined as the bias and gain parameters of the same dimension as $\bh^t$.
+\noindent $\bb$, $\bg$ are defined as the bias and gain parameters of the same dimension as $\bh^t$.
 $f$ is the activation function in the RNN cell, it could be a sigmoid or hyperbolic tangent function.
-\\
 
-We define layer normalization as a function mapping $LN: \mathbb{R}^D \rightarrow \mathbb{R}^D$ with two set of adaptive parameters,
-gains $\alpha$ and biases $\beta$:
+We define layer normalization as a function mapping $LN: \mathbb{R}^D \rightarrow \mathbb{R}^D$:
 
 \begin{align}
     \begin{split}
-        LN(\bz; \ \alpha, \ \beta) &= \frac{( \bz-\mu )}{\sigma} \odot \alpha + \beta \\
+        LN(\bz) &= \frac{( \bz-\mu )}{\sigma} \\
         \mu &= \frac{1}{D} \sum^{D}_{i=1} z_i \\
         \sigma &= \sqrt{ \frac{1}{D} \sum^{D}_{i=1} \left( z_i- \mu \right)^{2} }
     \end{split}
@@ -613,7 +607,7 @@ When implementing it on GRU,
         \begin{pmatrix}
             \bz_t \\
             \br_t
-        \end{pmatrix} &=  \sigma( \bW_h \bh_{t-1} ) + \sigma( \bW_x \bx_t ) \\
+        \end{pmatrix} &=  S( \bW_h \bh_{t-1} ) + S( \bW_x \bx_t ) \\
         \tilde{\bh}_t &= \text{tanh}( \bW \bx_t +  \br_t \odot \left( \bU \bh_{t-1} \right) ) \\
         \bh_t &= \left( 1- \bz_t \right) \bh_{t-1} + \bz_t \tilde{\bh}_t
     \end{split}
@@ -626,15 +620,14 @@ When implementing it on GRU,
         \begin{pmatrix}
             \bz_t \\
             \br_t
-        \end{pmatrix} &=   \sigma( LN( \bW_h  \bh_{t-1} ; \ \alpha_1, \ \beta_1 ) ) + \sigma( LN(  \bW_x \bx_t ; \ \alpha_2 , \ \beta_2 ) ) \\
-        \tilde{\bh}_t &= \text{tanh} (  LN( \bW \bx_t ; \ \alpha_3, \ \beta_3 ) +  \br_t \odot LN( \bU \bh_{t-1} ; \ \alpha_4, \ \beta_4 ) ) \\
+        \end{pmatrix} &=   S( LN( \bW_h  \bh_{t-1} ) ) + S( LN(  \bW_x \bx_t  ) ) \\
+        \tilde{\bh}_t &= \text{tanh} (  LN( \bW \bx_t  ) +  \br_t \odot LN( \bU \bh_{t-1} ) ) \\
         \bh_t &= \left( 1- \bz_t \right) \bh_{t-1} + \bz_t \tilde{\bh}_t
     \end{split}
 \end{align}
 
-\noindent where $\alpha_i$ and $\beta_i$ are initialized as vector of zeros and ones, respectively.
-The LN-GRU cell is illustrated in Figure~\ref{fig:LN_GRU_cell},
-with four $L.N.$ blocks adding inside each GRU cell.
+\noindent The LN-GRU cell is illustrated in Figure~\ref{fig:LN_GRU_cell},
+with four $L.N.$ blocks added inside each GRU cell.
 
 \begin{figure}[H]
     \begin{center}
@@ -646,12 +639,12 @@ with four $L.N.$ blocks adding inside each GRU cell.
     \end{center}
 \end{figure}
 
-The affect of the layer normalization is illustrated in Figure~\ref{fig:layer_norm_before_after},
+The effect of the layer normalization is illustrated in Figure~\ref{fig:layer_norm_before_after},
 where we simulated two extreme cases of hidden state distributions.
 First one has a dense distribution but the mean is deviated from zero, 
 making most of its values above $+4$, 
 and they will be mapped approximately to zero after applied to in both sigmoid or hyperbolic tangent activation.
-The second case has the mean of zero, but its broad distribution makes only a portion of its elements have their gradients non-zero after the activations.
+The second case has the mean of zero, but its broad distribution makes only a portion of its elements have non-zero gradients after the activations.
 % \end{multicols}
 
 \begin{figure}[H]
@@ -677,20 +670,19 @@ The second case has the mean of zero, but its broad distribution makes only a po
 
 % \begin{multicols}{2}
 
-The attention module is used to process the output features from its previous layers,
-typically a RNN decoder in many cases \citep{zhang2020motor, hu2018novel}.
-The structure of the attention module is illustrated in Figure~\ref{fig:temporal_attention_in_matrix_diagram}.
-\\
+The temporal attention module is used to process the output features from a RNN decoder \citep{zhang2020motor, hu2018novel}.
 
 \cite{tao2018get} proposed a concise but effective attention module.
 The output hidden states from the last layer of GRU will be the input of our attention module.
 The hidden states matrix,
 \begin{align}
+    \label{eq:hidden_states_dimensions}
     \begin{split}
-        \bH = [ \bh_1, \ \bh_2, \cdots , \  \bh_T ] &\in \mathbb{R}^{T \times 2u }  \quad  \text{bidirectional RNN}  \\
-                                                    &\in \mathbb{R}^{T \times u}    \quad \ \text{one-way RNN}
+        \bH = [ \bh_1, \ \bh_2, \cdots , \  \bh_T ] &\in \mathbb{R}^{2u \times T }  \quad  \text{bidirectional RNN}  \\
+                                                    &\in \mathbb{R}^{u \times T}    \quad \ \text{one-way RNN}
     \end{split}
 \end{align}
+\todo[author=Wu, color=blue!20]{修正 Equation \ref{eq:hidden_states_dimensions} dimension}
 
 \noindent where $u$ is the number of hidden units and $ T $ is the length of each input sequence.
 $T$ in our case it is the number of past time bins used to decode the current kinematic variables.
@@ -699,8 +691,8 @@ Followed by the attention module, and it can give us the attention vector, compu
 \begin{align}
     \label{eq:attention_vector_calculation}
     \begin{split}
-        \ba &= \text{softmax}( \bw_{s2} \ \text{tanh} ( LN( \bW_{s1} \ \bH^{\intercal} ) ) )  \\
-        \bm &= \ba \bH
+        \ba &= \text{softmax}( \bw_{s2} \ \text{tanh} ( LN( \bW_{s1} \ \bH ) ) )  \\
+        \bm &= \ba \bH^{\intercal}
     \end{split}
 \end{align}
 
@@ -719,7 +711,7 @@ which is defined as
 
 \noindent such that the summation of the vector $ \ba $ will always be $1$.
 The embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ is the new features with enhanced temporal attribute.
-Every single feature from each neural time bin has been annotated by an score.
+Every single feature from each neural time bin has been annotated by a score.
 \\ % This explain fc in matrix form https://stackoverflow.com/questions/51608879/weights-matrix-final-fully-connected-layer
 
 The vector representation may focues on only one specific part of the input sequence, 
@@ -727,16 +719,17 @@ and is expected to reflect only one \textit{aspect} in the sequence.
 Multiple aspects can be extracted if we implement multiple hops of attention to the same input sequence.
 Another hyperparameter, $r$ is designed to determine how many different parts can be extracted from the sequence.
 The representations from Eqation \ref{eq:attention_vector_calculation} is now changed to the matrix form in Eqation \ref{eq:attention_matrix_calculation},
+also illustrated in Figure~\ref{fig:temporal_attention_in_matrix_diagram}.
 \begin{align}
     \label{eq:attention_matrix_calculation}
     \begin{split}
-        \bA &= \text{softmax}( \bW_{s2} \ \text{tanh}( LN( \bW_{s1} \ \bH^{\intercal} ) ) )  \\
-        \bM &= \bA \bH
+        \bA &= \text{softmax}( \bW_{s2} \ \text{tanh}( LN( \bW_{s1} \ \bH ) ) )  \\
+        \bM &= \bA \bH^{\intercal}
     \end{split}
 \end{align}
 \noindent where the vector $ \bw_{s2}  \in \mathbb{R}^{ 1 \times d_a } $ turned into a matrix $ \bW_{s2} \in \mathbb{R}^{r \times d_a }  $,
 and the embedding vector $ \bm \in \mathbb{R}^{1 \times 2u} $ became a matrix $\bM \in \mathbb{R}^{r \times 2u} $.
-\\
+
 
 Eqation \ref{eq:attention_matrix_calculation} is equivalent to a 2-layer MLP.
 The first layer reduces the dimension from $2u$ to $d_a$,
@@ -770,20 +763,20 @@ and the second layer reduces the dimension from $d_a$ to $r$, as illustrated in 
 % \begin{multicols}{2}
 The purpose of developing such loss function in this attention module is to avoid repetitive information.
 The embedding matrix $\bM$ should contains $r$ different aspects from the same input neural signal sequence.
-But without further constraints, the attention module might always provides attention vecotors with similar distribution for all the $r$ hops.
+But without further constraints, the attention module might always provides attention vectors with similar distribution for all the $r$ hops.
 \cite{tao2018get} proposed an approach to differentiate the distribution between different attention vectors,
 named the \textit{penalization term} and it is defined as follows,
 
 \begin{align}
     \label{eq:penalization_term}
-    P &= {\norm{ \bA \bA^{\intercal} - \bI }_F}^2
+    \mathcal{L}_{penalization} &= {\norm{ \bA \bA^{\intercal} - \bI }_F}^2
 \end{align}
 
 \noindent where $ \bA \bA^{\intercal} \in \mathbb{R}^{ r \times r} $, 
 and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 \begin{align}
     \label{eq:frobenius_norm}
-    \norm{ \bB } &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {| b_{ij} |}^{2} }
+    \norm{ \bB } &= \sqrt{ \sum^m_{i=1} \sum^n_{j=1} {| b_{ij} |}^{2} }, \ \bB \in \mathbb{R}^{m \times n}
 \end{align}
 
 % \end{multicols}
@@ -800,41 +793,40 @@ and $\norm{\bullet}_F$ denotes the Frobenius norm of a matrix, defined as
 
 % \begin{multicols}{2}
 
-\noindent Figure~\ref{fig:penalization_term} showed that the summation of the squared value of every element in the matrix $\bA \bA^{\intercal} - \bI$ should be closed to $0$.
-By implementing $P$ as a loss function,
-its loss will be propagated backwards to alter the weights in the our attention module.
-\\
+\noindent Figure~\ref{fig:penalization_term} showed that the summation of the squared value of every element in the matrix $\bA \bA^{\intercal} - \bI$ should be close to $0$,
+if we implementing $\mathcal{L}_{penalization}$ as a loss function.
+The loss value will be propagated backwards to alter the weights in the our attention module.
 
 To further explain its concept,
 let's start by considering two different attention vectors $ \ba^i \in \mathbb{R}^{1 \times T} $ and $ \ba^j \in \mathbb{R}^{1 \times T}$.
 Due to the fact that $ \text{softmax} $ is implemented,
 the summation from all the element within the same vector is $1$.
 The values in each vector can be considered as probability distribution.
-\\
 
 In an extreme case, 
 there should have the no overlapping between the probability distributions in these two vectors, 
 thus the result from dot products $ \ba^i \cdot \ba^j $ should be $0$, and the calculation can be expressed as
 \begin{align}
-    0 < a_{ij} &= \sum^{T}_{k=1} a^i_k a^j_k < 1
+    0 < p_{ij} &= \sum^{T}_{k=1} a^i_k a^j_k < 1
 \end{align}
-\noindent where $a_{ij}$ is a non-diagonal element in matrix $\bA \bA^{\intercal}$, 
-also should be equal to $0$.
-$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $ \ba^i$ and $ \ba^j $ severally.
+\noindent where $p_{ij}$ is a non-diagonal element in matrix $\bA \bA^{\intercal}$, 
+also should also be equal to $0$.
+$ a^i_k $ and $ a^j_k $ are the $k$-th elements in vector $ \ba^i$ and $ \ba^j $.
 The diagonal elements $ \ba^i \cdot \ba^i $, i=1 $\sim$ r, on the other hand,
 will have a maximum value of $ 1 $ in an extreme case that all attention concentrates on one single time bin.
 Thus substracting an identity matrix from $\bA \bA^{\intercal}$ will force each attention vector $\ba^i$ to focus on as few features as it can,
 concnetrating on a single aspect.
-\\
 
 % \end{multicols}
 
 \subsection{Visualization}
 % \begin{multicols}{2}
 Interpretation of the neural signals is one of the main topic in our study.
-By taking advantage of attention module, we can visualize what the model \textit{sees.} \citep{xu2015show}
-The term \textit{tap size} refer to the past time bins used to decode the current sample point.
-In our main result, 20 tap size was used in decoding position and 10 tap size in decoding velocity and acceleration.
+By taking advantage of attention module, we can visualize what the model \textit{sees} \citep{xu2015show}.
+The term \textit{tap size} refers to the past time bins used to decode the current sample point.
+In our main result,
+we choosed the tap sizes empirically.
+20 tap size was used in decoding position and 10 tap size in decoding velocity and acceleration.
 With the aid of attention matrix from the attention module,
 it is possible to depict the importance of the past time bins with attention scores.
 As showed in Figure~\ref{fig:visualization_vector}
@@ -854,13 +846,14 @@ As showed in Figure~\ref{fig:visualization_vector}
 \label{sec:loss_function_and_optimizer}
 
 % \begin{multicols}{2}
-The first loss function for the predicted kinematic variables is mean square error (Equation \ref{eq:mean_square_error}),
-which is widely used in regression problems.
+The first loss function of our neural decoder is the mean square error between predicted values $\hat{y}_i$ and actual fingertips tragectories, 
+the observed value $y_i$ (Equation \ref{eq:mean_square_error}).
 
 \begin{align}
     \label{eq:mean_square_error}
-    L_{MSE} &= \frac{1}{n} \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
+    \mathcal{L}_{MSE} &= \frac{1}{n} \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
 \end{align}
+\noindent where $n$ is the number of samples.
 
 The second loss function is the penalization term explained in Section~\ref{sec:penalization_term}.
 Summing them together with a coefficient for each loss function (Equation \ref{eq:loss_function_with_two_combined}),
@@ -868,7 +861,7 @@ $C_{1}$ and $ C_{2} $ are capable of weighing these two losses.
 
 \begin{align}
     \label{eq:loss_function_with_two_combined}
-    L &= C_{1} L_{MSE} + C_{2} P
+    \mathcal{L} &= C_{1}\mathcal{L}_{MSE} + C_{2}\mathcal{L}_{penalization}
 \end{align}
 
 Equation \ref{eq:adam_optimizer} is the Adam optimizer used in our research, 
@@ -877,15 +870,19 @@ a popular algothrim who combined AdaGrad \citep{duchi2011adaptive} and RMSProp \
 \begin{align}
     \begin{split}
         \label{eq:adam_optimizer}
-        m_t &= \beta_1 m_{t-1} + ( 1-\beta_1 ) \frac{\partial L_t}{\partial \bw_t} \\
-        v_t &= \beta_2 v_{t-1} + (1- \beta_2) \left( \frac{\partial L_t}  {\partial \bw_t} \right)^2 \\
+        m_t &= \beta_1 m_{t-1} + ( 1-\beta_1 ) \frac{\partial \mathcal{L}_t}{\partial \bw_t} \\
+        v_t &= \beta_2 v_{t-1} + (1- \beta_2) \left( \frac{\partial \mathcal{L}_t}  {\partial \bw_t} \right)^2 \\
         \hat{m}_t &= \frac{m_t}{1- \beta^t_1 } \\
         \hat{v}_t &= \frac{v_t}{1-\beta^t_2} \\
         \bw_t &\leftarrow \bw_{t-1}- \eta \frac{ \hat{m}_t }{ \sqrt{\hat{v}_t} + \epsilon }
     \end{split}
 \end{align}
 
-\noindent Adam optimizer updates moving averages of the gradient $m_t$ and the squared gradient $v_t$,
+\todo[author=Wu, color=blue!20]{解釋$\eta$, $\epsilon$}
+\noindent where $\mathcal{L}_t$ is the loss function at time $t$, 
+$\eta$ denotes the learninig rate, which is $10^{-5}$ in our design.
+$\epsilon$ is set to be $10^{-8}$ to prevent zero in denominator.
+Adam optimizer updates moving averages of the gradient $m_t$ and the squared gradient $v_t$,
 where the hyperparameter $\beta_1, \ \beta_2$ control the exponential decay rates of these moving averages.
 
 % \end{multicols}
@@ -897,10 +894,11 @@ where the hyperparameter $\beta_1, \ \beta_2$ control the exponential decay rate
 To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR).
 Two vectors are required which are the observed value $ \by = \left[ y_1, \cdots , y_n  \right]^{\intercal} $,
 and predicted value $ \mathbf{\hat{y}} = \left[ \hat{y}_1, \cdots , \hat{y}_n \right]^{\intercal} $.
-First we compute the mean of the observed data:
+First we compute the mean of the observed data $\bar{y}$:
 \begin{align}
     \bar{y} &= \frac{1}{n} \sum^{n}_{i=1} y_i
-    \intertext{ then the total sum of squares, }
+    \intertext{ where n is the number of samples.  }
+    \intertext{ Then the total sum of squares, }
     SS_{tot} &= \sum^{n}_{i=1} \left( y_i - \bar{y} \right)^{2}
     \intertext{ the residual sum of squares, }
     SS_{res} &= \sum^{n}_{i=1} \left( y_i - \hat{y}_i \right)^{2}
@@ -910,6 +908,7 @@ First we compute the mean of the observed data:
     \text{SNR} &\equiv -10 \log_{10} (1 - R^{2})
 \end{align}
 
-\noindent and since the length of the testing data varied, weighted average is used to compute the mean performance across 47 sessions,
-with the weights are the testing data length in each session.
+\noindent and since the length of the testing data varied,
+weighted average is used to compute the mean performance across 47 sessions,
+with weights corresponded to session length.
 % \end{multicols}

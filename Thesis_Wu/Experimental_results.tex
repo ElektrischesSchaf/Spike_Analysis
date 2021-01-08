@@ -3,9 +3,10 @@
 \todo[ color=green!40]{描述training, testing data的選取}
 
 The training data of each session are the first 5000 time bins, and the rest is the testing data.
+Total session number is 47 from both monkeys.
 Figure \ref{fig:full_testing_data} visualized the complete testing data from a few sessions,
 whereas some sessions, had their testing data trimmed by \cite{makin2018} due to the abnormal recording periods.
-These sessions contained intervals when monkeys fingertip stayed still for a considerable long while.
+These sessions contained intervals when monkeys fingertip stayed still for a considerable long period of time.
 As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated the discarded intervals.
 % \end{multicols}
 
@@ -17,7 +18,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
             \end{subfigure}
         }
         \captionsetup{width=0.5\textwidth}
-        \caption{Testing Data with Full Length}
+        \caption{Testing data with full length}
         \label{fig:full_testing_data}
 \end{figure}
 
@@ -41,14 +42,14 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
 % \begin{multicols}{2}
 \todo[ color=green!40]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
 This section we showed the result of our predicted variables. 
-Each figure represents a session, and here we selected 5 sessions for each of variable.
-Since our models were designed to decode both x and y-axis of a variable at the same time, 
-it is convenient to plot the predictions of the two axes in the same figure, 
-also easiler for us to compare their results.
+Since our models were designed to decode both x-coordinate and y-coordinate of a variable at the same time, 
+it is convenient to plot the predictions of the two coordinates in the same figure, 
+also easiler for us to compare with the actual tragectories.
+Here we selected 5 sessions for each variable.
+\todo[ author=Wu, color=blue!20]{ 補充Figure~\ref{fig:position_prediction}觀察結果 }
+Figure~\ref{fig:position_prediction} showed the results from position decoder,
+with the deviations between prediction and ground truth are higher when the fingertip was stationary than when it was moving.
 
-% \end{multicols}
-
-\todo[ author=Wu, color=blue!20]{ 位置、速度、加速度 各一頁 }
 \begin{figure}[H]
     \foreach \i in {1,2,3,4,5}
     {
@@ -56,12 +57,15 @@ also easiler for us to compare their results.
             \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
-    \caption{Position Predictions}
+    \caption{Position predictions}
     \label{fig:position_prediction}
 \end{figure}
 
 \newpage
-\todo[ author=Wu, color=blue!20]{ 位置、速度、加速度 各一頁 }
+\todo[ author=Wu, color=blue!20]{ 補充Figure~\ref{fig:velocity_prediction}觀察結果 }
+In Figure~\ref{fig:velocity_prediction} we provided the predicted velocity trajectories,
+and the decoder performed well when the velocity was zero but failed to predict the peak value.
+
 \begin{figure}[H]
     \foreach \i in {6,7,8,9,10}
     {
@@ -69,12 +73,15 @@ also easiler for us to compare their results.
             \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
-    \caption{Velocity Predictions}
+    \caption{Velocity predictions}
     \label{fig:velocity_prediction}
 \end{figure}
 
 \newpage
-\todo[ author=Wu, color=blue!20]{ 位置、速度、加速度 各一頁 }
+\todo[ author=Wu, color=blue!20]{ 補充Figure~\ref{fig:acceleration_prediction}觀察結果 }
+In Figure~\ref{fig:acceleration_prediction} we can observe the similar pattern as in velocity decoders,
+that is the decoder performed well when the acceleration was zero but failed to predict when the kinematic's value increased significantly.
+
 \begin{figure}[H]
     \foreach \i in {11,12,13,14,15}
     {
@@ -82,30 +89,28 @@ also easiler for us to compare their results.
             \includegraphics[width=1\textwidth]{../KM_reconstruction_plots/\i.png}
         \end{subfigure}
     }
-    \caption{Acceleration Predictions}
+    \caption{Acceleration predictions}
     \label{fig:acceleration_prediction}
 \end{figure}
 
-% \begin{multicols}{2}
+\newpage
 We put three kinematics prediction results all torgether in figure~\ref{fig:Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar},
 with the neural spike firing rate in heatmap and the time points of target cue changed in gray vertical lines.
-Please notice the output range of these three kinematics and we only trained and predicted one type of kinematics at a time.
-% \end{multicols}
-
+Note that we only trained and predicted one type of kinematics at a time.
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar.png}
         \captionsetup{width=0.5\textwidth}
         \caption{Firing rate and decoding result}
-        \subcaption*{session indy\_20161007\_02}
+        \caption*{ \small{ session indy\_20161007\_02} }
         \label{fig:Firing_rate_heatmap_and_all_kinematic_variables_pred_and_actual_no_color_bar}
     \end{center}
 \end{figure}
 
 
 \newpage
-\section{Comparison of state-of-the-art}
+\section{Comparison with state-of-the-art neural decoders}
 % \begin{multicols}{2}
 % \todo[ color=green!40]{包含Wiener filter、KF、簡單的neural network、Makin的方法，每個方法引用一個經典的論文，放入以下論文的Figure 4 Superior arm-movement decoding from cortex with a new, unsupervised-learning algorithm}
 
@@ -113,8 +118,7 @@ There are six state-of-the-art methods we can compare,
 with the decoding results table provided from \url{https://zenodo.org/record/583331#.Xv2qFygzaUk} with license under \href{https://creativecommons.org/licenses/by/4.0/legalcode}{CC BY 4.0}.
 All 47 sessions of decoding accuracy in $R^2$ and SNR is recorded,
 and the weighted average $R^2$ is listed in Table~\ref{tab:comparison_state_of_the_art}.
-The scatter plot for comparing our decoder with the proposed method in \cite{makin2018} is in Figure~\ref{fig:scatter_plot_comparison_with_makin}
-\\
+
 
 The decoders included in the tables are
 \begin{itemize}[leftmargin=*,labelwidth={3em},align=left]
@@ -148,13 +152,22 @@ The decoders included in the tables are
     \label{tab:comparison_state_of_the_art}
 \end{table}
 
-In each kinematic, results from y-axis are always higher than the ones from the x-axis.
+In all sets of kinematic variables,
+results for y-coordinate are always higher than the ones from the x-coordinate.
 Our result as long as the two rEFH decoders,
-showed the some tendency of good precision in decoding velocity.
+showed the tendency of good precision in decoding velocity.
 The first four KF related decoders on our table on the other hand,
 were able to decode the position better than its own velocity results.
+\todo[author=Prof Ju, color=red!20]{Suggest to rewrite, this is thesis not journal paper}
 Acceleration is the hardest kinematics to decode with out a doubt,
-but it is also the kinematic that we have exceeded \cite{makin2018} the most.
+but it is also the kinematic variable that we have exceeded \cite{makin2018} the most.
+
+The scatter plot for comparing our decoder with the proposed method in \cite{makin2018} is in Figure~\ref{fig:scatter_plot_comparison_with_makin}
+It is notable that the decoding result of y-coordinate position surpassed \citep{makin2018} the least,
+only improved 0.01 in weighted average $R^2$.
+Less than half sessions' decoding results in our decoder exceeded rEFH (+KF).
+But the other 5 kinematics were considerably boosted in their prediction results.
+The progress of x-coordinate is also higher than the one of y-coordinate.
 
 \begin{figure}[H]
     \begin{center}
@@ -165,28 +178,22 @@ but it is also the kinematic that we have exceeded \cite{makin2018} the most.
     \end{center}
 \end{figure}
 
-It is notable that the decoding result of y-axis position surpassed \citep{makin2018} the least,
-only improved 0.01 in weighted average $R^2$.
-Less than half sessions' decoding results in our decoder exceeded rEFH (+KF).
-But the other 5 kinematics were considerably boosted in their prediction results.
-The progress of x-axis is also higher than the one of y-axis.
-
-
 \newpage
 \section{Internal dynamics of network}
 \label{sec:internal_dynamics_of_network}
 % \begin{multicols}{2}
 % \todo[ color=green!40]{參考以下論文的Figure 7 (ClosedLoopLSTM2019)Decoding Movements from Cortical Ensemble Activity Using a Long Short-Term Memory Recurrent Network}
 
-The easiest way to visualize how the RNNs learn from the features is by showing the outputs (hidden states) and the gates at each time step.
+The easiest way to visualize how the RNNs learn from the features is by showing the outputs (hidden states) and the gates on each time step.
 This method is used in the BCI research for motor cortex decoding \citep{tseng2019decoding},
 and we also copied the same way to see if the result is informative.
-Figure~\ref{fig:internal_dynamic_pos} is the internal dynamics of a position decoder,
-Figure~\ref{fig:internal_dynamic_vel} and Figure~\ref{fig:internal_dynamic_acc} are the result of velocity and acceleration decoders individually.
-The vertical axis represents the number of hidden units in our GRU.
+Figure~\ref{fig:internal_dynamic_pos} showed the internal dynamics of a position decoder.
+Figure~\ref{fig:internal_dynamic_vel} and Figure~\ref{fig:internal_dynamic_acc} are the results of velocity and acceleration.
+The vertical axis in each heatmap represented the number of hidden units in our GRU,
+and the the horizontal axis represented the time steps the GRU recurred.
 Here we can observe that the hidden states, 
 reset gates and update gates values are barely interpretable.
-They showes little relationship between the input spike firing rate and the output trajectories.
+They showed weak corelation between the input spike firing rate and the output trajectories.
 
 % \end{multicols}
 
@@ -227,7 +234,7 @@ They showes little relationship between the input spike firing rate and the outp
                 \includegraphics[width=1\textwidth]{internal_dynamic_pos.png}
                 \captionsetup{width=0.7\textwidth}
                 \caption{ GRU internal dynamics in position decoder }
-                \subcaption*{session indy\_20160411\_02}
+                \caption*{ \small{session indy\_20160411\_02}}
                 \label{fig:internal_dynamic_pos}
             \end{center}
         \end{minipage}
@@ -236,7 +243,7 @@ They showes little relationship between the input spike firing rate and the outp
                 \includegraphics[width=1\textwidth]{internal_dynamic_vel.png}
                 \captionsetup{width=0.7\textwidth}
                 \caption{ GRU internal dynamics in velocity decoder }
-                \subcaption*{session indy\_20160407\_02}
+                \caption*{ \small{session indy\_20160407\_02}}
                 \label{fig:internal_dynamic_vel}
             \end{center}
         \end{minipage}
@@ -244,7 +251,7 @@ They showes little relationship between the input spike firing rate and the outp
             \includegraphics[width=1\textwidth]{internal_dynamic_acc.png}
             \captionsetup{width=0.7\textwidth}
             \caption{ GRU internal dynamics in acceleration decoder }
-            \subcaption*{session indy\_20160411\_01}
+            \caption*{ \small{session indy\_20160411\_01}}
             \label{fig:internal_dynamic_acc}
         \end{minipage}
 \end{figure}
@@ -257,7 +264,7 @@ Here we selected two sessions and plotted the attention map in decoding position
 velocity and acceleration in Figure~\ref{fig:decoding_trajectories_with_attention_indy_20160418_01} and Figure~\ref{fig:decoding_trajectories_with_attention_indy_20161025_04}.
 We have discovered some patterns in our attention maps which is related to the kinematics.
 In decoding position,
-the focus of attention was shifted gradually when the fingertips stp moving.
+the focus of attention was shifted gradually when the fingertips stopped moving.
 It formed an oblique line between each movements,
 capturing the fingertips' status.
 For velocity and acceleration,
@@ -309,7 +316,7 @@ It also tells us that the attention module can actually represent the dynamics o
 \end{figure}
 
 
-\section{Tap sizes optimization}
+\section{Tap size selection}
 
 We have showed that the attention scores can help as quantify the contributions from each past time bin.
 Based on this attribution we designed a method to evalutate the optimal tap sizes in movement decoding tasks for different kinematics.
@@ -456,7 +463,7 @@ Table~\ref{tab:ablation_study_table} has the results from decoders with differen
 Decoders with the highest $R^2$ and lowest standard deviation are the ones considered the best.
 Aside from y-position, the best decoders are the bidirectional GRU with layer normalization but without attention module.
 Comparing with \cite{makin2018}, biggest improvement happened in the x-axis of all three kinematics.
-\\
+
 
 Taking a deep inspection into the effects of these three techniques,
 it is obvious that bidirectional GRU is always better than one-way GRU, with the same condition of using temporal attention and layer normalization or not.
@@ -640,7 +647,7 @@ Here we presented the position decoding result in an actual 2D plan in Figure~\r
 There exists no clear clue to tell which predicted trajectory is better than another one,
 since both results have considerable deviations from the ground truth.
 Comparing with the results between Figure~\ref{fig:effect_of_atten_in_position_2D_plot} and Figure~\ref{fig:effect_of_atten_in_position_time_plot},
-we can see how the predicted trajectories drifted away from groud truth when the fingertips were at rest.
+we can see how the predicted trajectories drifted away from ground truth when the fingertips were at rest.
 
 
 \section{Failure case study}
