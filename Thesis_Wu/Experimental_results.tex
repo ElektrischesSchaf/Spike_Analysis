@@ -480,7 +480,6 @@ Decoders with the highest $R^2$ and lowest standard deviation are the ones consi
 Aside from y-position, the best decoders are the bidirectional GRU with layer normalization but without attention module.
 Comparing with \cite{makin2018}, biggest improvement happened in the x-axis of all three kinematics.
 
-
 Taking a deep inspection into the effects of these three techniques,
 it is obvious that bidirectional GRU is always better than one-way GRU, with the same condition of using temporal attention and layer normalization or not.
 Layer normalization, on the other hand, contributes most in decoding accelerations.
@@ -532,13 +531,14 @@ Decoding results from didirectional GRU are better than one-way GRU in almost ev
     \end{center}
 \end{figure}
 
-In Section~\ref{sec:RNN}, we discussed that the difference between one-way and bidirectional RNN and the benefit of the latter structure.
+In Section~\ref{sec:RNN},
+we discussed that the difference between one-way and bidirectional RNN and the benefit of the latter structure.
 The bidirectional RNN should be capable of \textit{seeing} a larger range of input sequence.
-Our attention map also manifestes this concept,
+Attention maps also manifested this concept,
 as the distributions of attention scores in bidirectional GRU are obvious wider in all cases of kinematics.
-The attention maps in position decoder,
+The attention maps in position decoders,
 it is the resting stage of fingertips that needs longer previous neural signals to predict,
-whereas the velocity and acceleration decoder requires more past informations when the fingertip is active. 
+whereas the velocity and acceleration decoders required more past informations when the fingertip is active. 
 
 \begin{figure}[H]
     \begin{center}
@@ -665,7 +665,7 @@ Here we presented the position decoding result in an actual 2D plan in Figure~\r
     \end{center}
 \end{figure}
 
-There exists no clear clue to tell which predicted trajectory is better than another one,
+There exists no clear measure to tell which predicted trajectory is better than another one,
 since both results have considerable deviations from the ground truth.
 Comparing with the results between Figure~\ref{fig:effect_of_atten_in_position_2D_plot} and Figure~\ref{fig:effect_of_atten_in_position_time_plot},
 we can see how the predicted trajectories drifted away from ground truth when the fingertips were at rest.
@@ -678,13 +678,13 @@ we can see how the predicted trajectories drifted away from ground truth when th
 Most sessions benefit from the layer normalization and attention decoder, 
 but there are sessions turned out to have particularly poor performances.
 Take session indy\_20161027\_03 for example, 
-the corresponding attention map is showed in Figure~\ref{fig:indy_20161027_03_corresponding_attention_map},
+the corresponding attention map is shown in Figure~\ref{fig:indy_20161027_03_corresponding_attention_map},
 We can tell that our decoder with attention failed mostly when the fingertips in stationary.
-Our attention should able to distinguish if the fingertip of the subjects is moving or at rest.
-In these failed predictions, 
+Our attention should be able to distinguish if the fingertip of the subjects is moving or at rest.
+In these failed case,
 the predicted trajectories were very accurate at the interval when the fingertips moved,
-but the errors were typically large when the fingertips is stationary but the neurons were still firing.
-Those firing patterns tended to affect our model the most, and it is inevitable.
+but the errors were large when the fingertips is stationary yet the neurons were still firing.
+Those firing patterns tended to affect the decoder model the most, and it is inevitable.
 
 % \end{multicols}
 
