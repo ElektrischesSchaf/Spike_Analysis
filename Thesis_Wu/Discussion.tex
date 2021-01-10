@@ -88,7 +88,7 @@ Another reason to support using individual decoders is that the patterns from ou
 \section{The insight provided by our attention module}
 % \begin{multicols}{2}
 \todo[inline, color=green!40]{探討attention找到了甚麼重點?}
-Our temporal attention mechanism can find the different pattern in different kinematic variables.
+Our temporal attention module can find the different patterns in different kinematic variables.
 Especially it is the point-to-point movement we were trying to decode, 
 there were no regular pattern in the trajectories.
 With the help of temporal attention module,
@@ -96,10 +96,9 @@ the attention map can reflect the moving status in every moment.
 Especially it represents distinguishable attention patterns when the fingertip is stationary or moving,
 and it works in all position, velocity and acceleration decoders.
 
-
-The second insight our attention can provide is an explaination about the length of spiking history should use.
-By qualifying the average attention score from all the history taps in each session, 
-we discovered a clear boundary of selecting useful tap sizes in the case of velocity and acceleration decoders.
+The second insight our attention can provide is an explaination about the length of spiking history should be used.
+By qualifying the average attention score from all the history taps in each session,
+we discovered a clear boundary of selecting useful tap size especially for velocity and acceleration decoders.
 
 % \end{multicols}
 
@@ -117,22 +116,21 @@ Biological plausiblily can act as a guide, but it's not a strict requirement in 
 
 
 Take the image attention for example, 
-the CNN model works on entire images, with equal priority given to all the pixels in the image.
+the CNN model works on the entire images, with equal priority given to all the pixels in the image.
 However, this is not how the primate visual system actual works.
 Instead of processing all input in parallel, 
 visual attention shifts among different locations or objects in the image with strategies.
 It is capable of centering and processing resources on a series in turn.
-Neurocomputational models have show this piecemeal approach is benefitial,
-that at any given moment, it isolating and prioritizing relevant information.
+Neurocomputational models have shown this piecemeal approach is benefitial,
+that at any given moment, it isolates and prioritizes relevant information.
 
-
-In our study, the attention map showed that the decoder can capture two states of fingertips: standstill or in action.
+In our study,
+the attention map showed that the decoder can capture two states of fingertips: standstill or in action.
 Especially in position decoder, 
 the decoder will predict the stationary trajectories based on the last moment when fingertips were still moving.
-This result is match by the discovery in \cite{kaufman2016largest},
+This result is matched by the discovery in \cite{kaufman2016largest},
 as they claimed that the neuron activities carry mostly the information about \textit{when} the movement will occur,
 but do not carry essential information about \textit{what} movement it will be.
-
 
 % \end{multicols}
 
@@ -170,7 +168,6 @@ Position is the most
 % \cite{wu2003neural} 這篇論文提到傳統的linear filter[8,12]需要500ms到1500ms的神經訊號來解碼運動。最佳的time lag是70到140ms。這篇也是第一篇使用Kalman filter於運動解碼的論文
 % \end{multicols}
 
-
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.48\textwidth}
@@ -181,9 +178,9 @@ Position is the most
             \includegraphics[width=1\textwidth]{../Discussion_figures/difficulty_in_position_decoder/tap_size_y_axis.png}
             \caption{}
         \end{subfigure}
-        \captionsetup{width=0.5\textwidth}
+        \captionsetup{width=1\textwidth}
         \caption{ Effect of different tap size on decoding SNR }
-        \subcaption*{session indy\_20161007\_02}
+        \caption*{ \small{session indy\_20161007\_02}}
         \label{fig:effect_of_tap_size}
     \end{center}
 \end{figure}
@@ -201,7 +198,7 @@ Position is the most
         \end{subfigure}
         \captionsetup{width=0.5\textwidth}
         \caption{ Effect of different tap size on decoding position }
-        \subcaption*{session indy\_20161007\_02}
+        \caption*{ \small{session indy\_20161007\_02}}
         \label{fig:effect_of_tap_size_on_attention_map}
     \end{center}
 \end{figure}
