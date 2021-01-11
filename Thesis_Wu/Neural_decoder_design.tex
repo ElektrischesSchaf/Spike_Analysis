@@ -393,7 +393,7 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
 % \begin{multicols}{2}
 
 \begin{align}
-    \bh_t &= \text{GRU} \left( \bx_t, \ \bh_{t-1}   \right)
+    \bh_t &= \text{GRU} \left( \bx_t, \ \bh_{t-1}   \right), \ t \in [1, \ T]
 \end{align}
 
 \noindent and the four equations in the GRU cell:
@@ -404,7 +404,8 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
         \br_t &=  \mathcal{S} ( \bW_r \bh_{t-1} + \bU_r \bx_t + \bb_r) \label{eq:reset_gate} \\
         \bz_t &= \mathcal{S} ( \bW_z \bh_{t-1} + \bU_z \bx_t + \bb_z) \label{eq:update_gate} \\
         \tilde{\bh}_t &= \phi( \bW ( \br_t \odot \bh_{t-1}) + \bU \bx_t + \bb) \label{eq:h_hat} \\
-        \bh_t &= \bz_t \odot \bh_{t-1} + ( 1 - \bz_t) \odot \tilde{\bh}_t \label{eq:h_out}
+        \bh_t &= \bz_t \odot \bh_{t-1} + ( 1 - \bz_t) \odot \tilde{\bh}_t \label{eq:h_out}\\
+        t &\in [1, \ T]
     % \end{split}
 \end{align}
 
@@ -501,10 +502,9 @@ since the first half of this vector contains the information by feeding input se
 
 \begin{align}
     \begin{split}
-    \overrightarrow{ \bh_{t'} } &= \overrightarrow{\text{GRU}} \left( \bx_{t'}  , \ \overrightarrow{ \bh_{t'-1}}  \right) \\
-    \overleftarrow{ \bh_{t'} }  &= \overleftarrow{\text{GRU}}  \left( \bx_{t'}  , \ \overleftarrow{ \bh_{t'+1}}   \right) \\
-    \bh_{t'} &= \overrightarrow{ \bh_{t'} } \oplus \overleftarrow{ \bh_{t'} } \\
-    \text{for t'} &= \text{ t-T+1, \ t-T+2, \ t-T+3,} \cdots \text{,\ t}
+    \overrightarrow{ \bh_{t} } &= \overrightarrow{\text{GRU}} \left( \bx_{t}  , \ \overrightarrow{ \bh_{t-1}}  \right) , \ t\in [1, \ T]\\
+    \overleftarrow{ \bh_{t} }  &= \overleftarrow{\text{GRU}}  \left( \bx_{t}  , \ \overleftarrow{ \bh_{t+1}}   \right), \ t\in [T, \ 1] \\
+    \bh_{t} &= \overrightarrow{ \bh_{t} } \oplus \overleftarrow{ \bh_{t} }, \ t\in [1, \ T]
     \end{split}
 \end{align}
 
@@ -526,9 +526,8 @@ The benfit of implementing bidirectional RNN is that it can see a broader range 
 As illustrated in Figure~\ref{fig:bidir_RNN_explain},
 \todo[author=Wu, color=blue!20]{解釋bidirectional RNN 為何可以預測較佳}
 when predicting the fingertip movement at time step $t$,
-the output from each RNN time step $\text{t'}$, contains only the memory from $\text{t-T+1}$ to $\text{t'}$ in one-way RNN,
-where $t'= \text{ t-T+1, \ t-T+2, \ t-T+3,} \cdots \text{,\ t}$.
-But in bidirectional RNN the output at any time step $t'$ can cover the memory from the whole sequence, which is from $\text{t-T+1}$ to $\text{t}$.
+the output from each RNN time step $\text{t}$, contains only the memory from time step $1$ to time step $t$ in one-way RNN.
+But in bidirectional RNN the output at any time step $t$ can cover the memory from the whole sequence, which is from time step $1$ to time step $T$.
 
 \begin{figure}[H]
     \begin{center}
