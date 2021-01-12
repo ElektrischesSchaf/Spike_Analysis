@@ -416,7 +416,7 @@ for max_timestep in tap_size_list:
             attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)        
             penality_loss_forward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
 
-            l_loss = loss_func(o_labels, labels) + penality_loss_forward*100
+            l_loss = loss_func(o_labels, labels) + penality_loss_forward
 
             return o_labels, l_loss
 

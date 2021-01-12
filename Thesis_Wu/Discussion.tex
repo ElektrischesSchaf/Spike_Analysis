@@ -35,6 +35,7 @@ the loss dropped drastically with the aid of layer normalization when compared w
         \label{fig:loss_vs_epoch}
     \end{center}
 \end{figure}
+\todo[author=Wu, color=blue!20]{解釋 Figure~\ref{fig:loss_vs_epoch} 每條曲線的意義}
 
 \begin{figure}[H]
     \begin{center}
@@ -47,13 +48,13 @@ the loss dropped drastically with the aid of layer normalization when compared w
 
 
 % \begin{multicols}{2}
-The reason for the ordinary GRU failed to decode the acceleration is mainly caused by the wide range of this kinematic.
+The reason for the ordinary GRU failed to decode the acceleration is mainly caused by the wide range of this kinematic variable.
 As shown in Figure~\ref{fig:distribution_of_kinematics},
 when it comes to decoding fingertip position,
 the values are distributed mainly between $100\sim-50$ $\mathrm{mm}$.
 But for velocity, the value distribution is between $200\sim-200$ $\mathrm{mm}/\mathrm{s}$,
 and acceleration is $2000\sim-2000$ $\mathrm{mm}/\mathrm{s}^{\mathrm{2}}$.
-Most of those values of velocity and acceleration are in the vicinity of zero.
+Most velocity and acceleration values are in the vicinity of zero.
 It is unlikely for a deep learing network to adapt this drastic range of distributions.
 But with the help of layer normalization,
 it optimizes the of inner GRU dynamics.
@@ -76,7 +77,7 @@ which is invented to solve the long-term dependency problems happened in decodin
 
 \section{Why our neural decoder surpasses others}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{探討neural decoder比其他方法好的原因}
+% \todo[inline, color=green!40]{探討neural decoder比其他方法好的原因}
 The improvement of decoding accuracy is mainly contributed by the implementation of bidirectional GRU and layer normalization.
 We provided three individual decoders for position,
 velocity and acceleration instead of decoding the three kinematic variables by the same decoder.
@@ -87,7 +88,7 @@ Another reason to support using individual decoders is that the patterns from ou
 
 \section{The insight provided by our attention module}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{探討attention找到了甚麼重點?}
+% \todo[inline, color=green!40]{探討attention找到了甚麼重點?}
 Our temporal attention module can find the different patterns in different kinematic variables.
 Especially it is the point-to-point movement we were trying to decode, 
 there were no regular pattern in the trajectories.
@@ -104,7 +105,7 @@ we discovered a clear boundary of selecting useful tap size especially for veloc
 
 \section{Connections between our AI model and neuroscience}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{探討網路內部的運作方式跟大腦的關連}
+% \todo[inline, color=green!40]{探討網路內部的運作方式跟大腦的關連}
 
 Both fields of AI and neuroscience has had a huge progress in recent years \cite{hassabis2017neuroscience}.
 The relationship between these two fields has mainly two parts.
@@ -144,7 +145,7 @@ but do not carry essential information about \textit{what} movement it will be.
 
 \section{Difficulty in position decoder}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{解釋為什麼解碼位置要使用較多的time bin}
+% \todo[inline, color=green!40]{解釋為什麼解碼位置要使用較多的time bin}
 \cite{goodman2019postural} has presented that neurons in M1 are more related to velocity, rather than the time-varying posture.
 \cite{okorokova2020decoding} has found out that neurons in motor cortex are more prefereable to encode velocity than its position. 
 This is the main reason why velocity decoders outperform the position decoders.

@@ -104,7 +104,7 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
 
     plt.xlim([plotting_time_elapsed[start_time_bin-1], plotting_time_elapsed[end_time_bin] ])
 
-    plt.title('x-axis', fontsize=my_fontsize*0.7, color='black')
+    plt.title('x-coordinate', fontsize=my_fontsize*0.7, color='black')
     plt.xlabel('Time (second)', fontsize=my_fontsize*0.5, color='black')
     plt.ylabel('Position (mm)', fontsize=my_fontsize*0.5, color='black')
     plt.xticks(fontsize=my_fontsize*0.5, color='black')
@@ -129,7 +129,7 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
 
     plt.xlim([plotting_time_elapsed[start_time_bin-1], plotting_time_elapsed[end_time_bin] ])
 
-    plt.title('y-axis', fontsize=my_fontsize*0.7, color='black')
+    plt.title('y-coordinate', fontsize=my_fontsize*0.7, color='black')
     plt.xlabel('Time (second)', fontsize=my_fontsize*0.5, color='black')
     plt.ylabel('Position (mm)', fontsize=my_fontsize*0.5, color='black')
     plt.xticks(fontsize=my_fontsize*0.5, color='black')
