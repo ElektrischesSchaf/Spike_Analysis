@@ -396,16 +396,15 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
     \bh_t &= \text{GRU} \left( \bx_t, \ \bh_{t-1}   \right), \ t \in [1, \ T]
 \end{align}
 
-\noindent and the four equations in the GRU cell:
+\noindent and the four equations in the GRU cell, for $t \ \in [1, \ T]$,
 
 \begin{align}
     % \label{eq:gru_cell}
     % \begin{split}
         \br_t &=  \mathcal{S} ( \bW_r \bh_{t-1} + \bU_r \bx_t + \bb_r) \label{eq:reset_gate} \\
         \bz_t &= \mathcal{S} ( \bW_z \bh_{t-1} + \bU_z \bx_t + \bb_z) \label{eq:update_gate} \\
-        \tilde{\bh}_t &= \phi( \bW ( \br_t \odot \bh_{t-1}) + \bU \bx_t + \bb) \label{eq:h_hat} \\
-        \bh_t &= \bz_t \odot \bh_{t-1} + ( 1 - \bz_t) \odot \tilde{\bh}_t \label{eq:h_out}\\
-        t &\in [1, \ T]
+        \tilde{\bh}_t &=  \text{tanh}( \bW ( \br_t \odot \bh_{t-1}) + \bU \bx_t + \bb) \label{eq:h_hat} \\
+        \bh_t &= \bz_t \odot \bh_{t-1} + ( 1 - \bz_t) \odot \tilde{\bh}_t \label{eq:h_out}
     % \end{split}
 \end{align}
 
@@ -413,15 +412,14 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
 
 \begin{align}
     \mathcal{S} (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
-    \phi (x) &= \frac{ e^{x}-e^{-x} }{ e^{x}+e^{-x} } \label{eq:tanh}
+    \text{tanh} (x) &= \frac{ e^{x}-e^{-x} }{ e^{x}+e^{-x} } \label{eq:tanh}
 \end{align}
 
 Where $\br_t$ is the \textbf{reset gate} and $\bz_t$ is the \textbf{update gate}.
-Notation $\odot$ means elementwise multiplication for two tensors of same shape.
+Notation $\odot$ denotes elementwise multiplication for two tensors of same shape.
 Operator $\mathcal{S}$ is the sigmoid function (Equation \ref{eq:sigmoid}),
 which squashes the input value from ($-\infty$, $\infty$) to (0, 1).
-$\phi$ is the hyperbolic tangent (tanh) function (Equation \ref{eq:tanh}),
-squashing the input value from ($-\infty$, $\infty$) to (-1,1).
+Hyperbolic tangent function (Equation \ref{eq:tanh}) squashes the input value from ($-\infty$, $\infty$) to (-1,1).
 \todo[author=Wu, color=blue!20]{說明 Figure~\ref{fig:sigmoid_and_tanh} }
 Hyperbolic tangent and sigmoid function were plotted in Figure~\ref{fig:sigmoid_and_tanh}.
 However both of them have drawbacks of saturation problem, 
