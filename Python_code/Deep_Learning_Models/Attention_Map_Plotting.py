@@ -130,11 +130,11 @@ class Plotting():
             ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
             ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
-        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
+        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
+        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
 
-        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.8 )
-        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.9 )
+        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.8 )
+        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.9 )
     
         ax[2].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
@@ -226,11 +226,11 @@ class Plotting():
             ax[2].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
             ax[2].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[2].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
-        ax[2].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
+        ax[2].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
+        ax[2].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
 
-        ax[2].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.8 )
-        ax[2].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.9 )
+        ax[2].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.8 )
+        ax[2].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.9 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -250,8 +250,8 @@ class Plotting():
         #     ax[2].axvline( time[0]+ele , color='black' , linewidth=5, alpha=0.3 )
 
         # this is for target cue checking, time bin version
-        # ax[2].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
-        # ax[2].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-axis cue', alpha=0.8)
+        # ax[2].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-coor. cue', alpha=0.8)
+        # ax[2].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-coor. cue', alpha=0.8)
 
 
         ax[2].legend(loc='upper right', fontsize=my_fontsize*0.8)
@@ -305,11 +305,11 @@ class Plotting():
         if type_name=='x_and_y_acc':
             ax[0].set_ylabel( 'acc (mm/$s^2$)', rotation=90, fontsize=my_fontsize, color="black")
 
-        ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
-        ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
+        ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
+        ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
 
-        ax[0].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.8 )
-        ax[0].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.9 )
+        ax[0].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.8 )
+        ax[0].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.9 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -433,11 +433,11 @@ class Plotting():
         if type_name=='x_and_y_acc':
             ax[0].set_ylabel( 'acc (mm/$\mathrm{s}^{\mathrm{2}}$)', rotation=90, fontsize=my_fontsize, color="black")
 
-        ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
-        ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
+        ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
+        ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
 
-        ax[0].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.8 )
-        ax[0].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.9 )
+        ax[0].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.8 )
+        ax[0].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.9 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -501,7 +501,7 @@ class Plotting():
         # ax[2].set_ylabel( 'STD' , fontsize=my_fontsize*0.6, rotation=0, color="black", labelpad= 70 )
 
 
-        # x-axis error
+        # x-coor. error
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03 }
         if type_name == 'x_and_y_pos':
             sns.heatmap( data =  loss_plot_vector_x, vmin=0, vmax=60, ax=ax[2], cbar_kws=cbar_kws_firingrate, cmap='Reds', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
@@ -517,7 +517,7 @@ class Plotting():
 
         ax[2].set_ylabel( 'x error' , fontsize=my_fontsize*0.6, rotation=0, color="black", labelpad= 70 )
 
-        # y-axis error
+        # y-coor. error
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03 }
         if type_name == 'x_and_y_pos':
             sns.heatmap( data =  loss_plot_vector_y, vmin=0, vmax=60, ax=ax[3], cbar_kws=cbar_kws_firingrate, cmap='Reds', yticklabels=False, xticklabels=False, cbar=False ) # norm=LogNorm()
@@ -640,11 +640,11 @@ class Plotting():
             ax[2].set_ylabel( 'Velocity ($mm/s$)', rotation=90)
         if type_name=='acc':
             ax[2].set_ylabel( 'Acceleration ($mm/s^2$)', rotation=90)
-        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.8 )
-        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.9 )
+        ax[2].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
+        ax[2].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
 
-        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.8 )
-        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.9 )
+        ax[2].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.8 )
+        ax[2].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.9 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -659,8 +659,8 @@ class Plotting():
             ax[2].axvline( time[0]+ele , color='black' , linewidth=5, alpha=0.3 )
         
         # this is for target cue checking
-        # ax[2].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
-        # ax[2].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-axis cue', alpha=0.8)
+        # ax[2].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-coor. cue', alpha=0.8)
+        # ax[2].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-coor. cue', alpha=0.8)
 
         ax[2].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
@@ -763,11 +763,11 @@ class Plotting():
             ax[3].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
             ax[3].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+        ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.7 )
+        ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
 
-        ax[3].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[3].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[3].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.7 )
+        ax[3].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
     
         ax[3].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
@@ -864,11 +864,11 @@ class Plotting():
             ax[3].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
             ax[3].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+        ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.7 )
+        ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
 
-        ax[3].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[3].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[3].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.7 )
+        ax[3].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -883,8 +883,8 @@ class Plotting():
             ax[3].axvline( time[0]+ele , color='black' , linewidth=5, alpha=0.3 )
         
         # this is for target cue checking
-        # ax[3].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
-        # ax[3].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-axis cue', alpha=0.8)
+        # ax[3].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-coor. cue', alpha=0.8)
+        # ax[3].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-coor. cue', alpha=0.8)
 
         ax[3].legend(loc='upper right', fontsize=my_fontsize*0.8)
 
@@ -982,11 +982,11 @@ class Plotting():
             ax[3].set_ylabel( 'Velocity (mm/s)', rotation=90)
         if type_name=='acc':
             ax[3].set_ylabel( 'Acceleration (mm/$s^2$)', rotation=90)
-        ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.7 )
-        ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
+        ax[3].plot( time, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.7 )
+        ax[3].plot( time, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
 
-        ax[3].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.7 )
-        ax[3].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
+        ax[3].plot( time, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.7 )
+        ax[3].plot( time, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -1001,8 +1001,8 @@ class Plotting():
             ax[3].axvline( time[0]+ele , color='black' , linewidth=5, alpha=0.3 )
         
         # this is for target cue checking
-        # ax[3].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-axis cue', alpha=0.8)
-        # ax[3].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-axis cue', alpha=0.8)
+        # ax[3].plot(time, x_target_cue[start_time_bin:end_time_bin] , 'ob', linewidth=3, label='x-coor. cue', alpha=0.8)
+        # ax[3].plot(time, y_target_cue[start_time_bin:end_time_bin], 'og',linewidth=3, label='y-coor. cue', alpha=0.8)
 
         ax[3].legend(loc='upper right', fontsize=my_fontsize*0.8)
 

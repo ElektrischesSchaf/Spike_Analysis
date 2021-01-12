@@ -130,10 +130,10 @@ plot.close()
 
 plot.figure( figsize=( my_width, my_height*0.7 ))
 # plot.title('Session ' + session_name, fontsize=my_fontsize, color='black')
-plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], finger_x_coor[plot_start_sample_time:plot_end_sample_time] ,'b--' , linewidth=5, alpha=0.7, label='x-axis recording')
-# plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], target_x_coor[plot_start_sample_time:plot_end_sample_time] ,'b', linewidth=5, alpha=0.8, label='x-axis target cue')
-plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], finger_y_coor[plot_start_sample_time:plot_end_sample_time] ,'g--' , linewidth=5, alpha=0.7, label='y-axis recording')
-# plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], target_y_coor[plot_start_sample_time:plot_end_sample_time] ,'g', linewidth=5, alpha=0.8, label='y-axis target cue')
+plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], finger_x_coor[plot_start_sample_time:plot_end_sample_time] ,'b--' , linewidth=5, alpha=0.7, label='x-coordinate recording')
+# plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], target_x_coor[plot_start_sample_time:plot_end_sample_time] ,'b', linewidth=5, alpha=0.8, label='x-coordinate target cue')
+plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], finger_y_coor[plot_start_sample_time:plot_end_sample_time] ,'g--' , linewidth=5, alpha=0.7, label='y-coordinate recording')
+# plot.plot( numpy_time_stamp[0,plot_start_sample_time:plot_end_sample_time], target_y_coor[plot_start_sample_time:plot_end_sample_time] ,'g', linewidth=5, alpha=0.8, label='y-coordinate target cue')
 
 the_x = target_x_coor[plot_start_sample_time:plot_end_sample_time]
 the_y = target_y_coor[plot_start_sample_time:plot_end_sample_time]
@@ -159,6 +159,6 @@ plot.xlabel('Time (second)', fontsize=my_fontsize)
 plot.xticks(fontsize=my_fontsize)
 plot.yticks(fontsize=my_fontsize)
 # plot.xlim([ numpy_time_stamp[0,plot_start_sample_time], numpy_time_stamp[0,plot_end_sample_time]])
-plot.legend(loc='upper right', fontsize=my_fontsize)
+plot.legend(loc='lower center', fontsize=my_fontsize)
 plot.tight_layout()
 plot.savefig(path+'x_and_y_trajectory_and_cue.png')

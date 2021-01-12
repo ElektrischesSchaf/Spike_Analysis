@@ -6,7 +6,7 @@ import os
 import numpy
 import matplotlib.pyplot as plt
 
-my_fontsize=45
+my_fontsize=50
 
 CWD = os.getcwd()
 
@@ -64,8 +64,8 @@ while(end_time_bin < int( prediction_y_no_attention.shape[0] )-duration ):
     plt.scatter(prediction_x_no_attention[end_time_bin-1], prediction_y_no_attention[end_time_bin-1], color='green' , marker='X', s=300)
 
     # plot.title('X-Y plane', fontsize=my_fontsize, color='black')
-    plt.xlabel('mm', fontsize=my_fontsize, color='black')
-    plt.ylabel('mm', fontsize=my_fontsize, color='black')
+    plt.xlabel('x (mm)', fontsize=my_fontsize, color='black')
+    plt.ylabel('y (mm)', fontsize=my_fontsize, color='black')
     plt.xticks(fontsize=my_fontsize*0.5)
     plt.yticks(fontsize=my_fontsize*0.5)
     plt.legend(fontsize=my_fontsize*0.5, loc='upper right')

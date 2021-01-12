@@ -396,7 +396,7 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
     \bh_t &= \text{GRU} \left( \bx_t, \ \bh_{t-1}   \right), \ t \in [1, \ T]
 \end{align}
 
-\noindent and the four equations in the GRU cell, for $t \ \in [1, \ T]$,
+\noindent and the four equations in the GRU cell,
 
 \begin{align}
     % \label{eq:gru_cell}
@@ -408,7 +408,7 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
     % \end{split}
 \end{align}
 
-\noindent and the two activation functions:
+\noindent where $t \ \in [1, \ T]$, and the two activation functions:
 
 \begin{align}
     \mathcal{S} (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
@@ -523,8 +523,7 @@ since the first half of this vector contains the information by feeding input se
 The benfit of implementing bidirectional RNN is that it can see a broader range of input sequence than one-way RNN.
 As illustrated in Figure~\ref{fig:bidir_RNN_explain},
 \todo[author=Wu, color=blue!20]{解釋bidirectional RNN 為何可以預測較佳}
-when predicting the fingertip movement at time step $t$,
-the output from each RNN time step $\text{t}$, contains only the memory from time step $1$ to time step $t$ in one-way RNN.
+The output from each RNN time step $\text{t}$ contains only the memory from time step $1$ to time step $t$ in one-way RNN.
 But in bidirectional RNN the output at any time step $t$ can cover the memory from the whole sequence, which is from time step $1$ to time step $T$.
 
 \begin{figure}[H]
