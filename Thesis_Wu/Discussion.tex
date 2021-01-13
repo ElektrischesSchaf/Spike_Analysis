@@ -163,7 +163,8 @@ Which means our usage of the time bins is acceptable and reasonable.
 
 In Figure~\ref{fig:effect_of_tap_size}, 
 we showed that the decoding results from position, velocity and acceleration in different tap sizes.
-Position is the most
+Position is the kinematic variable that sensitive to tap size the most.
+Velocity and accelerateion, on the contrary, require only small tap size that can reach their top performances.
 
 
 % \cite{wu2003neural} 這篇論文提到傳統的linear filter[8,12]需要500ms到1500ms的神經訊號來解碼運動。最佳的time lag是70到140ms。這篇也是第一篇使用Kalman filter於運動解碼的論文
@@ -180,25 +181,28 @@ Position is the most
             \caption{}
         \end{subfigure}
         \captionsetup{width=1\textwidth}
-        \caption{ Effect of different tap size on decoding SNR }
+        \caption[Effect of different tap size on decoding SNR]{ Effect of different tap size on decoding SNR. (a) The results in x-coordinate (b) The results in y-coordinate }
         \caption*{ \small{session indy\_20161007\_02}}
         \label{fig:effect_of_tap_size}
     \end{center}
 \end{figure}
 
+Figure~\ref{fig:effect_of_tap_size_on_attention_map} showed that the position decoding results from two tap sizes, 10 and 30.
+It is obvious that predicted trajectories with higher tap size were smoother when fingertip was stationary,
+thus led to better decoding results.
 
 \begin{figure}[H]
     \begin{center}
-        \begin{subfigure}{0.48\textwidth}
+        \begin{subfigure}{0.7\textwidth}
             \includegraphics[width=1\textwidth]{../Discussion_figures/difficulty_in_position_decoder/tap_size_10.png}
             \caption{Tap size 10}
         \end{subfigure}
-        \begin{subfigure}{0.48\textwidth}
+        \begin{subfigure}{0.7\textwidth}
             \includegraphics[width=1\textwidth]{../Discussion_figures/difficulty_in_position_decoder/tap_size_30.png}
             \caption{Tap size 30}
         \end{subfigure}
-        \captionsetup{width=0.5\textwidth}
-        \caption{ Effect of different tap size on decoding position }
+        \captionsetup{width=1\textwidth}
+        \caption[ Effect of different tap size on decoding position ]{ Effect of different tap size on decoding position. (a) With tap size 10 (b) With tap size 30}
         \caption*{ \small{session indy\_20161007\_02}}
         \label{fig:effect_of_tap_size_on_attention_map}
     \end{center}

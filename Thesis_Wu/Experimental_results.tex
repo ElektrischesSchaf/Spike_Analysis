@@ -167,16 +167,20 @@ It is notable that the decoding result of y-coordinate position surpassed \citep
 only improved 0.01 in weighted average $R^2$.
 Less than half sessions' decoding results in our decoder exceeded rEFH (+KF).
 But the other 5 kinematics were considerably boosted in their prediction results.
-The progress of x-coordinate is also higher than the one of y-coordinate.
+The decoding improvement compared with \cite{makin2018} in x-coordinate is also higher than the ones in y-coordinate.
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_makin.png}
-        \captionsetup{width=0.5\textwidth}
-        \caption{ Comparison with rEFH (+KF) \citep{makin2018} }
+        \captionsetup{width=1\textwidth}
+        \caption[Comparison with rEFH (+KF) \citep{makin2018}]{ Compare our results with rEFH (+KF) \citep{makin2018}. Solid lines are the the of equality, red lines are the least-squares. Each data point indicates the decoding result from a single session in SNR. Blue points are the sessions from monkey Indy; green points are the ones from monkey Loco. }
+        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: 0.15, $2.8 \times 10^{-3}$, $5.37 \times 10^{-6}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: 0.69, $4.2 \times 10^{-3}$, $3.93 \times 10^{-6}$.}}
         \label{fig:scatter_plot_comparison_with_makin}
     \end{center}
 \end{figure}
+
+\todo[author=Wu, color=blue!20]{Figure~\ref{fig:scatter_plot_comparison_with_makin} 加上 p-values}
 
 \newpage
 \section{Internal dynamics of network}
@@ -526,10 +530,14 @@ Decoding results from didirectional GRU are better than one-way GRU in almost ev
     \begin{center}
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_one_way_vs_bidir.png}
         \captionsetup{width=1\textwidth}
-        \caption[Comparison between one-way and bidirectional decoder]{ Comparison between one-way and bidirectional decoder. Solid lines are the the of equality, red lines are the least-squares.Each data point indicated the decoding result from a single session, blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
+        \caption[Comparison between one-way and bidirectional decoder]{ Comparison between one-way and bidirectional decoder. Solid lines are the the of equality, red lines are the least-squares. Each data point indicates the decoding result from a single session in SNR. Blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
+        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: 0.56, 0.25, $2 \times 10^{-2}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: 0.56, $8.56 \times 10^{-2}$, $8.2 \times 10^{-3}$.}}
         \label{fig:scatter_plot_one-way_vs_bidir}
     \end{center}
 \end{figure}
+
+\todo[author=Wu, color=blue!20]{Figure~\ref{fig:scatter_plot_one-way_vs_bidir} 加上 p-values}
 
 In Section~\ref{sec:RNN},
 we discussed that the difference between one-way and bidirectional RNN and the benefit of the latter structure.
@@ -602,10 +610,14 @@ acceleration is the one with the biggest improvement by the layer normalization.
     \begin{center}
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_LN.png}
         \captionsetup{width=1\textwidth}
-        \caption[With or without layer normalization]{ Comparison between with or without layer normalization. Solid lines are the the of equality, red lines are the least-squares.Each data point indicated the decoding result from a single session, blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
+        \caption[With or without layer normalization]{ Comparison between with or without layer normalization. Solid lines are the the of equality, red lines are the least-squares. Each data point indicates the decoding result from a single session in SNR. Blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
+        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: 0.19, 0.36, $2 \times 10^{-3}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: 0.30, 0.11, $7.7 \times 10^{-5}$.}}
         \label{fig:scatter_plot_comparison_LN}
     \end{center}
 \end{figure}
+
+\todo[author=Wu, color=blue!20]{Figure~\ref{fig:scatter_plot_comparison_LN} 加上 p-values}
 
 \newpage
 \subsection{With or without temporal self-attention}
@@ -622,10 +634,14 @@ Here we presented the position decoding result in an actual 2D plan in Figure~\r
     \begin{center}
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_attention.png}
         \captionsetup{width=1\textwidth}
-        \caption[With or without temporal attention]{Comparison between with or without temporal attention. Solid lines are the the of equality, red lines are the least-squares.Each data point indicated the decoding result from a single session, blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
+        \caption[With or without temporal attention]{Comparison between with or without temporal attention. Solid lines are the the of equality, red lines are the least-squares. Each data point indicates the decoding result from a single session in SNR. Blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
+        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: 0.87, 0.72, 0.96.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: 0.84, 0.68, 0.86.}}
         \label{fig:scatter_plot_comparison_attention}
     \end{center}
 \end{figure}
+
+\todo[author=Wu, color=blue!20]{Figure~\ref{fig:scatter_plot_comparison_attention} 加上 p-values}
 
 \begin{figure}[H]
     \begin{center}
