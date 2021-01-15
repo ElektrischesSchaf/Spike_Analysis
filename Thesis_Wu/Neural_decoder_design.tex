@@ -278,7 +278,7 @@ so that the monkeys were not able to see their hands directly during experiments
 The experimental environment is shown in Figure \ref{fig:monkey_experiment}.
 Fingertip position was recorded simultaneously by a 6-axis electromagnetic position sensors,
 with a 250Hz sampling rate.
-\todo[author=Wu, color=blue!20]{改稱forward difference}
+\todo[author=Wu, color=blue!20]{改稱forward difference，差分}
 The fingertip velocity and acceleration were then computed afterwards by forward difference.
 which is the differences between two samples divided by the sampling period.
 % \end{multicols}
@@ -390,10 +390,9 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
     \end{center}
 \end{figure}
 
-% \begin{multicols}{2}
-
+\todo[author=Wu, color=blue!20]{使用 t' 解釋 GRU}
 \begin{align}
-    \bh_t &= \text{GRU} \left( \bx_t, \ \bh_{t-1}   \right), \ t \in [1, \ T]
+    \bh_{t'} &= \text{GRU} \left( \bx_{t'}, \ \bh_{t'-1}   \right), \ t' \in [t-T+1, \ t]
 \end{align}
 
 \noindent and the four equations in the GRU cell,
@@ -401,14 +400,15 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
 \begin{align}
     % \label{eq:gru_cell}
     % \begin{split}
-        \br_t &=  \mathcal{S} ( \bW_r \bh_{t-1} + \bU_r \bx_t + \bb_r) \label{eq:reset_gate} \\
-        \bz_t &= \mathcal{S} ( \bW_z \bh_{t-1} + \bU_z \bx_t + \bb_z) \label{eq:update_gate} \\
-        \tilde{\bh}_t &=  \text{tanh}( \bW ( \br_t \odot \bh_{t-1}) + \bU \bx_t + \bb) \label{eq:h_hat} \\
-        \bh_t &= \bz_t \odot \bh_{t-1} + ( 1 - \bz_t) \odot \tilde{\bh}_t \label{eq:h_out}
+        \br_{t'} &=  \mathcal{S} ( \bW_r \bh_{t'-1} + \bU_r \bx_{t'} + \bb_r) \label{eq:reset_gate} \\
+        \bz_{t'} &= \mathcal{S} ( \bW_z \bh_{t'-1} + \bU_z \bx_{t'} + \bb_z) \label{eq:update_gate} \\
+        \tilde{\bh}_t &=  \text{tanh}( \bW ( \br_{t'} \odot \bh_{t'-1}) + \bU \bx_{t'} + \bb) \label{eq:h_hat} \\
+        \bh_{t'} &= \bz_{t'} \odot \bh_{t'-1} + ( 1 - \bz_{t'}) \odot \tilde{\bh}_{t'} \label{eq:h_out}
     % \end{split}
 \end{align}
 
-\noindent where $t \ \in [1, \ T]$, and the two activation functions:
+\todo[author=Wu, color=blue!20]{使用 t' 解釋 GRU}
+\noindent where $t' \ \in [t-T+1, \ t]$, and the two activation functions:
 
 \begin{align}
     \mathcal{S} (x) &= \frac{1}{1+e^{-x}} \label{eq:sigmoid} \\
@@ -418,12 +418,12 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
 Where $\br_t$ is the \textbf{reset gate} and $\bz_t$ is the \textbf{update gate}.
 Notation $\odot$ denotes elementwise multiplication for two tensors of same shape.
 Operator $\mathcal{S}$ is the sigmoid function (Equation \ref{eq:sigmoid}),
-which squashes the input value from ($-\infty$, $\infty$) to (0, 1).
-Hyperbolic tangent function (Equation \ref{eq:tanh}) squashes the input value from ($-\infty$, $\infty$) to (-1,1).
+which squashes the input value from ($-\infty$, $\infty$) to $(0, 1)$.
+Hyperbolic tangent function (Equation \ref{eq:tanh}) squashes the input value from ($-\infty$, $\infty$) to $(-1,1)$.
 \todo[author=Wu, color=blue!20]{說明 Figure~\ref{fig:sigmoid_and_tanh} }
 Hyperbolic tangent and sigmoid function were plotted in Figure~\ref{fig:sigmoid_and_tanh}.
 However both of them have drawbacks of saturation problem, 
-e.g., the derivative of input value outside the range [-4, +4] will be nearly 0 after activations, 
+e.g., the derivative of input value outside the range $[-4, +4]$ will be nearly 0 after activations, 
 making its gradient vanish and slowing down learninig process.
 \todo[author=Wu, color=blue!20]{修正英文}
 The solution for this issue will be discussed in Section~\ref{sec:layer_normalization}.
@@ -448,13 +448,14 @@ The solution for this issue will be discussed in Section~\ref{sec:layer_normaliz
 \end{figure}
 
 % \begin{multicols}{2}
+\todo[author=Wu, color=blue!20]{使用 t' 解釋 GRU}
 At each times step, a single GRU cell can take in two tensors, 
-one is the current input tensor $ \bx_t $ and another is the previous hidden state $ \bh_{t-1} $, 
+one is the current input tensor $ \bx_{t'} $ and another is the previous hidden state $ \bh_{t'-1} $, 
 which is the output from last time step.
 In the process of calculating each gate value (Equation \ref{eq:reset_gate}, 
-\ref{eq:update_gate}) and $\tilde{\bh}_t$ (Equation \ref{eq:h_hat}),
-hidden state from last time step ($\bh_{t-1}$) will be multiplied by 3 weights ($\bW_r$, $\bW_z$, $\bW$),
-and the input tensor ($\bx_t$) will be multiplied by its own weights ($\bU_r$, $\bU_z$, $\bU$).
+\ref{eq:update_gate}) and $\tilde{\bh}_{t'}$ (Equation \ref{eq:h_hat}),
+hidden state from last time step ($\bh_{t'-1}$) will be multiplied by 3 weights ($\bW_r$, $\bW_z$, $\bW$),
+and the input tensor ($\bx_{t'}$) will be multiplied by its own weights ($\bU_r$, $\bU_z$, $\bU$).
 After the multiplication, 3 biases ($ \bb_r $, $ \bb_z $, $ \bb $) will be added to the results before entering the activation functions
 
 
@@ -472,7 +473,8 @@ But higher complexity does not guarantee better performance since sophisticated 
 Figure \ref{fig:two_layer_GRU} demonstrated how hidden states are passed from one layer to another.
 Where $T$ is the tap size of our input,
 representing how many past time bins to be fed into the model just to decode the current kinematics.
-The input data at each time step $t$ contains the firing rate of this moment $\bx_t$ and the past firing rate from $\bx_{t-T+1}$ to $\bx_{t-1}$.
+\todo[author=Wu, color=blue!20]{使用 t' 解釋 GRU}
+The input data at each time step $t'$ contains the firing rate of this moment $\bx_{t'}$ and the past firing rate from $\bx_{t-T+1}$ to $\bx_{t'-1}$.
 
 % \end{multicols}
 
@@ -491,7 +493,7 @@ In the first GRU layer, $T$ bins of firing rate are fed chronologically.
 Hidden state $\bh^{j}_{i}$ denotes the output tensor from the cell in time step $i$ and layer $j$, 
 and will be the input of the GRU cell in time step $i+1$ and layer $j+1$.
 The size of $\bh^{j}_{i}$ should be $1 \times u$ since $u$ is a predefined parameter.
-Ideally the tensor $\bh^{2}_{t}$ should also contains the information from the firing rate $\bx_{t-T+1}$ to $\bx_{t}$,
+Ideally the tensor $\bh^{2}_{t'}$ should also contains the information from the firing rate $\bx_{t-T+1}$ to $\bx_{t'}$,
 thus by feeding it to some fully connected layers we can acquire the desired output.
 
 The bidirectional RNN is designed by simply training another GRU with the same input sequence but in reverse order.
@@ -500,12 +502,12 @@ since the first half of this vector contains the information by feeding input se
 
 \begin{align}
     \begin{split}
-    \overrightarrow{ \bh_{t} } &= \overrightarrow{\text{GRU}} \left( \bx_{t}  , \ \overrightarrow{ \bh_{t-1}}  \right) , \ t\in [1, \ T]\\
-    \overleftarrow{ \bh_{t} }  &= \overleftarrow{\text{GRU}}  \left( \bx_{t}  , \ \overleftarrow{ \bh_{t+1}}   \right), \ t\in [T, \ 1] \\
-    \bh_{t} &= \overrightarrow{ \bh_{t} } \oplus \overleftarrow{ \bh_{t} }, \ t\in [1, \ T]
+    \overrightarrow{ \bh_{t'} } &= \overrightarrow{\text{GRU}} \left( \bx_{t'}  , \ \overrightarrow{ \bh_{t'-1}}  \right) , \ t' \in [t-T+1, \ t ]\\
+    \overleftarrow{ \bh_{t'} }  &= \overleftarrow{\text{GRU}}  \left( \bx_{t'}  , \ \overleftarrow{ \bh_{t'+1}}   \right), \ t' \in [t, \ t-T+1] \\
+    \bh_{t'} &= \overrightarrow{ \bh_{t'} } \oplus \overleftarrow{ \bh_{t'} }, \ t' \in [t-T+1, \ t]
     \end{split}
 \end{align}
-
+\todo[author=Wu, color=blue!20]{使用 t' 解釋 GRU}
 \todo[author=Wu, color=blue!20]{解釋$\oplus$}
 \noindent where $\oplus$ denotes the concatenation of two vectors
 
@@ -523,8 +525,8 @@ since the first half of this vector contains the information by feeding input se
 The benfit of implementing bidirectional RNN is that it can see a broader range of input sequence than one-way RNN.
 As illustrated in Figure~\ref{fig:bidir_RNN_explain},
 \todo[author=Wu, color=blue!20]{解釋bidirectional RNN 為何可以預測較佳}
-The output from each RNN time step $\text{t}$ contains only the memory from time step $1$ to time step $t$ in one-way RNN.
-But in bidirectional RNN the output at any time step $t$ can cover the memory from the whole sequence, which is from time step $1$ to time step $T$.
+The output from each RNN time step $\text{t'}$ contains only the memory from time step $t-T+1$ to time step $t'$ in one-way RNN.
+But in bidirectional RNN the output at any time step $t'$ can cover the memory from the whole sequence, which is from time step $t-T+1$ to time step $t$.
 
 \begin{figure}[H]
     \begin{center}
@@ -562,29 +564,30 @@ The computation of mean and variance from all the hidden units in the same layer
     \end{split}
 \end{align}
 
-\noindent where $u$ denotes the number of hidden units in a layer, 
-all the hidden units in a layer share the same normalization terms $\mu$ and $\sigma$.
-Unlike batch normalization,
-layer normalization does not impose any constraint on the size of a mini-batch,
-such that it cam be implemented to the model with batch size 1.
+\noindent $u$ denotes the number of hidden units in a layer, 
+The same normalization terms $\mu$ and $\sigma$ are shared by all the hidden units in a layer.
+Compare to batch normalization,
+The size of a mini-batch does not restrict the implementation of layer normalization,
+such that it cam be used to the model with batch size 1.
 
-The original layer normalization methods is computed within a RNN cell.
-In a standard RNN, 
-the summed inputs in the recurrent layer are computed from the current input $ \bx_t $ and previous vector of hidden states $ \bh^{t-1}$, 
-which are computed as $ \bq^t = \bW_{hh} \bh^{t-1} + \bW_{xh} \bx^{t} $. 
-Where $\bW_{hh}$ is the recurrent hidden to hidden weights and $\bW_{xh}$ are the input to hidden weights.
-The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalization terms similar to Equation \ref{eq:normalization_term}:
+% Omit from below
+% The original layer normalization methods is computed within a RNN cell.
+% In a standard RNN, 
+% the summed inputs in the recurrent layer are computed from the current input $ \bx_t $ and previous vector of hidden states $ \bh^{t-1}$, 
+% which are computed as $ \bq^t = \bW_{hh} \bh^{t-1} + \bW_{xh} \bx^{t} $. 
+% Where $\bW_{hh}$ is the recurrent hidden to hidden weights and $\bW_{xh}$ are the input to hidden weights.
+% The layer normalizationed recurrent layer re-centers and re-scales its activations using the extra normalization terms similar to Equation \ref{eq:normalization_term}:
 
-\begin{align}
-    \begin{split}
-        \bh^{t} &= f \left[ \frac{g}{\sigma^t} \odot \left( \bq^t- \mu^t \right) + \bb \right] \\
-        \mu^t &= \frac{1}{u} \sum^{u}_{i=1} q^{t}_{i} \\
-        \sigma^t &= \sqrt{ \frac{1}{u} \sum^{u}_{i=1} \left( q^t_i - \mu^t \right)^2 }
-    \end{split}
-\end{align}
+% \begin{align}
+%     \begin{split}
+%         \bh^{t} &= f \left[ \frac{g}{\sigma^t} \odot \left( \bq^t- \mu^t \right) + \bb \right] \\
+%         \mu^t &= \frac{1}{u} \sum^{u}_{i=1} q^{t}_{i} \\
+%         \sigma^t &= \sqrt{ \frac{1}{u} \sum^{u}_{i=1} \left( q^t_i - \mu^t \right)^2 }
+%     \end{split}
+% \end{align}
 
-\noindent $\bb$, $\bg$ are defined as the bias and gain parameters of the same dimension as $\bh^t$.
-$f$ is the activation function in the RNN cell, it could be a sigmoid or hyperbolic tangent function.
+% \noindent $\bb$, $\bg$ are defined as the bias and gain parameters of the same dimension as $\bh^t$.
+% $f$ is the activation function in the RNN cell, it could be a sigmoid or hyperbolic tangent function.
 
 We define layer normalization as a function mapping $LN: \mathbb{R}^D \rightarrow \mathbb{R}^D$:
 
@@ -596,7 +599,7 @@ We define layer normalization as a function mapping $LN: \mathbb{R}^D \rightarro
     \end{split}
 \end{align}
 
-When implementing it on GRU,
+\noindent When implementing it on GRU,
 
 \begin{align}
     \begin{split}
@@ -854,6 +857,11 @@ the observed value $y_i$ (Equation \ref{eq:mean_square_error}).
 The second loss function is the penalization term explained in Section~\ref{sec:penalization_term}.
 Summing them together with a coefficient for each loss function (Equation \ref{eq:loss_function_with_two_combined}),
 $C_{1}$ and $ C_{2} $ are capable of weighing these two losses.
+\todo[author=Wu, color=blue!20]{$C_{1}$ $C_{2}$ 參數設計理由}
+In our experiments $C_{1}$ was set to 1 in all cases,
+and $C_{2}$ was assigned as 1 in position decoder, 10 in velocity decoder and 100 in acceleration decoder.
+Since acceleration decoders have larger MSE loss values than velocity decoders,
+and position decoders have the smallest MSE loss values.
 
 \begin{align}
     \label{eq:loss_function_with_two_combined}
@@ -885,7 +893,7 @@ where the hyperparameter $\beta_1, \ \beta_2$ control the exponential decay rate
 
 \section{Performance evaluation}
 % \begin{multicols}{2}
-\todo[inline, color=green!40]{描述SNR、R2、single session}
+% \todo[inline, color=green!20]{描述SNR、R2、single session}
 
 To define the coefficient of determination $R^2$ and the signal-to-noise ratio (SNR).
 Two vectors are required which are the observed value $ \by = \left[ y_1, \cdots , y_n  \right]^{\intercal} $,

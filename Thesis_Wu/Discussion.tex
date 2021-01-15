@@ -62,18 +62,22 @@ The epoch for training loss to converge drops,
 making the training process more efficient.
 Decoding accuracy also improved with a considerable degree.
 
-\subsection{Effect of temporal self-attention}
-% \begin{multicols}{2}
+\subsection{Effect of temporal attention module}
+\todo[author=Prof, color=green!20]{Attention的名詞不一致}
+\todo[author=Wu, color=blue!20]{統一稱呼temporal attention module}
 
 The reasons why implementing temporal attention did not improve the decoding accuracy can be considered in two parts.
 First, the temporal feature of neural spiking data we used can be extracted simply by an ordinary RNN.
 With the aid of layer normalization to regulate the internal distribution,
+\todo[author=Prof, color=green!20]{加入 p-value 結果}
+\todo[author=Wu, color=blue!20]{Figure~\ref{fig:scatter_plot_one-way_vs_bidir} 已加入 p-value 結果 }
 our decoder can achieve the performances higher than the state-of-the-art results without attention module.
 
 Secondly, as our attention map has demonstrated that only a few time bins of firing rate are needed in decoding velocity and acceleration.
 It contradicted the purpose of temporal attention, 
 which is invented to solve the long-term dependency problems happened in decoding long sequences.
-
+\todo[author=Prof, color=green!20]{補充Temporal Attention與neuroscience的關聯}
+\todo[author=Wu, color=blue!20]{補充於 Section~\ref{sec:connections_between_our_AI_model_and_neuroscience}}
 
 \section{Why our neural decoder surpasses others}
 % \begin{multicols}{2}
@@ -104,6 +108,7 @@ we discovered a clear boundary of selecting useful tap size especially for veloc
 % \end{multicols}
 
 \section{Connections between our AI model and neuroscience}
+\label{sec:connections_between_our_AI_model_and_neuroscience}
 % \begin{multicols}{2}
 % \todo[inline, color=green!40]{探討網路內部的運作方式跟大腦的關連}
 
@@ -166,6 +171,10 @@ we showed that the decoding results from position, velocity and acceleration in 
 Position is the kinematic variable that sensitive to tap size the most.
 Velocity and accelerateion, on the contrary, require only small tap size that can reach their top performances.
 
+\todo[author=Prof, color=green!20]{補充解釋y方向比x好的原因}
+\todo[author=Wu, color=blue!20]{補充如下}
+This figure also showed that y-coordinate surpassed x-coordinate in decoding accuracy of all kinematic variables.
+It results from M1 neurons prefer sagittal direction (y-coordinate) movement more than lateral direction (x-coordinate) \cite{lillicrap2013preference}.
 
 % \cite{wu2003neural} 這篇論文提到傳統的linear filter[8,12]需要500ms到1500ms的神經訊號來解碼運動。最佳的time lag是70到140ms。這篇也是第一篇使用Kalman filter於運動解碼的論文
 % \end{multicols}

@@ -1,6 +1,6 @@
 \section{Implementation details}
 % \begin{multicols}{2}
-\todo[ color=green!40]{描述training, testing data的選取}
+% \todo[ color=green!20]{描述training, testing data的選取}
 
 The training data of each session are the first 5000 time bins, and the rest is the testing data.
 Total session number is 47 from both monkeys.
@@ -40,7 +40,7 @@ As marked in Figure \ref{fig:trimmed_testing_data}, shaded red parts indicated t
 \section{Qualitative analysis}
 \label{sec:qualitative_analysis}
 % \begin{multicols}{2}
-\todo[ color=green!40]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
+% \todo[ color=green!20]{放入 Figure~\ref{fig:position_prediction} ~ Figure~\ref{fig:acceleration_prediction}，將縱軸統一}
 This section we showed the result of our predicted variables. 
 Since our models were designed to decode both x-coordinate and y-coordinate of a variable at the same time, 
 it is convenient to plot the predictions of the two coordinates in the same figure, 
@@ -262,7 +262,7 @@ They showed weak corelation between the input spike firing rate and the output t
 
 \newpage
 \section{Visualization of attention process}
-
+\label{sec:visualization_of_attention_process}
 % \begin{multicols}{2}
 Here we selected two sessions and plotted the attention map in decoding position (Figure~\ref{fig:position_decoding_trajectories_with_attention}),
 velocity (Figure~\ref{fig:velocity_decoding_trajectories_with_attention}) and acceleration (Figure~\ref{fig:acceleration_decoding_trajectories_with_attention}).
@@ -271,14 +271,21 @@ In decoding position,
 the focus of attention was shifted gradually when the fingertips stopped moving.
 It formed an oblique line between each movements,
 capturing the fingertips' status.
+\todo[author=Prof, color=green!20]{補充更多attentionmap 與神經訊號的關聯}
+\todo[author=Wu, color=blue!20]{補充如下}
+This indicated that it is the timing that fingertips move is informative,
+cooresponding to the point of view mentioned in \cite{kaufman2016largest},
+which said that M1 neurons’ response largely reflects movement timing rather than movement type.
+And since the M1 neurons' activities are not related to standstill,
+decoders can not use the spiking activities happened when fingertips are stationary to predict the trajectories.
 
 % \end{multicols}
 
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.7\textwidth}
-            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160418_01/pos_attention_map_9200_to_9400.png}
-            \caption*{ \small{session indy\_20160418\_01}}
+            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png}
+            \caption*{ \small{session indy\_20160916\_01}}
         \end{subfigure}
         \begin{subfigure}{0.7\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20161025_04/pos_attention_map_400_to_600.png}
@@ -288,19 +295,24 @@ capturing the fingertips' status.
         \label{fig:position_decoding_trajectories_with_attention}
     \end{center}
 \end{figure}
+\todo[author=Wu, color=blue!20]{Figure~\ref{fig:position_decoding_trajectories_with_attention} 去除使用S1的 session}
 
 For velocity and acceleration,
 the attention map pattern showed that that decoder tend to focus on earlier spiking data whenever a movement take place.
-If the fingertips were at rest,
-the decoder will focus on the time bins closer to current time step instead.
-It also tells us that the attention module can actually represent the dynamics of temporal features in the point-to-point pursuit task.
+When the fingertips were moving,
+the decoder will focus on the time bins prior to the moving.
+\todo[author=Prof, color=green!20]{更多attentionmap 與神經訊號的關聯}
+\todo[author=Wu, color=blue!20]{補充如下}
+This phenomenon is matched by another neuroscience insights \cite{kaufman2016largest},
+that is M1 neurons’ sudden change occurred ~150 ms before movement onset.
+It also tells us that the attention module can actually represent the dynamics of temporal features in the continuous pursuit task.
 
 
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.7\textwidth}
-            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160418_01/vel_attention_map_9200_to_9400.png}
-            \caption*{ \small{session indy\_20160418\_01}}
+            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160916_01/vel_attention_map_200_to_400.png}
+            \caption*{ \small{session indy\_20160916\_01}}
         \end{subfigure}
         \begin{subfigure}{0.7\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20161025_04/vel_attention_map_400_to_600.png}
@@ -310,14 +322,14 @@ It also tells us that the attention module can actually represent the dynamics o
         \label{fig:velocity_decoding_trajectories_with_attention}
     \end{center}
 \end{figure}
-
+\todo[author=Wu, color=blue!20]{Figure~\ref{fig:velocity_decoding_trajectories_with_attention} 去除使用S1的 session}
 
 
 \begin{figure}[H]
     \begin{center}
         \begin{subfigure}{0.7\textwidth}
-            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160418_01/acc_attention_map_9200_to_9400.png}
-            \caption*{ \small{session indy\_20160418\_01}}
+            \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160916_01/acc_attention_map_200_to_400.png}
+            \caption*{ \small{session indy\_20160916\_01}}
         \end{subfigure}
         \begin{subfigure}{0.7\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20161025_04/acc_attention_map_400_to_600.png}
@@ -327,6 +339,7 @@ It also tells us that the attention module can actually represent the dynamics o
         \label{fig:acceleration_decoding_trajectories_with_attention}
     \end{center}
 \end{figure}
+\todo[author=Wu, color=blue!20]{Figure~\ref{fig:acceleration_decoding_trajectories_with_attention} 去除使用S1的 session}
 
 \section{Tap size selection}
 
@@ -353,10 +366,13 @@ It is easier to find the cutting point for the tap size.
 We selected the suitable tap size by plotting the average attention score in each tap as well as its first derivative.
 By observing when is the second time the first derivative curve approached to zero,
 we can tell from which point the past time bins are no longer necessary.
-The average attention scores after $t-10$ are nearly zeros,
 In Figure~\ref{fig:velocity_decoder_in_different_taps_indy_20161013_03},
 the first derivative of the average attention score curve indicated that 11 time bins are all we need to decode velocity.
-Spiking neural signals more than 11 time bins ago are not necessary and informative to decoding.
+The average attention scores after $t-10$ are nearly zeros,
+\todo[author=Prof, color=green!20]{須說明 Figure~\ref{fig:velocity_decoder_in_different_taps_indy_20161013_03} neural decoder 的 input tap size }
+\todo[author=Wu, color=blue!20]{tap size=60}
+which tells that we can discard the taps from $t-11$ to $t-59$ since the total input tap size is $60$.
+Spiking neural signals more than 11 time bins ago are not necessary and not informative to decoding.
 
 \begin{figure}[H]
     \begin{center}
@@ -389,7 +405,10 @@ the attention scores in the time bins prior to $t-10$ is indeed almost zero.
 
 \subsection{Acceleration decoder}
 In the case of acceleration decoder,
-it is also clear in Figure~\ref{fig:acceleration_decoder_in_different_taps_indy_20161014_04} that the average attention scores after time bins $t-7$ are almost zero.
+it is also clear in Figure~\ref{fig:acceleration_decoder_in_different_taps_indy_20161014_04} that the average attention scores after time bins $t-7$ are almost zero,
+\todo[author=Prof, color=green!20]{須說明 Figure~\ref{fig:acceleration_decoder_in_different_taps_indy_20161014_04} neural decoder 的 input tap size }
+\todo[author=Wu, color=blue!20]{tap size=60}
+which tells that we can discard the taps from $t-8$ to $t-59$ since the total input tap size is $60$.
 The $R^2$ from different tap sizes also reflected the optimal number of tap size is around 8.
 
 
@@ -479,7 +498,7 @@ the averaged attention scores do not converge to zero with the increasing taps.
 \label{sec:ablation_study}
 % \begin{multicols}{2}
 Table~\ref{tab:ablation_study_table} showed the results from decoders with different methods combinations.
-\todo[author=Prof Ju, color=red!20]{How come?}
+% \todo[author=Prof Ju, color=red!20]{How come?}
 Decoders with the highest $R^2$ and lowest standard deviation are the ones considered the best.
 Aside from y-position, the best decoders are the bidirectional GRU with layer normalization but without attention module.
 Comparing with \cite{makin2018}, biggest improvement happened in the x-axis of all three kinematics.
@@ -720,6 +739,8 @@ Those firing patterns tended to affect the decoder model the most, and it is ine
     \end{center}
 \end{figure}
 
+\todo[author=Prof, color=green!20]{手靜止時，attention的值代表什麼?補充說明}
+\todo[author=Wu, color=blue!20]{已於 Section~\ref{sec:visualization_of_attention_process} 解釋}
 Similar problems also happened in session indy\_20190426\_01,
 as the the attention map showed in Figure~\ref{fig:indy_20160426_01_corresponding_attention_map}
 
