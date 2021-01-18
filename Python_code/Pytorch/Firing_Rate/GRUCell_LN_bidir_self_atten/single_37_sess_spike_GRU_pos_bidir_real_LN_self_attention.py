@@ -53,7 +53,7 @@ import Deep_Learning_Models.Attention_Map_Plotting as Attention_Map_Plotting
 Plotting = Attention_Map_Plotting.Plotting()
 
 # Make file list
-kinematic_variable_type = 'x_and_y_pos' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type = 'x_and_y_pos'
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -69,6 +69,7 @@ OUTPUT_DIM = 2
 BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 max_timestep = 20
+r = int( max_timestep/2 )
 
 # Model Performance Lists
 R_square_across_all_sessions=[]
@@ -152,9 +153,6 @@ for session_k in range(len(session_file_list)):
         x_acceleration_label, y_acceleration_label, z_acceleration_label,
         x_position_target, y_position_target] = mat_file_processing.get_labels(file_name_1, the_sampling_rate, time_stamp_64ms)
 
-
-
-
         # New Without spike sorting:
         firing_rate_matrix = regular_modules.with_or_without_sorting(with_sorted_spikes, firing_rate_matrix, channel_number, unit_number)
 
@@ -228,12 +226,6 @@ for session_k in range(len(session_file_list)):
     x_position_target_training, x_position_target_testing, y_position_target_training, y_position_target_testing)
     print('shape of X_for_training before', X_for_training.shape)
 
-    # Normalize Firing rate
-    # the_mean=np.mean(X_for_training)
-    # the_std=np.std(X_for_training)
-    # X_for_training = (X_for_training - the_mean )/ the_std
-    # X_for_prediction = (X_for_prediction - the_mean )/ the_std
-
     # Processing max orders
     order_num = max_timestep-1
     [X_for_training, X_for_prediction,
@@ -280,7 +272,6 @@ for session_k in range(len(session_file_list)):
     testing_x = torch.from_numpy(testing_x.values) # .values can turn pandas dataframe to numpy array
     testing_x=testing_x.float()
 
-
     # x_pos
     training_y_1 = pd.read_csv(os.path.join(csv_path,'x_position_label_training.csv'), dtype=float)    
     training_y_1  = torch.from_numpy(training_y_1.values)    
@@ -320,7 +311,6 @@ for session_k in range(len(session_file_list)):
     # General Neural Network Hyperparameters
     batch_size = BATCH_SIZE
     learning_rate = LEARNING_RATE
-    # max_epoch = epoch_handle(session_name) + 10
     max_epoch =  MAX_EPOCH
 
     # GRU Hyperparameters
@@ -334,8 +324,7 @@ for session_k in range(len(session_file_list)):
     testing_dataset_with_target = AbstractDataset(testing_x, testing_y_with_target)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    r = int( max_timestep/2 )
+   
     net = Real_Layer_GRU_bidir(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim, r=r)     # define the network    # print(net)  # net architecture
 
     for n, p in net.named_parameters():
@@ -618,6 +607,7 @@ testing_data_length_all_sessions, best_epoch_arcoss_all_sessions)
 with open( os.path.join( bar_plot_path, 'my_best_epoch_dict.json'), 'w') as f:
     json.dump(my_best_epoch_dict, f, indent=4)
 # Plot all performances as bar charts
+
 '''
 plt.figure(figsize = (16, 9))
 ind = np.arange(1,len(R_square_across_all_sessions)+1)

@@ -53,7 +53,7 @@ import Deep_Learning_Models.Attention_Map_Plotting as Attention_Map_Plotting
 Plotting = Attention_Map_Plotting.Plotting()
 
 # Make file list
-kinematic_variable_type = 'x_and_y_acc' # x_pos, y_pos, z_pos, x_vel, y_vel, z_vel, x_acc, y_acc, z_acc
+kinematic_variable_type = 'x_and_y_acc'
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
@@ -69,6 +69,7 @@ OUTPUT_DIM = 2
 BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 max_timestep = 10
+r = int( max_timestep/2 )
 
 # Model Performance Lists
 R_square_across_all_sessions=[]
@@ -335,7 +336,6 @@ for session_k in range(len(session_file_list)):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    r = int( max_timestep/2 )
     net = Real_Layer_GRU_bidir(input_dim = feature_numbers, hidden_dim = hidden_dim, max_timestep = max_timestep, layer_dim = layer_dim, output_dim = output_dim, r=r)     # define the network    # print(net)  # net architecture
 
     for n, p in net.named_parameters():
