@@ -18,7 +18,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class  GRUModel_bidir(torch.nn.Module):
 
-    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
+    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim, r):
         super(GRUModel_bidir, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
@@ -26,7 +26,7 @@ class  GRUModel_bidir(torch.nn.Module):
         # Number of hidden layers
         self.layer_dim = layer_dim
 
-        r = int( max_timestep/2 )
+        self.r = r
         da= int( hidden_dim/2 )
 
         # batch_first=True causes input/output tensors to be of shape
@@ -41,7 +41,7 @@ class  GRUModel_bidir(torch.nn.Module):
 
 
         self.W_s1 = torch.nn.Linear( 2*hidden_dim, da )
-        self.W_s2 = torch.nn.Linear( da, r )
+        self.W_s2 = torch.nn.Linear( da, self.r )
 
         self.fc_layer_x = torch.nn.Linear( 2*r*hidden_dim, int(hidden_dim))
         self.label_x = torch.nn.Linear( int(hidden_dim), 1 )
@@ -88,7 +88,7 @@ class  GRUModel_bidir(torch.nn.Module):
 
 class  GRUModel_oneway(torch.nn.Module):
 
-    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
+    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim, r):
         super(GRUModel_oneway, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
@@ -96,7 +96,7 @@ class  GRUModel_oneway(torch.nn.Module):
         # Number of hidden layers
         self.layer_dim = layer_dim
 
-        r = int( max_timestep/2 )
+        self.r = r
         da= int( hidden_dim/2 )
 
         # batch_first=True causes input/output tensors to be of shape
@@ -111,7 +111,7 @@ class  GRUModel_oneway(torch.nn.Module):
 
 
         self.W_s1 = torch.nn.Linear( hidden_dim, da )
-        self.W_s2 = torch.nn.Linear( da, r )
+        self.W_s2 = torch.nn.Linear( da, self.r )
 
         self.fc_layer_x = torch.nn.Linear( r*hidden_dim, int(hidden_dim/2))
         self.label_x = torch.nn.Linear( int(hidden_dim/2), 1 )
