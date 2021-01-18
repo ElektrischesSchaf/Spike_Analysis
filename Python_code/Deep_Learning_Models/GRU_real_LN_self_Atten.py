@@ -11,7 +11,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 class Real_Layer_GRU_bidir(torch.nn.Module):
-    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
+    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim, r):
         super(Real_Layer_GRU_bidir, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
@@ -34,14 +34,14 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
         # self.fc1 = torch.nn.Linear(hidden_dim, int(hidden_dim/2)) # one-directional
         # self.fc2 = torch.nn.Linear(int(hidden_dim/2), output_dim) # one-directional
 
-        r = int( max_timestep/2 )
+        self.r = r
         da= int( hidden_dim/2 )
 
         # LN inside atten
         self.LN_in_atten = torch.nn.LayerNorm([max_timestep, da], elementwise_affine=False)
 
         self.W_s1_1 = torch.nn.Linear( 2*hidden_dim, da )
-        self.W_s2_1 = torch.nn.Linear( da, r )
+        self.W_s2_1 = torch.nn.Linear( da, self.r )
 
         self.fc_layer_x = torch.nn.Linear( 2*r*hidden_dim, int(hidden_dim))
         self.label_x = torch.nn.Linear( int(hidden_dim), 1 )
@@ -152,7 +152,7 @@ class Real_Layer_GRU_bidir(torch.nn.Module):
 
 class  Real_Layer_GRU_one_way(torch.nn.Module):
 
-    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim):
+    def __init__(self, input_dim, hidden_dim, max_timestep, layer_dim, output_dim, r):
         super(Real_Layer_GRU_one_way, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
@@ -168,7 +168,7 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # Layer Normalization
         # self.input_LN_forward = torch.nn.LayerNorm( [max_timestep, hidden_dim], elementwise_affine=False)
 
-        r = int( max_timestep/2 )
+        self.r = r
         da= int( hidden_dim/2 )
 
         self.W_s1_1 = torch.nn.Linear( hidden_dim, da )
@@ -177,10 +177,10 @@ class  Real_Layer_GRU_one_way(torch.nn.Module):
         # LN inside atten
         self.LN_in_atten = torch.nn.LayerNorm([max_timestep, da], elementwise_affine=False)
 
-        self.fc_layer_x = torch.nn.Linear( r*hidden_dim, int(hidden_dim/2))
+        self.fc_layer_x = torch.nn.Linear( self.r*hidden_dim, int(hidden_dim/2))
         self.label_x = torch.nn.Linear( int(hidden_dim/2), 1 )
 
-        self.fc_layer_y = torch.nn.Linear( r*hidden_dim, int(hidden_dim/2))
+        self.fc_layer_y = torch.nn.Linear( self.r*hidden_dim, int(hidden_dim/2))
         self.label_y = torch.nn.Linear( int(hidden_dim/2), 1 )
 
     def attention_net_1(self, gru_output):
