@@ -1,3 +1,3 @@
-position_data/<session>
-velocity_data/<session>
-acceleration_data/<session>
+* position_data/<session>
+* velocity_data/<session>
+* acceleration_data/<session>
