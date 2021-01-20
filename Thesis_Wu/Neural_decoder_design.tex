@@ -116,13 +116,13 @@ Figure \ref{fig:indy_20160407_02_S1_ch_60} showed the spike train from S1 electr
         \begin{minipage}[t]{0.49\textwidth}
             \centering
             \includegraphics[width=1\textwidth]{M1_Spike_Train_Channel_060.png}
-            \caption{M1 Spike Train}
+            \caption{M1 spike train}
             \label{fig:indy_20160407_02_M1_ch_60}
         \end{minipage}
         \begin{minipage}[t]{0.49\textwidth}
             \centering
             \includegraphics[width=1\textwidth]{S1_Spike_Train_Channel_060.png}
-            \caption{S1 Spike Train}
+            \caption{S1 spike train}
             \label{fig:indy_20160407_02_S1_ch_60}
         \end{minipage}
 \end{figure}
@@ -402,7 +402,7 @@ The structure of a GRU cell is shown in Figure \ref{fig:GRU_cell}.
     % \begin{split}
         \br_{t'} &=  \mathcal{S} ( \bW_r \bh_{t'-1} + \bU_r \bx_{t'} + \bb_r) \label{eq:reset_gate} \\
         \bz_{t'} &= \mathcal{S} ( \bW_z \bh_{t'-1} + \bU_z \bx_{t'} + \bb_z) \label{eq:update_gate} \\
-        \tilde{\bh}_t &=  \text{tanh}( \bW ( \br_{t'} \odot \bh_{t'-1}) + \bU \bx_{t'} + \bb) \label{eq:h_hat} \\
+        \tilde{\bh}_{t'} &=  \text{tanh}( \bW ( \br_{t'} \odot \bh_{t'-1}) + \bU \bx_{t'} + \bb) \label{eq:h_hat} \\
         \bh_{t'} &= \bz_{t'} \odot \bh_{t'-1} + ( 1 - \bz_{t'}) \odot \tilde{\bh}_{t'} \label{eq:h_out}
     % \end{split}
 \end{align}

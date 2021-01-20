@@ -61,11 +61,11 @@ fig, axes = plt.subplots( 3 ,gridspec_kw={'height_ratios': [1,1,1],  "hspace":0.
 
 bins = [i for i in np.arange( -200, 200,  10)]
 
-axes[0].hist(x_position_label_training[:,0], bins=bins, color='blue', alpha=0.6, label='x-axis training')
-axes[0].hist(y_position_label_training[:,0], bins=bins, color='green', alpha=0.6,label='y-axis training')
+axes[0].hist(x_position_label_training[:,0], bins=bins, color='blue', alpha=0.6, label='x-coordinate training')
+axes[0].hist(y_position_label_training[:,0], bins=bins, color='green', alpha=0.6,label='y-coordinate training')
 
-axes[0].hist(x_position_label_testing[:,0], bins=bins, color='blue', alpha=0.3, label='x-axis testing')
-axes[0].hist(y_position_label_testing[:,0], bins=bins, color='green', alpha=0.3, label='y-axis testing')
+axes[0].hist(x_position_label_testing[:,0], bins=bins, color='blue', alpha=0.3, label='x-coordinate testing')
+axes[0].hist(y_position_label_testing[:,0], bins=bins, color='green', alpha=0.3, label='y-coordinate testing')
 
 axes[0].set_xlabel('Position (mm)', fontsize=my_fontsize)
 axes[0].set_yticks([])
@@ -78,12 +78,12 @@ axes[0].spines['bottom'].set_visible(True)
 axes[0].spines['left'].set_visible(False)
 
 
-axes[1].hist(x_velocity_label_training[:,0], bins='auto', color='blue', alpha=0.6, label='x-axis training')
-axes[1].hist(y_velocity_label_training[:,0], bins='auto', color='green', alpha=0.6,label='y-axis training')
+axes[1].hist(x_velocity_label_training[:,0], bins='auto', color='blue', alpha=0.6, label='x-coordinate training')
+axes[1].hist(y_velocity_label_training[:,0], bins='auto', color='green', alpha=0.6,label='y-coordinate training')
 
 
-axes[1].hist(x_velocity_label_testing[:,0], bins='auto', color='blue', alpha=0.3, label='x-axis testing')
-axes[1].hist(y_velocity_label_testing[:,0], bins='auto', color='green', alpha=0.3, label='y-axis testing')
+axes[1].hist(x_velocity_label_testing[:,0], bins='auto', color='blue', alpha=0.3, label='x-coordinate testing')
+axes[1].hist(y_velocity_label_testing[:,0], bins='auto', color='green', alpha=0.3, label='y-coordinate testing')
 
 axes[1].set_xlabel('Velocity (mm/s)', fontsize=my_fontsize)
 axes[1].set_yticks([])
@@ -99,11 +99,11 @@ axes[1].spines['left'].set_visible(False)
 bins = [i for i in np.arange( -2000, 2000,  50)]
 
 
-axes[2].hist(x_acceleration_label_training[:,0], bins=bins, color='blue', alpha=0.6, label='x-axis training')
-axes[2].hist(y_acceleration_label_training[:,0], bins=bins, color='green', alpha=0.6, label='y-axis training')
+axes[2].hist(x_acceleration_label_training[:,0], bins=bins, color='blue', alpha=0.6, label='x-coordinate training')
+axes[2].hist(y_acceleration_label_training[:,0], bins=bins, color='green', alpha=0.6, label='y-coordinate training')
 
-axes[2].hist(x_acceleration_label_testing[:,0], bins=bins, color='blue', alpha=0.3, label='x-axis testing')
-axes[2].hist(y_acceleration_label_testing[:,0], bins=bins, color='green', alpha=0.3, label='y-axis testing')
+axes[2].hist(x_acceleration_label_testing[:,0], bins=bins, color='blue', alpha=0.3, label='x-coordinate testing')
+axes[2].hist(y_acceleration_label_testing[:,0], bins=bins, color='green', alpha=0.3, label='y-coordinate testing')
 
 axes[2].set_xlabel('Acceleration (mm/$\mathrm{s}^{\mathrm{2}}$)', fontsize=my_fontsize)
 axes[2].set_yticks([])
