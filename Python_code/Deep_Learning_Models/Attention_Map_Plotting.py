@@ -271,6 +271,140 @@ class Plotting():
 
         return
 
+    # for new try
+    def new_atten_map_try( self, session_name, time_step, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, x_target_cue, y_target_cue, firing_rate_collector, q_value_all, loss_plot_vector_x, loss_plot_vector_y):
+        
+        firing_rate_collector = firing_rate_collector[start_time_bin:end_time_bin,:]
+        attn_weight_matrix_all = attn_weight_matrix_all[start_time_bin:end_time_bin,:]
+
+        sns.set(font_scale=5)
+        sns.set_style("white")
+        sns.color_palette(palette=None)
+
+        plt.rcParams["figure.figsize"] = (35,20)
+
+        # this is use actual second in the time axes
+        time_step = time_step[start_time_bin:end_time_bin]
+
+        f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [1,1,1],  "hspace":0.1 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1} , constrained_layout=False)
+
+        firing_rate_data = firing_rate_collector.transpose()
+
+        # Eliniate empty units
+        valid_rows=[]
+        for row_idx in range(firing_rate_data.shape[0]):
+            if not np.all( firing_rate_data[row_idx,:] ==0 ):
+                valid_rows.append(row_idx)
+        firing_rate_data = firing_rate_data[valid_rows,:]
+
+
+        # Plotting the absolute velocity
+        if type_name=='x_and_y_pos':
+            ax[0].set_ylabel( '|vel.| (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
+
+        # ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
+        # ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
+
+        # ax[0].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.8 )
+        # ax[0].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.9 )
+
+        velocity_x = np.diff(Ground_Truth_1[start_time_bin:end_time_bin])
+        velocity_y = np.diff(Ground_Truth_2[start_time_bin:end_time_bin])
+
+        velocity_x = np.insert(velocity_x, 0, 0)
+        velocity_y = np.insert(velocity_y, 0, 0)
+
+        velocity_x =velocity_x/0.064
+        velocity_y =velocity_y/0.064
+
+        velocity_absolute = []
+
+        for i in range(len(velocity_x)):
+            yee = np.sqrt( velocity_x[i]*velocity_x[i] + velocity_y[i]*velocity_y[i] )
+            velocity_absolute.append( yee )
+
+        ax[0].plot( time_step, velocity_absolute, 'b', linewidth=3, label='|vel.|', alpha=1.0 )
+
+        # plot target cue change points
+        the_x = x_target_cue[start_time_bin:end_time_bin]
+        the_y = y_target_cue[start_time_bin:end_time_bin]
+        change_points_x = np.where(  np.roll( the_x,1)!= the_x )[0]
+        change_points_y = np.where( np.roll( the_y,1)!= the_y )[0]
+
+        change_points_x_set = set(change_points_x)
+        change_points_y_set = set(change_points_y)
+        
+        # seconds version
+        for ele in list(change_points_x_set.union( change_points_y_set )):
+            ax[0].axvline( time_step[ele] , color='black' , linewidth=5, alpha=0.3 )
+
+        ax[0].legend(loc='upper right', fontsize=my_fontsize*0.5)
+        ax[0].tick_params(axis='both', which='major', labelsize=my_fontsize*0.7, color="black")
+        ax[0].set_xlim([ time_step[0], time_step[-1] ])
+        ax[0].set_ylim([ 0,  500 ])
+        # ax[0].set_xlabel('Time (seconds)', fontsize=my_fontsize, color="black")
+        ax[0].set_xticks([])
+
+
+        my_yticklabels=[]
+        for ticks_label in range(attn_weight_matrix_all.shape[1]):
+            if ticks_label == 0:
+                my_yticklabels.append( 't-' + str(  int(attn_weight_matrix_all.shape[1]) -1 - ticks_label) )
+            elif ticks_label == int(attn_weight_matrix_all.shape[1]) -1 :
+                my_yticklabels.append( 't-' + str(  int(attn_weight_matrix_all.shape[1]) -1 - ticks_label) )
+            elif ticks_label == int( int(attn_weight_matrix_all.shape[1]) / 2 ):
+                my_yticklabels.append( 't-' + str(  int(attn_weight_matrix_all.shape[1]) -1 - ticks_label) )
+            else:
+                my_yticklabels.append('')
+
+        attention_map_data = attn_weight_matrix_all.transpose()
+
+        cbar_kws_attention = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(attention_map_data), np.max(attention_map_data) ]}
+        sns.heatmap( data=attention_map_data, ax=ax[1], cbar_kws=cbar_kws_attention, cmap='coolwarm', yticklabels=my_yticklabels, xticklabels=False , cbar=False) # norm=LogNorm()
+        
+        b, t = ax[1].get_ylim() # discover the values for bottom and top
+        b += 0.5 # Add 0.5 to the bottom
+        t -= 0.5 # Subtract 0.5 from the top
+        ax[1].set_ylim(b, t) # update the ylim(bottom, top) values
+
+        ax[1].set_yticklabels(ax[1].get_ymajorticklabels(), fontsize = my_fontsize*0.7, rotation=0)
+
+        # ax[1].set_title('Attention Map', fontsize=my_fontsize, color="black")
+        ax[1].set_ylabel('taps', fontsize=my_fontsize, color="black")
+
+
+        num_ticks = 6
+        my_second_labels = time_step
+        # the index of the position of yticks
+        xticks = np.linspace(0, len(my_second_labels) - 1, num_ticks, dtype=np.int)
+        # the content of labels of these yticks
+        # xticklabels = [ round(my_second_labels[idx], 2) for idx in xticks ] # float version
+        xticklabels = [ int(my_second_labels[idx]) for idx in xticks ] # int version
+
+        cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
+        sns.heatmap( data=firing_rate_data , ax=ax[2], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=xticklabels, cbar=False ) # norm=LogNorm()
+
+        ax[2].set_xticklabels(ax[2].get_xmajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0)
+        ax[2].set_yticklabels(ax[2].get_ymajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0) # This will get correct row numbers of data matrix
+
+        ax[2].set_xticks(xticks)
+
+        ax[2].yaxis.set_major_locator(ticker.MultipleLocator(100))
+        ax[2].yaxis.set_major_formatter(ticker.ScalarFormatter())        
+
+        # ax[2].set_title('Firing Rate from Session '+session_name, fontsize=my_fontsize, color="black")
+        ax[2].set_ylabel('units', fontsize=my_fontsize, color="black")
+        ax[2].set_xlabel('time (s)', fontsize=my_fontsize, color="black")
+
+        plt.savefig( plot_path+'/'+ 'attention_map_' +str(start_time_bin)+ '_to_'+str(end_time_bin) +'.png' )
+
+
+        plt.cla()
+        plt.clf()
+        plt.close()
+    
+        return
+
     # for the report
     def attention_map_2_outputs_with_target_cue_no_colorbar( self, session_name, time_step, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, x_target_cue, y_target_cue, firing_rate_collector, q_value_all, loss_plot_vector_x, loss_plot_vector_y):
 
