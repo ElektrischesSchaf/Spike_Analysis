@@ -11,7 +11,7 @@ from torch.utils.data import Dataset, DataLoader
 from matplotlib.colors import LogNorm
 import matplotlib.ticker as ticker
 
-my_fontsize=50
+my_fontsize=75
 
 class Plotting():
 
@@ -272,16 +272,16 @@ class Plotting():
         return
 
     # for the report
-    def attention_map_2_outputs_with_target_cue_no_colorbar( self, session_name, time_step, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, x_target_cue, y_target_cue, firing_rate_collector):
+    def attention_map_2_outputs_with_target_cue_no_colorbar( self, session_name, time_step, type_name, start_time_bin, end_time_bin, plot_path, my_prediction_1, Ground_Truth_1, my_prediction_2, Ground_Truth_2, attn_weight_matrix_all, x_target_cue, y_target_cue, firing_rate_collector, q_value_all, loss_plot_vector_x, loss_plot_vector_y):
 
         firing_rate_collector = firing_rate_collector[start_time_bin:end_time_bin,:]
         attn_weight_matrix_all = attn_weight_matrix_all[start_time_bin:end_time_bin,:]
 
-        sns.set(font_scale=3)
+        sns.set(font_scale=5)
         sns.set_style("white")
         sns.color_palette(palette=None)
 
-        plt.rcParams["figure.figsize"] = (30,20)
+        plt.rcParams["figure.figsize"] = (35,20)
 
         # this is use actual second in the time axes
         time_step = time_step[start_time_bin:end_time_bin]
@@ -299,11 +299,11 @@ class Plotting():
 
         # ax[0].set_title( 'Kinematic Variable Reconstruction', fontsize=my_fontsize, color="black")
         if type_name=='x_and_y_pos':
-            ax[0].set_ylabel( 'pos (mm)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'pos. (mm)', rotation=90, fontsize=my_fontsize, color="black")
         if type_name=='x_and_y_vel':
-            ax[0].set_ylabel( 'vel (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'vel. (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
         if type_name=='x_and_y_acc':
-            ax[0].set_ylabel( 'acc (mm/$s^2$)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'acc. (mm/$s^2$)', rotation=90, fontsize=my_fontsize, color="black")
 
         ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
         ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
@@ -355,7 +355,7 @@ class Plotting():
         ax[1].set_yticklabels(ax[1].get_ymajorticklabels(), fontsize = my_fontsize*0.7, rotation=0)
 
         # ax[1].set_title('Attention Map', fontsize=my_fontsize, color="black")
-        ax[1].set_ylabel('past time bins', fontsize=my_fontsize, color="black")
+        ax[1].set_ylabel('taps', fontsize=my_fontsize, color="black")
 
 
         num_ticks = 6
@@ -378,7 +378,7 @@ class Plotting():
         ax[2].yaxis.set_major_formatter(ticker.ScalarFormatter())        
 
         # ax[2].set_title('Firing Rate from Session '+session_name, fontsize=my_fontsize, color="black")
-        ax[2].set_ylabel('sorted units', fontsize=my_fontsize, color="black")
+        ax[2].set_ylabel('units', fontsize=my_fontsize, color="black")
         ax[2].set_xlabel('time (s)', fontsize=my_fontsize, color="black")
 
         plt.savefig( plot_path+'/'+ 'attention_map_' +str(start_time_bin)+ '_to_'+str(end_time_bin) +'.png' )

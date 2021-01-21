@@ -57,7 +57,7 @@ kinematic_variable_type = 'x_and_y_vel' # x_pos, y_pos, z_pos, x_vel, y_vel, z_v
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE = ALL_List_FILE[:]
+List_FILE = ALL_List_FILE[6:30]
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
@@ -66,7 +66,7 @@ MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
-BATCH_SIZE = 64
+BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
 max_timestep = 10
 
@@ -603,7 +603,7 @@ for session_k in range(len(session_file_list)):
     time_bin_index = 0
 
     while time_bin_index < (testing_data_length -plottin_duration_time_bin*1.5 ):
-        Plotting.quant(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name= kinematic_variable_type, start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector, q_value_all=q_value_all, loss_plot_vector_x=loss_plot_vector_x, loss_plot_vector_y=loss_plot_vector_y)
+        Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name= kinematic_variable_type, start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector, q_value_all=q_value_all, loss_plot_vector_x=loss_plot_vector_x, loss_plot_vector_y=loss_plot_vector_y)
         # Plotting.attention_map_2_outputs_with_target_cue_no_colorbar(session_name=session_name, time_step=time_stamp_64ms[testing_data_index:], type_name='pos', start_time_bin=time_bin_index, end_time_bin=time_bin_index+plottin_duration_time_bin, plot_path=attention_plot_path, my_prediction_1=my_prediction_1, Ground_Truth_1=Ground_Truth_1, my_prediction_2=my_prediction_2, Ground_Truth_2=Ground_Truth_2, attn_weight_matrix_all=attn_weight_matrix_all, x_target_cue= x_target_all, y_target_cue=y_target_all, firing_rate_collector=firing_rate_collector)
         time_bin_index = time_bin_index + plottin_duration_time_bin
 
