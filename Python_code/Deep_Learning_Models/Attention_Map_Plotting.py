@@ -286,7 +286,7 @@ class Plotting():
         # this is use actual second in the time axes
         time_step = time_step[start_time_bin:end_time_bin]
 
-        f, ax = plt.subplots(3, 1, gridspec_kw={'height_ratios': [1,1,1],  "hspace":0.1 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1} , constrained_layout=False)
+        f, ax = plt.subplots(4, 1, gridspec_kw={'height_ratios': [1,1,1,1],  "hspace":0.1 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1} , constrained_layout=False)
 
         firing_rate_data = firing_rate_collector.transpose()
 
@@ -301,12 +301,6 @@ class Plotting():
         # Plotting the absolute velocity
         if type_name=='x_and_y_pos':
             ax[0].set_ylabel( '|vel.| (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
-
-        # ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
-        # ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
-
-        # ax[0].plot( time_step, my_prediction_2[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.8 )
-        # ax[0].plot( time_step, Ground_Truth_2[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.9 )
 
         velocity_x = np.diff(Ground_Truth_1[start_time_bin:end_time_bin])
         velocity_y = np.diff(Ground_Truth_2[start_time_bin:end_time_bin])
@@ -357,6 +351,8 @@ class Plotting():
             else:
                 my_yticklabels.append('')
 
+
+        # Plotting attention maps
         attention_map_data = attn_weight_matrix_all.transpose()
 
         cbar_kws_attention = {"orientation": "horizontal", "shrink": 0.5, "aspect":50,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(attention_map_data), np.max(attention_map_data) ]}
@@ -373,6 +369,15 @@ class Plotting():
         ax[1].set_ylabel('taps', fontsize=my_fontsize, color="black")
 
 
+        # Plotting spike counts
+
+        firing_rate_tota_counts = firing_rate_data.sum(axis=0)
+        ax[2].plot( time_step, firing_rate_tota_counts, 'b', linewidth=3, label='|vel.|', alpha=1.0 )
+        ax[2].set_xlim([ time_step[0], time_step[-1] ])
+        ax[2].set_ylim([ 0,  350 ])
+        ax[2].set_xticks([])
+        ax[2].set_ylabel( 'counts', rotation=90, fontsize=my_fontsize, color="black")
+
         num_ticks = 6
         my_second_labels = time_step
         # the index of the position of yticks
@@ -382,19 +387,19 @@ class Plotting():
         xticklabels = [ int(my_second_labels[idx]) for idx in xticks ] # int version
 
         cbar_kws_firingrate = {"orientation": "horizontal", "shrink": 0.5, "aspect":40,"use_gridspec":"True", "fraction":0.01 , "pad":0.03, 'ticks' : [ np.min(firing_rate_data),  4 ]}
-        sns.heatmap( data=firing_rate_data , ax=ax[2], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=xticklabels, cbar=False ) # norm=LogNorm()
+        sns.heatmap( data=firing_rate_data , ax=ax[3], vmax=4, cbar_kws=cbar_kws_firingrate, cmap='YlGnBu_r', yticklabels=True, xticklabels=xticklabels, cbar=False ) # norm=LogNorm()
 
-        ax[2].set_xticklabels(ax[2].get_xmajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0)
-        ax[2].set_yticklabels(ax[2].get_ymajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0) # This will get correct row numbers of data matrix
+        ax[3].set_xticklabels(ax[3].get_xmajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0)
+        ax[3].set_yticklabels(ax[3].get_ymajorticklabels(), fontsize = my_fontsize*0.7 , rotation=0) # This will get correct row numbers of data matrix
 
-        ax[2].set_xticks(xticks)
+        ax[3].set_xticks(xticks)
 
-        ax[2].yaxis.set_major_locator(ticker.MultipleLocator(100))
-        ax[2].yaxis.set_major_formatter(ticker.ScalarFormatter())        
+        ax[3].yaxis.set_major_locator(ticker.MultipleLocator(100))
+        ax[3].yaxis.set_major_formatter(ticker.ScalarFormatter())        
 
-        # ax[2].set_title('Firing Rate from Session '+session_name, fontsize=my_fontsize, color="black")
-        ax[2].set_ylabel('units', fontsize=my_fontsize, color="black")
-        ax[2].set_xlabel('time (s)', fontsize=my_fontsize, color="black")
+        
+        ax[3].set_ylabel('units', fontsize=my_fontsize, color="black")
+        ax[3].set_xlabel('time (s)', fontsize=my_fontsize, color="black")
 
         plt.savefig( plot_path+'/'+ 'attention_map_' +str(start_time_bin)+ '_to_'+str(end_time_bin) +'.png' )
 

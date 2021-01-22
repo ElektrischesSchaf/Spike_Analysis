@@ -62,13 +62,13 @@ session_file_list = List_FILE
 
 # Neural Network Hyperparameters
 model_name = 'GRU_Single_Session_2_outputs_bidir_LN_self_atten'
-MAX_EPOCH = 1#75
+MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
-BATCH_SIZE = 64
+BATCH_SIZE = 16
 HIDDEN_DIMENSION = 256
-max_timestep = 10
+max_timestep = 20
 r = int( max_timestep/2 )
 
 # Model Performance Lists
