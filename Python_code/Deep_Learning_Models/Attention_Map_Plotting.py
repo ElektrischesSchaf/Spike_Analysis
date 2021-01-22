@@ -299,8 +299,9 @@ class Plotting():
 
 
         # Plotting the absolute velocity
-        if type_name=='x_and_y_pos':
-            ax[0].set_ylabel( '|vel.| (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
+        # if type_name=='x_and_y_pos':
+        ax[0].set_ylabel( 'mm/s', rotation=90, fontsize=my_fontsize, color="black")
+            # pass
 
         velocity_x = np.diff(Ground_Truth_1[start_time_bin:end_time_bin])
         velocity_y = np.diff(Ground_Truth_2[start_time_bin:end_time_bin])
@@ -317,7 +318,7 @@ class Plotting():
             yee = np.sqrt( velocity_x[i]*velocity_x[i] + velocity_y[i]*velocity_y[i] )
             velocity_absolute.append( yee )
 
-        ax[0].plot( time_step, velocity_absolute, 'b', linewidth=3, label='|vel.|', alpha=1.0 )
+        ax[0].plot( time_step, velocity_absolute, 'b', linewidth=3, label='absolute velocity', alpha=1.0 )
 
         # plot target cue change points
         the_x = x_target_cue[start_time_bin:end_time_bin]
@@ -370,13 +371,13 @@ class Plotting():
 
 
         # Plotting spike counts
-
         firing_rate_tota_counts = firing_rate_data.sum(axis=0)
-        ax[2].plot( time_step, firing_rate_tota_counts, 'b', linewidth=3, label='|vel.|', alpha=1.0 )
+        ax[2].plot( time_step, firing_rate_tota_counts, 'r', linewidth=3, label='spike counts', alpha=1.0 )
         ax[2].set_xlim([ time_step[0], time_step[-1] ])
         ax[2].set_ylim([ 0,  350 ])
         ax[2].set_xticks([])
-        ax[2].set_ylabel( 'counts', rotation=90, fontsize=my_fontsize, color="black")
+        # ax[2].set_ylabel( 'counts', rotation=90, fontsize=my_fontsize, color="black")
+        ax[2].legend(loc='upper right', fontsize=my_fontsize*0.5)
 
         num_ticks = 6
         my_second_labels = time_step
