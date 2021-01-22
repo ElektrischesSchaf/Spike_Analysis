@@ -299,24 +299,35 @@ class Plotting():
 
 
         # Plotting the absolute velocity
-        # if type_name=='x_and_y_pos':
-        ax[0].set_ylabel( 'mm/s', rotation=90, fontsize=my_fontsize, color="black")
-            # pass
+        if type_name=='x_and_y_pos':
+            ax[0].set_ylabel( 'mm/s', rotation=90, fontsize=my_fontsize, color="black")
 
-        velocity_x = np.diff(Ground_Truth_1[start_time_bin:end_time_bin])
-        velocity_y = np.diff(Ground_Truth_2[start_time_bin:end_time_bin])
+            velocity_x = np.diff(Ground_Truth_1[start_time_bin:end_time_bin])
+            velocity_y = np.diff(Ground_Truth_2[start_time_bin:end_time_bin])
 
-        velocity_x = np.insert(velocity_x, 0, 0)
-        velocity_y = np.insert(velocity_y, 0, 0)
+            velocity_x = np.insert(velocity_x, 0, 0)
+            velocity_y = np.insert(velocity_y, 0, 0)
 
-        velocity_x =velocity_x/0.064
-        velocity_y =velocity_y/0.064
+            velocity_x =velocity_x/0.064
+            velocity_y =velocity_y/0.064
 
-        velocity_absolute = []
+            velocity_absolute = []
 
-        for i in range(len(velocity_x)):
-            yee = np.sqrt( velocity_x[i]*velocity_x[i] + velocity_y[i]*velocity_y[i] )
-            velocity_absolute.append( yee )
+            for i in range(len(velocity_x)):
+                yee = np.sqrt( velocity_x[i]*velocity_x[i] + velocity_y[i]*velocity_y[i] )
+                velocity_absolute.append( yee )
+
+        if type_name== 'x_and_y_vel':
+            ax[0].set_ylabel( 'mm/s', rotation=90, fontsize=my_fontsize, color="black")
+
+            velocity_x = Ground_Truth_1[start_time_bin:end_time_bin]
+            velocity_y = Ground_Truth_2[start_time_bin:end_time_bin]
+
+            velocity_absolute = []
+
+            for i in range(len(velocity_x)):
+                yee = np.sqrt( velocity_x[i]*velocity_x[i] + velocity_y[i]*velocity_y[i] )
+                velocity_absolute.append( yee )
 
         ax[0].plot( time_step, velocity_absolute, 'b', linewidth=3, label='absolute velocity', alpha=1.0 )
 
