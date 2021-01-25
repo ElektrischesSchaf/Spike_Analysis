@@ -141,7 +141,7 @@
 % -----------------------------------------
 %%
 \setcounter{secnumdepth}{4}
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{1} % Index depth Butters
 \usepackage{lipsum}
 
 \hypersetup{
@@ -181,7 +181,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-	\linenumbers % show line numbers Butters
+	% \linenumbers     % show line numbers Butters
 	\pagenumbering{gobble}
 	\begin{titlepage}
 		\newgeometry{a4paper,
@@ -196,10 +196,10 @@
 	\newgeometry{
 		a4paper,
 		total={210mm,296mm},
-		left = 10mm, %30
-		right = 45mm, %25
-		top = 15mm,  %23
-		bottom = 15mm,  %35
+		left = 10mm, %30, 10
+		right = 45mm, %25, 45
+		top = 15mm,  %23, 15
+		bottom = 15mm,  %35, 15
 	}
 	% \CenterWallPaper{.325}{watermark.jpg} % disable watermark Butters
 	\begin{spacing}{1} %1.5
@@ -225,10 +225,11 @@
 		\input{../Acknowledgment.tex}
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Editing_notes start
 		% \newpage
-		\chapter*{\centering Editing notes}
-		\addcontentsline{toc}{chapter}{Editing notes}
-		\label{chap:Editing_notes}
-		\input{../Editing_notes.tex}
+
+		% \chapter*{\centering Editing notes}
+		% \addcontentsline{toc}{chapter}{Editing notes}
+		% \label{chap:Editing_notes}
+		% \input{../Editing_notes.tex}
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Editing_notes end
 		\newpage
 		%% Table of contents
