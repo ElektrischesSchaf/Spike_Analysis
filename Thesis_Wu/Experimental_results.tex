@@ -145,7 +145,7 @@ The decoders included in the tables are
 		\multicolumn{3}{c}{UKF \citep{li2009unscented}}         & 0.50$\pm$0.26 & 0.65$\pm$0.22 & 0.45$\pm$0.21 & 0.60$\pm$0.15 & 0.15$\pm$0.19 & 0.23$\pm$0.16 \\
 		\multicolumn{3}{c}{rEFH \citep{makin2018}}              & 0.20$\pm$0.18 & 0.45$\pm$0.12 & 0.52$\pm$0.16 & 0.70$\pm$0.08 & 0.26$\pm$0.13 & 0.37$\pm$0.09 \\
         \multicolumn{3}{c}{rEFH (+KF) \citep{makin2018}}        & 0.46$\pm$0.28 & 0.70$\pm$0.09 & 0.58$\pm$0.15 & 0.74$\pm$0.06 & 0.29$\pm$0.15 & 0.40$\pm$0.09 \\
-        \multicolumn{3}{c}{Our GRU model (+Atten.\& L.N.)}           & \textbf{0.53$\pm$0.19} & \textbf{0.71$\pm$0.08} & \textbf{0.66$\pm$0.10} & \textbf{0.76$\pm$0.05} & \textbf{0.40$\pm$0.13} & \textbf{0.48$\pm$0.09} \\
+        \multicolumn{3}{c}{\makecell{Our GRU model\\(+Atten.\& L.N.)}}           & \textbf{0.53$\pm$0.19} & \textbf{0.71$\pm$0.08} & \textbf{0.66$\pm$0.10} & \textbf{0.76$\pm$0.05} & \textbf{0.40$\pm$0.13} & \textbf{0.48$\pm$0.09} \\
         \hline
     \end{tabular}
     \hspace*{-2cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
@@ -283,11 +283,11 @@ decoders can not use the spiking activities happened when fingertips are station
 
 \begin{figure}[H]
     \begin{center}
-        \begin{subfigure}{0.7\textwidth}
+        \begin{subfigure}{1.0\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png}
             \caption*{ \small{session indy\_20160916\_01}}
         \end{subfigure}
-        \begin{subfigure}{0.7\textwidth}
+        \begin{subfigure}{1.0\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20161025_04/pos_attention_map_400_to_600.png}
             \caption*{ \small{session indy\_20161025\_04 }}
         \end{subfigure}
@@ -310,11 +310,11 @@ It also tells us that the attention module can actually represent the dynamics o
 
 \begin{figure}[H]
     \begin{center}
-        \begin{subfigure}{0.7\textwidth}
+        \begin{subfigure}{1.0\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160916_01/vel_attention_map_200_to_400.png}
             \caption*{ \small{session indy\_20160916\_01}}
         \end{subfigure}
-        \begin{subfigure}{0.7\textwidth}
+        \begin{subfigure}{1.0\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20161025_04/vel_attention_map_400_to_600.png}
             \caption*{ \small{session indy\_20161025\_04 }}
         \end{subfigure}
@@ -327,11 +327,11 @@ It also tells us that the attention module can actually represent the dynamics o
 
 \begin{figure}[H]
     \begin{center}
-        \begin{subfigure}{0.7\textwidth}
+        \begin{subfigure}{1.0\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20160916_01/acc_attention_map_200_to_400.png}
             \caption*{ \small{session indy\_20160916\_01}}
         \end{subfigure}
-        \begin{subfigure}{0.7\textwidth}
+        \begin{subfigure}{1.0\textwidth}
             \includegraphics[width=1\textwidth]{../Visualization_of_attention_process_figures/indy_20161025_04/acc_attention_map_400_to_600.png}
             \caption*{ \small{session indy\_20161025\_04 }}
         \end{subfigure}
@@ -395,7 +395,7 @@ the attention scores in the time bins prior to $t-10$ is indeed almost zero.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.7\textwidth]{../tap_sizes_figures/indy_20161013_03/velocity/atention_map.png}
+        \includegraphics[width=1.0\textwidth]{../tap_sizes_figures/indy_20161013_03/velocity/atention_map.png}
         \captionsetup{width=1\textwidth}
         \caption{ Corresponding attention map in velocity decoding }
         \caption*{ \small{session indy\_20161013\_03}}
@@ -434,7 +434,7 @@ the attention scores in the time bins prior to $t-8$ is indeed almost zero.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.7\textwidth]{../tap_sizes_figures/indy_20161013_03/acceleration/attention_map.png}
+        \includegraphics[width=1.0\textwidth]{../tap_sizes_figures/indy_20161013_03/acceleration/attention_map.png}
         \captionsetup{width=1\textwidth}
         \caption{Corresponding attention map in acceleration decoding}
         \caption*{ \small{session indy\_20161013\_03}}
@@ -455,11 +455,11 @@ that makes the the length of stationary period a variable for tap sizes optimiza
 
 \begin{figure}[H]
     \begin{center}
-        \begin{subfigure}{0.7\textwidth}
+        \begin{subfigure}{1.0\textwidth}
             \includegraphics[width=1\textwidth]{../tap_sizes_figures/indy_20160419_01/position/tap_20.png}
             \caption*{20 taps}
         \end{subfigure}
-        \begin{subfigure}{0.7\textwidth}
+        \begin{subfigure}{1.0\textwidth}
             \includegraphics[width=1\textwidth]{../tap_sizes_figures/indy_20160419_01/position/tap_50.png}
             \caption*{50 taps}
         \end{subfigure}
@@ -518,7 +518,7 @@ does not seems to have an significant contribution in the decoding accuracy.
     \begin{tabular}{ccccccccc}
         \hline
         \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Atten.}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{L.N.}}}    & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{GRU}}}          & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
-        \multicolumn{1}{c}{}                                   & \multicolumn{1}{c}{}            & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{Dir.}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y}}} \\
+        \multicolumn{1}{c}{}                                   & \multicolumn{1}{c}{}            & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{Dir.}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x-coor.}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y-coor.}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x-coor.}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y-coor.}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{x-coor.}}} & \multicolumn{1}{c}{\multirow{1}{*}{\textbf{y-coor.}}} \\
         \hline
         \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & $\rightarrow$                   & 0.49$\pm$0.21         & 0.68$\pm$0.12         & 0.65$\pm$0.13         & 0.71$\pm$0.11         & 0.31$\pm$0.16         & 0.32$\pm$0.23 \\ 
         \textcolor{red}{\xmark} & \textcolor{red}{\xmark} & $\rightleftarrows$              & 0.49$\pm$0.21         & 0.69$\pm$0.13         & 0.65$\pm$0.12         & 0.74$\pm$0.07         & 0.24$\pm$0.13         & 0.25$\pm$0.19 \\ 

@@ -1,4 +1,4 @@
-\documentclass[15pt, a4paper, oneside]{book} %12pt Butters
+\documentclass[12pt, a4paper, oneside]{book} %12pt Butters
 \usepackage[utf8]{inputenc}
 \usepackage{minitoc}
 %% Figure settings
@@ -105,8 +105,8 @@
 \usepackage{../macros_tn} %Loads all my macros
 \usepackage{geometry}
 
-\usepackage[colorinlistoftodos, textwidth=40mm, textsize=small]{todonotes}   % notes showed
-% \usepackage[disable]{todonotes} % notes disable
+% \usepackage[colorinlistoftodos, textwidth=40mm, textsize=small]{todonotes}   % notes showed
+\usepackage[disable]{todonotes} % notes disable
 
 % \usepackage[disable]{todonotes} % hide all todos
 \usepackage{enumitem}
@@ -196,13 +196,13 @@
 	\newgeometry{
 		a4paper,
 		total={210mm,296mm},
-		left = 10mm, %30, 10
-		right = 45mm, %25, 45
-		top = 15mm,  %23, 15
-		bottom = 15mm,  %35, 15
+		left = 30mm, %30, 10
+		right = 25mm, %25, 45
+		top = 23mm,  %23, 15
+		bottom = 35mm,  %35, 15
 	}
-	% \CenterWallPaper{.325}{watermark.jpg} % disable watermark Butters
-	\begin{spacing}{1} %1.5
+	\CenterWallPaper{.325}{watermark.jpg} % disable watermark Butters
+	\begin{spacing}{1.5} %1.5
 		\frontmatter
 		%% Chinese Abstract
 		\addcontentsline{toc}{chapter}{Chinese abstract}
