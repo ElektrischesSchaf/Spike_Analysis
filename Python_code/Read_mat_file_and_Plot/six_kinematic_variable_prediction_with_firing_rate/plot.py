@@ -267,7 +267,7 @@ shutil.rmtree(Firing_Rate_Visualization)
 # Start plotting
 start_time_bin = 200
 end_time_bin = 400
-my_fontsize = 50
+my_fontsize = 55
 my_plot_width = 30
 my_plot_height = 20
 
@@ -288,7 +288,7 @@ if not os.path.exists(plot_path):
 plt.figure(figsize=(my_plot_width, my_plot_height))
 
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
-sns.set(font_scale=3)
+sns.set(font_scale=5)
 sns.set_style("white")
 sns.color_palette(palette=None)
 
@@ -433,7 +433,7 @@ else:
 # Figure firing rate and all kinematic variables version 1
 plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
 
-sns.set(font_scale=3)
+sns.set(font_scale=5)
 sns.set_style("white")
 sns.color_palette(palette=None)
 
@@ -466,11 +466,11 @@ ax[0].set_ylabel('Units', fontsize=my_fontsize, color="black")
 
 
 # ax[1].set_title( 'Position', fontsize=my_fontsize)
-ax[1].plot( position_timestamp[start_time_bin:end_time_bin], position_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
-ax[1].plot(position_timestamp[start_time_bin:end_time_bin], position_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
-ax[1].plot( position_timestamp[start_time_bin:end_time_bin], position_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
-ax[1].plot(position_timestamp[start_time_bin:end_time_bin], position_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[1].set_ylabel( 'pos ($mm$)', fontsize=my_fontsize, rotation=90)
+ax[1].plot( position_timestamp[start_time_bin:end_time_bin], position_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.9 )
+ax[1].plot(position_timestamp[start_time_bin:end_time_bin], position_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.9 )
+ax[1].plot( position_timestamp[start_time_bin:end_time_bin], position_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
+ax[1].plot(position_timestamp[start_time_bin:end_time_bin], position_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
+ax[1].set_ylabel( 'pos. ($mm$)', fontsize=my_fontsize, rotation=90)
 ax[1].get_xaxis().set_ticks([])
 # ax[1].legend(loc='upper right', fontsize=my_fontsize)
 ax[1].set_xlim([ position_timestamp[start_time_bin] ,  position_timestamp[end_time_bin]  ])
@@ -478,11 +478,11 @@ ax[1].set_ylim([ -150, 150  ])
 
 
 # ax[2].set_title( 'Velocity', fontsize=my_fontsize)
-ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
-ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
-ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
-ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[2].set_ylabel( 'vel ($mm/s$)', fontsize=my_fontsize, rotation=90)
+ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.9 )
+ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.9 )
+ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
+ax[2].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
+ax[2].set_ylabel( 'vel. ($mm/s$)', fontsize=my_fontsize, rotation=90)
 ax[2].get_xaxis().set_ticks([])
 # ax[2].legend(loc='upper right', fontsize=my_fontsize)
 ax[2].set_xlim([ velocity_timestamp[start_time_bin] ,  velocity_timestamp[end_time_bin]  ])
@@ -490,12 +490,12 @@ ax[2].set_ylim([ -350, 350  ])
 
 
 # ax[3].set_title( 'Acceleration', fontsize=my_fontsize)
-ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
-ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
-ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
-ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[3].set_ylabel( 'acc ($mm/s^2$)', fontsize=my_fontsize, rotation=90)
-ax[3].set_xlabel('Time (Seconds)', fontsize=my_fontsize)
+ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.9 )
+ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.9 )
+ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
+ax[3].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
+ax[3].set_ylabel( 'acc, ($mm/s^2$)', fontsize=my_fontsize, rotation=90)
+ax[3].set_xlabel('Time (s)', fontsize=my_fontsize)
 # ax[3].legend(loc='upper right', fontsize=my_fontsize)
 ax[3].set_xlim([ acceleration_timestamp[start_time_bin] ,  acceleration_timestamp[end_time_bin]  ])
 ax[3].set_ylim([ -2500, 2500  ])
@@ -514,11 +514,11 @@ plt.close()
 # Figure firing rate and all kinematic variables version 2
 # plt.title( 'Session ' + session_name + ' Firing Rate', fontsize=30, color="black")
 
-sns.set(font_scale=3)
+sns.set(font_scale=5)
 sns.set_style("white")
 sns.color_palette(palette=None)
 
-f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [1, 1, 1, 1],  "hspace":0 ,"left":0.18, "right":0.95, "top":0.95, "bottom":0.1}, constrained_layout=False , figsize=(my_plot_width, my_plot_height*1.2))
+f ,ax = plt.subplots(4,1, gridspec_kw={'height_ratios': [1, 1, 1, 1],  "hspace":0 ,"left":0.1, "right":0.95, "top":0.95, "bottom":0.1}, constrained_layout=False , figsize=(my_plot_width*1.3 , my_plot_height*1.2 ))
 
 # remove frames https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
 ax[0].spines['top'].set_visible(False)
@@ -537,14 +537,14 @@ ax[2].spines['bottom'].set_visible(False)
 ax[2].spines['left'].set_visible(True)
 
 # ax[0].set_title( 'Position', fontsize=my_fontsize)
-ax[0].plot( position_timestamp[start_time_bin:end_time_bin], position_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
-ax[0].plot(position_timestamp[start_time_bin:end_time_bin], position_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
-ax[0].plot( position_timestamp[start_time_bin:end_time_bin], position_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
-ax[0].plot(position_timestamp[start_time_bin:end_time_bin], position_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[0].set_ylabel( 'pos (mm)', fontsize=my_fontsize, rotation=90, color="black")
+ax[0].plot( position_timestamp[start_time_bin:end_time_bin], position_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.9 )
+ax[0].plot(position_timestamp[start_time_bin:end_time_bin], position_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.9 )
+ax[0].plot( position_timestamp[start_time_bin:end_time_bin], position_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
+ax[0].plot(position_timestamp[start_time_bin:end_time_bin], position_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
+ax[0].set_ylabel( 'pos. (mm)', fontsize=my_fontsize, rotation=90, color="black")
 ax[0].get_xaxis().set_ticks([])
 ax[0].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
-ax[0].legend(loc='upper right', fontsize=my_fontsize*0.5, bbox_to_anchor=(1.05, 1.2 ))
+ax[0].legend(loc='lower right', fontsize=my_fontsize*0.9 , bbox_to_anchor=(1, 0 ))
 ax[0].set_xlim([ position_timestamp[start_time_bin] ,  position_timestamp[end_time_bin]  ])
 print('position_timestamp[start_time_bin]= ', position_timestamp[start_time_bin],'\n')
 print('position_timestamp[end_time_bin]= ', position_timestamp[end_time_bin], '\n')
@@ -569,11 +569,11 @@ for ele in list( change_points_x_set.union( change_points_y_set )):
 
 
 # ax[1].set_title( 'Velocity', fontsize=my_fontsize)
-ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
-ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
-ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
-ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[1].set_ylabel( 'vel (mm/s)', fontsize=my_fontsize, rotation=90, color="black")
+ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.9 )
+ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.9 )
+ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
+ax[1].plot(velocity_timestamp[start_time_bin:end_time_bin], velocity_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
+ax[1].set_ylabel( 'vel. (mm/s)', fontsize=my_fontsize, rotation=90, color="black")
 ax[1].get_xaxis().set_ticks([])
 ax[1].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
 # ax[1].legend(loc='upper right', fontsize=my_fontsize*0.5)
@@ -597,11 +597,11 @@ for ele in list( change_points_x_set.union( change_points_y_set )):
     ax[1].axvline( position_timestamp[start_time_bin + ele] , color='black' , linewidth=5, alpha=0.3 )
 
 # ax[2].set_title( 'Acceleration', fontsize=my_fontsize)
-ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-axis prediction', alpha=0.9 )
-ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-axis prediction', alpha=0.9 )
-ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-axis actual', alpha=0.8 )
-ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-axis actual', alpha=0.8 )
-ax[2].set_ylabel( 'acc (mm/$s^2$)', fontsize=my_fontsize, rotation=90, color="black")
+ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_predction[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.9 )
+ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_predction[start_time_bin:end_time_bin], 'g', linewidth=3, label='y-coor. prediction', alpha=0.9 )
+ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_x_actual[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.8 )
+ax[2].plot(acceleration_timestamp[start_time_bin:end_time_bin], acceleration_y_actual[start_time_bin:end_time_bin], 'g--', linewidth=3, label='y-coor. actual', alpha=0.8 )
+ax[2].set_ylabel( 'acc. (mm/$s^2$)', fontsize=my_fontsize, rotation=90, color="black")
 ax[2].get_xaxis().set_ticks([])
 ax[2].tick_params(axis='both', which='major', labelsize=my_fontsize*1, color="black")
 # ax[2].legend(loc='upper right', fontsize=my_fontsize*0.5)
@@ -653,8 +653,8 @@ ax[3].set_xticks(xticks)
 ax[3].yaxis.set_major_locator(ticker.MultipleLocator(100))
 ax[3].yaxis.set_major_formatter(ticker.ScalarFormatter())
 
-ax[3].set_ylabel('Sorted units', fontsize=my_fontsize, color="black")
-ax[3].set_xlabel('Time (Seconds)', fontsize=my_fontsize, color="black")
+ax[3].set_ylabel('units', fontsize=my_fontsize, color="black")
+ax[3].set_xlabel('time (s)', fontsize=my_fontsize, color="black")
 
 
 
