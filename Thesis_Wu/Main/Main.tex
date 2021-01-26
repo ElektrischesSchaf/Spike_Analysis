@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper, oneside]{book} %12pt Butters
+\documentclass[12pt, a4paper, oneside]{book} %12pt is formal, 15pt is temp.
 \usepackage[utf8]{inputenc}
 \usepackage{minitoc}
 %% Figure settings
@@ -224,12 +224,11 @@
 		\label{chap:acknowledgment}
 		\input{../Acknowledgment.tex}
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Editing_notes start
-		% \newpage
-
-		% \chapter*{\centering Editing notes}
-		% \addcontentsline{toc}{chapter}{Editing notes}
-		% \label{chap:Editing_notes}
-		% \input{../Editing_notes.tex}
+		\newpage
+		\chapter*{\centering Editing notes}
+		\addcontentsline{toc}{chapter}{Editing notes}
+		\label{chap:Editing_notes}
+		\input{../Editing_notes.tex}
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Editing_notes end
 		\newpage
 		%% Table of contents
@@ -240,21 +239,24 @@
 		\tableofcontents
 		\addcontentsline{toc}{chapter}{Table of Contents}
 
-		%% List of tables
+		%% List of tables		
 		\listoftables
 		\addcontentsline{toc}{chapter}{List of Tables}
-		%% List of figures
+
+		%% List of figures		
 		\listoffigures
 		\addcontentsline{toc}{chapter}{List of Figures}
+
 		%% List of symbols
 		% Note: add the following setting in configure of makeindex
 		% makeindex.exe %.nlo -s nomencl.ist -o %.nls -t %.nlg
 		\mbox{}
 		%% ---- Start writing nomenclature here ---- %%
-
+	
 		\input{../Nomenclature.tex}
 		\printnomenclature
 		\addcontentsline{toc}{chapter}{Nomenclature}
+		
 		\end{singlespace}
 		%% Main content
 		\mainmatter

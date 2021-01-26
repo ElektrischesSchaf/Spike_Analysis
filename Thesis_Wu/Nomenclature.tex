@@ -21,7 +21,20 @@
 
 \nomenclature[B]{$T$}{Tap size (scalar)}
 \nomenclature[B]{$\bH$}{Hidden states (matrix)}
-\nomenclature[B]{$\bh_t$}{Hidden state at time t (vector)}
+\nomenclature[B]{$\bh_t$}{Hidden state at time step t (vector)}
+\nomenclature[B]{$\tilde{\bh}_{t}$}{State candidates at time step t (vector)}
+\nomenclature[B]{$\bz_t$}{Update gates at time step t (vector)}
+\nomenclature[B]{$\bW_z$}{Update gates weightings, hidden states to hidden states (matrix)}
+\nomenclature[B]{$\bU_z$}{Update gates weightings, input to hidden states (matrix)}
+\nomenclature[B]{$\bb_z$}{Update gates biases (vector)}
+\nomenclature[B]{$\br_t$}{Reset gates at time step t (vector)}
+\nomenclature[B]{$\bW_r$}{Reset gates weightings, hidden states to hidden states (matrix)}
+\nomenclature[B]{$\bU_r$}{Reset gates weightings, input to hidden states (matrix)}
+\nomenclature[B]{$\bb_r$}{Reset gates biases (vector)}
+\nomenclature[B]{$\bW$}{State candidates weightings, hidden states to hidden states (matrix)}
+\nomenclature[B]{$\bU$}{State candidates weightings, input to hidden states (matrix)}
+\nomenclature[B]{$\bb$}{State candidates biases (vector)}
+\nomenclature[B]{$\mathcal{S}$}{Sigmoid function}
 \nomenclature[B]{$\ba$}{Annotation (vector)}
 \nomenclature[B]{$\bw_{s2}$}{Attention weightings (vector)}
 \nomenclature[B]{$\bW_{s2}$}{Attention weightings (matrix)}
@@ -31,3 +44,4 @@
 \nomenclature[B]{$\bM$}{Embedding (matrix)}
 \nomenclature[B]{$d_a$}{MLP dimension (scalar)}
 \nomenclature[B]{$r$}{hops of attention (scalar)}
+\nomenclature[B]{$u$}{GRU hidden dimension (scalar)}

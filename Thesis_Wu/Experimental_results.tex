@@ -174,8 +174,8 @@ The decoding improvement compared with \cite{makin2018} in x-coordinate is also 
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_makin.png}
         \captionsetup{width=1\textwidth}
         \caption[Comparison with rEFH (+KF) \citep{makin2018}]{ Compare our results with rEFH (+KF) \citep{makin2018}. Solid lines are the the of equality, red lines are the least-squares. Each data point indicates the decoding result from a single session in SNR. Blue points are the sessions from monkey Indy; green points are the ones from monkey Loco. }
-        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: 0.15, $2.8 \times 10^{-3}$, $5.37 \times 10^{-6}$.}}
-        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: 0.69, $4.2 \times 10^{-3}$, $3.93 \times 10^{-6}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate:\\$1.7 \times 10^{-4}$, $2.8 \times 10^{-10}$, $6.6 \times 6.6^{-19}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate:\\$4.7 \times 10^{-1}$, $3.1 \times 10^{-8}$, $6.7 \times 2.2^{-18}$.}}
         \label{fig:scatter_plot_comparison_with_makin}
     \end{center}
 \end{figure}
@@ -514,7 +514,7 @@ does not seems to have an significant contribution in the decoding accuracy.
 \begin{table}[H]
     \centering
     \caption{Ablation study results}
-    \hspace*{-2cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
+    \hspace*{-1cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
     \begin{tabular}{ccccccccc}
         \hline
         \multicolumn{1}{c}{ \multirow{2}{*}{\textbf{Atten.}}}  & \multicolumn{1}{c}{\multirow{2}{*}{\textbf{L.N.}}}    & \multicolumn{1}{c|}{\multirow{1}{*}{\textbf{GRU}}}          & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Position}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Velocity}}} & \multicolumn{2}{c}{\multirow{1}{*}{\textbf{Acceleration}}} \\
@@ -532,7 +532,7 @@ does not seems to have an significant contribution in the decoding accuracy.
         \multicolumn{3}{c}{rEFH (+KF)\ \citep{makin2018} } & 0.46$\pm$0.28 & 0.70$\pm$0.09  & 0.58$\pm$0.15 & 0.74$\pm$0.06 & 0.29$\pm$0.15 & 0.40$\pm$0.09 \\
         \hline
     \end{tabular}
-    \hspace*{-2cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
+    \hspace*{-1cm} % https://tex.stackexchange.com/questions/81826/changing-margins-for-a-page-with-tables
     \label{tab:ablation_study_table}
 \end{table}
 % \end{landscape}
@@ -550,8 +550,8 @@ Decoding results from didirectional GRU are better than one-way GRU in almost ev
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_one_way_vs_bidir.png}
         \captionsetup{width=1\textwidth}
         \caption[Comparison between one-way and bidirectional decoder]{ Comparison between one-way and bidirectional decoder. Solid lines are the the of equality, red lines are the least-squares. Each data point indicates the decoding result from a single session in SNR. Blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
-        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: 0.56, 0.25, $2 \times 10^{-2}$.}}
-        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: 0.56, $8.56 \times 10^{-2}$, $8.2 \times 10^{-3}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate:\\$1.6 \times 10^{-3}$, $4.9 \times 10^{-8}$, $6.6 \times 10^{-10}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate:\\$7.6 \times 10^{-3}$, $7.2 \times 10^{-9}$, $1.5 \times 10^{-9}$.}}
         \label{fig:scatter_plot_one-way_vs_bidir}
     \end{center}
 \end{figure}
@@ -630,8 +630,8 @@ acceleration is the one with the biggest improvement by the layer normalization.
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_LN.png}
         \captionsetup{width=1\textwidth}
         \caption[With or without layer normalization]{ Comparison between with or without layer normalization. Solid lines are the the of equality, red lines are the least-squares. Each data point indicates the decoding result from a single session in SNR. Blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
-        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: 0.19, 0.36, $2 \times 10^{-3}$.}}
-        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: 0.30, 0.11, $7.7 \times 10^{-5}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate:\\$3.3 \times 10^{-4}$, $2.9 \times 10^{-8}$, $6.1 \times 10^{-8}$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate:\\$6.7 \times 10^{-2}$, $1.5 \times 10^{-9}$, $5.7 \times 10^{-7}$.}}
         \label{fig:scatter_plot_comparison_LN}
     \end{center}
 \end{figure}
@@ -654,8 +654,8 @@ Here we presented the position decoding result in an actual 2D plan in Figure~\r
         \includegraphics[width=1\textwidth]{../Ablation_study_figures/my_vs_my_no_attention.png}
         \captionsetup{width=1\textwidth}
         \caption[With or without temporal attention]{Comparison between with or without temporal attention. Solid lines are the the of equality, red lines are the least-squares. Each data point indicates the decoding result from a single session in SNR. Blue points are the sessions from monkey Indy; green points are the ones from monkey Loco.}
-        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: 0.87, 0.72, 0.96.}}
-        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: 0.84, 0.68, 0.86.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in x-coordinate: $0.5$, $0.04$, $0.6$.}}
+        \caption*{\small{The p-values of position, velocity and acceleration in y-coordinate: $0.5$, $0.04$, $0.3$.}}
         \label{fig:scatter_plot_comparison_attention}
     \end{center}
 \end{figure}
@@ -741,7 +741,8 @@ Those firing patterns tended to affect the decoder model the most, and it is ine
 
 \todo[author=Prof, color=green!20]{手靜止時，attention的值代表什麼?補充說明}
 \todo[author=Wu, color=blue!20]{已於 Section~\ref{sec:visualization_of_attention_process} 解釋}
-Similar problems also happened in session indy\_20190426\_01,
+
+\noindent Similar problems also happened in session indy\_20190426\_01,
 as the the attention map showed in Figure~\ref{fig:indy_20160426_01_corresponding_attention_map}
 
 \begin{figure}[H]
