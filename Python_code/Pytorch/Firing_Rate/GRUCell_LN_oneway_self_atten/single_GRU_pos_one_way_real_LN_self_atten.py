@@ -66,7 +66,7 @@ MAX_EPOCH = 75
 LEARNING_RATE = 1e-5
 NUMBER_OF_LAYERS = 2
 OUTPUT_DIM = 2
-BATCH_SIZE = 16
+BATCH_SIZE = 64
 HIDDEN_DIMENSION = 256
 max_timestep = 20
 
@@ -413,7 +413,7 @@ for session_k in range(len(session_file_list)):
         attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)
         penality_loss_forward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
 
-        l_loss = loss_func(o_labels, labels) + penality_loss_forward*10
+        l_loss = loss_func(o_labels, labels) + penality_loss_forward
 
         return o_labels, l_loss
 

@@ -855,17 +855,17 @@ the observed value $y_i$ (Equation \ref{eq:mean_square_error}).
 \noindent where $n$ is the number of samples.
 
 The second loss function is the penalization term explained in Section~\ref{sec:penalization_term}.
-Summing them together with a coefficient for each loss function (Equation \ref{eq:loss_function_with_two_combined}),
-$C_{1}$ and $ C_{2} $ are capable of weighing these two losses.
-\todo[author=Wu, color=blue!20]{$C_{1}$ $C_{2}$ 參數設計理由}
-In our experiments $C_{1}$ was set to 1 in all cases,
-and $C_{2}$ was assigned as 1 in position decoder, 10 in velocity decoder and 100 in acceleration decoder.
-Since acceleration decoders have larger MSE loss values than velocity decoders,
-and position decoders have the smallest MSE loss values.
+Summing them together with as a combined loss function showed in Equation \ref{eq:loss_function_with_two_combined}.
+% $C_{1}$ and $ C_{2} $ are capable of weighing these two losses.
+% \todo[author=Wu, color=blue!20]{$C_{1}$ $C_{2}$ 參數設計理由}
+% In our experiments $C_{1}$ was set to 1 in all cases,
+% and $C_{2}$ was assigned as 1 in position decoder, 10 in velocity decoder and 100 in acceleration decoder.
+% Since acceleration decoders have larger MSE loss values than velocity decoders,
+% and position decoders have the smallest MSE loss values.
 
 \begin{align}
     \label{eq:loss_function_with_two_combined}
-    \mathcal{L} &= C_{1}\mathcal{L}_{MSE} + C_{2}\mathcal{L}_{penalization}
+    \mathcal{L} &= \mathcal{L}_{MSE} + \mathcal{L}_{penalization}
 \end{align}
 
 Equation \ref{eq:adam_optimizer} is the Adam optimizer used in our research, 
