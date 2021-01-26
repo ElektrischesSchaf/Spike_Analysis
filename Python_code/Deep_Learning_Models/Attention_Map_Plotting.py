@@ -454,7 +454,7 @@ class Plotting():
         if type_name=='x_and_y_vel':
             ax[0].set_ylabel( 'vel. (mm/s)', rotation=90, fontsize=my_fontsize, color="black")
         if type_name=='x_and_y_acc':
-            ax[0].set_ylabel( 'acc. (mm/$s^2$)', rotation=90, fontsize=my_fontsize, color="black")
+            ax[0].set_ylabel( 'acc. (mm/$s^2$)', rotation=90, fontsize=my_fontsize*0.7, color="black")
 
         ax[0].plot( time_step, my_prediction_1[start_time_bin:end_time_bin], 'b', linewidth=3, label='x-coor. prediction', alpha=0.8 )
         ax[0].plot( time_step, Ground_Truth_1[start_time_bin:end_time_bin], 'b--', linewidth=3, label='x-coor. actual', alpha=0.9 )
