@@ -57,7 +57,7 @@ kinematic_variable_type = 'x_and_y_vel'
 FILE_PATH = '../../../../Dataset/Sorted_Spike_Dataset/'
 ALL_List_FILE = os.listdir(FILE_PATH)
 ALL_List_FILE.sort()
-List_FILE = ALL_List_FILE[7:30]
+List_FILE = ALL_List_FILE[7:30] #7, 30
 session_file_list = List_FILE
 
 # Neural Network Hyperparameters
@@ -402,7 +402,7 @@ for session_k in range(len(session_file_list)):
         attn_weight_matrix_forward = attn_weight_matrix_forward.to(device)        
         penality_loss_forward = torch.norm(  input = (torch.bmm(  attn_weight_matrix_forward, torch.transpose(attn_weight_matrix_forward, 1, 2) ) - torch.eye( attn_weight_matrix_forward.size(1) )), p = 'fro')
 
-        l_loss = loss_func(o_labels, labels) + penality_loss_forward*10
+        l_loss = loss_func(o_labels, labels) + penality_loss_forward
 
         return o_labels, l_loss
 

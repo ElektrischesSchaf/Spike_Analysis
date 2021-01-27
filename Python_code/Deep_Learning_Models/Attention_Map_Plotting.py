@@ -381,14 +381,29 @@ class Plotting():
         ax[1].set_ylabel('taps', fontsize=my_fontsize, color="black")
 
 
+        ax_new=ax[2].twinx()
         # Plotting spike counts
         firing_rate_tota_counts = firing_rate_data.sum(axis=0)
-        ax[2].plot( time_step, firing_rate_tota_counts, 'r', linewidth=3, label='spike counts', alpha=1.0 )
+        curve1, = ax[2].plot( time_step, firing_rate_tota_counts, 'r', linewidth=3, label='spike counts', alpha=1.0 )
         ax[2].set_xlim([ time_step[0], time_step[-1] ])
         ax[2].set_ylim([ 0,  350 ])
         ax[2].set_xticks([])
         # ax[2].set_ylabel( 'counts', rotation=90, fontsize=my_fontsize, color="black")
-        ax[2].legend(loc='upper right', fontsize=my_fontsize*0.5)
+        ax[2].tick_params(axis='y', labelcolor='tab:red')
+        # ax[2].legend(loc='upper right', fontsize=my_fontsize*0.5)
+        
+
+        # Plotting attention map max index
+        attention_map_max_index = np.argmax(attention_map_data, axis=0)
+        curve2, = ax_new.plot( time_step, attention_map_max_index*-1 , 'b', linewidth=3, label='attention map', alpha=1.0 )
+        # ax[2].set_xlim([ time_step[0], time_step[-1] ])
+        # ax[2].set_ylim([ 0,  350 ])
+        ax_new.set_yticks([])
+        ax_new.tick_params(axis='y', labelcolor='tab:blue')
+
+        curves = [curve1, curve2]
+        ax_new.legend( curves, [curve.get_label() for curve in curves ], loc='upper right', fontsize=my_fontsize*0.5)
+
 
         num_ticks = 6
         my_second_labels = time_step
