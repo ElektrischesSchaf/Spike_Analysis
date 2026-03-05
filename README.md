@@ -5,6 +5,22 @@
 
 ```https://hdl.handle.net/11296/t87h67```  
 
+
+## 	:sparkles: Thesis Highlight	:sparkles:
+To assist individuals with motor disabilities, invasive Brain-Computer Interfaces (BCIs) decode neural spike signals into limb movements, but traditional linear filters and "black-box" deep learning models face limitations in accuracy and interpretability. To address this, we developed a novel neural decoder utilizing a two-layer bidirectional Gated Recurrent Unit (GRU) enhanced with layer normalization and a temporal self-attention module to predict nonhuman primate hand kinematics (position, velocity, and acceleration). The results demonstrated that this proposed architecture outperformed state-of-the-art methods, achieving higher weighted average $R^{2}$ across all six kinematic variables (x and y coordinates), with particularly significant improvements in decoding acceleration. Ultimately, the study concludes that while the bidirectional GRU and layer normalization primarily drive the accuracy improvements, the temporal attention module successfully provides an analytical, biologically plausible visualization of the neural decoding process, effectively bridging deep learning with neuroscience.
+
+
+### Figure 4.11 from page 52
+session indy_20160916_01      |  session indy_20161025_04  
+:----------------------------:|:----------------------------:
+![](./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png)    |   ![](./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png)
+
+The novelty of Figure 4.11 lies in its ability to visually map the neural decoder's attention process directly to physical movements, specifically for decoding fingertip position. It reveals a distinct visual pattern—forming an "oblique line"—which demonstrates that the model's focus gradually shifts when the subject's fingertip stops moving.
+
+This visualization is particularly novel because it provides an interpretable link between the artificial intelligence model and actual biological behavior. It visually confirms the neuroscientific theory that primary motor cortex (M1) neuronal responses primarily reflect the timing of a movement rather than the specific type of movement. Furthermore, it illustrates why the decoder cannot effectively rely on spiking activities that occur when the fingertip is completely stationary to predict trajectories, as M1 neuronal activities are not tied to standstill states.
+
+
+## Table of contents
 - [Spike_Analysis](#Spike-Analysis)  <br>
     - [Test](#Test-123-456)  <br>
     - [Electrodes](#Electrodes) <br>
