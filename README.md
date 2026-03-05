@@ -16,8 +16,8 @@ session indy_20160916_01      |  session indy_20161025_04
 ![](./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png)    |   ![](./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png)
 
 
-<small> ./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png </small>
-<small> ./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png </small>
+<sub> ./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png </sub>
+<sub> ./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png </sub>
 
 The novelty of Figure 4.11 lies in its ability to visually map the neural decoder's attention process directly to physical movements, specifically for decoding fingertip position. It reveals a distinct visual pattern—forming an "oblique line"—which demonstrates that the model's focus gradually shifts when the subject's fingertip stops moving.
 
