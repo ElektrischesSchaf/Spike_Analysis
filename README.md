@@ -15,6 +15,10 @@ session indy_20160916_01      |  session indy_20161025_04
 :----------------------------:|:----------------------------:
 ![](./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png)    |   ![](./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png)
 
+
+<small> ./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png </small>
+<small> ./Thesis_Wu/Visualization_of_attention_process_figures/indy_20160916_01/pos_attention_map_200_to_400.png </small>
+
 The novelty of Figure 4.11 lies in its ability to visually map the neural decoder's attention process directly to physical movements, specifically for decoding fingertip position. It reveals a distinct visual pattern—forming an "oblique line"—which demonstrates that the model's focus gradually shifts when the subject's fingertip stops moving.
 
 This visualization is particularly novel because it provides an interpretable link between the artificial intelligence model and actual biological behavior. It visually confirms the neuroscientific theory that primary motor cortex (M1) neuronal responses primarily reflect the timing of a movement rather than the specific type of movement. Furthermore, it illustrates why the decoder cannot effectively rely on spiking activities that occur when the fingertip is completely stationary to predict trajectories, as M1 neuronal activities are not tied to standstill states.
