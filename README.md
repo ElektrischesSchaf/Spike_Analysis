@@ -1,3 +1,5 @@
+#### 🔗doi: https://doi.org/10.6844/NCKU202100120
+
 * [Thesis link](https://thesis.lib.ncku.edu.tw/thesis/detail/bbfc9ed1141389eeb2dd45be4da43203/) in NCKU library
 
 ```https://thesis.lib.ncku.edu.tw/thesis/detail/bbfc9ed1141389eeb2dd45be4da43203/```  
