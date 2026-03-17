@@ -3,7 +3,7 @@
 * 🔗DOI: https://doi.org/10.6844/NCKU202100120
 
 * 🔗 [Thesis link](https://thesis.lib.ncku.edu.tw/thesis/detail/bbfc9ed1141389eeb2dd45be4da43203/) in NCKU library
-	- 📥📄 e-thesis full-text download
+	- 📥📄 Electronic Thesis fulltext download
 	- ```https://thesis.lib.ncku.edu.tw/thesis/detail/bbfc9ed1141389eeb2dd45be4da43203/```  
 * 🔗 [Thesis link](https://hdl.handle.net/11296/t87h67) in National Digital Library of Theses and Dissertations in Taiwan
 	- ```https://hdl.handle.net/11296/t87h67```  
