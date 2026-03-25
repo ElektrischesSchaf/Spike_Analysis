@@ -1,5 +1,6 @@
 ## Decoding nonhuman primates arm-movement from intracortical signals using bidirectional recurrent network and temporal attention module
 ## 基於雙向遞迴式類神經網路與時序注意力機制之非人靈長類腦部皮質訊號解碼手部運動模型開發
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0004--1854--4003-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0004-1854-4003)
 * 🔗DOI: https://doi.org/10.6844/NCKU202100120
 
 * 🔗 [Thesis link](https://thesis.lib.ncku.edu.tw/thesis/detail/bbfc9ed1141389eeb2dd45be4da43203/) in NCKU library
