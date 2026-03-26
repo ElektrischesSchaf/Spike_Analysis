@@ -2,6 +2,9 @@
 ## 基於雙向遞迴式類神經網路與時序注意力機制之非人靈長類腦部皮質訊號解碼手部運動模型開發
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0004--1854--4003-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0004-1854-4003)
 [![License](https://img.shields.io/github/license/ElektrischesSchaf/Spike_Analysis?color=750014)](./LICENSE)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)  
+
+---
 
 * 🔗DOI: https://doi.org/10.6844/NCKU202100120
 
@@ -286,3 +289,4 @@ Loco M1 and S1
 ![](/Figures/Kinematic_Variables_Plots/X_axis_velocity.png) ![](/Kinematic_Variables_Plots/Y_axis_velocity.png) ![](/Kinematic_Variables_Plots/Z_axis_velocity.png) 
 * The velocity of fingertips in three axis with all 204,446 data points.
 ---
+This work by [Hsi-Chih Wu](https://orcid.org/0009-0004-1854-4003) is licensed under [![License: CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/).
