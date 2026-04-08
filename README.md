@@ -289,4 +289,4 @@ Loco M1 and S1
 ![](/Figures/Kinematic_Variables_Plots/X_axis_velocity.png) ![](/Kinematic_Variables_Plots/Y_axis_velocity.png) ![](/Kinematic_Variables_Plots/Z_axis_velocity.png) 
 * The velocity of fingertips in three axis with all 204,446 data points.
 ---
- [![License: CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/) This work by [Hsi-Chih Wu](https://orcid.org/0009-0004-1854-4003) is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+ [![License: CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)](https://creativecommons.org/licenses/by/4.0/) This work by [Hsi-Chih Wu](https://orcid.org/0009-0004-1854-4003) is licensed under [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
